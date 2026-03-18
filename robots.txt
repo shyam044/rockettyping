@@ -3,4 +3,4 @@ Allow: /
 Disallow: /admin/
 Disallow: /private/
 
-Sitemap: https://rockettyping.vercel.app/sitemap.xml
+Sitemap: https://www.rockettyping.com/sitemap.xml
