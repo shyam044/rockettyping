@@ -615,6 +615,7 @@
       localStorage.setItem("rt_registered_country", country);
       usernameScreen.style.display = "none";
       startGameWithName(name);
+      setTimeout(() => { showRaceCountdown(() => {}); }, 50); 
     } catch (e) {
       console.error("Firebase username-screen error:", e);
       error.textContent = e.code === "permission-denied"
