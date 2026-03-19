@@ -8,7 +8,7 @@
     <meta name="description"
         content="Rocket Typing - Free online typing test. Improve your typing speed and accuracy with real-time feedback, leaderboards, and customizable modes. Fast, accurate, minimal.">
     <meta name="keywords"
-        content="typing test, typing practice, typing speed, rocket typing, online typing, keyboard test, typing game">
+        content="typing test, typing practice, typing speed, rocket typing, online typing, keyboard test, typing game, free typing test no login, WPM test online free, typing speed test for students, typing practice with leaderboard">
     <meta name="author" content="Rocket Typing">
     <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
     <link rel="canonical" href="https://www.rockettyping.com/">
@@ -18,13 +18,15 @@
     <meta property="og:description"
         content="Rocket Typing - Fast, accurate, minimal. Test your typing speed and practice with real-time feedback.">
     <meta property="og:url" content="https://www.rockettyping.com/">
-    <meta property="og:image" content="https://www.rockettyping.com/images/logo.png">
+    <meta property="og:image" content="https://www.rockettyping.com/images/og-banner.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
     <meta property="og:site_name" content="Rocket Typing">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Rocket Typing – Free Online Typing Test">
     <meta name="twitter:description"
         content="Free online typing test with real-time feedback and leaderboards. Practice and improve your typing speed.">
-    <meta name="twitter:image" content="https://www.rockettyping.com/images/logo.png">
+    <meta name="twitter:image" content="https://www.rockettyping.com/images/og-banner.png">
     <meta name="twitter:creator" content="@rockettyping">
     <meta name="google-adsense-account" content="ca-pub-8311353174841359">
     <script type="application/ld+json">
@@ -46,11 +48,10 @@
       }
     }
     </script>
-    <link rel="icon" type="image/png" href="/images/logo.png">
-    <link rel="apple-touch-icon" href="/images/logo.png">
-    <meta property="og:image" content="https://www.rockettyping.com/images/logo.png">
-<meta property="og:title" content="Rocket Typing – Free Online Typing Test">
-<meta property="og:description" content="Test and improve your typing speed for free!">
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16.png">
+    <link rel="apple-touch-icon" href="/images/logo-192.png">
+    <link rel="manifest" href="/site.webmanifest">
     <meta name="theme-color" content="#323437">
     <meta property="og:locale" content="en_US">
     <meta name="category" content="Education">
@@ -61,6 +62,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preload" as="image" href="/images/logo.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-136SVFZRDF"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
@@ -72,29 +74,49 @@
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8311353174841359"
         crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
-    <style>
-    </style>
     <link rel="stylesheet" href="styles.css">
+    <!-- PWA + SEO additions -->
+    <link rel="preload" href="styles.css" as="style">
+    <link rel="alternate" hreflang="en" href="https://www.rockettyping.com/" />
+    <link rel="alternate" hreflang="x-default" href="https://www.rockettyping.com/" />
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [{
+    "@type": "Question",
+    "name": "What is Rocket Typing?",
+    "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "Rocket Typing is a free online typing speed test with real-time feedback, leaderboards, and difficulty modes."
+    }
+  },{
+    "@type": "Question",
+    "name": "Is Rocket Typing free?",
+    "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "Yes, Rocket Typing is completely free with no login required."
+    }
+  }]
+}
+</script>
 </head>
 
 <body>
     <div id="app">
-        
+
         <header id="main-header"
             style="position:absolute; top:20px; left:20px; right:20px; display:flex; align-items:center; justify-content:space-between; z-index:10;">
             <div onclick="resetTest()"
                 style="cursor:pointer; display:flex; flex-direction:column; align-items:flex-start;">
 
                 <img src="images/logo.png" alt="Rocket Typing" style="width:120px; margin-bottom:5px;" />
-         <div id="play-game">
-    <button onclick="window.location.href='game.html'" class="play-game-btn">
-        <span class="rocket-icon">🚀</span>
-        PLAY GAME
-    </button>
-</div>
+                <div id="play-game">
+                    <button onclick="window.location.href='game.html'" class="play-game-btn">
+                        <span class="rocket-icon">🚀</span>
+                        PLAY GAME
+                    </button>
+                </div>
             </div>
         </header>
         <div id="intro-text"
@@ -106,20 +128,22 @@
             <button class="mode" data-mode="words">🎯 Words</button>
         </div>
         <div id="timer">30</div>
-<div id="difficulty-container">
+        <div id="difficulty-container">
 
-    <div class="difficulty-group">
-        <button class="diff-btn active" data-difficulty="easy" title="Simple words &amp; sentences - beginner friendly">
-            🌟 EASY
-        </button>
-        <button class="diff-btn" data-difficulty="medium" title="Normal vocabulary with punctuation">
-            🌠 MEDIUM
-        </button>
-        <button class="diff-btn" data-difficulty="hard" title="Complex sentences, dates, quotes &amp; punctuation">
-            ☄️ HARD
-        </button>
-    </div>
-</div>
+            <div class="difficulty-group">
+                <button class="diff-btn active" data-difficulty="easy"
+                    title="Simple words &amp; sentences - beginner friendly">
+                    🌟 EASY
+                </button>
+                <button class="diff-btn" data-difficulty="medium" title="Normal vocabulary with punctuation">
+                    🌠 MEDIUM
+                </button>
+                <button class="diff-btn" data-difficulty="hard"
+                    title="Complex sentences, dates, quotes &amp; punctuation">
+                    ☄️ HARD
+                </button>
+            </div>
+        </div>
         <div id="words"></div>
         <input id="input" type="text" autofocus>
         <div id="result" style="display: none;">
@@ -183,41 +207,41 @@
                 <div id="leaderboard-stats" class="total-stats">TOP 10 • LIVE</div>
             </div>
             <!-- NEW: Time duration tabs -->
-             <!-- COSMIC REGISTER BANNER — shown only when not registered -->
-<div id="lb-register-prompt" class="register-prompt-banner">
-    <div class="register-banner-left">
-        <span class="register-banner-icon">🚀</span>
-        <div class="register-banner-text">
-            <strong>You're not on the board yet!</strong>
-            <span>Register your name and compete globally</span>
-        </div>
-    </div>
-    <button onclick="openRegisterModal()" class="register-banner-btn">
-        REGISTER NOW →
-    </button>
-</div>
-<div class="leaderboard-time-tabs">
-    <button class="time-tab" data-duration="10">10s</button>
-    <button class="time-tab active" data-duration="15">15s</button>
-    <button class="time-tab" data-duration="30">30s</button>
-    <button class="time-tab" data-duration="60">60s</button>
-</div>
-<div class="leaderboard-wrapper">
-    <!-- HEADER MOVED TO TOP (this fixes the "downside" problem) -->
-    <div class="leaderboard-header-grid">
-        <span>RANK</span>
-        <span>PLAYER</span>
-        <span>WPM</span>
-        <span>ACC</span>
-    </div>
+            <!-- COSMIC REGISTER BANNER — shown only when not registered -->
+            <div id="lb-register-prompt" class="register-prompt-banner">
+                <div class="register-banner-left">
+                    <span class="register-banner-icon">🚀</span>
+                    <div class="register-banner-text">
+                        <strong>You're not on the board yet!</strong>
+                        <span>Register your name and compete globally</span>
+                    </div>
+                </div>
+                <button onclick="openRegisterModal()" class="register-banner-btn">
+                    REGISTER NOW →
+                </button>
+            </div>
+            <div class="leaderboard-time-tabs">
+                <button class="time-tab" data-duration="10">10s</button>
+                <button class="time-tab active" data-duration="15">15s</button>
+                <button class="time-tab" data-duration="30">30s</button>
+                <button class="time-tab" data-duration="60">60s</button>
+            </div>
+            <div class="leaderboard-wrapper">
+                <!-- HEADER MOVED TO TOP (this fixes the "downside" problem) -->
+                <div class="leaderboard-header-grid">
+                    <span>RANK</span>
+                    <span>PLAYER</span>
+                    <span>WPM</span>
+                    <span>ACC</span>
+                </div>
 
-    <!-- Skeleton loader -->
-    <div id="lb-skeleton" class="skeleton-wrapper">
-        <!-- 10 skeleton rows (JS will remove when loaded) -->
-    </div>
+                <!-- Skeleton loader -->
+                <div id="lb-skeleton" class="skeleton-wrapper">
+                    <!-- 10 skeleton rows (JS will remove when loaded) -->
+                </div>
 
-    <div id="leaderboard-body" class="leaderboard-body"></div>
-</div>
+                <div id="leaderboard-body" class="leaderboard-body"></div>
+            </div>
         </div>
     </div>
     <footer id="footer">
@@ -230,9 +254,14 @@
         <p style="margin: 5px 0 0 0; font-size: 12px; color: #666;">&copy; 2026 <strong style="color: #e2b714;">Rocket
                 Typing</strong></p>
     </footer>
+    <div style="text-align:center; padding: 10px 0 20px;">
+        <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-8311353174841359"
+            data-ad-slot="5317025689" data-ad-format="auto" data-full-width-responsive="true"></ins>
+        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </div>
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-     import { getFirestore, collection, addDoc, query, orderBy, limit, getDocs, doc, getDoc, setDoc, where } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, query, orderBy, limit, getDocs, doc, getDoc, setDoc, where } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
         const firebaseConfig = {
             apiKey: "AIzaSyDFlSFyLG8RtOshIRI3XJ-d2Ws4R6bCqjE",
             authDomain: "typing-usernames.firebaseapp.com",
@@ -255,29 +284,29 @@
         window.orderBy = orderBy;
         window.limit = limit;
         window.getDocs = getDocs;
-        window.where = where; 
+        window.where = where;
         window.dispatchEvent(new Event('firebase-ready'));
     </script>
     <script>
-function openLeaderboardModal() {
-    document.getElementById('leaderboardModal').classList.add('active');
+        function openLeaderboardModal() {
+            document.getElementById('leaderboardModal').classList.add('active');
 
-    // NEW: automatically switch to the tab that matches your last test duration
-    let targetDuration = 15; // fallback
-    if ([10, 15, 30, 60].includes(config.time)) {
-        targetDuration = config.time;
-    }
+            // NEW: automatically switch to the tab that matches your last test duration
+            let targetDuration = 15; // fallback
+            if ([10, 15, 30, 60].includes(config.time)) {
+                targetDuration = config.time;
+            }
 
-    // Activate the correct tab visually
-    document.querySelectorAll('.time-tab').forEach(tab => {
-        tab.classList.remove('active');
-        if (parseInt(tab.dataset.duration) === targetDuration) {
-            tab.classList.add('active');
+            // Activate the correct tab visually
+            document.querySelectorAll('.time-tab').forEach(tab => {
+                tab.classList.remove('active');
+                if (parseInt(tab.dataset.duration) === targetDuration) {
+                    tab.classList.add('active');
+                }
+            });
+
+            loadLeaderboard(targetDuration);
         }
-    });
-
-    loadLeaderboard(targetDuration);
-}
         function closeLeaderboardModal() {
             document.getElementById('leaderboardModal').classList.remove('active');
         }
@@ -298,31 +327,31 @@ function openLeaderboardModal() {
         config.difficulty = savedConfig.difficulty || config.difficulty;
         document.querySelectorAll('.mode').forEach(b => b.classList.remove('active'));
         // ==================== NEW DIFFICULTY BUTTONS ====================
-function initDifficultyButtons() {
-    const diffButtons = document.querySelectorAll('.diff-btn');
+        function initDifficultyButtons() {
+            const diffButtons = document.querySelectorAll('.diff-btn');
 
-    diffButtons.forEach(btn => {
-        btn.addEventListener('click', () => {
-            // Remove active from all
-            diffButtons.forEach(b => b.classList.remove('active'));
-            // Activate clicked
-            btn.classList.add('active');
+            diffButtons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    // Remove active from all
+                    diffButtons.forEach(b => b.classList.remove('active'));
+                    // Activate clicked
+                    btn.classList.add('active');
 
-            config.difficulty = btn.dataset.difficulty;
-            saveConfig();
-            resetTest();
-        });
-    });
+                    config.difficulty = btn.dataset.difficulty;
+                    saveConfig();
+                    resetTest();
+                });
+            });
 
-    // Set initial active state from localStorage/config
-    const activeBtn = Array.from(diffButtons).find(
-        b => b.dataset.difficulty === config.difficulty
-    );
-    if (activeBtn) activeBtn.classList.add('active');
-}
+            // Set initial active state from localStorage/config
+            const activeBtn = Array.from(diffButtons).find(
+                b => b.dataset.difficulty === config.difficulty
+            );
+            if (activeBtn) activeBtn.classList.add('active');
+        }
 
-// Call it once after resetTest()
-initDifficultyButtons();
+        // Call it once after resetTest()
+        initDifficultyButtons();
         const activeModeBtn = document.querySelector(`.mode[data-mode="${config.mode}"]`);
         if (activeModeBtn) activeModeBtn.classList.add('active');
         function saveConfig() {
@@ -954,26 +983,26 @@ nouns: ["ability", "absence", "academy", "account", "achievement", "acid", "acti
             // keystrokeTimestamps for letters and spaces
             if (key.length === 1 || key === ' ') keystrokeTimestamps.push(now);
 
-if (key === ' ') {
-    const wordLen = words[currentWordIndex].length;
-    const isCorrectSpace = (currentLetterIndex >= wordLen);   // ← changed to >=
+            if (key === ' ') {
+                const wordLen = words[currentWordIndex].length;
+                const isCorrectSpace = (currentLetterIndex >= wordLen);   // ← changed to >=
 
-    if (isCorrectSpace) {
-        correctKeystrokes++;
-        correctSpaces++;
-    } else {
-        missedChars += wordLen - currentLetterIndex;   // always positive now
-        const activeWord = wordsDiv.querySelector('.word.active');
-        const letters = activeWord.querySelectorAll('.letter');
-        for (let i = currentLetterIndex; i < letters.length; i++) {
-            letters[i].classList.add('incorrect');
-        }
-    }
+                if (isCorrectSpace) {
+                    correctKeystrokes++;
+                    correctSpaces++;
+                } else {
+                    missedChars += wordLen - currentLetterIndex;   // always positive now
+                    const activeWord = wordsDiv.querySelector('.word.active');
+                    const letters = activeWord.querySelectorAll('.letter');
+                    for (let i = currentLetterIndex; i < letters.length; i++) {
+                        letters[i].classList.add('incorrect');
+                    }
+                }
 
-    moveToNextWord();
-    e.preventDefault();
-    return;
-}
+                moveToNextWord();
+                e.preventDefault();
+                return;
+            }
 
             if (key.length === 1) {
                 typeLetter(key);
@@ -1191,10 +1220,10 @@ if (key === ' ') {
                 animateCount('cons-value', 0, consistency, 1000);
             }, 400);
 
-          const registeredName = localStorage.getItem('rt_registered_name');
-if (registeredName && config.mode === 'time') {
-    saveScore(registeredName, wpm, accuracy, config.time);
-}
+            const registeredName = localStorage.getItem('rt_registered_name');
+            if (registeredName && config.mode === 'time') {
+                saveScore(registeredName, wpm, accuracy, config.time);
+            }
             confetti({
                 particleCount: 180,
                 spread: 70,
@@ -1287,60 +1316,60 @@ if (registeredName && config.mode === 'time') {
             }
             requestAnimationFrame(step);
         }
-       async function saveScore(name, wpm, accuracy, duration) {
-    try {
-        const docId = `${name}_${duration}`;                    // one best score per user per duration
-        const userRef = doc(db, "typing_test_scores", docId);
+        async function saveScore(name, wpm, accuracy, duration) {
+            try {
+                const docId = `${name}_${duration}`;                    // one best score per user per duration
+                const userRef = doc(db, "typing_test_scores", docId);
 
-        const existing = await getDoc(userRef);
-        const existingData = existing.data();
+                const existing = await getDoc(userRef);
+                const existingData = existing.data();
 
-        if (!existing.exists() || wpm > (existingData?.wpm || 0)) {
-            await setDoc(userRef, {
-                name: name,
-                wpm: wpm,
-                accuracy: accuracy,
-                testDuration: duration,
-                time: Date.now()
-            });
+                if (!existing.exists() || wpm > (existingData?.wpm || 0)) {
+                    await setDoc(userRef, {
+                        name: name,
+                        wpm: wpm,
+                        accuracy: accuracy,
+                        testDuration: duration,
+                        time: Date.now()
+                    });
+                }
+            } catch (e) {
+                console.error("Leaderboard save failed:", e);
+            }
         }
-    } catch (e) {
-        console.error("Leaderboard save failed:", e);
-    }
-}
-    async function loadLeaderboard(duration = currentLeaderboardDuration) {
-    // ← NEW: hide prompt IMMEDIATELY (sync) so it never shows again after reload
-    updateLeaderboardPrompt();
+        async function loadLeaderboard(duration = currentLeaderboardDuration) {
+            // ← NEW: hide prompt IMMEDIATELY (sync) so it never shows again after reload
+            updateLeaderboardPrompt();
 
-    currentLeaderboardDuration = duration;   // remember last tab
+            currentLeaderboardDuration = duration;   // remember last tab
 
-    const body = document.getElementById("leaderboard-body");
-    const skeleton = document.getElementById("lb-skeleton");
+            const body = document.getElementById("leaderboard-body");
+            const skeleton = document.getElementById("lb-skeleton");
 
-    skeleton.innerHTML = Array(10).fill(`<div class="skeleton-row"></div>`).join('');
-    body.style.display = "none";
+            skeleton.innerHTML = Array(10).fill(`<div class="skeleton-row"></div>`).join('');
+            body.style.display = "none";
 
-    const q = query(
-        collection(db, "typing_test_scores"),
-        where("testDuration", "==", duration),
-        orderBy("wpm", "desc"),
-        limit(10)
-    );
+            const q = query(
+                collection(db, "typing_test_scores"),
+                where("testDuration", "==", duration),
+                orderBy("wpm", "desc"),
+                limit(10)
+            );
 
-    const snapshot = await getDocs(q);
+            const snapshot = await getDocs(q);
 
-    body.innerHTML = "";
-    let rank = 1;
-    const registeredName = localStorage.getItem('rt_registered_name');
+            body.innerHTML = "";
+            let rank = 1;
+            const registeredName = localStorage.getItem('rt_registered_name');
 
-    snapshot.forEach(doc => {
-        const data = doc.data();
-        const isYou = registeredName && data.name === registeredName;
+            snapshot.forEach(doc => {
+                const data = doc.data();
+                const isYou = registeredName && data.name === registeredName;
 
-        const row = document.createElement('div');
-        row.className = `leaderboard-row ${rank === 1 ? 'top1' : rank === 2 ? 'top2' : rank === 3 ? 'top3' : ''} ${isYou ? 'you' : ''}`;
+                const row = document.createElement('div');
+                row.className = `leaderboard-row ${rank === 1 ? 'top1' : rank === 2 ? 'top2' : rank === 3 ? 'top3' : ''} ${isYou ? 'you' : ''}`;
 
-        row.innerHTML = `
+                row.innerHTML = `
             <span class="rank">${rank}</span>
             <span class="player">
                 <div class="player-avatar">${data.name[0].toUpperCase()}</div>
@@ -1350,20 +1379,20 @@ if (registeredName && config.mode === 'time') {
             <span>${data.accuracy}%</span>
         `;
 
-        body.appendChild(row);
-        rank++;
-    });
+                body.appendChild(row);
+                rank++;
+            });
 
-    skeleton.style.display = "none";
-    body.style.display = "block";
+            skeleton.style.display = "none";
+            body.style.display = "block";
 
-    if (registeredName && [...body.children].some(r => r.classList.contains('you'))) {
-        confetti({ particleCount: 80, spread: 60, origin: { y: 0.6 } });
-    }
+            if (registeredName && [...body.children].some(r => r.classList.contains('you'))) {
+                confetti({ particleCount: 80, spread: 60, origin: { y: 0.6 } });
+            }
 
-    // ← REMOVED the old updateLeaderboardPrompt() from here (now at top)
-}
-       window.addEventListener('firebase-ready', () => loadLeaderboard());
+            // ← REMOVED the old updateLeaderboardPrompt() from here (now at top)
+        }
+        window.addEventListener('firebase-ready', () => loadLeaderboard());
         document.getElementById("leaderboardModal").addEventListener("click", function (e) {
             if (e.target === this) {
                 closeLeaderboardModal();
@@ -1413,19 +1442,18 @@ if (registeredName && config.mode === 'time') {
             }
         }
         // Leaderboard time tabs handler
-document.querySelectorAll('.time-tab').forEach(tab => {
-    tab.addEventListener('click', () => {
-        document.querySelectorAll('.time-tab').forEach(t => t.classList.remove('active'));
-        tab.classList.add('active');
+        document.querySelectorAll('.time-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.time-tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
 
-        const dur = parseInt(tab.dataset.duration);
-        loadLeaderboard(dur);
-    });
-});
+                const dur = parseInt(tab.dataset.duration);
+                loadLeaderboard(dur);
+            });
+        });
         function shareScore() {
             const text = `I just hit ${document.querySelector('#wpm .stat-value').textContent} WPM on Rocket Typing! Can you beat me? 🚀 https://www.rockettyping.com/`;
             window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`, '_blank');
-            document.getElementById('rocket-launch').style.animation = 'rocket-launch 1.4s ease-out forwards';
         }
     </script>
 </body>
