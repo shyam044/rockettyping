@@ -2382,10 +2382,14 @@ function pruneTypedWords(){
   const prevT=wordsDiv.style.transition;
   wordsDiv.style.transition='none';
   toRemove.forEach(el=>{el.remove();wordDomStart++;});
-  // Force reflow then recalculate
-  void wordsDiv.offsetHeight;
-  refreshCaretAndScroll();
-  requestAnimationFrame(()=>{ wordsDiv.style.transition=prevT; });
+// Force reflow then recalculate synchronously (no rAF, so transition stays off during the snap)
+void wordsDiv.offsetHeight;
+const pos = getCaretPosition();
+caret.style.left = `${pos.x}px`;
+caret.style.top  = `${pos.y}px`;
+wordsOffset = Math.min(0, SCROLL_CENTER - pos.x);
+wordsDiv.style.transform = `translateX(${wordsOffset}px)`;
+requestAnimationFrame(()=>{ wordsDiv.style.transition = prevT; });
 }
 function moveToNextWord(){
   const ow=wordsDiv.querySelector('.word.active');
