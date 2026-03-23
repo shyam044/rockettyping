@@ -3,8 +3,20 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Rocket Typing – Rocket Race Mode</title>
-  <meta name="description" content="Rocket Typing Race – Type to launch your rocket! Beat AI opponents in a real-time space race.">
+  <title>Rocket Race – Typing Game | Rocket Typing</title>
+  <meta name="description" content="Play Rocket Race — a real-time typing game where you race against AI opponents. Type fast to launch your rocket and win the space race. Free, no login needed.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://www.rockettyping.com/game.html">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Rocket Race – Typing Game | Rocket Typing">
+  <meta property="og:description" content="Race AI opponents in a real-time typing game. Type fast to launch your rocket and win. Free to play!">
+  <meta property="og:url" content="https://www.rockettyping.com/game.html">
+  <meta property="og:image" content="https://www.rockettyping.com/images/og-banner.png">
+  <meta property="og:site_name" content="Rocket Typing">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Rocket Race – Typing Game | Rocket Typing">
+  <meta name="twitter:description" content="Race AI opponents in a real-time typing game. Type fast to launch your rocket!">
+  <meta name="twitter:image" content="https://www.rockettyping.com/images/og-banner.png">
   <link rel="icon" type="image/png" href="/images/logo.png">
   <meta name="theme-color" content="#323437">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-136SVFZRDF"></script>
@@ -2357,8 +2369,7 @@ const vocabulary={nouns: ["ability", "absence", "academy", "account", "achieveme
             articles: ["a", "an", "the", "this", "that", "these", "those", "my", "your", "his", "her", "its", "our", "their",
                 "all", "another", "any", "both", "each", "either", "enough", "few", "fewer", "fewest", "many", "more", "most",
                 "much", "neither", "no", "other", "several", "some", "such", "what", "which", "whose", "each and every", "certain",
-                "certainly", "half", "little", "less", "least", "plenty", "various", "one", "two", "three", "first", "second", "third"]
-};
+                "certainly", "half", "little", "less", "least", "plenty", "various", "one", "two", "three", "first", "second", "third"]};
 const templates={easy:["{article} {adjective} {noun} {verb} {adverb}","{article} {noun} {verb} {preposition} {article} {adjective} {noun}"]};
 function randomItem(arr){return arr[Math.floor(Math.random()*arr.length)];}
 function generateSentence(){let t=randomItem(templates.easy);return t.replace(/{article}/g,()=>randomItem(vocabulary.articles)).replace(/{adjective}/g,()=>randomItem(vocabulary.adjectives)).replace(/{noun}/g,()=>randomItem(vocabulary.nouns)).replace(/{verb}/g,()=>randomItem(vocabulary.verbs)).replace(/{adverb}/g,()=>randomItem(vocabulary.adverbs)).replace(/{preposition}/g,()=>randomItem(vocabulary.prepositions)).toLowerCase();}
@@ -2382,6 +2393,7 @@ function pruneTypedWords(){
   const prevT=wordsDiv.style.transition;
   wordsDiv.style.transition='none';
   toRemove.forEach(el=>{el.remove();wordDomStart++;});
+  // Force reflow then recalculate
 // Force reflow then recalculate synchronously (no rAF, so transition stays off during the snap)
 void wordsDiv.offsetHeight;
 const pos = getCaretPosition();
