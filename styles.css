@@ -240,6 +240,9 @@ footer {
             gap:6px;
             scrollbar-width: none;          /* Firefox */
     -ms-overflow-style: none;
+    transform: translateZ(0);          /* forces own GPU compositing layer */
+contain: layout style;             /* limits reflow to THIS element only */
+-webkit-font-smoothing: subpixel-antialiased;
         }
 
         #words .word {
@@ -252,12 +255,11 @@ footer {
 
         #words .letter {
             color: #646669;
-            transition: color 0.1s ease, transform 0.05s ease;
+            transition: color 0.05s ;
         }
 
         #words .letter.correct {
             color: #ffffff;
-            transform: none;
         }
 
         #words .letter.incorrect {
@@ -268,20 +270,17 @@ footer {
             color: #7e2a33;
         }
 
-        #words .letter {
-            transition: color 0.1s;
-        }
-
         #words .active {
             border-bottom: 2px solid #00e6cc;
         }
 
         #caret {
             position: absolute;
-            width: 3.5px;
-            height: 45px;
             background: #00e6cc;
-            transition: transform 0.06s linear, height 0.06s linear;
+/* BEFORE */
+transition: transform 0.06s linear, height 0.06s linear;
+width: 4px;
+border-radius:4px;
             will-change: transform, height;
             left: 0;
             top: 0;
