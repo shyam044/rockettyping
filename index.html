@@ -215,7 +215,6 @@
                 </div>
                 <div id="leaderboard-stats" class="total-stats">TOP 10 • LIVE</div>
             </div>
-            <!-- NEW: Time duration tabs -->
             <!-- COSMIC REGISTER BANNER — shown only when not registered -->
             <div id="lb-register-prompt" class="register-prompt-banner">
                 <div class="register-banner-left">
@@ -379,6 +378,12 @@
         let missedChars = 0;
         let spaces = 0;
         let correctSpaces = 0;
+
+        // === PERFORMANCE FIXES (Issues 5 & 6) ===
+        let cachedRows = [];
+        let rowsCacheInvalid = true;
+        let caretUpdateRAF = null;
+
         caret.id = 'caret';
         caret.classList.add('blink');
         const wordsDiv = document.getElementById('words');
@@ -788,7 +793,8 @@ nouns: ["ability", "absence", "academy", "account", "achievement", "acid", "acti
             articles: ["a", "an", "the", "this", "that", "these", "those", "my", "your", "his", "her", "its", "our", "their",
                 "all", "another", "any", "both", "each", "either", "enough", "few", "fewer", "fewest", "many", "more", "most",
                 "much", "neither", "no", "other", "several", "some", "such", "what", "which", "whose", "each and every", "certain",
-                "certainly", "half", "little", "less", "least", "plenty", "various", "one", "two", "three", "first", "second", "third"],
+                "certainly", "half", "little", "less", "least", "plenty", "various", "one", "two", "three", "first", "second", "third"]
+,
             months: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
             days: Array.from({ length: 31 }, (_, i) => String(i + 1)),
             years: Array.from({ length: 124 }, (_, i) => String(1900 + i)),
@@ -907,8 +913,40 @@ nouns: ["ability", "absence", "academy", "account", "achievement", "acid", "acti
                 });
                 wordsDiv.appendChild(wordSpan);
             });
-            updateCaret();   // ← now uses the ultra-smooth version
+            scheduleCaretUpdate();
+            rowsCacheInvalid = true;   // ← invalidate cache after full render
         }
+
+        // ==================== PERFORMANCE FIXES ====================
+
+        // Rebuild row cache only when DOM actually changes (Issue 5)
+        function rebuildRowsCache() {
+            if (!rowsCacheInvalid) return;
+            
+            cachedRows = [];
+            const wordElements = Array.from(wordsDiv.querySelectorAll('.word'));
+            
+            wordElements.forEach(word => {
+                const top = word.offsetTop;
+                if (!cachedRows.some(r => Math.abs(r - top) < 5)) {
+                    cachedRows.push(top);
+                }
+            });
+            cachedRows.sort((a, b) => a - b);
+            rowsCacheInvalid = false;
+        }
+
+        // Schedule caret update with RAF — exactly 1 update per frame no matter how fast you type (Issue 6)
+        function scheduleCaretUpdate() {
+            if (caretUpdateRAF) cancelAnimationFrame(caretUpdateRAF);
+            
+            caretUpdateRAF = requestAnimationFrame(() => {
+                updateCaret();
+                caretUpdateRAF = null;
+            });
+        }
+
+        // Improved updateCaret with cached rows (Issues 5 + 6)
         function updateCaret() {
             const activeWord = wordsDiv.querySelector('.word.active');
             if (!activeWord) return;
@@ -928,25 +966,21 @@ nouns: ["ability", "absence", "academy", "account", "achievement", "acid", "acti
 
             if (!target) return;
 
-            // calculate coords based on offsets; scroll of container will move caret automatically
+            // === Issue 5: Use cached row positions ===
+            rebuildRowsCache();
+
             let x = activeWord.offsetLeft + target.offsetLeft;
             let y = activeWord.offsetTop + target.offsetTop;
             if (after) x += target.offsetWidth;
 
-            // row-based scrolling to keep caret on screen
-            const wordElements = Array.from(wordsDiv.querySelectorAll('.word'));
-            const rows = [];
-            wordElements.forEach(word => {
-                const top = word.offsetTop;
-                if (!rows.some(r => Math.abs(r - top) < 5)) rows.push(top);
-            });
-            rows.sort((a, b) => a - b);
+            // row-based scrolling using cached rows
             const currentRowTop = activeWord.offsetTop;
-            const currentRowIndex = rows.findIndex(r => Math.abs(r - currentRowTop) < 5);
+            const currentRowIndex = cachedRows.findIndex(r => Math.abs(r - currentRowTop) < 5);
             const currentScrollTop = wordsDiv.scrollTop;
-            const visibleRowIndex = rows.findIndex(r => r >= currentScrollTop - 5);
+            const visibleRowIndex = cachedRows.findIndex(r => r >= currentScrollTop - 5);
+
             if (currentRowIndex - visibleRowIndex >= 2) {
-                wordsDiv.scrollTop = rows[visibleRowIndex + 1];
+               wordsDiv.scrollTo({ top: cachedRows[visibleRowIndex + 1], behavior: 'smooth' });
             }
 
             caret.style.height = `${target.offsetHeight}px`;
@@ -956,6 +990,7 @@ nouns: ["ability", "absence", "academy", "account", "achievement", "acid", "acti
                 wordsDiv.appendChild(caret);
             }
         }
+
         function handleKeydown(e) {
             if (!testActive && e.key !== 'Tab') {
                 testActive = true;
@@ -1051,7 +1086,7 @@ nouns: ["ability", "absence", "academy", "account", "achievement", "acid", "acti
 
                 currentLetterIndex++;
             }
-            updateCaret();
+            scheduleCaretUpdate();
         }
         function handleBackspace() {
             if (currentLetterIndex === 0) {
@@ -1078,7 +1113,7 @@ nouns: ["ability", "absence", "academy", "account", "achievement", "acid", "acti
                 wordObj.correct[lastIndex] = undefined;
 
                 currentLetterIndex--;
-                updateCaret();
+                scheduleCaretUpdate();
             }
         }
         function checkWordComplete() {
@@ -1102,7 +1137,8 @@ nouns: ["ability", "absence", "academy", "account", "achievement", "acid", "acti
                 wordsDiv.children[currentWordIndex].classList.add('active');
                 currentLetterIndex = 0;
                 extendWordsIfNeeded();
-                updateCaret();
+                scheduleCaretUpdate();
+                rowsCacheInvalid = true;   // ← invalidate after word switch
             } else {
                 if (config.mode === 'words') {
                     endTest();
@@ -1131,6 +1167,7 @@ nouns: ["ability", "absence", "academy", "account", "achievement", "acid", "acti
 
                     wordsDiv.appendChild(wordSpan);
                 });
+                rowsCacheInvalid = true;   // ← invalidate after extending words
             }
         }
         function startTimer() {
@@ -1301,6 +1338,7 @@ nouns: ["ability", "absence", "academy", "account", "achievement", "acid", "acti
             }
 
             renderWords();
+            rowsCacheInvalid = true;   // ← ensure cache is fresh after full reset
         }
         resetTest();
         function animateCount(id, start, end, duration) {
