@@ -278,7 +278,7 @@ contain: layout style;             /* limits reflow to THIS element only */
             position: absolute;
             background: #00e6cc;
 /* BEFORE */
-transition: transform 1s linear, height 1s linear;
+transition: transform 0.13s linear, height 0.13s linear;
 width: 4px;
 border-radius:4px;
             will-change: transform, height;
