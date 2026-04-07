@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
    <title>Rocket Typing – Free Typing Speed Test | WPM Test Online</title>
     <meta name="description"
-        content="Free online typing test — improve your WPM and accuracy with areal-time feedback, global leaderboards, and 3 difficulty modes. No signup required.">
+        content="Free online typing test — improve your WPM and accuracy with real-time feedback, global leaderboards, and 3 difficulty modes. No signup required.">
     <meta name="keywords"
         content="typing test, typing practice, typing speed, rocket typing, online typing, keyboard test, typing game, free typing test no login, WPM test online free, typing speed test for students, typing practice with leaderboard">
     <meta name="author" content="Rocket Typing">
@@ -168,21 +168,32 @@
 </head>
 <body>
     <div id="app">
-  <h1 style="text-align:center; color:#e2b714; font-family:'Roboto Mono',monospace; font-size:15px; letter-spacing:1px; margin: 0 0 8px 0; opacity:0.7;">🚀 Free Typing Speed Test — Improve Your WPM</h1>
+  <h1 id="page-title" style="text-align:center; color:#e2b714; font-family:'Roboto Mono',monospace; font-size:15px; letter-spacing:1px; margin: 0 0 8px 0; opacity:0.7;">🚀 Free Typing Speed Test — Improve Your WPM</h1>
 
         <header id="main-header"
             style="position:absolute; top:20px; left:20px; right:20px; display:flex; align-items:center; justify-content:space-between; z-index:10;">
-            <div onclick="resetTest()"
-                style="cursor:pointer; display:flex; flex-direction:column; align-items:flex-start;">
+  <div onclick="resetTest()" 
+     style="cursor:pointer; display:flex; flex-direction:column; align-items:flex-start;">
 
-                <img src="images/logo.png" alt="Rocket Typing" style="width:120px; margin-bottom:5px;" />
-                <div id="play-game">
-                    <button onclick="window.location.href='game.html'" class="play-game-btn">
-                        <span class="rocket-icon">🚀</span>
-                        PLAY GAME
-                    </button>
-                </div>
-            </div>
+    <img src="images/logo.png" alt="Rocket Typing" style="width:120px; margin-bottom:5px;" />
+    
+    <div id="play-game">
+        <button onclick="window.location.href='game.html'" class="play-game-btn">
+            <span class="rocket-icon">🚀</span>
+            PLAY GAME
+        </button>
+    </div>
+
+    <!-- Sunday Championship button — placed exactly below PLAY GAME -->
+    <div id="sunday-champ-nav"  ></div>
+</div>
+            <!-- Right-side header group: Login/Signup + Leaderboard side by side -->
+<div id="header-right-group" style="display:flex;align-items:center;gap:8px;z-index:35; margin-bottom:100px;">
+    <div id="header-auth-btn" style="display:flex;align-items:center;"></div>
+    <button id="leaderboard-btn" style="position:static;top:auto;right:auto;z-index:auto;">
+        🏆 <span style="margin-left:6px">LEADERBOARD</span>
+    </button>
+</div>
         </header>
         <div id="intro-text"
             style="position: absolute; top: 140px; left: 50%; transform: translateX(-50%); text-align: center; max-width: 600px; color: #cccccc; font-size: 16px; line-height: 1.4; opacity: 0.9; z-index: 1;">
@@ -253,31 +264,73 @@
     <div id="result-ad" style="margin-top:20px; padding-bottom:10px; text-align:center;"></div>
 </div>
 
-        <button id="leaderboard-btn">
-            🏆 <span style="margin-left:6px">LEADERBOARD</span>
-        </button>
+
 
     </div>
 
-    <div id="registerModal"
-        style="position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.9);align-items:center;justify-content:center;z-index:1100;display:none;">
-        <div class="modal-content" style="max-width:420px;">
-            <button class="modal-close" onclick="closeRegisterModal()">×</button>
-            <h2>Register to Show Your Name</h2>
-            <p style="margin-bottom:20px;">Your name + country will appear on both Typing Test and Rocket Race
-                leaderboards.</p>
+    <div id="authModal"
+    style="position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.9);align-items:center;justify-content:center;z-index:1100;display:none;">
+    <div class="modal-content" style="max-width:420px;position:relative;">
+        <button class="modal-close" onclick="closeAuthModal()">×</button>
 
-            <input id="reg-name" placeholder="Username (3-15 chars)"
-                style="width:100%;padding:12px;margin-bottom:12px;font-size:16px;">
-            <input id="reg-country" placeholder="Your country"
-                style="width:100%;padding:12px;margin-bottom:12px;font-size:16px;">
+        <!-- TAB SWITCHER -->
+        <div style="display:flex;gap:0;margin-bottom:24px;border-bottom:2px solid rgba(255,255,255,0.1);">
+            <button id="tab-login" onclick="switchAuthTab('login')"
+                style="flex:1;background:none;border:none;color:#e2b714;padding:12px;cursor:pointer;font-family:'Roboto Mono',monospace;font-size:14px;font-weight:900;border-bottom:3px solid #e2b714;">
+                LOGIN
+            </button>
+            <button id="tab-signup" onclick="switchAuthTab('signup')"
+                style="flex:1;background:none;border:none;color:#646669;padding:12px;cursor:pointer;font-family:'Roboto Mono',monospace;font-size:14px;font-weight:900;border-bottom:3px solid transparent;">
+                SIGN UP
+            </button>
+        </div>
 
-            <div id="reg-error" style="color:#da3333;margin:10px 0;font-size:14px;"></div>
+        <!-- LOGIN FORM -->
+        <div id="form-login">
+            <h2 style="margin-bottom:20px;">Welcome back 🚀</h2>
+            <input id="auth-login-email" type="email" placeholder="Email"
+                style="width:100%;padding:12px;margin-bottom:12px;font-size:15px;background:rgba(255,255,255,0.05);border:2px solid rgba(226,183,20,0.3);border-radius:8px;color:#fff;font-family:'Roboto Mono',monospace;outline:none;">
+            <input id="auth-login-password" type="password" placeholder="Password"
+                style="width:100%;padding:12px;margin-bottom:12px;font-size:15px;background:rgba(255,255,255,0.05);border:2px solid rgba(226,183,20,0.3);border-radius:8px;color:#fff;font-family:'Roboto Mono',monospace;outline:none;">
+            <div id="auth-login-error" style="color:#da3333;font-size:13px;margin-bottom:10px;min-height:18px;"></div>
+            <button onclick="doLogin()"
+                style="background:linear-gradient(135deg,#e2b714,#ff9900);color:#0a0a23;width:100%;padding:13px;font-weight:900;font-family:'Roboto Mono',monospace;font-size:15px;border:none;border-radius:8px;cursor:pointer;letter-spacing:1px;">
+                LOGIN →
+            </button>
+        </div>
 
-            <button onclick="submitRegister()"
-                style="background:#e2b714;color:#323437;width:100%;padding:12px;font-weight:bold;">Register Now</button>
+        <!-- SIGNUP FORM -->
+        <div id="form-signup" style="display:none;">
+            <h2 style="margin-bottom:20px;">Create Account 🌟</h2>
+            <input id="auth-signup-username" type="text" maxlength="15" placeholder="Username (3–15 chars, letters/numbers/_)"
+                style="width:100%;padding:12px;margin-bottom:12px;font-size:15px;background:rgba(255,255,255,0.05);border:2px solid rgba(226,183,20,0.3);border-radius:8px;color:#fff;font-family:'Roboto Mono',monospace;outline:none;">
+            <div class="idx-country-wrap" id="idx-country-wrap" style="position:relative;width:100%;margin-bottom:12px;">
+                <div id="idx-country-display" onclick="toggleCountryDrop('idx')"
+                    style="width:100%;padding:12px 15px;font-size:15px;background:rgba(255,255,255,0.05);border:2px solid rgba(226,183,20,0.3);border-radius:8px;color:#fff;font-family:'Roboto Mono',monospace;cursor:pointer;display:flex;justify-content:space-between;align-items:center;box-sizing:border-box;user-select:none;transition:border-color .2s;">
+                    <span id="idx-country-text" style="color:#646669;">Your country</span>
+                    <span style="color:#e2b714;font-size:10px;flex-shrink:0;margin-left:8px;">▼</span>
+                </div>
+                <div id="idx-country-drop" style="display:none;position:absolute;z-index:9999;top:calc(100% + 4px);left:0;right:0;background:#1a1a2e;border:2px solid rgba(226,183,20,0.4);border-radius:8px;overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,0.7);">
+                    <div style="padding:8px;border-bottom:1px solid rgba(255,255,255,0.08);">
+                        <input id="idx-country-search" placeholder="Search country…" oninput="filterCountries('idx')"
+                            style="width:100%;padding:8px 10px;font-size:13px;font-family:'Roboto Mono',monospace;background:rgba(255,255,255,0.06);border:1px solid rgba(226,183,20,0.2);border-radius:6px;color:#fff;outline:none;box-sizing:border-box;">
+                    </div>
+                    <div id="idx-country-list" style="max-height:200px;overflow-y:auto;"></div>
+                </div>
+            </div>
+            <input type="hidden" id="auth-signup-country">
+            <input id="auth-signup-email" type="email" placeholder="Email"
+                style="width:100%;padding:12px;margin-bottom:12px;font-size:15px;background:rgba(255,255,255,0.05);border:2px solid rgba(226,183,20,0.3);border-radius:8px;color:#fff;font-family:'Roboto Mono',monospace;outline:none;">
+            <input id="auth-signup-password" type="password" placeholder="Password (min 6 chars)"
+                style="width:100%;padding:12px;margin-bottom:12px;font-size:15px;background:rgba(255,255,255,0.05);border:2px solid rgba(226,183,20,0.3);border-radius:8px;color:#fff;font-family:'Roboto Mono',monospace;outline:none;">
+            <div id="auth-signup-error" style="color:#da3333;font-size:13px;margin-bottom:10px;min-height:18px;"></div>
+            <button onclick="doSignup()"
+                style="background:linear-gradient(135deg,#e2b714,#ff9900);color:#0a0a23;width:100%;padding:13px;font-weight:900;font-family:'Roboto Mono',monospace;font-size:15px;border:none;border-radius:8px;cursor:pointer;letter-spacing:1px;">
+                CREATE ACCOUNT →
+            </button>
         </div>
     </div>
+</div>
     <div id="leaderboardModal">
         <div class="modal-content leaderboard-modal">
             <!-- New cosmic header -->
@@ -298,7 +351,7 @@
                         <span>Register your name and compete globally</span>
                     </div>
                 </div>
-                <button onclick="openRegisterModal()" class="register-banner-btn">
+                <button onclick="openAuthModal('signup')" class="register-banner-btn">
                     REGISTER NOW →
                 </button>
             </div>
@@ -326,6 +379,7 @@
             </div>
         </div>
     </div>
+    
     <footer id="footer">
         <p style="margin: 0;">
             <a href="/about.html">About</a> |
@@ -337,34 +391,70 @@
         <p style="margin: 5px 0 0 0; font-size: 12px; color: #666;">&copy; 2026 <strong style="color: #e2b714;">Rocket
                 Typing</strong></p>
     </footer>
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-        import { getFirestore, collection, addDoc, query, orderBy, limit, getDocs, doc, getDoc, setDoc, where } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-        const firebaseConfig = {
-            apiKey: "AIzaSyDFlSFyLG8RtOshIRI3XJ-d2Ws4R6bCqjE",
-            authDomain: "typing-usernames.firebaseapp.com",
-            projectId: "typing-usernames",
-            storageBucket: "typing-usernames.firebasestorage.app",
-            messagingSenderId: "978036744790",
-            appId: "1:978036744790:web:1c66d79a27f19a7493d1f7",
-            measurementId: "G-GEH3BRFRST"
-        };
+   <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getFirestore, collection, addDoc, query, orderBy, limit, getDocs, doc, getDoc, setDoc, where } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-        window.doc = doc;
-        window.getDoc = getDoc;
-        window.setDoc = setDoc;
-        window.db = db;
-        window.collection = collection;
-        window.addDoc = addDoc;
-        window.query = query;
-        window.orderBy = orderBy;
-        window.limit = limit;
-        window.getDocs = getDocs;
-        window.where = where;
+    const firebaseConfig = {
+        apiKey: "AIzaSyDFlSFyLG8RtOshIRI3XJ-d2Ws4R6bCqjE",
+        authDomain: "typing-usernames.firebaseapp.com",
+        projectId: "typing-usernames",
+        storageBucket: "typing-usernames.firebasestorage.app",
+        messagingSenderId: "978036744790",
+        appId: "1:978036744790:web:1c66d79a27f19a7493d1f7",
+        measurementId: "G-GEH3BRFRST"
+    };
+
+    const app  = initializeApp(firebaseConfig);
+    const db   = getFirestore(app);
+    const auth = getAuth(app);
+
+    // Expose to global scope (same as before, plus auth)
+    window.doc = doc; window.getDoc = getDoc; window.setDoc = setDoc;
+    window.db = db; window.auth = auth;
+    window.collection = collection; window.addDoc = addDoc;
+    window.query = query; window.orderBy = orderBy;
+window.limit = limit; window.getDocs = getDocs; window.where = where;
+window.signOut = signOut;
+window.signInWithEmailAndPassword = signInWithEmailAndPassword;
+window.createUserWithEmailAndPassword = createUserWithEmailAndPassword;
+
+    // Auth state listener — runs on every page load
+    onAuthStateChanged(auth, async (user) => {
+        if (user) {
+            // Fetch username from Firestore using uid
+            const userDoc = await getDoc(doc(db, "users", user.uid));
+            if (userDoc.exists()) {
+                const username = userDoc.data().name;
+                window._currentUser = { uid: user.uid, email: user.email, name: username };
+                localStorage.setItem('rt_registered_name', username); // keep for leaderboard compat
+                updateAuthUI(true, username);
+            }
+        } else {
+            window._currentUser = null;
+            localStorage.removeItem('rt_registered_name');
+            updateAuthUI(false, null);
+        }
         window.dispatchEvent(new Event('firebase-ready'));
-    </script>
+    });
+
+    function updateAuthUI(loggedIn, username) {
+        const prompt = document.getElementById('lb-register-prompt');
+        const headerAuthBtn = document.getElementById('header-auth-btn');
+        if (loggedIn) {
+            if (prompt) prompt.style.display = 'none';
+            if (headerAuthBtn) headerAuthBtn.innerHTML =
+                `<span style="color:#e2b714;font-size:13px;">👤 ${username}</span>
+                 <button onclick="doSignOut()" style="margin-left:8px;background:none;border:1px solid #646669;color:#646669;border-radius:4px;padding:4px 8px;cursor:pointer;font-size:11px;font-family:'Roboto Mono',monospace;">LOGOUT</button>`;
+        } else {
+            if (prompt) prompt.style.display = 'flex';
+            if (headerAuthBtn) headerAuthBtn.innerHTML =
+                `<button onclick="openAuthModal('login')" style="background:linear-gradient(135deg,#e2b714,#ff9900);color:#0a0a23;border:none;border-radius:20px;padding:8px 16px;cursor:pointer;font-size:12px;font-weight:900;font-family:'Roboto Mono',monospace;letter-spacing:1px;">LOGIN / SIGNUP</button>`;
+        }
+    }
+    window.updateAuthUI = updateAuthUI;
+</script>
     <script>
         function openLeaderboardModal() {
             document.getElementById('leaderboardModal').classList.add('active');
@@ -1067,21 +1157,26 @@ nouns: ["ability", "absence", "academy", "account", "achievement", "acid", "acti
         }
 
         function handleKeydown(e) {
-            if (!testActive && e.key !== 'Tab') {
-                testActive = true;
-                startTimer();
-                caret.classList.remove('blink');
+if (!testActive && e.key !== 'Tab') {
+    testActive = true;
+    startTimer();
+    caret.classList.remove('blink');
 
-                // Hide play game button only
-                document.getElementById("intro-text").style.display = "none";
+    // === HIDE DISTRACTIONS WHILE TYPING ===
+    document.getElementById("intro-text").style.display = "none";
+    document.getElementById("page-title").style.display = "none";           // ← new
+    document.getElementById("sunday-champ-nav").style.display = "none";     // ← new
+    if (document.getElementById("header-auth-btn")) {
+        document.getElementById("header-auth-btn").style.display = "none";  // ← new
+    }
 
-                // Keep timer visible
-                document.getElementById("test-config").style.display = "none";
-                document.getElementById("difficulty-container").style.display = "none";
-                document.getElementById("leaderboard-btn").style.display = "none";
-                document.getElementById('footer').style.display = 'none';
-                document.getElementById("play-game").style.display = "none";
-            }
+    // Keep timer visible
+    document.getElementById("test-config").style.display = "none";
+    document.getElementById("difficulty-container").style.display = "none";
+    document.getElementById("leaderboard-btn").style.display = "none";
+    document.getElementById('footer').style.display = 'none';
+    document.getElementById("play-game").style.display = "none";
+}
             if (!testActive) return;
 
             const key = e.key;
@@ -1389,10 +1484,11 @@ nouns: ["ability", "absence", "academy", "account", "achievement", "acid", "acti
             // Rocket chart animation — starts after a short delay so result is laid out
             setTimeout(() => drawRocketChart(), 400);
 
-            const registeredName = localStorage.getItem('rt_registered_name');
-            if (registeredName && config.mode === 'time') {
-                saveScore(registeredName, wpm, accuracy, config.time);
-            }
+// REPLACE lines 1394-1397:
+const registeredName = window._currentUser?.name;
+if (registeredName && config.mode === 'time') {
+    saveScore(registeredName, wpm, accuracy, config.time);
+}
             confetti({
                 particleCount: 180,
                 spread: 70,
@@ -1716,6 +1812,12 @@ nouns: ["ability", "absence", "academy", "account", "achievement", "acid", "acti
             document.getElementById('main-header').style.display = 'flex';
             document.getElementById("result-ad").innerHTML = "";
             document.getElementById("play-game").style.display = "flex";
+                // === SHOW DISTRACTIONS AGAIN AFTER TEST ===
+    document.getElementById("page-title").style.display = "block";           // ← new
+    document.getElementById("sunday-champ-nav").style.display = "block";     // ← new
+    if (document.getElementById("header-auth-btn")) {
+        document.getElementById("header-auth-btn").style.display = "flex";   // ← new
+    }
             clearInterval(timerInterval);
             testActive = false;
             caret.classList.add('blink');
@@ -1779,7 +1881,7 @@ nouns: ["ability", "absence", "academy", "account", "achievement", "acid", "acti
         }
         async function saveScore(name, wpm, accuracy, duration) {
             try {
-                const docId = `${name}_${duration}`;                    // one best score per user per duration
+const docId = `${window._currentUser?.uid || name}_${duration}`;     // one best score per user per duration
                 const userRef = doc(db, "typing_test_scores", docId);
 
                 const existing = await getDoc(userRef);
@@ -1859,49 +1961,95 @@ nouns: ["ability", "absence", "academy", "account", "achievement", "acid", "acti
                 closeLeaderboardModal();
             }
         });
-        function openRegisterModal() {
-            document.getElementById('registerModal').style.display = 'flex';
+       // ── AUTH MODAL ──
+// UPDATED - Fixed cursor disappearing + modal input clicks
+    function openAuthModal(tab = 'login') {
+        const mainInput = document.getElementById('input');
+        if (mainInput) {
+            mainInput.disabled = true;   // ← This is the main fix
+            mainInput.blur();
         }
-        function closeRegisterModal() {
-            document.getElementById('registerModal').style.display = 'none';
+
+        document.getElementById('authModal').style.display = 'flex';
+        switchAuthTab(tab);
+
+        // Auto-focus first field in modal
+        setTimeout(() => {
+            const firstField = document.getElementById('auth-login-email') || 
+                              document.getElementById('auth-signup-username');
+            if (firstField) firstField.focus();
+        }, 100);
+    }
+
+    function closeAuthModal() {
+        const mainInput = document.getElementById('input');
+        if (mainInput) {
+            mainInput.disabled = false;   // ← Re-enable main typing input
         }
-        async function submitRegister() {
-            const name = document.getElementById('reg-name').value.trim().toLowerCase();
-            const country = document.getElementById('reg-country').value.trim();
-            const error = document.getElementById('reg-error');
-            error.textContent = '';
 
-            if (name.length < 3 || name.length > 15) return error.textContent = 'Name 3-15 characters';
-            if (!/^[a-z0-9_]+$/.test(name)) return error.textContent = 'Only letters, numbers, _ allowed';
-            if (!country) return error.textContent = 'Enter your country';
-
-            try {
-                const userDoc = await getDoc(doc(db, "users", name));
-                if (userDoc.exists()) return error.textContent = 'Username already taken';
-
-                await setDoc(doc(db, "users", name), {
-                    name: name,
-                    country: country,
-                    created: Date.now()
-                });
-
-                localStorage.setItem('rt_registered_name', name);
-                localStorage.setItem('rt_registered_country', country);
-
-                alert('✅ Registered! Your name will now appear on leaderboards.');
-                closeRegisterModal();
-                updateLeaderboardPrompt();
-                loadLeaderboard(15); // refresh
-            } catch (e) {
-                error.textContent = 'Connection error, try again';
-            }
-        }
-        function updateLeaderboardPrompt() {
-            const prompt = document.getElementById('lb-register-prompt');
-            if (localStorage.getItem('rt_registered_name')) {
-                prompt.style.display = 'none';
-            }
-        }
+        document.getElementById('authModal').style.display = 'none';
+    }
+function switchAuthTab(tab) {
+    document.getElementById('form-login').style.display  = tab === 'login'  ? 'block' : 'none';
+    document.getElementById('form-signup').style.display = tab === 'signup' ? 'block' : 'none';
+    document.getElementById('tab-login').style.color  = tab === 'login'  ? '#e2b714' : '#646669';
+    document.getElementById('tab-signup').style.color = tab === 'signup' ? '#e2b714' : '#646669';
+    document.getElementById('tab-login').style.borderBottomColor  = tab === 'login'  ? '#e2b714' : 'transparent';
+    document.getElementById('tab-signup').style.borderBottomColor = tab === 'signup' ? '#e2b714' : 'transparent';
+}
+async function doLogin() {
+    const email    = document.getElementById('auth-login-email').value.trim();
+    const password = document.getElementById('auth-login-password').value;
+    const errEl    = document.getElementById('auth-login-error');
+    errEl.textContent = '';
+    if (!email || !password) return errEl.textContent = 'Please fill in all fields.';
+    try {
+        await signInWithEmailAndPassword(auth, email, password);
+        closeAuthModal();
+    } catch (e) {
+        errEl.textContent = e.code === 'auth/invalid-credential'
+            ? 'Wrong email or password.' : 'Login failed. Try again.';
+    }
+}
+async function doSignup() {
+    const username = document.getElementById('auth-signup-username').value.trim().toLowerCase();
+    const country  = document.getElementById('auth-signup-country').value.trim();
+    const email    = document.getElementById('auth-signup-email').value.trim();
+    const password = document.getElementById('auth-signup-password').value;
+    const errEl    = document.getElementById('auth-signup-error');
+    errEl.textContent = '';
+    if (username.length < 3 || username.length > 15) return errEl.textContent = 'Username must be 3–15 characters.';
+    if (!/^[a-z0-9_]+$/.test(username)) return errEl.textContent = 'Only lowercase letters, numbers, and _ allowed.';
+    if (!country) return errEl.textContent = 'Please enter your country.';
+    if (!email)   return errEl.textContent = 'Please enter your email.';
+    if (password.length < 6) return errEl.textContent = 'Password must be at least 6 characters.';
+    try {
+        // Check username not already taken
+        const snap = await getDocs(query(collection(db, 'users'), where('name', '==', username)));
+        if (!snap.empty) return errEl.textContent = 'Username already taken. Choose another.';
+        // Create Firebase Auth account
+        const cred = await createUserWithEmailAndPassword(auth, email, password);
+        // Save profile to Firestore, keyed by uid
+        await setDoc(doc(db, 'users', cred.user.uid), {
+            name: username, email, country, uid: cred.user.uid, created: Date.now()
+        });
+        closeAuthModal();
+    } catch (e) {
+        if (e.code === 'auth/email-already-in-use') errEl.textContent = 'This email is already registered. Please login.';
+        else errEl.textContent = 'Signup failed: ' + e.message;
+    }
+}
+async function doSignOut() {
+    await signOut(auth);
+}
+function updateLeaderboardPrompt() {
+    const prompt = document.getElementById('lb-register-prompt');
+    if (window._currentUser) {
+        if (prompt) prompt.style.display = 'none';
+    }
+}
+// Update leaderboard register button to open auth modal
+function openRegisterModal() { openAuthModal('signup'); }
         // Leaderboard time tabs handler
         document.querySelectorAll('.time-tab').forEach(tab => {
             tab.addEventListener('click', () => {
@@ -1917,6 +2065,96 @@ nouns: ["ability", "absence", "academy", "account", "achievement", "acid", "acti
             window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`, '_blank');
         }
     </script>
+    <script>
+(function() {
+    const isSunday = new Date().getDay() === 0;
+    const nav = document.getElementById('sunday-champ-nav');
+    nav.innerHTML = `
+        <a href="test.html" style="
+            display:inline-flex; align-items:center; gap:8px;
+            background:${isSunday ? 'linear-gradient(135deg,#e2b714,#ff9900)' : 'rgba(226,183,20,0.12)'};
+            color:${isSunday ? '#0a0a23' : '#e2b714'};
+            border:2px solid ${isSunday ? '#ff9900' : 'rgba(226,183,20,0.35)'};
+            border-radius:50px; padding:10px 18px;
+            font-family:'Roboto Mono',monospace; font-size:13px;
+            font-weight:900; letter-spacing:1.5px; text-decoration:none;
+            box-shadow:${isSunday ? '0 0 30px rgba(226,183,20,0.5)' : 'none'};
+            transition:all .2s;
+        ">
+            🏆 ${isSunday ? '🔴 LIVE NOW' : 'SUNDAY CHAMP'}
+        </a>
+    `;
+})();
+// Handle ?openAuth=login and ?openAuth=signup from game.html and other pages
+// BUT only open modal if user is NOT logged in + clear the URL so reload doesn't re-trigger
+(function() {
+    const param = new URLSearchParams(location.search).get('openAuth');
+    
+    if (param === 'signup' || param === 'login') {
+        window.addEventListener('firebase-ready', () => {
+            // Only open if user is not already logged in
+            if (!window._currentUser) {
+                openAuthModal(param);
+            }
+            
+            // IMPORTANT: Remove the query parameter from URL so reload doesn't open modal again
+            const newUrl = window.location.pathname;
+            window.history.replaceState({}, document.title, newUrl);
+        }, { once: true });
+    }
+})();
+</script>
+<script>
+/* ── COUNTRY DROPDOWN (index.html) ── */
+const ALL_COUNTRIES = ["Afghanistan","Albania","Algeria","Andorra","Angola","Antigua and Barbuda","Argentina","Armenia","Australia","Austria","Azerbaijan","Bahamas","Bahrain","Bangladesh","Barbados","Belarus","Belgium","Belize","Benin","Bhutan","Bolivia","Bosnia and Herzegovina","Botswana","Brazil","Brunei","Bulgaria","Burkina Faso","Burundi","Cabo Verde","Cambodia","Cameroon","Canada","Central African Republic","Chad","Chile","China","Colombia","Comoros","Congo","Costa Rica","Croatia","Cuba","Cyprus","Czech Republic","Denmark","Djibouti","Dominica","Dominican Republic","Ecuador","Egypt","El Salvador","Equatorial Guinea","Eritrea","Estonia","Eswatini","Ethiopia","Fiji","Finland","France","Gabon","Gambia","Georgia","Germany","Ghana","Greece","Grenada","Guatemala","Guinea","Guinea-Bissau","Guyana","Haiti","Honduras","Hungary","Iceland","India","Indonesia","Iran","Iraq","Ireland","Israel","Italy","Jamaica","Japan","Jordan","Kazakhstan","Kenya","Kiribati","Kuwait","Kyrgyzstan","Laos","Latvia","Lebanon","Lesotho","Liberia","Libya","Liechtenstein","Lithuania","Luxembourg","Madagascar","Malawi","Malaysia","Maldives","Mali","Malta","Marshall Islands","Mauritania","Mauritius","Mexico","Micronesia","Moldova","Monaco","Mongolia","Montenegro","Morocco","Mozambique","Myanmar","Namibia","Nauru","Nepal","Netherlands","New Zealand","Nicaragua","Niger","Nigeria","North Korea","North Macedonia","Norway","Oman","Pakistan","Palau","Palestine","Panama","Papua New Guinea","Paraguay","Peru","Philippines","Poland","Portugal","Qatar","Romania","Russia","Rwanda","Saint Kitts and Nevis","Saint Lucia","Saint Vincent and the Grenadines","Samoa","San Marino","Sao Tome and Principe","Saudi Arabia","Senegal","Serbia","Seychelles","Sierra Leone","Singapore","Slovakia","Slovenia","Solomon Islands","Somalia","South Africa","South Korea","South Sudan","Spain","Sri Lanka","Sudan","Suriname","Sweden","Switzerland","Syria","Taiwan","Tajikistan","Tanzania","Thailand","Timor-Leste","Togo","Tonga","Trinidad and Tobago","Tunisia","Turkey","Turkmenistan","Tuvalu","Uganda","Ukraine","United Arab Emirates","United Kingdom","United States","Uruguay","Uzbekistan","Vanuatu","Vatican City","Venezuela","Vietnam","Yemen","Zambia","Zimbabwe"];
+
+const COUNTRY_OPTION_STYLE = 'padding:9px 15px;font-size:13px;cursor:pointer;font-family:Roboto Mono,monospace;color:#d1d0c5;';
+
+function _buildCountryList(prefix, items) {
+    const list = document.getElementById(prefix+'-country-list');
+    if (!list) return;
+    list.innerHTML = items.map(c =>
+        `<div style="${COUNTRY_OPTION_STYLE}" onmouseover="this.style.background='rgba(226,183,20,0.12)';this.style.color='#e2b714'" onmouseout="this.style.background='';this.style.color='#d1d0c5'" onclick="selectCountry('${prefix}','${c.replace(/'/g,"&#39;")}')">${c}</div>`
+    ).join('');
+}
+function initCountryDrop(prefix) { _buildCountryList(prefix, ALL_COUNTRIES); }
+function toggleCountryDrop(prefix) {
+    const display = document.getElementById(prefix+'-country-display');
+    const drop    = document.getElementById(prefix+'-country-drop');
+    const search  = document.getElementById(prefix+'-country-search');
+    if (!display || !drop) return;
+    const isOpen = drop.style.display !== 'none';
+    document.querySelectorAll('[id$="-country-drop"]').forEach(d => { d.style.display='none'; });
+    if (!isOpen) {
+        drop.style.display = 'block';
+        display.style.borderColor = '#e2b714';
+        if (search) { search.value=''; _buildCountryList(prefix, ALL_COUNTRIES); setTimeout(()=>search.focus(),50); }
+    } else {
+        display.style.borderColor = 'rgba(226,183,20,0.3)';
+    }
+}
+function filterCountries(prefix) {
+    const q = (document.getElementById(prefix+'-country-search')?.value||'').toLowerCase();
+    _buildCountryList(prefix, ALL_COUNTRIES.filter(c => c.toLowerCase().includes(q)));
+}
+function selectCountry(prefix, country) {
+    const hidden  = document.getElementById(prefix === 'idx' ? 'auth-signup-country' : prefix+'-signup-country');
+    const text    = document.getElementById(prefix+'-country-text');
+    const display = document.getElementById(prefix+'-country-display');
+    const drop    = document.getElementById(prefix+'-country-drop');
+    if (hidden)  hidden.value = country;
+    if (text)    { text.textContent = country; text.style.color = '#fff'; }
+    if (display) display.style.borderColor = 'rgba(226,183,20,0.3)';
+    if (drop)    drop.style.display = 'none';
+}
+document.addEventListener('click', e => {
+    if (!e.target.closest('[id$="-country-wrap"]') && !e.target.closest('[id$="-country-display"]')) {
+        document.querySelectorAll('[id$="-country-drop"]').forEach(d => { d.style.display='none'; });
+    }
+});
+// Init
+initCountryDrop('idx');
+</script>
 </body>
 
 </html>
