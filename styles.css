@@ -817,3 +817,11 @@ footer a:hover { opacity: 0.8; }
 @keyframes bannerShine { 0% { left: -150%; } 30% { left: 250%; } 100% { left: 250%; } }
 @keyframes shine { 0% { left: -150%; } 20% { left: 250%; } 100% { left: 250%; } }
 @keyframes pulseYou { 50% { box-shadow: 0 0 25px #00e6cc; } }
+
+#authModal {
+    pointer-events: auto;
+}
+
+#authModal input:focus {
+    z-index: 1110;
+}
