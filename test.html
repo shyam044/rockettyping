@@ -1,0 +1,1142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🏆 Sunday Championship – Rocket Typing</title>
+    <meta name="description" content="Weekly Sunday typing championship. 60 seconds, one attempt, win ₹500!">
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16.png">
+    <link rel="apple-touch-icon" href="/images/logo-192.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+    <style>
+        /* ===== BASE / THEME ===== */
+        :root {
+            --bg:        #0a0a23;
+            --gold:      #e2b714;
+            --gold2:     #ffd700;
+            --orange:    #ff9900;
+            --cyan:      #00e6cc;
+            --red:       #da3333;
+            --correct:   #6fcf97;
+            --wrong:     #e55353;
+            --text:      #d1d0c5;
+            --muted:     #646669;
+            --card:      rgba(10,10,35,0.92);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background: var(--bg);
+            background-image:
+                radial-gradient(circle at 25% 15%, rgba(255,215,0,0.12) 0%, transparent 55%),
+                radial-gradient(circle at 75% 85%, rgba(255,100,0,0.12) 0%, transparent 55%);
+            color: var(--text);
+            font-family: 'Roboto Mono', monospace;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        body::before {
+            content: '';
+            position: fixed; inset: 0;
+            background: url('https://rockettyping.vercel.app/images/stars-bg.png') repeat;
+            opacity: 0.5;
+            z-index: 0;
+            animation: nebula 120s linear infinite;
+            pointer-events: none;
+        }
+        @keyframes nebula { to { background-position: 2000px 2000px; } }
+
+        #app {
+            position: relative; z-index: 2;
+            max-width: 860px; margin: 0 auto;
+            padding: 20px 16px 60px;
+        }
+
+        /* ===== TOP NAV ===== */
+        #topnav {
+            display: flex; align-items: center;
+            justify-content: space-between;
+            padding: 12px 0 24px;
+        }
+        .back-link {
+            color: var(--gold); text-decoration: none;
+            font-size: 13px; letter-spacing: 1px;
+            opacity: 0.7; transition: opacity .2s;
+        }
+        .back-link:hover { opacity: 1; }
+        .site-logo { width: 100px; }
+
+        #topnav-user { display: flex; align-items: center; gap: 10px; font-size: 13px; }
+        #topnav-username { color: var(--gold); font-weight: 700; }
+        .topnav-logout-btn {
+            background: none; border: 1px solid var(--muted);
+            color: var(--muted); border-radius: 6px;
+            padding: 4px 10px; font-size: 11px;
+            font-family: 'Roboto Mono', monospace;
+            cursor: pointer; transition: all .2s;
+        }
+        .topnav-logout-btn:hover { border-color: var(--red); color: var(--red); }
+
+        /* ===== SCREEN SYSTEM ===== */
+        .screen { display: none; animation: fadeIn .4s ease; }
+        .screen.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+
+        /* ===== CARD ===== */
+        .card {
+            background: var(--card);
+            border: 2px solid var(--orange);
+            border-radius: 20px;
+            box-shadow: 0 0 60px rgba(255,215,0,0.18);
+            padding: 36px 32px; text-align: center;
+        }
+
+        /* ===== TROPHY PULSE ===== */
+        .trophy-big { font-size: 64px; margin-bottom: 16px; animation: trophyPulse 2s ease-in-out infinite; }
+        @keyframes trophyPulse {
+            0%,100% { transform: scale(1);   filter: drop-shadow(0 0 0px gold); }
+            50%      { transform: scale(1.08); filter: drop-shadow(0 0 20px gold); }
+        }
+
+        /* ===== SCREEN: CLOSED ===== */
+        #screen-closed .card h2 { font-size: 22px; font-weight: 900; color: var(--gold); letter-spacing: 2px; margin-bottom: 8px; }
+        #screen-closed .card p.sub { color: var(--muted); font-size: 13px; margin-bottom: 24px; }
+
+        .cd-grid { display: flex; gap: 12px; justify-content: center; margin-bottom: 28px; }
+        .cd-unit { background: rgba(255,215,0,0.07); border: 1px solid rgba(255,215,0,0.3); border-radius: 12px; padding: 14px 20px; min-width: 72px; }
+        .cd-unit span { display: block; font-size: 32px; font-weight: 900; color: var(--gold2); letter-spacing: 2px; }
+        .cd-unit label { display: block; font-size: 10px; letter-spacing: 2px; color: var(--muted); margin-top: 4px; }
+
+        .prize-table { display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; }
+        .prize-row { display: flex; align-items: center; justify-content: center; gap: 10px; background: rgba(255,215,0,0.06); border: 1px solid rgba(255,215,0,0.15); border-radius: 10px; padding: 10px 18px; font-size: 14px; }
+        .prize-row .prize-val { color: var(--gold2); font-weight: 900; }
+        .rules-tag { font-size: 12px; color: var(--muted); letter-spacing: 1px; margin-top: 8px; }
+        .past-lb-title { font-size: 14px; letter-spacing: 2px; color: var(--muted); text-transform: uppercase; margin: 28px 0 12px; text-align: center; }
+
+        /* ===== SCREEN: PLAYED ===== */
+        #screen-played .card h2 { color: var(--cyan); font-size: 20px; letter-spacing: 2px; margin-bottom: 6px; }
+        #screen-played .card .sub { color: var(--muted); font-size: 13px; margin-bottom: 24px; }
+        .played-stats { display: flex; gap: 20px; justify-content: center; margin-bottom: 24px; }
+        .played-stat { background: rgba(255,215,0,0.07); border: 1px solid rgba(255,215,0,0.2); border-radius: 12px; padding: 16px 24px; min-width: 90px; }
+        .played-stat .val { font-size: 28px; font-weight: 900; color: var(--gold2); }
+        .played-stat .lbl { font-size: 11px; color: var(--muted); letter-spacing: 1.5px; margin-top: 4px; }
+        .next-sunday-note { font-size: 13px; color: var(--muted); margin-top: 16px; }
+
+        /* ===== SCREEN: LOBBY ===== */
+        #screen-lobby .card h2 { font-size: 26px; font-weight: 900; color: var(--gold); letter-spacing: 3px; margin-bottom: 6px; }
+        #screen-lobby .card .sub { color: var(--muted); font-size: 14px; margin-bottom: 20px; }
+
+        .prize-banner { background: linear-gradient(135deg, rgba(226,183,20,0.2), rgba(255,153,0,0.2)); border: 2px solid var(--orange); border-radius: 14px; padding: 16px 24px; display: inline-flex; flex-direction: column; align-items: center; margin-bottom: 24px; }
+        .prize-banner .amount { font-size: 40px; font-weight: 900; color: var(--gold2); line-height: 1; }
+        .prize-banner .label  { font-size: 11px; letter-spacing: 3px; color: var(--orange); margin-top: 4px; }
+
+        .rules-list { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 24px; text-align: left; }
+        .rule-item { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; padding: 10px 14px; font-size: 13px; color: var(--text); }
+
+        .name-section { margin-bottom: 20px; }
+        .name-greeting { font-size: 15px; color: var(--cyan); background: rgba(0,230,204,0.08); border: 1px solid rgba(0,230,204,0.25); border-radius: 10px; padding: 12px 16px; margin-bottom: 12px; }
+
+        /* ===== LOGIN GATE ===== */
+        .login-gate { background: rgba(0,230,204,0.05); border: 2px solid rgba(0,230,204,0.2); border-radius: 14px; padding: 20px; text-align: center; margin-bottom: 20px; }
+        .login-gate p { color: var(--muted); font-size: 13px; margin-bottom: 14px; line-height: 1.6; }
+        .login-gate-btn { padding: 12px 28px; background: linear-gradient(135deg, #e2b714, #ff9900); color: #0a0a23; border: none; border-radius: 9px; font-family: 'Roboto Mono', monospace; font-size: 14px; font-weight: 900; letter-spacing: 1px; cursor: pointer; transition: all .2s; margin: 4px; }
+        .login-gate-btn.secondary { background: rgba(255,255,255,0.07); border: 2px solid rgba(255,255,255,0.15); color: var(--text); }
+        .login-gate-btn:hover { box-shadow: 0 0 20px rgba(226,183,20,0.4); }
+
+        .start-btn { width: 100%; padding: 18px; font-size: 18px; font-weight: 900; font-family: 'Roboto Mono', monospace; letter-spacing: 3px; text-transform: uppercase; background: linear-gradient(135deg, #e2b714, #ff9900); color: #0a0a23; border: none; border-radius: 12px; cursor: pointer; transition: all .25s; box-shadow: 0 0 30px rgba(226,183,20,0.4); margin-bottom: 12px; }
+        .start-btn:hover:not(:disabled) { transform: translateY(-2px) scale(1.01); box-shadow: 0 0 50px rgba(226,183,20,0.7); }
+        .start-btn:active:not(:disabled) { transform: scale(0.98); }
+        .start-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+        .warn-text { font-size: 12px; color: var(--red); opacity: 0.8; letter-spacing: 1px; }
+        .sunday-ends { font-size: 12px; color: var(--muted); margin-top: 16px; letter-spacing: 1px; }
+        #ends-timer { color: var(--gold); font-weight: 700; }
+
+        /* ===== SCREEN: TEST ===== */
+        #screen-test .card { padding: 28px 24px; }
+        .test-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
+        .test-timer-wrap { text-align: center; }
+        #champ-timer { font-size: 64px; font-weight: 900; color: var(--gold2); line-height: 1; transition: color .3s; }
+        #champ-timer.warning { color: var(--red); animation: timerBeat .5s ease-in-out infinite alternate; }
+        @keyframes timerBeat { from { transform: scale(1); } to { transform: scale(1.08); } }
+        .timer-sub { font-size: 10px; letter-spacing: 2px; color: var(--muted); margin-top: 2px; }
+        .live-stats { text-align: right; }
+        .live-stat-val { font-size: 28px; font-weight: 900; color: var(--cyan); }
+        .live-stat-lbl { font-size: 10px; color: var(--muted); letter-spacing: 2px; }
+
+        #champ-words { font-size: 26px; line-height: 1.7; letter-spacing: 0.5px; color: var(--muted); user-select: none; background: rgba(0,0,0,0.25); border-radius: 12px; padding: 20px; min-height: 110px; word-break: break-all; margin-bottom: 16px; border: 1px solid rgba(255,255,255,0.06); }
+        #champ-words .ch { transition: color .06s; }
+        #champ-words .ch.correct { color: #6fcf97; }
+        #champ-words .ch.wrong   { color: var(--wrong); background: rgba(229,83,83,0.15); border-radius: 2px; }
+        #champ-words .ch.cursor  { border-bottom: 3px solid var(--cyan); color: #fff; }
+
+        #champ-input { width: 100%; padding: 14px 16px; font-size: 16px; font-family: 'Roboto Mono', monospace; background: rgba(255,255,255,0.04); border: 2px solid rgba(226,183,20,0.3); border-radius: 10px; color: #fff; outline: none; caret-color: var(--cyan); transition: border-color .2s; margin-bottom: 10px; }
+        #champ-input:focus { border-color: rgba(0,230,204,0.6); }
+        #champ-input:disabled { opacity: 0.4; cursor: not-allowed; }
+        .anticheat-note { font-size: 11px; color: var(--muted); letter-spacing: 1px; }
+
+        /* ===== SCREEN: RESULTS ===== */
+        #screen-results .card h2 { font-size: 22px; font-weight: 900; color: var(--gold); letter-spacing: 2px; margin-bottom: 20px; }
+        .result-stats-grid { display: flex; gap: 16px; justify-content: center; margin-bottom: 24px; }
+        .result-stat { background: rgba(255,215,0,0.07); border: 1px solid rgba(255,215,0,0.2); border-radius: 14px; padding: 18px 24px; flex: 1; }
+        .result-stat .val { font-size: 36px; font-weight: 900; color: var(--gold2); line-height: 1; }
+        .result-stat .lbl { font-size: 11px; color: var(--muted); letter-spacing: 2px; margin-top: 6px; }
+        #rank-badge { margin-bottom: 20px; font-size: 15px; font-weight: 700; padding: 12px 20px; border-radius: 10px; background: rgba(255,215,0,0.1); border: 1px solid rgba(255,215,0,0.3); }
+        .result-actions { display: flex; gap: 12px; margin-top: 24px; }
+        .btn-back { flex: 1; padding: 14px; font-family: 'Roboto Mono', monospace; font-size: 13px; font-weight: 700; letter-spacing: 2px; background: rgba(255,255,255,0.06); border: 2px solid rgba(255,255,255,0.15); border-radius: 10px; color: var(--text); cursor: pointer; transition: all .2s; }
+        .btn-back:hover { background: rgba(255,255,255,0.1); }
+        .btn-share { flex: 1; padding: 14px; font-family: 'Roboto Mono', monospace; font-size: 13px; font-weight: 700; letter-spacing: 2px; background: rgba(226,183,20,0.15); border: 2px solid rgba(226,183,20,0.4); border-radius: 10px; color: var(--gold); cursor: pointer; transition: all .2s; }
+        .btn-share:hover { background: rgba(226,183,20,0.25); box-shadow: 0 0 20px rgba(226,183,20,0.3); }
+
+        /* ===== CHAMPION CARD (single top player) ===== */
+        .lb-section { margin-top: 28px; }
+        .lb-title {
+            font-size: 11px; letter-spacing: 3px; color: var(--muted);
+            text-transform: uppercase; text-align: center; margin-bottom: 12px;
+        }
+        /* Champion card: shown in closed / played / results screens */
+        .champion-card {
+            display: flex; align-items: center; gap: 16px;
+            background: linear-gradient(135deg, rgba(255,215,0,0.1), rgba(255,153,0,0.05));
+            border: 2px solid var(--gold2); border-radius: 14px;
+            padding: 18px 22px;
+        }
+        .champion-card.is-you {
+            border-color: var(--cyan);
+            background: linear-gradient(135deg, rgba(0,230,204,0.1), rgba(0,230,204,0.03));
+        }
+        .champ-crown { font-size: 34px; flex-shrink: 0; }
+        .champ-info  { flex: 1; text-align: left; }
+        .champ-name  { font-size: 16px; font-weight: 900; color: var(--gold2); letter-spacing: 1.5px; }
+        .champion-card.is-you .champ-name { color: var(--cyan); }
+        .champ-meta  { font-size: 12px; color: var(--muted); margin-top: 4px; letter-spacing: 0.5px; }
+        .champ-right { text-align: right; flex-shrink: 0; }
+        .champ-wpm   { font-size: 28px; font-weight: 900; color: var(--gold2); line-height: 1; }
+        .champion-card.is-you .champ-wpm { color: var(--cyan); }
+        .champ-wpm-lbl { font-size: 9px; letter-spacing: 2px; color: var(--muted); }
+        .champ-score { font-size: 13px; font-weight: 700; color: var(--orange); margin-top: 4px; }
+        .champ-beat-note {
+            font-size: 11px; color: var(--muted); margin-top: 10px;
+            text-align: center; letter-spacing: 0.5px;
+        }
+        .lb-empty, .lb-loading, .lb-error {
+            text-align: center; color: var(--muted); font-size: 13px; padding: 24px;
+        }
+
+        /* ===== COUNTRY DROPDOWN ===== */
+        .country-select-wrap { position: relative; width: 100%; margin-bottom: 11px; }
+        .country-select-display {
+            width: 100%; padding: 13px 15px; font-size: 14px;
+            font-family: 'Roboto Mono', monospace;
+            background: rgba(255,255,255,0.05);
+            border: 2px solid rgba(226,183,20,0.25); border-radius: 9px;
+            color: #fff; cursor: pointer; display: flex;
+            justify-content: space-between; align-items: center;
+            transition: border-color .2s; user-select: none;
+        }
+        .country-select-display:hover { border-color: rgba(226,183,20,0.5); }
+        .country-select-display.open { border-color: var(--gold); }
+        .country-arrow { color: var(--gold); font-size: 10px; flex-shrink: 0; margin-left: 8px; }
+        .country-drop {
+            display: none; position: absolute; z-index: 9999;
+            top: calc(100% + 4px); left: 0; right: 0;
+            background: #0f0f2a; border: 2px solid rgba(226,183,20,0.4);
+            border-radius: 9px; overflow: hidden;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.7);
+        }
+        .country-drop.open { display: block; }
+        .country-search-wrap { padding: 8px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+        .country-search-input {
+            width: 100%; padding: 8px 10px; font-size: 13px;
+            font-family: 'Roboto Mono', monospace;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(226,183,20,0.2); border-radius: 6px;
+            color: #fff; outline: none;
+        }
+        .country-search-input::placeholder { color: var(--muted); }
+        .country-list { max-height: 200px; overflow-y: auto; }
+        .country-list::-webkit-scrollbar { width: 4px; }
+        .country-list::-webkit-scrollbar-track { background: transparent; }
+        .country-list::-webkit-scrollbar-thumb { background: rgba(226,183,20,0.3); border-radius: 2px; }
+        .country-option {
+            padding: 9px 15px; font-size: 13px; cursor: pointer;
+            font-family: 'Roboto Mono', monospace; color: var(--text);
+            transition: background .15s;
+        }
+        .country-option:hover { background: rgba(226,183,20,0.12); color: var(--gold); }
+
+        /* ===== AUTH MODAL ===== */
+        .auth-modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.92); display: flex; align-items: center; justify-content: center; z-index: 1100; }
+        .auth-modal-box { background: rgba(10,10,35,0.98); border: 2px solid var(--orange); border-radius: 20px; padding: 36px 32px; width: 100%; max-width: 420px; position: relative; box-shadow: 0 0 60px rgba(255,215,0,0.2); }
+        .auth-modal-close { position: absolute; top: 14px; right: 18px; background: none; border: none; color: var(--muted); font-size: 22px; cursor: pointer; line-height: 1; }
+        .auth-tabs { display: flex; margin-bottom: 24px; border-bottom: 2px solid rgba(255,255,255,0.1); }
+        .auth-tab-btn { flex: 1; background: none; border: none; padding: 12px; cursor: pointer; font-family: 'Roboto Mono', monospace; font-size: 14px; font-weight: 900; border-bottom: 3px solid transparent; margin-bottom: -2px; transition: color .2s; color: var(--muted); }
+        .auth-tab-btn.active { color: var(--gold); border-bottom-color: var(--gold); }
+        .auth-form-title { font-size: 18px; font-weight: 900; color: var(--gold); letter-spacing: 2px; margin-bottom: 18px; text-align: center; }
+        .auth-input { width: 100%; padding: 13px 15px; font-size: 14px; font-family: 'Roboto Mono', monospace; background: rgba(255,255,255,0.05); border: 2px solid rgba(226,183,20,0.25); border-radius: 9px; color: #fff; outline: none; margin-bottom: 11px; transition: border-color .2s; }
+        .auth-input:focus { border-color: var(--gold); }
+        .auth-err { color: var(--red); font-size: 12px; min-height: 16px; margin-bottom: 10px; }
+        .auth-submit-btn { width: 100%; padding: 14px; background: linear-gradient(135deg, #e2b714, #ff9900); color: #0a0a23; border: none; border-radius: 9px; font-family: 'Roboto Mono', monospace; font-size: 15px; font-weight: 900; letter-spacing: 1px; cursor: pointer; transition: all .2s; }
+        .auth-submit-btn:hover { box-shadow: 0 0 30px rgba(226,183,20,0.5); }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 560px) {
+            .card { padding: 24px 16px; }
+            .cd-grid { gap: 8px; }
+            .cd-unit { padding: 10px 12px; min-width: 58px; }
+            .cd-unit span { font-size: 24px; }
+            .rules-list { grid-template-columns: 1fr; }
+            #champ-words { font-size: 20px; }
+            .result-stats-grid { gap: 10px; }
+            .result-stat .val { font-size: 28px; }
+            .auth-modal-box { padding: 28px 18px; }
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+
+    <!-- ── TOP NAV ── -->
+    <nav id="topnav">
+        <a href="/" class="back-link">← ROCKET TYPING</a>
+        <img src="images/logo.png" alt="Rocket Typing" class="site-logo">
+        <div id="topnav-user"><!-- filled by JS --></div>
+    </nav>
+
+    <!-- ═══════════════════════════════
+         AUTH MODAL
+         BUG FIX: tab buttons now call window.switchTab() not switchTab()
+         because switchTab is module-scoped and not in global scope by default
+    ═══════════════════════════════ -->
+    <div id="auth-modal" class="auth-modal-overlay" style="display:none;">
+        <div class="auth-modal-box">
+            <button class="auth-modal-close" id="auth-modal-close">×</button>
+            <div class="auth-tabs">
+                <button class="auth-tab-btn active" id="tab-btn-login"
+                    onclick="window.switchTab('login')">LOGIN</button>
+                <button class="auth-tab-btn" id="tab-btn-signup"
+                    onclick="window.switchTab('signup')">SIGN UP</button>
+            </div>
+            <div id="auth-form-login">
+                <div class="auth-form-title">Welcome Back 🚀</div>
+                <input class="auth-input" id="t-login-email"    type="email"    placeholder="Email" autocomplete="email">
+                <input class="auth-input" id="t-login-password" type="password" placeholder="Password">
+                <div class="auth-err" id="t-login-err"></div>
+                <button class="auth-submit-btn" id="t-login-btn">LOGIN →</button>
+            </div>
+            <div id="auth-form-signup" style="display:none;">
+                <div class="auth-form-title">Create Account 🌟</div>
+                <input class="auth-input" id="t-signup-username" type="text"     maxlength="15" placeholder="Username (3–15 chars, letters/numbers/_)">
+                <div class="country-select-wrap" id="t-country-wrap">
+                    <div class="country-select-display" id="t-country-display" onclick="toggleCountryDrop('t')">
+                        <span id="t-country-text" style="color:var(--muted)">Your country</span>
+                        <span class="country-arrow">▼</span>
+                    </div>
+                    <div class="country-drop" id="t-country-drop">
+                        <div class="country-search-wrap"><input class="country-search-input" id="t-country-search" placeholder="Search country…" oninput="filterCountries('t')"></div>
+                        <div class="country-list" id="t-country-list"></div>
+                    </div>
+                </div>
+                <input type="hidden" id="t-signup-country">
+                <input class="auth-input" id="t-signup-email"    type="email"    placeholder="Email" autocomplete="email">
+                <input class="auth-input" id="t-signup-password" type="password" placeholder="Password (min 6 chars)">
+                <div class="auth-err" id="t-signup-err"></div>
+                <button class="auth-submit-btn" id="t-signup-btn">CREATE ACCOUNT →</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCREEN 1: NOT SUNDAY -->
+    <div id="screen-closed" class="screen">
+        <div class="card">
+            <div class="trophy-big">🏆</div>
+            <h2>SUNDAY CHAMPIONSHIP</h2>
+            <p class="sub">Returns every Sunday — 60 seconds, 1 attempt, <span class="prize-amount-dynamic">₹500</span> prize</p>
+            <p style="font-size:13px;color:var(--muted);margin-bottom:16px;letter-spacing:1px;">NEXT CHAMPIONSHIP OPENS IN</p>
+            <div class="cd-grid">
+                <div class="cd-unit"><span id="cd-days">00</span><label>DAYS</label></div>
+                <div class="cd-unit"><span id="cd-hours">00</span><label>HOURS</label></div>
+                <div class="cd-unit"><span id="cd-mins">00</span><label>MINS</label></div>
+                <div class="cd-unit"><span id="cd-secs">00</span><label>SECS</label></div>
+            </div>
+            <div class="prize-table">
+                <div class="prize-row">🥇 Rank 1 — <span class="prize-val" id="closed-prize-val">₹500 Cash Prize</span></div>
+            </div>
+            <p class="rules-tag">Every Sunday · Your local time · 60 sec · 1 attempt · Global leaderboard</p>
+        </div>
+        <p class="past-lb-title">🏆 Last Sunday's Champion</p>
+        <div class="card" style="padding:20px;">
+            <div id="closed-lb-body"><div class="lb-loading">Loading…</div></div>
+        </div>
+    </div>
+
+    <!-- SCREEN 2: ALREADY PLAYED -->
+    <div id="screen-played" class="screen">
+        <div class="card">
+            <div style="font-size:52px;margin-bottom:14px;">🎯</div>
+            <h2 style="color:var(--cyan);font-size:20px;letter-spacing:2px;margin-bottom:6px;">YOU'VE ALREADY COMPETED!</h2>
+            <p class="sub" style="color:var(--muted);font-size:13px;margin-bottom:22px;">Only 1 attempt per Sunday. Come back next Sunday for another shot at <span class="prize-amount-dynamic">₹500</span>!</p>
+            <div class="played-stats" id="played-stats-box"></div>
+            <p class="next-sunday-note" id="next-sunday-msg"></p>
+        </div>
+        <p class="past-lb-title">🏆 This Sunday's Champion</p>
+        <div class="card" style="padding:20px;">
+            <div id="played-lb-body"><div class="lb-loading">Loading…</div></div>
+        </div>
+    </div>
+
+    <!-- SCREEN 3: LOBBY -->
+    <div id="screen-lobby" class="screen">
+        <div class="card">
+            <div class="trophy-big">🏆</div>
+            <h2>SUNDAY CHAMPIONSHIP</h2>
+            <p class="sub">60 seconds. One chance. One champion.</p>
+            <div class="prize-banner">
+                <div class="amount" id="prize-banner-amount">₹500</div>
+                <div class="label">PRIZE FOR RANK #1</div>
+            </div>
+            <div class="rules-list">
+                <div class="rule-item">⏱️ 60-second typing test</div>
+                <div class="rule-item">🎯 Only 1 attempt this Sunday</div>
+                <div class="rule-item">📊 Score = WPM × Accuracy</div>
+                <div class="rule-item">🌍 Global leaderboard</div>
+                <div class="rule-item">🚫 No copy-paste allowed</div>
+                <div class="rule-item">🏆 Top score wins <span class="prize-amount-dynamic">₹500</span> prize</div>
+            </div>
+            <!-- JS fills this with either login-gate or logged-in greeting -->
+            <div id="lobby-auth-section" class="name-section"></div>
+            <button class="start-btn" id="start-btn">🚀 START CHAMPIONSHIP</button>
+            <p class="warn-text">⚠️ Once started, you cannot restart. Good luck!</p>
+            <p class="sunday-ends">Championship closes in <span id="ends-timer">—</span></p>
+        </div>
+    </div>
+
+    <!-- SCREEN 4: TEST -->
+    <div id="screen-test" class="screen">
+        <div class="card">
+            <div class="test-header">
+                <div class="test-timer-wrap">
+                    <div id="champ-timer">60</div>
+                    <div class="timer-sub">SECONDS LEFT</div>
+                </div>
+                <div style="text-align:center;color:var(--gold);font-size:13px;letter-spacing:2px;font-weight:700;">🏆 SUNDAY<br>CHAMPIONSHIP</div>
+                <div class="live-stats">
+                    <div class="live-stat-val" id="live-wpm">—</div>
+                    <div class="live-stat-lbl">LIVE WPM</div>
+                </div>
+            </div>
+            <div id="champ-words"></div>
+            <input id="champ-input" type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Click here and start typing…">
+            <p class="anticheat-note">🚫 Paste disabled &nbsp;·&nbsp; Type carefully — 1 attempt only</p>
+        </div>
+    </div>
+
+    <!-- SCREEN 5: RESULTS -->
+    <div id="screen-results" class="screen">
+        <div class="card">
+            <h2 id="results-headline">Championship Complete!</h2>
+            <div class="result-stats-grid">
+                <div class="result-stat"><div class="val" id="r-wpm">0</div><div class="lbl">WPM</div></div>
+                <div class="result-stat"><div class="val" id="r-acc">0%</div><div class="lbl">ACCURACY</div></div>
+                <div class="result-stat"><div class="val" id="r-score">0</div><div class="lbl">FINAL SCORE</div></div>
+            </div>
+            <div id="rank-badge"></div>
+            <div class="lb-section">
+                <p class="lb-title">🏆 Current Sunday Champion</p>
+                <div id="results-lb-body"><div class="lb-loading">Loading…</div></div>
+            </div>
+            <div class="result-actions">
+                <button class="btn-back" onclick="window.location.href='/'">← BACK TO PRACTICE</button>
+                <button class="btn-share" id="share-btn"><i class="fa-brands fa-x-twitter"></i> SHARE RESULT</button>
+            </div>
+        </div>
+    </div>
+
+</div><!-- /#app -->
+
+<script>
+/* ── COUNTRY LIST ── */
+const ALL_COUNTRIES = ["Afghanistan","Albania","Algeria","Andorra","Angola","Antigua and Barbuda","Argentina","Armenia","Australia","Austria","Azerbaijan","Bahamas","Bahrain","Bangladesh","Barbados","Belarus","Belgium","Belize","Benin","Bhutan","Bolivia","Bosnia and Herzegovina","Botswana","Brazil","Brunei","Bulgaria","Burkina Faso","Burundi","Cabo Verde","Cambodia","Cameroon","Canada","Central African Republic","Chad","Chile","China","Colombia","Comoros","Congo","Costa Rica","Croatia","Cuba","Cyprus","Czech Republic","Denmark","Djibouti","Dominica","Dominican Republic","Ecuador","Egypt","El Salvador","Equatorial Guinea","Eritrea","Estonia","Eswatini","Ethiopia","Fiji","Finland","France","Gabon","Gambia","Georgia","Germany","Ghana","Greece","Grenada","Guatemala","Guinea","Guinea-Bissau","Guyana","Haiti","Honduras","Hungary","Iceland","India","Indonesia","Iran","Iraq","Ireland","Israel","Italy","Jamaica","Japan","Jordan","Kazakhstan","Kenya","Kiribati","Kuwait","Kyrgyzstan","Laos","Latvia","Lebanon","Lesotho","Liberia","Libya","Liechtenstein","Lithuania","Luxembourg","Madagascar","Malawi","Malaysia","Maldives","Mali","Malta","Marshall Islands","Mauritania","Mauritius","Mexico","Micronesia","Moldova","Monaco","Mongolia","Montenegro","Morocco","Mozambique","Myanmar","Namibia","Nauru","Nepal","Netherlands","New Zealand","Nicaragua","Niger","Nigeria","North Korea","North Macedonia","Norway","Oman","Pakistan","Palau","Palestine","Panama","Papua New Guinea","Paraguay","Peru","Philippines","Poland","Portugal","Qatar","Romania","Russia","Rwanda","Saint Kitts and Nevis","Saint Lucia","Saint Vincent and the Grenadines","Samoa","San Marino","Sao Tome and Principe","Saudi Arabia","Senegal","Serbia","Seychelles","Sierra Leone","Singapore","Slovakia","Slovenia","Solomon Islands","Somalia","South Africa","South Korea","South Sudan","Spain","Sri Lanka","Sudan","Suriname","Sweden","Switzerland","Syria","Taiwan","Tajikistan","Tanzania","Thailand","Timor-Leste","Togo","Tonga","Trinidad and Tobago","Tunisia","Turkey","Turkmenistan","Tuvalu","Uganda","Ukraine","United Arab Emirates","United Kingdom","United States","Uruguay","Uzbekistan","Vanuatu","Vatican City","Venezuela","Vietnam","Yemen","Zambia","Zimbabwe"];
+
+const CURRENCY_MAP = {"India":{"code":"INR","symbol":"₹"},"United States":{"code":"USD","symbol":"$"},"United Kingdom":{"code":"GBP","symbol":"£"},"Germany":{"code":"EUR","symbol":"€"},"France":{"code":"EUR","symbol":"€"},"Italy":{"code":"EUR","symbol":"€"},"Spain":{"code":"EUR","symbol":"€"},"Netherlands":{"code":"EUR","symbol":"€"},"Belgium":{"code":"EUR","symbol":"€"},"Portugal":{"code":"EUR","symbol":"€"},"Austria":{"code":"EUR","symbol":"€"},"Finland":{"code":"EUR","symbol":"€"},"Greece":{"code":"EUR","symbol":"€"},"Ireland":{"code":"EUR","symbol":"€"},"Luxembourg":{"code":"EUR","symbol":"€"},"Malta":{"code":"EUR","symbol":"€"},"Cyprus":{"code":"EUR","symbol":"€"},"Slovakia":{"code":"EUR","symbol":"€"},"Slovenia":{"code":"EUR","symbol":"€"},"Estonia":{"code":"EUR","symbol":"€"},"Latvia":{"code":"EUR","symbol":"€"},"Lithuania":{"code":"EUR","symbol":"€"},"Croatia":{"code":"EUR","symbol":"€"},"Australia":{"code":"AUD","symbol":"A$"},"Canada":{"code":"CAD","symbol":"CA$"},"Japan":{"code":"JPY","symbol":"¥"},"China":{"code":"CNY","symbol":"¥"},"South Korea":{"code":"KRW","symbol":"₩"},"Brazil":{"code":"BRL","symbol":"R$"},"Mexico":{"code":"MXN","symbol":"MX$"},"Russia":{"code":"RUB","symbol":"₽"},"Turkey":{"code":"TRY","symbol":"₺"},"Saudi Arabia":{"code":"SAR","symbol":"SAR"},"United Arab Emirates":{"code":"AED","symbol":"AED"},"Singapore":{"code":"SGD","symbol":"S$"},"Malaysia":{"code":"MYR","symbol":"RM"},"Indonesia":{"code":"IDR","symbol":"Rp"},"Thailand":{"code":"THB","symbol":"฿"},"Philippines":{"code":"PHP","symbol":"₱"},"Vietnam":{"code":"VND","symbol":"₫"},"Pakistan":{"code":"PKR","symbol":"₨"},"Bangladesh":{"code":"BDT","symbol":"৳"},"Sri Lanka":{"code":"LKR","symbol":"₨"},"Nepal":{"code":"NPR","symbol":"₨"},"Nigeria":{"code":"NGN","symbol":"₦"},"South Africa":{"code":"ZAR","symbol":"R"},"Kenya":{"code":"KES","symbol":"KSh"},"Egypt":{"code":"EGP","symbol":"£"},"Argentina":{"code":"ARS","symbol":"AR$"},"Chile":{"code":"CLP","symbol":"CL$"},"Colombia":{"code":"COP","symbol":"CO$"},"New Zealand":{"code":"NZD","symbol":"NZ$"},"Switzerland":{"code":"CHF","symbol":"Fr"},"Sweden":{"code":"SEK","symbol":"kr"},"Norway":{"code":"NOK","symbol":"kr"},"Denmark":{"code":"DKK","symbol":"kr"},"Poland":{"code":"PLN","symbol":"zł"},"Israel":{"code":"ILS","symbol":"₪"},"Qatar":{"code":"QAR","symbol":"QAR"},"Kuwait":{"code":"KWD","symbol":"KD"},"Bahrain":{"code":"BHD","symbol":"BD"}};
+
+const PRIZE_MAP = {"INR":500,"USD":6,"GBP":5,"EUR":6,"AUD":9,"CAD":8,"JPY":900,"CNY":44,"KRW":8000,"BRL":30,"MXN":100,"RUB":550,"TRY":200,"SAR":22,"AED":22,"SGD":8,"MYR":28,"IDR":95000,"THB":215,"PHP":340,"VND":150000,"PKR":1670,"BDT":660,"LKR":1800,"NPR":800,"NGN":9500,"ZAR":110,"KES":770,"EGP":300,"ARS":6000,"CLP":5500,"COP":24000,"NZD":10,"CHF":5,"SEK":63,"NOK":64,"DKK":41,"PLN":24,"ILS":22,"QAR":22,"KWD":2,"BHD":2};
+
+function getCurrencyForCountry(country) {
+    return CURRENCY_MAP[country] || {code:'USD', symbol:'$'};
+}
+function getPrizeString(country) {
+    const cur = getCurrencyForCountry(country);
+    const amt = PRIZE_MAP[cur.code] || 6;
+    return cur.symbol + amt.toLocaleString();
+}
+window._userCurrency = {code:'INR', symbol:'₹'}; // default, updated on auth
+
+/* ── COUNTRY DROPDOWN ── */
+function _buildCountryList(prefix, items) {
+    const list = document.getElementById(prefix+'-country-list');
+    if (!list) return;
+    list.innerHTML = items.map(c =>
+        `<div class="country-option" onclick="selectCountry('${prefix}','${c.replace(/'/g,"&#39;")}')">${c}</div>`
+    ).join('');
+}
+function initCountryDrop(prefix) {
+    _buildCountryList(prefix, ALL_COUNTRIES);
+}
+function toggleCountryDrop(prefix) {
+    const display = document.getElementById(prefix+'-country-display');
+    const drop    = document.getElementById(prefix+'-country-drop');
+    const search  = document.getElementById(prefix+'-country-search');
+    if (!display || !drop) return;
+    const isOpen = drop.classList.contains('open');
+    // Close all open dropdowns first
+    document.querySelectorAll('.country-drop.open').forEach(d => {
+        d.classList.remove('open');
+        d.previousElementSibling && d.previousElementSibling.classList.remove('open');
+    });
+    if (!isOpen) {
+        drop.classList.add('open');
+        display.classList.add('open');
+        if (search) { search.value=''; _buildCountryList(prefix, ALL_COUNTRIES); setTimeout(()=>search.focus(),50); }
+    }
+}
+function filterCountries(prefix) {
+    const q = (document.getElementById(prefix+'-country-search')?.value||'').toLowerCase();
+    _buildCountryList(prefix, ALL_COUNTRIES.filter(c => c.toLowerCase().includes(q)));
+}
+function selectCountry(prefix, country) {
+    const hidden  = document.getElementById(prefix+'-signup-country');
+    const text    = document.getElementById(prefix+'-country-text');
+    const display = document.getElementById(prefix+'-country-display');
+    const drop    = document.getElementById(prefix+'-country-drop');
+    if (hidden)  hidden.value = country;
+    if (text)    { text.textContent = country; text.style.color = '#fff'; }
+    if (display) display.classList.remove('open');
+    if (drop)    drop.classList.remove('open');
+}
+// Close on outside click
+document.addEventListener('click', e => {
+    if (!e.target.closest('.country-select-wrap')) {
+        document.querySelectorAll('.country-drop.open').forEach(d => {
+            d.classList.remove('open');
+            const disp = document.getElementById(d.id.replace('-drop','-display'));
+            if (disp) disp.classList.remove('open');
+        });
+    }
+});
+window.toggleCountryDrop = toggleCountryDrop;
+window.filterCountries   = filterCountries;
+window.selectCountry     = selectCountry;
+</script>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {
+    getFirestore, collection, query,
+    getDocs, doc, getDoc, setDoc, where,
+    runTransaction, onSnapshot
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import {
+    getAuth, onAuthStateChanged,
+    signInWithEmailAndPassword,
+    createUserWithEmailAndPassword,
+    signOut
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+const app  = initializeApp({
+    apiKey:            "AIzaSyDFlSFyLG8RtOshIRI3XJ-d2Ws4R6bCqjE",
+    authDomain:        "typing-usernames.firebaseapp.com",
+    projectId:         "typing-usernames",
+    storageBucket:     "typing-usernames.firebasestorage.app",
+    messagingSenderId: "978036744790",
+    appId:             "1:978036744790:web:1c66d79a27f19a7493d1f7"
+});
+const db   = getFirestore(app);
+const auth = getAuth(app);
+
+/* ─── TEXT POOL ─── */
+const TEXT_POOL = [
+    "The quick brown fox jumps over the lazy dog near the old oak tree. A gentle breeze swept through the golden fields as the sun set slowly behind the distant mountains on the horizon.",
+    "Typing speed is a valuable skill in today's world. With consistent daily practice, anyone can improve their words per minute and dramatically boost their productivity at work and at home.",
+    "Technology continues to advance at a remarkable pace. Every year, new devices and software reshape the way people work, communicate, and solve complex problems all around the globe.",
+    "A skilled typist can transcribe spoken words faster than most people write by hand. Touch typing, where you type without ever looking at the keyboard, is the gold standard for speed.",
+    "The ancient library held thousands of scrolls, each containing knowledge gathered over many centuries. Scholars traveled great distances just to read the rare texts stored within its stone walls.",
+    "Regular exercise has been shown to improve focus, boost mood, and increase overall productivity. Even a short daily walk can make a significant difference in your mental and physical health.",
+    "Computer programming requires both creativity and logical thinking. A good programmer breaks complex problems into smaller steps and writes clear, efficient code that other developers can easily understand.",
+    "The ocean covers more than seventy percent of the surface of our planet. Despite centuries of exploration, much of the deep sea remains completely unmapped and filled with unknown creatures.",
+    "Communication is the foundation of every great civilization. From cave paintings to digital messages, humans have always found brilliant ways to share stories, ideas, and emotions across time.",
+    "Stars are born from massive clouds of gas and dust that slowly collapse under gravity. Over millions of years, the pressure builds until nuclear fusion ignites deep within the glowing core.",
+    "Every champion was once a beginner who refused to give up. Small improvements each day add up to extraordinary results over time. Consistency and focus are the real secrets to mastery.",
+    "The art of typing well is not about rushing but about flowing. When your fingers know the keyboard by heart, the words appear on screen as naturally as speaking out loud to a friend.",
+];
+
+/* ─── DATE UTILS ─── */
+function isSunday()            { return new Date().getDay() === 0; }
+
+// Returns the most recent Sunday's date string YYYY-MM-DD
+// On Sunday: returns today
+// Mon-Sat: returns the Sunday that just passed
+function getLastSundayKey() {
+    const d = new Date();
+    const day = d.getDay(); // 0=Sun
+    d.setDate(d.getDate() - day); // go back to Sunday
+    return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+// Same as getLastSundayKey — kept for compatibility
+function getLocalSundayKey() { return getLastSundayKey(); }
+
+function getPreviousSundayKey() {
+    const d = new Date();
+    d.setDate(d.getDate() - d.getDay() - 7);
+    return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+function msUntilNextSunday() {
+    const now = new Date(), n = new Date(now);
+    n.setDate(now.getDate() + ((7 - now.getDay()) % 7 || 7));
+    n.setHours(0,0,0,0); return n - now;
+}
+function msUntilEndOfToday() {
+    const e = new Date(); e.setHours(23,59,59,999); return e - new Date();
+}
+function formatCountdown(ms) {
+    const t = Math.max(0, Math.floor(ms/1000));
+    return { d: Math.floor(t/86400), h: Math.floor((t%86400)/3600), m: Math.floor((t%3600)/60), s: t%60 };
+}
+
+/* ─── ATTEMPT STORAGE ─── */
+const ATTEMPT_KEY_PREFIX = 'rt_sunday_champ_';
+function getAttemptStorageKey()                      { return ATTEMPT_KEY_PREFIX + getLocalSundayKey(); }
+function hasPlayedThisSunday()                       { return isSunday() && !!localStorage.getItem(getAttemptStorageKey()); }
+function saveAttemptLocally(name,wpm,accuracy,score) { localStorage.setItem(getAttemptStorageKey(), JSON.stringify({name,wpm,accuracy,score})); }
+function getMyAttempt()                              { const r = localStorage.getItem(getAttemptStorageKey()); return r ? JSON.parse(r) : null; }
+
+/* ─── SCREEN MANAGEMENT ─── */
+function showScreen(id) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+}
+
+/* ─── HTML ESCAPE ─── */
+function escHtml(s) {
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+
+/* ─── LEADERBOARD ─── */
+/* ─── TOP PLAYER LOADER ─────────────────────────────────────────────
+   For LIVE screens (played, results): uses onSnapshot for real-time updates.
+   For PAST screen (closed/not-Sunday): uses getDoc (one-time read, no listener needed).
+   Returns a Promise that resolves with the rank (1 if champion, null otherwise).
+   Returns an unsubscribe function via the `unsubRef` object for cleanup.
+──────────────────────────────────────────────────────────────────── */
+
+// Track active listeners so we can unsubscribe when screens change
+const _lbUnsubs = {};
+
+function _renderChampionCard(container, d, highlightName, isPast) {
+    const isYou = !!(highlightName && d.name === highlightName);
+
+    const ago = (() => {
+        if (!d.timestamp) return '';
+        const diff = Math.floor((Date.now() - d.timestamp) / 1000);
+        if (diff < 60)   return `${diff}s ago`;
+        if (diff < 3600) return `${Math.floor(diff/60)}m ago`;
+        return `${Math.floor(diff/3600)}h ago`;
+    })();
+
+    container.innerHTML = `
+        <div class="champion-card${isYou ? ' is-you' : ''}">
+            <div class="champ-crown">${isYou ? '👑' : '🥇'}</div>
+            <div class="champ-info">
+                <div class="champ-name">${escHtml(d.name)}${isYou ? ' (you)' : ''}</div>
+                <div class="champ-meta">${d.accuracy}% accuracy${ago ? ' · ' + ago : ''}</div>
+            </div>
+            <div class="champ-right">
+                <div class="champ-wpm">${d.wpm}</div>
+                <div class="champ-wpm-lbl">WPM</div>
+                <div class="champ-score">${d.score} pts</div>
+            </div>
+        </div>
+        <div class="champ-beat-note">${
+            isPast
+                ? '🏆 Last Sunday\'s Champion'
+                : isYou
+                    ? `🎉 You are this Sunday's Champion!`
+                    : `⬆️ Beat this score to claim ${getPrizeString(window._currentUser?.country||'')}`
+        }</div>`;
+
+    if (isYou) confetti({ particleCount: 250, spread: 120, origin: { y: 0.5 } });
+    return isYou ? 1 : null;
+}
+
+/* One-time read — used for the "closed" screen (past Sunday, never changes) */
+async function loadLeaderboardOnce(bodyId, sundayKey, highlightName = null, isPast = false) {
+    // Cancel any existing live listener on this slot
+    if (_lbUnsubs[bodyId]) { _lbUnsubs[bodyId](); delete _lbUnsubs[bodyId]; }
+
+    const container = document.getElementById(bodyId);
+    if (!container) return null;
+    container.innerHTML = '<div class="lb-loading">Loading…</div>';
+
+    try {
+        // Single read on the top_ doc — no composite index needed, free tier friendly
+        const snap = await getDoc(getTopDocRef(sundayKey));
+        if (snap.exists()) {
+            return _renderChampionCard(container, snap.data(), highlightName, isPast);
+        }
+        container.innerHTML = '<div class="lb-empty">No champion recorded last Sunday.</div>';
+        return null;
+    } catch (err) {
+        console.error('Champion load error:', err);
+        container.innerHTML = `<div class="lb-error">Could not load champion.<br><small>${err.message}</small></div>`;
+        return null;
+    }
+}
+
+/* Real-time listener — used for live Sunday screens (played, results) */
+function loadLeaderboard(bodyId, sundayKey, highlightName = null, isPast = false) {
+    // Cancel any existing listener on this slot first
+    if (_lbUnsubs[bodyId]) { _lbUnsubs[bodyId](); delete _lbUnsubs[bodyId]; }
+
+    const container = document.getElementById(bodyId);
+    if (!container) return Promise.resolve(null);
+    container.innerHTML = '<div class="lb-loading">Loading…</div>';
+
+    // Return a Promise that resolves on the FIRST snapshot (so callers can await rank)
+    return new Promise((resolve) => {
+        let resolved = false;
+
+        const unsub = onSnapshot(
+            getTopDocRef(sundayKey),
+            (snap) => {
+                if (!snap.exists()) {
+                    container.innerHTML = '<div class="lb-empty">No champion yet — be the first! 🚀</div>';
+                    if (!resolved) { resolved = true; resolve(null); }
+                    return;
+                }
+                const rank = _renderChampionCard(container, snap.data(), highlightName, isPast);
+                if (!resolved) { resolved = true; resolve(rank); }
+                // Subsequent updates automatically re-render the card live ↑
+            },
+            (err) => {
+                console.error('Champion snapshot error:', err);
+                container.innerHTML = `<div class="lb-error">Could not load champion.<br><small>${err.message}</small></div>`;
+                if (!resolved) { resolved = true; resolve(null); }
+            }
+        );
+
+        _lbUnsubs[bodyId] = unsub;
+    });
+}
+
+/* ─── FIREBASE SAVE ─── */
+/* ─── TOP CHAMPION HELPERS ─── */
+function getTopDocRef(sundayKey) {
+    return doc(db, 'sunday_championship', `top_${sundayKey}`);
+}
+
+async function updateChampionIfBetter(name, wpm, accuracy, score, sundayKey) {
+    const topRef = getTopDocRef(sundayKey);
+    try {
+        await runTransaction(db, async (transaction) => {
+            const topSnap = await transaction.get(topRef);
+            const current = topSnap.exists() ? topSnap.data() : null;
+
+            // Only replace if the new score is STRICTLY higher (beat the top player)
+            if (!current || score > current.score) {
+                transaction.set(topRef, {
+                    name,
+                    wpm,
+                    accuracy,
+                    score,
+                    sundayDate: sundayKey,
+                    timestamp: Date.now()
+                });
+            }
+            // Equal score = keep the current champion (first one wins)
+        });
+    } catch (err) {
+        console.error('Champion update transaction failed:', err);
+    }
+}
+/* ─── FIREBASE SAVE ─── */
+async function saveToFirebase(name, wpm, accuracy, score) {
+    const uid = auth.currentUser?.uid;
+    if (!uid) { console.warn('saveToFirebase: no auth user'); return; }
+
+    const sundayKey = getLocalSundayKey();
+    const ref = doc(db, 'sunday_championship', `${uid}_${sundayKey}`);
+
+    try {
+        if (!(await getDoc(ref)).exists()) {
+            await setDoc(ref, { name, wpm, accuracy, score, sundayDate: sundayKey, timestamp: Date.now() });
+        }
+    } catch (err) { 
+        console.error('Firebase save error:', err); 
+    }
+
+    // Compare with the single top player and replace only if beaten
+    await updateChampionIfBetter(name, wpm, accuracy, score, sundayKey);
+}
+
+/* ─── CURRENCY-AWARE PRIZE DISPLAY ─── */
+function updatePrizeStrings() {
+    const country = window._currentUser?.country || '';
+    const prizeStr = getPrizeString(country);
+    // Update all prize displays
+    document.querySelectorAll('.prize-amount-dynamic').forEach(el => el.textContent = prizeStr);
+    // Update prize banner in lobby
+    const bannerAmt = document.getElementById('prize-banner-amount');
+    if (bannerAmt) bannerAmt.textContent = prizeStr;
+    // Update closed screen prize row
+    const closedPrize = document.getElementById('closed-prize-val');
+    if (closedPrize) closedPrize.textContent = prizeStr + ' Cash Prize';
+}
+
+/* ─── SCREENS ─── */
+function initClosedScreen() {
+    showScreen('screen-closed');
+    updatePrizeStrings();
+    const tick = () => {
+        const {d,h,m,s} = formatCountdown(msUntilNextSunday());
+        document.getElementById('cd-days').textContent  = String(d).padStart(2,'0');
+        document.getElementById('cd-hours').textContent = String(h).padStart(2,'0');
+        document.getElementById('cd-mins').textContent  = String(m).padStart(2,'0');
+        document.getElementById('cd-secs').textContent  = String(s).padStart(2,'0');
+    };
+    tick(); setInterval(tick, 1000);
+
+    // getLocalSundayKey() on Mon–Sat returns the Sunday that just passed.
+    // On Sunday itself this function is never called (isSunday() routes elsewhere).
+    const lastSunKey = getLocalSundayKey();
+    loadLeaderboardOnce('closed-lb-body', lastSunKey, null, true);
+}
+
+function initPlayedScreen() {
+    showScreen('screen-played');
+    updatePrizeStrings();
+    const attempt = getMyAttempt();
+    if (attempt) {
+        document.getElementById('played-stats-box').innerHTML = `
+            <div class="played-stat"><div class="val">${attempt.wpm}</div><div class="lbl">WPM</div></div>
+            <div class="played-stat"><div class="val">${attempt.accuracy}%</div><div class="lbl">ACCURACY</div></div>
+            <div class="played-stat"><div class="val">${attempt.score}</div><div class="lbl">SCORE</div></div>`;
+    }
+    const {d,h,m} = formatCountdown(msUntilNextSunday());
+    document.getElementById('next-sunday-msg').textContent = `Next championship in ${d}d ${h}h ${m}m`;
+
+    const sundayKey = getLocalSundayKey();
+    if (isSunday()) {
+        // Live Sunday: use real-time listener so champion updates instantly
+        loadLeaderboard('played-lb-body', sundayKey, attempt?.name || null);
+    } else {
+        // Mon–Sat: last Sunday's champion is final — one read, no listener
+        loadLeaderboardOnce('played-lb-body', sundayKey, attempt?.name || null, true);
+    }
+}
+
+function initLobbyScreen() {
+    showScreen('screen-lobby');
+    updatePrizeStrings();
+    const section  = document.getElementById('lobby-auth-section');
+    const startBtn = document.getElementById('start-btn');
+
+    if (window._currentUser) {
+        section.innerHTML = `<div class="name-greeting">👤 Competing as <strong>${escHtml(window._currentUser.name)}</strong> 🎯</div>`;
+        startBtn.disabled = false;
+    } else {
+        // BUG FIX: use window.openAuthModal() — module functions are not global
+        section.innerHTML = `
+            <div class="login-gate">
+                <p>🔒 You must be logged in to compete in the Sunday Championship.<br>Login takes 10 seconds — your score is tied to your account securely.</p>
+                <button class="login-gate-btn" onclick="window.openAuthModal('login')">🚀 LOGIN</button>
+                <button class="login-gate-btn secondary" onclick="window.openAuthModal('signup')">✨ CREATE ACCOUNT</button>
+            </div>`;
+        startBtn.disabled = true;
+    }
+
+    const tickEnd = () => {
+        const {h,m,s} = formatCountdown(msUntilEndOfToday());
+        document.getElementById('ends-timer').textContent = `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+    };
+    tickEnd(); setInterval(tickEnd, 1000);
+    startBtn.addEventListener('click', onStartClicked);
+}
+
+function onStartClicked() {
+    if (!window._currentUser) { window.openAuthModal('login'); return; }
+    window._champPlayerName = window._currentUser.name;
+    initTestScreen();
+}
+
+/* ─── TEST SCREEN ─── */
+let _testActive=false, _startTime=null, _timerInterval=null, _timeLeft=60, _paragraph='', _endedOnce=false;
+
+function initTestScreen() {
+    showScreen('screen-test');
+    _testActive=false; _startTime=null; _timeLeft=60; _endedOnce=false;
+    _paragraph = TEXT_POOL[Math.floor(Math.random() * TEXT_POOL.length)];
+
+    const wordsDiv = document.getElementById('champ-words');
+    wordsDiv.innerHTML = _paragraph.split('').map((ch,i) => `<span class="ch" id="ch-${i}">${ch===' '?'&nbsp;':escHtml(ch)}</span>`).join('');
+    const first = document.getElementById('ch-0'); if (first) first.classList.add('cursor');
+
+    document.getElementById('champ-timer').textContent = '60';
+    document.getElementById('champ-timer').classList.remove('warning');
+    document.getElementById('live-wpm').textContent = '—';
+
+    const input = document.getElementById('champ-input');
+    input.value=''; input.disabled=false;
+    input.removeEventListener('input',   _inputHandler);
+    input.removeEventListener('keydown', _keydownHandler);
+    input.addEventListener('input',   _inputHandler);
+    input.addEventListener('keydown', _keydownHandler);
+    input.addEventListener('paste',   e => e.preventDefault());
+    input.addEventListener('copy',    e => e.preventDefault());
+    input.addEventListener('cut',     e => e.preventDefault());
+    document.addEventListener('contextmenu', e => e.preventDefault());
+    wordsDiv.addEventListener('click', () => input.focus());
+    input.focus();
+}
+
+function _keydownHandler(e) {
+    if (_testActive) return;
+    if (e.key.length===1 && !e.ctrlKey && !e.metaKey && !e.altKey) _startTimer();
+}
+function _inputHandler() {
+    if (!_testActive || _endedOnce) return;
+    const input=document.getElementById('champ-input'), typed=input.value, target=_paragraph;
+    if (typed.length > target.length) { input.value=typed.slice(0,target.length); return; }
+    _updateCharDisplay(typed,target); _updateLiveWpm(typed);
+    if (typed.length >= target.length) { clearInterval(_timerInterval); _endTest(); }
+}
+function _startTimer() {
+    _testActive=true; _startTime=Date.now();
+    _timerInterval = setInterval(() => {
+        _timeLeft--;
+        const el=document.getElementById('champ-timer'); el.textContent=_timeLeft;
+        if (_timeLeft<=10) el.classList.add('warning');
+        if (_timeLeft<=0)  { clearInterval(_timerInterval); _endTest(); }
+    }, 1000);
+}
+function _updateCharDisplay(typed, target) {
+    target.split('').forEach((ch,i) => {
+        const span=document.getElementById(`ch-${i}`); if(!span) return;
+        span.className='ch';
+        if (i<typed.length)        span.classList.add(typed[i]===ch?'correct':'wrong');
+        else if (i===typed.length) span.classList.add('cursor');
+    });
+}
+function _updateLiveWpm(typed) {
+    const elapsed=(Date.now()-_startTime)/60000; if(elapsed<0.05) return;
+    const correct=[...typed].filter((ch,i)=>ch===_paragraph[i]).length;
+    document.getElementById('live-wpm').textContent=Math.round((correct/5)/elapsed);
+}
+async function _endTest() {
+    if (_endedOnce) return; _endedOnce=true; _testActive=false;
+    const input=document.getElementById('champ-input'); input.disabled=true;
+    const typed=input.value, target=_paragraph;
+    const elapsedMin=Math.max((Date.now()-(_startTime||Date.now()))/60000, 1/60);
+    const correct=[...typed].filter((ch,i)=>ch===target[i]).length;
+    const wpm=Math.max(0,Math.round((correct/5)/elapsedMin));
+    const accuracy=typed.length>0?Math.round((correct/typed.length)*100):0;
+    const score=Math.round(wpm*(accuracy/100));
+    const name=window._champPlayerName;
+    saveAttemptLocally(name,wpm,accuracy,score);
+    await saveToFirebase(name,wpm,accuracy,score);
+    _showResults(name,wpm,accuracy,score);
+}
+async function _showResults(name,wpm,accuracy,score) {
+    showScreen('screen-results');
+    _animateNum('r-wpm',wpm);
+    document.getElementById('r-acc').textContent=accuracy+'%';
+    document.getElementById('r-score').textContent=score;
+    const hl=document.getElementById('results-headline');
+    if(wpm>=100) hl.textContent='🚀 Incredible Speed!';
+    else if(wpm>=70) hl.textContent='⚡ Outstanding Performance!';
+    else if(wpm>=50) hl.textContent='🎯 Great Job, Champion!';
+    else hl.textContent='✅ Championship Complete!';
+
+    // Cancel any previous listener on results-lb-body, start a fresh one
+    if (_lbUnsubs['results-lb-body']) { _lbUnsubs['results-lb-body'](); delete _lbUnsubs['results-lb-body']; }
+
+    const container = document.getElementById('results-lb-body');
+    container.innerHTML = '<div class="lb-loading">Loading…</div>';
+    const badge = document.getElementById('rank-badge');
+
+    const unsub = onSnapshot(
+        getTopDocRef(getLocalSundayKey()),
+        (snap) => {
+            if (!snap.exists()) {
+                container.innerHTML = '<div class="lb-empty">No champion yet — be the first! 🚀</div>';
+                badge.innerHTML = `📊 Your score has been recorded. No champion yet — you could be first!`;
+                return;
+            }
+            const d = snap.data();
+            const isYou = !!(name && d.name === name);
+            _renderChampionCard(container, d, name, false);
+            // Update rank badge live whenever champion changes
+            if (isYou) {
+                badge.innerHTML = `🥇 You are <strong style="color:var(--gold2)">RANK #1</strong> this Sunday! You may win <strong style="color:var(--gold2)">${getPrizeString(window._currentUser?.country||'')}</strong>! 🎉`;
+            } else {
+                badge.innerHTML = `📊 Your score has been recorded.<br>Current champion: <strong style="color:var(--gold2)">${escHtml(d.name)}</strong> (${d.wpm} WPM). Keep practising to take the crown!`;
+            }
+        },
+        (err) => {
+            console.error('Results champion snapshot error:', err);
+            container.innerHTML = `<div class="lb-error">Could not load champion.<br><small>${err.message}</small></div>`;
+        }
+    );
+    _lbUnsubs['results-lb-body'] = unsub;
+
+    document.getElementById('share-btn').addEventListener('click', () => {
+        const text=`I scored ${score} in the 🏆 Sunday Championship on Rocket Typing!\n${wpm} WPM · ${accuracy}% Accuracy\n\nCan you beat me? 👉 https://www.rockettyping.com/test.html`;
+        window.open('https://twitter.com/intent/tweet?text='+encodeURIComponent(text),'_blank');
+    });
+}
+function _animateNum(id,end,dur=800) {
+    const el=document.getElementById(id); if(!el) return;
+    let s=null;
+    const step=ts=>{ if(!s)s=ts; const p=Math.min((ts-s)/dur,1); el.textContent=Math.floor(p*end); if(p<1)requestAnimationFrame(step); else el.textContent=end; };
+    requestAnimationFrame(step);
+}
+
+/* ─── AUTH MODAL ─── */
+function openAuthModal(tab='login') { document.getElementById('auth-modal').style.display='flex'; switchTab(tab); }
+function closeAuthModal()           { document.getElementById('auth-modal').style.display='none'; }
+function switchTab(tab) {
+    document.getElementById('auth-form-login').style.display  = tab==='login'  ? 'block' : 'none';
+    document.getElementById('auth-form-signup').style.display = tab==='signup' ? 'block' : 'none';
+    document.getElementById('tab-btn-login').classList.toggle('active',  tab==='login');
+    document.getElementById('tab-btn-signup').classList.toggle('active', tab==='signup');
+}
+
+// ════════════════════════════════════════════════════════════════
+// BUG FIX: expose module-scoped functions to window so that
+// onclick="" HTML attributes can call them.
+// Without this, EVERY button click throws ReferenceError.
+// ════════════════════════════════════════════════════════════════
+window.openAuthModal  = openAuthModal;
+window.closeAuthModal = closeAuthModal;
+window.switchTab      = switchTab;
+
+document.getElementById('auth-modal-close').addEventListener('click', closeAuthModal);
+document.getElementById('auth-modal').addEventListener('click', e => { if(e.target===document.getElementById('auth-modal')) closeAuthModal(); });
+
+// Init country dropdown
+initCountryDrop('t');
+
+document.getElementById('t-login-btn').addEventListener('click', async () => {
+    const email=document.getElementById('t-login-email').value.trim();
+    const pw   =document.getElementById('t-login-password').value;
+    const err  =document.getElementById('t-login-err');
+    err.textContent='';
+    if (!email||!pw) { err.textContent='Please fill in all fields.'; return; }
+    try { await signInWithEmailAndPassword(auth,email,pw); closeAuthModal(); }
+    catch(e) { err.textContent=(e.code==='auth/invalid-credential'||e.code==='auth/wrong-password')?'Wrong email or password.':'Login failed. Try again.'; }
+});
+
+document.getElementById('t-signup-btn').addEventListener('click', async () => {
+    const username=document.getElementById('t-signup-username').value.trim().toLowerCase();
+    const country =document.getElementById('t-signup-country').value.trim();
+    const email   =document.getElementById('t-signup-email').value.trim();
+    const pw      =document.getElementById('t-signup-password').value;
+    const err     =document.getElementById('t-signup-err');
+    err.textContent='';
+    if(username.length<3||username.length>15) { err.textContent='Username must be 3–15 characters.'; return; }
+    if(!/^[a-z0-9_]+$/.test(username))        { err.textContent='Only lowercase letters, numbers, and _ allowed.'; return; }
+    if(!country) { err.textContent='Please enter your country.'; return; }
+    if(!email)   { err.textContent='Please enter your email.'; return; }
+    if(pw.length<6) { err.textContent='Password must be at least 6 characters.'; return; }
+    try {
+        const snap=await getDocs(query(collection(db,'users'),where('name','==',username)));
+        if(!snap.empty) { err.textContent='Username already taken. Choose another.'; return; }
+        const cred=await createUserWithEmailAndPassword(auth,email,pw);
+        await setDoc(doc(db,'users',cred.user.uid),{name:username,email,country,uid:cred.user.uid,created:Date.now()});
+        closeAuthModal();
+    } catch(e) {
+        err.textContent=e.code==='auth/email-already-in-use'?'This email is already registered. Please login.':'Signup failed: '+e.message;
+    }
+});
+
+/* ─── TOPNAV UI ─── */
+function updateTopnavUI() {
+    const nav=document.getElementById('topnav-user');
+    if (window._currentUser) {
+        nav.innerHTML=`<span id="topnav-username">👤 ${escHtml(window._currentUser.name)}</span><button class="topnav-logout-btn" id="topnav-logout-btn">LOGOUT</button>`;
+        document.getElementById('topnav-logout-btn').addEventListener('click', async () => { await signOut(auth); });
+    } else {
+        // BUG FIX: window.openAuthModal() not openAuthModal()
+        nav.innerHTML=`<button class="login-gate-btn" style="padding:8px 16px;font-size:12px;" onclick="window.openAuthModal('login')">LOGIN / SIGNUP</button>`;
+    }
+}
+
+/* ─── MAIN ENTRY POINT ─── */
+onAuthStateChanged(auth, async (user) => {
+    if (user) {
+        try {
+            const userDoc = await getDoc(doc(db, 'users', user.uid));
+            if (userDoc.exists()) {
+                const udata = userDoc.data();
+                window._currentUser = { uid: user.uid, email: user.email, name: udata.name, country: udata.country || '' };
+                window._userCurrency = getCurrencyForCountry(udata.country || '');
+                updatePrizeStrings();
+                localStorage.setItem('rt_registered_name', udata.name);
+            } else {
+                window._currentUser = null;
+            }
+        } catch(e) { console.error('User doc fetch error:', e); window._currentUser = null; }
+    } else {
+        window._currentUser = null;
+        window._userCurrency = {code:'INR', symbol:'₹'};
+        localStorage.removeItem('rt_registered_name');
+    }
+
+    updateTopnavUI();
+
+    // Not Sunday — show countdown screen regardless of login state
+    if (!isSunday()) {
+        initClosedScreen();
+        return;
+    }
+
+    // It IS Sunday — now check if this user has already played
+    if (window._currentUser) {
+        // LOGGED IN: check Firestore directly using their uid.
+        // This is the only reliable check — localStorage is lost when the
+        // user logs out, clears browser data, or switches devices.
+        const sundayKey = getLocalSundayKey();
+        const docId     = `${window._currentUser.uid}_${sundayKey}`;
+        try {
+            const existing = await getDoc(doc(db, 'sunday_championship', docId));
+            if (existing.exists()) {
+                // Already played — restore score from Firestore into localStorage
+                // so the played screen can display their stats
+                const d = existing.data();
+                saveAttemptLocally(d.name, d.wpm, d.accuracy, d.score);
+                initPlayedScreen();
+                return;
+            }
+        } catch(e) {
+            // Firestore check failed — fall back to localStorage
+            console.warn('Firestore attempt check failed, falling back to localStorage:', e);
+            if (hasPlayedThisSunday()) { initPlayedScreen(); return; }
+        }
+        // No Firestore doc found — they have not played yet this Sunday
+        initLobbyScreen();
+    } else {
+        // NOT LOGGED IN: use localStorage only.
+        // They cannot have a Firestore doc without logging in.
+        if (hasPlayedThisSunday()) {
+            initPlayedScreen();
+        } else {
+            initLobbyScreen();
+        }
+    }
+});
+</script>
+</body>
+</html>
