@@ -3,8 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <title>Privacy Policy – Rocket Typing</title>
-    <meta name="description" content="Privacy Policy for Rocket Typing. We respect your privacy — no email collected, no data sold. Read how we use cookies and Google Analytics.">
+    <title>Privacy Policy – Rocket Typing</title>
+    <meta name="description" content="Privacy Policy for Rocket Typing. We respect your privacy — no data sold. Read how we use cookies, Google Analytics, and optional leaderboard registration.">
+    <link rel="canonical" href="https://www.rockettyping.com/privacy.html">
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32.png">
     <meta property="og:type" content="website">
     <meta property="og:title" content="Privacy Policy – Rocket Typing">
     <meta property="og:description" content="Read the Rocket Typing privacy policy. We do not sell your data.">
@@ -13,99 +15,161 @@
     <meta name="twitter:card" content="summary">
     <meta name="twitter:title" content="Privacy Policy – Rocket Typing">
     <meta name="twitter:description" content="Read the Rocket Typing privacy policy. We do not sell your data.">
-    <link rel="canonical" href="https://www.rockettyping.com/privacy.html">
-    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <meta name="robots" content="index, follow">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --bg: #323437;
+            --bg2: #2b2d30;
+            --gold: #e2b714;
+            --orange: #ff9900;
+            --text: #d1d0c5;
+            --muted: #646669;
+            --border: #444;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
-            background-color: #323437;
-            color: #e2b714;
-            font-family: 'Roboto Mono', monospace;
-            margin: 0;
-            padding: 0;
-            min-height: 100vh;
             background: radial-gradient(circle at center, #3a3d41 0%, #2b2d30 100%);
-        }
-        .content {
-            max-width: 800px;
-            margin: 80px auto 120px;
-            padding: 40px;
-            background: #2b2d30;
-            border-radius: 8px;
-            border: 1px solid #444;
-            color: #cccccc;
-            line-height: 1.6;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-        }
-        h1, h2 {
-            color: #e2b714;
+            color: var(--text);
             font-family: 'Roboto Mono', monospace;
+            min-height: 100vh;
+            padding-bottom: 80px;
         }
-        a { color: #e2b714; text-decoration: none; }
-        a:hover { opacity: 0.8; }
+        .site-nav {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 16px 32px;
+            border-bottom: 1px solid var(--border);
+            background: var(--bg2);
+        }
+        .site-nav a.logo img { width: 100px; }
+        .site-nav .nav-links { display: flex; gap: 20px; }
+        .site-nav .nav-links a {
+            color: var(--muted); text-decoration: none;
+            font-size: 13px; letter-spacing: 1px; transition: color .2s;
+        }
+        .site-nav .nav-links a:hover { color: var(--gold); }
+        .container { max-width: 820px; margin: 48px auto; padding: 0 20px; }
+        .card {
+            background: rgba(43,45,48,0.95);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 44px 48px;
+        }
+        .card img { width: 90px; display: block; margin-bottom: 24px; }
+        h1 { font-size: 24px; font-weight: 900; color: var(--gold); letter-spacing: 2px; margin-bottom: 6px; }
+        .last-updated { font-size: 12px; color: var(--muted); margin-bottom: 28px; }
+        h2 {
+            font-size: 15px; font-weight: 900;
+            color: var(--orange); letter-spacing: 1px;
+            margin: 28px 0 10px;
+            padding-bottom: 6px;
+            border-bottom: 1px solid #3a3a3a;
+        }
+        p { font-size: 13px; line-height: 1.85; color: var(--text); margin-bottom: 12px; }
+        ul { padding-left: 20px; margin-bottom: 12px; }
+        ul li { font-size: 13px; line-height: 1.85; color: #ccc; margin-bottom: 5px; }
+        ul li strong { color: var(--gold); }
+        a { color: var(--gold); text-decoration: none; }
+        a:hover { opacity: 0.8; text-decoration: underline; }
+        .highlight-box {
+            background: rgba(226,183,20,0.06);
+            border: 1px solid rgba(226,183,20,0.2);
+            border-radius: 8px; padding: 14px 18px;
+            font-size: 13px; color: var(--text);
+            margin: 16px 0;
+        }
+        .back-link {
+            display: inline-block; margin-top: 28px;
+            color: var(--gold); text-decoration: none;
+            font-size: 13px; letter-spacing: 1px;
+            opacity: 0.7; transition: opacity .2s;
+        }
+        .back-link:hover { opacity: 1; }
         footer {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background-color: #2b2d30;
-            padding: 15px 20px;
-            text-align: center;
-            color: #999;
-            border-top: 1px solid #444;
-            font-size: 13px;
+            position: fixed; bottom: 0; left: 0; right: 0;
+            background: var(--bg2);
+            padding: 14px 20px;
+            text-align: center; color: var(--muted);
+            border-top: 1px solid var(--border);
+            font-size: 13px; z-index: 100;
         }
-        footer a { color: #e2b714; margin: 0 8px; }
+        footer a { color: var(--gold); text-decoration: none; margin: 0 8px; }
+        footer a:hover { opacity: 0.8; }
+        @media(max-width:600px) { .card { padding: 28px 20px; } }
     </style>
 </head>
 <body>
-    <div class="content">
-        <img src="images/logo.png" alt="Rocket Typing" style="width:120px; margin-bottom:20px;">
-        <h1>Privacy Policy</h1>
-        <p><strong>Last updated: March 20, 2026</strong></p>
 
-        <p>Welcome to <strong>Rocket Typing</strong>. We respect your privacy and are committed to protecting it.</p>
+    <nav class="site-nav">
+        <a href="/" class="logo"><img src="images/logo.png" alt="Rocket Typing"></a>
+        <div class="nav-links">
+            <a href="/">Home</a>
+            <a href="/game.html">Race</a>
+            <a href="/test.html">Championship</a>
+            <a href="/about.html">About</a>
+        </div>
+    </nav>
 
-        <h2>What We Collect</h2>
-        <ul>
-            <li>LocalStorage (your preferred time/words mode and difficulty)</li>
-            <li>Anonymous usage data via Google Analytics (how many people use the test)</li>
-            <li>When you see ads: Google AdSense uses cookies to show relevant advertisements</li>
-            <li><strong>Leaderboard registration (optional):</strong> If you choose to register, we collect your display name and country to show on the public leaderboard. This is entirely voluntary — you can use the typing test without registering.</li>
-        </ul>
+    <div class="container">
+        <div class="card">
+            <img src="images/logo.png" alt="Rocket Typing">
+            <h1>Privacy Policy</h1>
+            <p class="last-updated">Last updated: April 2026</p>
 
-        <h2>Third-Party Services</h2>
-        <p>We use:</p>
-        <ul>
-            <li><strong>Google Analytics</strong> – anonymous traffic analysis</li>
-            <li><strong>Google AdSense</strong> – to display non-intrusive ads</li>
-        </ul>
-        <p>You can read Google's privacy policy here: <a href="https://policies.google.com/privacy" target="_blank">https://policies.google.com/privacy</a></p>
+            <p>Welcome to <strong>Rocket Typing</strong>. We are committed to protecting your privacy. This policy explains what data we collect, how we use it, and your rights.</p>
 
-        <h2>Your Data</h2>
-        <p>We do not collect your email address, IP address, or any sensitive personal information.</p>
-        <p>If you voluntarily register for the leaderboard, your chosen display name and country are stored and displayed publicly on the leaderboard. You can contact us at any time to have your leaderboard entry removed.</p>
-        <p>We do not sell any data to third parties.</p>
+            <div class="highlight-box">
+                🔒 <strong>Short version:</strong> We do not sell your data. We do not collect your IP address. Registration is 100% optional.
+            </div>
 
-        <h2>Cookies</h2>
-        <p>We use cookies through Google Analytics and Google AdSense. These cookies help us understand how visitors use the site and allow Google to show relevant ads. You can control cookie settings through your browser preferences or opt out of Google's use of cookies by visiting <a href="https://adssettings.google.com" target="_blank">Google Ads Settings</a>.</p>
+            <h2>📋 What We Collect</h2>
+            <ul>
+                <li><strong>LocalStorage (browser):</strong> Your preferred test mode, difficulty, and duration — stored only on your device.</li>
+                <li><strong>Anonymous analytics:</strong> Page views and usage patterns via Google Analytics (no personal identifiers).</li>
+                <li><strong>Advertising cookies:</strong> Google AdSense uses cookies to show relevant ads.</li>
+                <li><strong>Leaderboard registration (optional):</strong> If you choose to register, we collect your <em>display name</em>, <em>email address</em> (for login only), and <em>country</em> (displayed publicly as a flag on the leaderboard). You can use the full typing test without ever registering.</li>
+                <li><strong>Sunday Championship scores:</strong> If you compete, your WPM, accuracy, score, username, and country are stored in our database to determine the weekly winner.</li>
+            </ul>
 
-        <h2>Children's Privacy</h2>
-        <p>Rocket Typing is not directed at children under 13. We do not knowingly collect personal information from children under 13. If you believe a child has submitted personal information through our leaderboard, please contact us and we will remove it promptly.</p>
+            <h2>🔧 Third-Party Services</h2>
+            <ul>
+                <li><strong>Google Analytics</strong> — anonymous traffic analysis. <a href="https://policies.google.com/privacy" target="_blank">Google Privacy Policy →</a></li>
+                <li><strong>Google AdSense</strong> — non-intrusive advertising. <a href="https://adssettings.google.com" target="_blank">Opt out →</a></li>
+                <li><strong>Firebase (Google)</strong> — authentication and database for leaderboards and championship scores.</li>
+            </ul>
 
-        <h2>Changes to This Policy</h2>
-        <p>We may update this Privacy Policy from time to time. Any changes will be reflected on this page with an updated date at the top.</p>
+            <h2>🗂️ Your Data Rights</h2>
+            <p>We do not collect your IP address or any sensitive personal information beyond what is described above.</p>
+            <p>If you registered for the leaderboard, your display name and country are shown publicly. You may request deletion of your account and all associated data at any time by emailing <a href="mailto:support@rockettyping.com">support@rockettyping.com</a>.</p>
+            <p>We do not sell any data to third parties — ever.</p>
 
-        <p>If you have questions, contact us using the link in the footer.</p>
+            <h2>🍪 Cookies</h2>
+            <p>We use cookies through Google Analytics (traffic analysis) and Google AdSense (advertising). You can control cookie settings through your browser preferences or opt out via <a href="https://adssettings.google.com" target="_blank">Google Ads Settings</a>.</p>
+
+            <h2>👶 Children's Privacy</h2>
+            <p>Rocket Typing is not directed at children under 13. We do not knowingly collect personal information from children under 13. If you believe a child has submitted information through our platform, please contact us and we will remove it promptly.</p>
+
+            <h2>🔄 Changes to This Policy</h2>
+            <p>We may update this Privacy Policy from time to time. Any changes will be reflected on this page with an updated date at the top. Continued use of the site after changes constitutes acceptance.</p>
+
+            <p>Questions? Contact us at <a href="mailto:support@rockettyping.com">support@rockettyping.com</a>.</p>
+
+            <a href="/" class="back-link">← Back to Typing Test</a>
+        </div>
     </div>
 
     <footer>
-        <p style="margin: 0;">
+        <p style="margin:0;">
             <a href="/">Home</a> |
+            <a href="/about.html">About</a> |
             <a href="/privacy.html">Privacy Policy</a> |
             <a href="/terms.html">Terms of Service</a> |
             <a href="/contact.html">Contact</a>
         </p>
-        <p style="margin: 5px 0 0 0; font-size: 12px; color: #666;">&copy; 2026 <strong style="color: #e2b714;">Rocket Typing</strong></p>
+        <p style="margin:5px 0 0;font-size:12px;color:#555;">&copy; 2026 <strong style="color:#e2b714;">Rocket Typing</strong>. All rights reserved.</p>
     </footer>
+
 </body>
 </html>
