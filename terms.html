@@ -3,91 +3,185 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
- <title>Terms of Service – Rocket Typing</title>
+    <title>Terms of Service – Rocket Typing</title>
     <meta name="description" content="Terms of Service for Rocket Typing. Free to use for personal purposes. Read our full terms before using the site.">
+    <link rel="canonical" href="https://www.rockettyping.com/terms.html">
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32.png">
     <meta property="og:type" content="website">
     <meta property="og:title" content="Terms of Service – Rocket Typing">
     <meta property="og:description" content="Terms of Service for Rocket Typing. Free to use for personal purposes.">
     <meta property="og:url" content="https://www.rockettyping.com/terms.html">
     <meta property="og:image" content="https://www.rockettyping.com/images/og-banner.png">
     <meta name="twitter:card" content="summary">
-    <meta name="twitter:title" content="Terms of Service – Rocket Typing">
-    <meta name="twitter:description" content="Terms of Service for Rocket Typing. Free to use for personal purposes.">
-    <link rel="canonical" href="https://www.rockettyping.com/terms.html">
-    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <meta name="robots" content="index, follow">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --bg2: #2b2d30;
+            --gold: #e2b714;
+            --orange: #ff9900;
+            --text: #d1d0c5;
+            --muted: #646669;
+            --border: #444;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
-            background-color: #323437;
-            color: #e2b714;
-            font-family: 'Roboto Mono', monospace;
-            margin: 0;
-            padding: 0;
-            min-height: 100vh;
             background: radial-gradient(circle at center, #3a3d41 0%, #2b2d30 100%);
-        }
-        .content {
-            max-width: 800px;
-            margin: 80px auto 120px;
-            padding: 40px;
-            background: #2b2d30;
-            border-radius: 8px;
-            border: 1px solid #444;
-            color: #cccccc;
-            line-height: 1.6;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-        }
-        h1, h2 {
-            color: #e2b714;
+            color: var(--text);
             font-family: 'Roboto Mono', monospace;
+            min-height: 100vh;
+            padding-bottom: 80px;
         }
-        a { color: #e2b714; text-decoration: none; }
-        a:hover { opacity: 0.8; }
+        .site-nav {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 16px 32px;
+            border-bottom: 1px solid var(--border);
+            background: var(--bg2);
+        }
+        .site-nav a.logo img { width: 100px; }
+        .site-nav .nav-links { display: flex; gap: 20px; }
+        .site-nav .nav-links a {
+            color: var(--muted); text-decoration: none;
+            font-size: 13px; letter-spacing: 1px; transition: color .2s;
+        }
+        .site-nav .nav-links a:hover { color: var(--gold); }
+        .container { max-width: 820px; margin: 48px auto; padding: 0 20px; }
+        .card {
+            background: rgba(43,45,48,0.95);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 44px 48px;
+        }
+        .card img { width: 90px; display: block; margin-bottom: 24px; }
+        h1 { font-size: 24px; font-weight: 900; color: var(--gold); letter-spacing: 2px; margin-bottom: 6px; }
+        .last-updated { font-size: 12px; color: var(--muted); margin-bottom: 28px; }
+        h2 {
+            font-size: 15px; font-weight: 900;
+            color: var(--orange); letter-spacing: 1px;
+            margin: 28px 0 10px;
+            padding-bottom: 6px;
+            border-bottom: 1px solid #3a3a3a;
+        }
+        p { font-size: 13px; line-height: 1.85; color: var(--text); margin-bottom: 12px; }
+        ul { padding-left: 20px; margin-bottom: 12px; }
+        ul li { font-size: 13px; line-height: 1.85; color: #ccc; margin-bottom: 5px; }
+        ul li strong { color: var(--gold); }
+        a { color: var(--gold); text-decoration: none; }
+        a:hover { opacity: 0.8; text-decoration: underline; }
+        .highlight-box {
+            background: rgba(226,183,20,0.06);
+            border: 1px solid rgba(226,183,20,0.2);
+            border-radius: 8px; padding: 14px 18px;
+            font-size: 13px; color: var(--text);
+            margin: 16px 0;
+        }
+        .championship-rules {
+            background: rgba(255,153,0,0.06);
+            border: 1px solid rgba(255,153,0,0.25);
+            border-radius: 10px; padding: 16px 20px;
+            margin: 14px 0;
+        }
+        .championship-rules li { color: #ccc; }
+        .back-link {
+            display: inline-block; margin-top: 28px;
+            color: var(--gold); text-decoration: none;
+            font-size: 13px; letter-spacing: 1px;
+            opacity: 0.7; transition: opacity .2s;
+        }
+        .back-link:hover { opacity: 1; }
         footer {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background-color: #2b2d30;
-            padding: 15px 20px;
-            text-align: center;
-            color: #999;
-            border-top: 1px solid #444;
-            font-size: 13px;
+            position: fixed; bottom: 0; left: 0; right: 0;
+            background: var(--bg2);
+            padding: 14px 20px;
+            text-align: center; color: var(--muted);
+            border-top: 1px solid var(--border);
+            font-size: 13px; z-index: 100;
         }
-        footer a { color: #e2b714; margin: 0 8px; }
+        footer a { color: var(--gold); text-decoration: none; margin: 0 8px; }
+        footer a:hover { opacity: 0.8; }
+        @media(max-width:600px) { .card { padding: 28px 20px; } }
     </style>
 </head>
 <body>
-    <div class="content">
-        <img src="images/logo.png" alt="Rocket Typing" style="width:120px; margin-bottom:20px;">
-        <h1>Terms of Service</h1>
-        <p><strong>Last updated: March 02, 2026</strong></p>
 
-        <p>Welcome to <strong>Rocket Typing</strong>, a free online typing test platform.</p>
+    <nav class="site-nav">
+        <a href="/" class="logo"><img src="images/logo.png" alt="Rocket Typing"></a>
+        <div class="nav-links">
+            <a href="/">Home</a>
+            <a href="/game.html">Race</a>
+            <a href="/test.html">Championship</a>
+            <a href="/about.html">About</a>
+        </div>
+    </nav>
 
-        <h2>Acceptance of Terms</h2>
-        <p>By using our website you agree to these terms.</p>
+    <div class="container">
+        <div class="card">
+            <img src="images/logo.png" alt="Rocket Typing">
+            <h1>Terms of Service</h1>
+            <p class="last-updated">Last updated: April 2026</p>
 
-        <h2>Use of Service</h2>
-        <p>You may use Rocket Typing only for personal, non-commercial purposes. You may not copy, modify, or distribute the code or content.</p>
+            <p>Welcome to <strong>Rocket Typing</strong> — a free online typing test and competition platform. By using our website, you agree to these terms.</p>
 
-        <h2>No Warranty</h2>
-        <p>The service is provided "as is". We are not responsible for any loss of data or typing scores.</p>
+            <div class="highlight-box">
+                📌 <strong>Summary:</strong> Free to use for personal purposes. No cheating. One attempt per Sunday Championship. We are governed by the laws of India.
+            </div>
 
-        <h2>Governing Law</h2>
-        <p>These terms are governed by the laws of India.</p>
+            <h2>✅ Acceptance of Terms</h2>
+            <p>By accessing or using Rocket Typing, you confirm that you are at least 13 years old and agree to be bound by these Terms of Service. If you do not agree, please do not use the site.</p>
 
-        <p>If you have any questions, please contact us using the link in the footer.</p>
+            <h2>🎯 Use of Service</h2>
+            <p>You may use Rocket Typing only for personal, non-commercial purposes. You may not:</p>
+            <ul>
+                <li>Copy, modify, or distribute the site's code or content without permission</li>
+                <li>Use bots, scripts, or any automated tools to improve or manipulate your scores</li>
+                <li>Attempt to hack, exploit, or disrupt the service or its database</li>
+                <li>Use offensive, impersonating, or misleading usernames on the leaderboard</li>
+            </ul>
+
+            <h2>🏆 Sunday Championship Rules</h2>
+            <p>The Sunday Championship is a weekly typing competition with a cash prize. By participating, you agree to these specific rules:</p>
+            <ul class="championship-rules">
+                <li>Each registered user may submit <strong>one attempt per Sunday</strong>. Multiple attempts are not permitted.</li>
+                <li>Scores must be achieved through genuine human typing. Use of any automation, macros, or assistance tools is strictly forbidden and results in immediate disqualification.</li>
+                <li>The prize is awarded to the participant with the <strong>highest score</strong> (WPM × Accuracy) by end of Sunday in their local time.</li>
+                <li>Prize amounts are displayed in the winner's local currency as an approximation. Actual payout is at Rocket Typing's discretion and subject to verification.</li>
+                <li>We reserve the right to withhold prizes if cheating or manipulation is suspected.</li>
+                <li>Championship results are final. Disputes should be submitted via email within 48 hours of results.</li>
+            </ul>
+
+            <h2>👤 User Accounts</h2>
+            <p>When you register, you are responsible for maintaining the confidentiality of your account credentials. You agree to provide accurate information including your real country. Usernames must be 3–15 characters and contain only letters, numbers, and underscores.</p>
+
+            <h2>⚠️ No Warranty</h2>
+            <p>The service is provided "as is" without any warranty of any kind. We are not responsible for any loss of data, typing scores, or unavailability of the service.</p>
+
+            <h2>🔒 Intellectual Property</h2>
+            <p>All content, design, and code on Rocket Typing is the property of Rocket Typing. You may not reproduce or redistribute it without explicit written permission.</p>
+
+            <h2>⚖️ Governing Law</h2>
+            <p>These terms are governed by the laws of India. Any disputes arising from the use of this service shall be subject to the jurisdiction of courts in India.</p>
+
+            <h2>📬 Changes to Terms</h2>
+            <p>We reserve the right to update these Terms of Service at any time. Continued use of the service after changes are posted constitutes your acceptance of the new terms.</p>
+
+            <p>Questions? Contact us at <a href="mailto:support@rockettyping.com">support@rockettyping.com</a>.</p>
+
+            <a href="/" class="back-link">← Back to Typing Test</a>
+        </div>
     </div>
 
     <footer>
-        <p style="margin: 0;">
+        <p style="margin:0;">
             <a href="/">Home</a> |
+            <a href="/about.html">About</a> |
             <a href="/privacy.html">Privacy Policy</a> |
             <a href="/terms.html">Terms of Service</a> |
             <a href="/contact.html">Contact</a>
         </p>
-        <p style="margin: 5px 0 0 0; font-size: 12px; color: #666;">&copy; 2026 <strong style="color: #e2b714;">Rocket Typing</strong></p>
+        <p style="margin:5px 0 0;font-size:12px;color:#555;">&copy; 2026 <strong style="color:#e2b714;">Rocket Typing</strong>. All rights reserved.</p>
     </footer>
+
 </body>
 </html>
