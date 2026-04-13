@@ -6,78 +6,165 @@
     <title>Contact – Rocket Typing</title>
     <meta name="description" content="Contact the Rocket Typing team. We reply within 24–48 hours. Reach out for support, feedback, or partnership inquiries.">
     <link rel="canonical" href="https://www.rockettyping.com/contact.html">
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32.png">
     <meta property="og:type" content="website">
     <meta property="og:title" content="Contact – Rocket Typing">
     <meta property="og:description" content="Get in touch with the Rocket Typing team. We'd love to hear your feedback!">
     <meta property="og:url" content="https://www.rockettyping.com/contact.html">
     <meta property="og:image" content="https://www.rockettyping.com/images/og-banner.png">
     <meta name="robots" content="index, follow">
-    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --bg: #323437;
+            --bg2: #2b2d30;
+            --gold: #e2b714;
+            --orange: #ff9900;
+            --text: #d1d0c5;
+            --muted: #646669;
+            --border: #444;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
-            background-color: #323437;
-            color: #e2b714;
-            font-family: 'Roboto Mono', monospace;
-            margin: 0;
-            padding: 0;
-            min-height: 100vh;
             background: radial-gradient(circle at center, #3a3d41 0%, #2b2d30 100%);
-        }
-        .content {
-            max-width: 800px;
-            margin: 80px auto 120px;
-            padding: 40px;
-            background: #2b2d30;
-            border-radius: 8px;
-            border: 1px solid #444;
-            color: #cccccc;
-            line-height: 1.6;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            text-align: center;
-        }
-        h1 {
-            color: #e2b714;
+            color: var(--text);
             font-family: 'Roboto Mono', monospace;
+            min-height: 100vh;
+            padding-bottom: 80px;
         }
-        a { color: #e2b714; text-decoration: none; }
-        a:hover { opacity: 0.8; }
-        footer {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background-color: #2b2d30;
-            padding: 15px 20px;
+        /* NAV */
+        .site-nav {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 16px 32px;
+            border-bottom: 1px solid var(--border);
+            background: var(--bg2);
+        }
+        .site-nav a.logo img { width: 100px; }
+        .site-nav .nav-links { display: flex; gap: 20px; }
+        .site-nav .nav-links a {
+            color: var(--muted); text-decoration: none;
+            font-size: 13px; letter-spacing: 1px; transition: color .2s;
+        }
+        .site-nav .nav-links a:hover { color: var(--gold); }
+        /* CONTENT */
+        .container { max-width: 620px; margin: 60px auto; padding: 0 20px; }
+        .card {
+            background: rgba(43,45,48,0.95);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 52px 48px;
             text-align: center;
-            color: #999;
-            border-top: 1px solid #444;
-            font-size: 13px;
         }
-        footer a { color: #e2b714; margin: 0 8px; }
+        .card img { width: 100px; margin-bottom: 24px; }
+        h1 { font-size: 24px; font-weight: 900; color: var(--gold); letter-spacing: 2px; margin-bottom: 12px; }
+        .tagline { font-size: 14px; color: var(--muted); margin-bottom: 36px; }
+        .email-box {
+            display: inline-flex; align-items: center; gap: 12px;
+            background: rgba(226,183,20,0.07);
+            border: 2px solid rgba(226,183,20,0.3);
+            border-radius: 12px;
+            padding: 18px 28px;
+            margin-bottom: 28px;
+        }
+        .email-icon { font-size: 28px; }
+        .email-link {
+            font-size: 16px; font-weight: 700;
+            color: var(--gold); text-decoration: none;
+            letter-spacing: 0.5px;
+            transition: color .2s;
+        }
+        .email-link:hover { color: var(--orange); }
+        .reply-note { font-size: 13px; color: var(--muted); margin-bottom: 36px; }
+        /* Topics */
+        .topics { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 32px; }
+        .topic-item {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid #3a3a3a;
+            border-radius: 8px;
+            padding: 12px 14px;
+            font-size: 12px; color: #aaa;
+            text-align: left;
+        }
+        .topic-item strong { color: var(--text); display: block; margin-bottom: 2px; }
+        .divider { border: none; border-top: 1px solid #3a3a3a; margin: 28px 0; }
+        .social-note { font-size: 12px; color: var(--muted); }
+        .social-note a { color: var(--gold); text-decoration: none; }
+        .back-link {
+            display: inline-block; margin-top: 24px;
+            color: var(--gold); text-decoration: none;
+            font-size: 13px; letter-spacing: 1px;
+            opacity: 0.7; transition: opacity .2s;
+        }
+        .back-link:hover { opacity: 1; }
+        /* FOOTER */
+        footer {
+            position: fixed; bottom: 0; left: 0; right: 0;
+            background: var(--bg2);
+            padding: 14px 20px;
+            text-align: center; color: var(--muted);
+            border-top: 1px solid var(--border);
+            font-size: 13px; z-index: 100;
+        }
+        footer a { color: var(--gold); text-decoration: none; margin: 0 8px; }
+        footer a:hover { opacity: 0.8; }
+        @media(max-width:520px) {
+            .card { padding: 36px 20px; }
+            .topics { grid-template-columns: 1fr; }
+            .email-box { flex-direction: column; padding: 16px 20px; }
+        }
     </style>
 </head>
 <body>
-    <div class="content">
-        <img src="images/logo.png" alt="Rocket Typing" style="width:120px; margin-bottom:20px;">
-        <h1>Contact Us</h1>
-        <p>We'd love to hear from you!</p>
-        
-        <p style="font-size: 18px; margin: 30px 0;">
-            📧 <strong><a href="mailto:support@rockettyping.com">support@rockettyping.com</a></strong>
-        </p>
-        
-        <p>We usually reply within 24–48 hours.</p>
+
+    <nav class="site-nav">
+        <a href="/" class="logo"><img src="images/logo.png" alt="Rocket Typing"></a>
+        <div class="nav-links">
+            <a href="/">Home</a>
+            <a href="/game.html">Race</a>
+            <a href="/test.html">Championship</a>
+            <a href="/about.html">About</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="card">
+            <img src="images/logo.png" alt="Rocket Typing">
+            <h1>Contact Us</h1>
+            <p class="tagline">We'd love to hear from you — feedback, bugs, partnerships, anything!</p>
+
+            <div class="email-box">
+                <span class="email-icon">📧</span>
+                <a class="email-link" href="mailto:support@rockettyping.com">support@rockettyping.com</a>
+            </div>
+
+            <p class="reply-note">⏱️ We usually reply within <strong style="color:var(--gold)">24–48 hours</strong>.</p>
+
+            <div class="topics">
+                <div class="topic-item"><strong>🐛 Bug Reports</strong>Something broken? Tell us and we'll fix it fast.</div>
+                <div class="topic-item"><strong>💡 Feature Ideas</strong>Want a new mode or feature? We're listening.</div>
+                <div class="topic-item"><strong>🏆 Championship</strong>Questions about Sunday prizes or scores.</div>
+                <div class="topic-item"><strong>🤝 Partnerships</strong>Sponsorships or collaboration inquiries.</div>
+            </div>
+
+            <hr class="divider">
+            <p class="social-note">You can also follow us on <a href="https://twitter.com/rockettyping" target="_blank">𝕏 (Twitter)</a> for updates and announcements.</p>
+
+            <a href="/" class="back-link">← Back to Typing Test</a>
+        </div>
     </div>
 
     <footer>
-        <p style="margin: 0;">
+        <p style="margin:0;">
             <a href="/">Home</a> |
+            <a href="/about.html">About</a> |
             <a href="/privacy.html">Privacy Policy</a> |
             <a href="/terms.html">Terms of Service</a> |
-                <a href="/contact.html">Contact</a>
+            <a href="/contact.html">Contact</a>
         </p>
-        <p style="margin: 5px 0 0;">&copy; 2026 Rocket Typing. All rights reserved.</p>
-
+        <p style="margin:5px 0 0;font-size:12px;color:#555;">&copy; 2026 <strong style="color:#e2b714;">Rocket Typing</strong>. All rights reserved.</p>
     </footer>
-</body> 
+
+</body>
 </html>
