@@ -1605,10 +1605,12 @@ auth.onAuthStateChanged(async (user) => {
         try {
             const userDoc = await db.collection('users').doc(user.uid).get();
             if (userDoc.exists) {
-                const name = userDoc.data().name;
+                const name    = userDoc.data().name;
+                const country = userDoc.data().country || '';
                 localStorage.setItem('rt_registered_name', name);
-                window._gameUser    = { uid: user.uid, name };
-                window._currentUser = { uid: user.uid, name };
+                localStorage.setItem('rt_user_country', country);   // ← FIX: store country for score saves
+                window._gameUser    = { uid: user.uid, name, country };
+                window._currentUser = { uid: user.uid, name, country };
                 if (topnav) {
                     topnav.innerHTML = '<span id="game-topnav-username">👤 ' + name + '</span>' +
                         '<button class="game-topnav-logout" id="game-topnav-logout">LOGOUT</button>';
@@ -2703,19 +2705,17 @@ function animateResult(stats, entries, rankIdx, rankColor) {
     const barColor = BAR_COLORS[idx];
     const row = document.createElement('div');
     row.className = 'res-row' + (e.isPlayer ? ' is-player' : '');
-    row.innerHTML = `
-      <span class="res-rank" style="color:${BAR_COLORS[idx]}">${RANK_EMOJIS[idx]}</span>
-      <span class="res-ship">${e.shipEmoji}</span>
-      <span class="res-name${e.isPlayer?' you':''}">${e.name}</span>
-      <div class="res-bar-cell">
-        <div class="res-bar-wrap">
-          <div class="res-bar-fill" style="background:linear-gradient(90deg,${barColor}aa,${barColor});width:0%"></div>
-          <div class="res-bar-shimmer"></div>
-        </div>
-        <div class="res-bar-pct">${pct}%</div>
-      </div>
-      <span class="res-status" style="color:${finished?STATUS_COLORS[idx]:'#666'}">${finished?STATUS_LABELS[idx]:'○ DNF'}</span>
-    `;
+row.innerHTML = `
+  <td class="rank${rank}">${rd}</td>
+  <td><span style="font-weight:bold">${d.name}</span></td>
+  <td style="font-size:20px;text-align:center;" title="${country}">
+    ${_gf.startsWith('http') 
+      ? `<img src="${_gf}" alt="" style="width:28px;height:20px;object-fit:contain;vertical-align:middle;">` 
+      : _gf}
+  </td>
+  <td style="color:#ffd700;font-weight:bold;">${d.topWPM}</td>
+  <td style="color:#888;font-size:11px">${_gd}</td>
+`;
     list.appendChild(row);
   });
 
@@ -3081,7 +3081,77 @@ restartBtn.addEventListener('click',()=>{leaderboardBtn.style.display="none";res
 /* Leaderboard */
 const leaderboardBtn=document.getElementById("leaderboard-btn"),leaderboardDiv=document.getElementById("leaderboard"),leaderboardBody=document.getElementById("leaderboard-body"),closeLeaderboard=document.getElementById("close-leaderboard");
 leaderboardBtn.onclick=loadLeaderboard;closeLeaderboard.onclick=()=>leaderboardDiv.style.display="none";
-async function loadLeaderboard(){if(testActive)return;leaderboardBody.innerHTML="<tr><td colspan='3'>Loading...</td></tr>";try{const snap=await db.collection("leaderboard").orderBy("topWPM","desc").limit(10).get();leaderboardBody.innerHTML="";let rank=1;const cu=localStorage.getItem("rt_registered_name");snap.forEach(doc=>{const d=doc.data();const row=document.createElement("tr");let rd=rank;if(rank===1)rd="🥇";if(rank===2)rd="🥈";if(rank===3)rd="🥉";const _gf=d.country?(COUNTRY_FLAGS[d.country]||'🌍'):'';const _gd=fmtDate(d.updated||d.time||null);row.innerHTML=`<td class="rank${rank}">${rd}</td><td><span style="font-weight:bold">${d.name}</span></td><td style="font-size:13px">${_gf} <span style="color:#aaa;font-size:11px">${d.country||''}</span></td><td style="color:#ffd700;font-weight:bold;">${d.topWPM}</td><td style="color:#888;font-size:11px">${_gd}</td>`;if(d.name===cu){row.style.background="#1a2a3d";row.style.color="#ffd700";row.style.fontWeight="bold";}leaderboardBody.appendChild(row);rank++;}); leaderboardDiv.style.display="block";}catch(e){leaderboardBody.innerHTML="<tr><td colspan='3'>Error loading leaderboard</td></tr>";}const p=document.getElementById('lb-register-prompt');if(p&&localStorage.getItem('rt_registered_name'))p.style.display='none';}
+async function loadLeaderboard(){
+  if(testActive)return;
+  leaderboardBody.innerHTML="<tr><td colspan='5'>Loading...</td></tr>";
+  try{
+    const snap=await db.collection("leaderboard").orderBy("topWPM","desc").limit(10).get();
+    leaderboardBody.innerHTML="";
+    const cu=localStorage.getItem("rt_registered_name");
+
+    /* Collect rows and names that are missing country */
+    const rows=[];
+    const namesToLookup=[];
+    let rank=1;
+    snap.forEach(doc=>{
+      const d=doc.data();
+      rows.push({d,rank});
+      if(!d.country) namesToLookup.push(d.name);
+      rank++;
+    });
+
+    /* Secondary lookup: fetch country from users collection for old entries */
+    const countryMap={};
+    if(namesToLookup.length>0){
+      const lookups=namesToLookup.map(n=>
+        db.collection('users').where('name','==',n).limit(1).get()
+      );
+      const results=await Promise.all(lookups);
+      results.forEach(s=>s.forEach(udoc=>{
+        const ud=udoc.data();
+        if(ud.name&&ud.country) countryMap[ud.name]=ud.country;
+      }));
+    }
+
+    rows.forEach(({d, rank}) => {
+      const row = document.createElement("tr");
+      let rd = rank;
+      if (rank === 1) rd = "🥇";
+      if (rank === 2) rd = "🥈";
+      if (rank === 3) rd = "🥉";
+
+      const country = d.country || countryMap[d.name] || '';
+      const flagHTML = country && COUNTRY_FLAGS[country] 
+        ? `<img src="${COUNTRY_FLAGS[country]}" alt="" style="width:28px;height:20px;object-fit:contain;vertical-align:middle;">` 
+        : '🌍';
+
+      const _gd = fmtDate(d.updated || d.time || null);
+
+      row.innerHTML = `
+        <td class="rank${rank}">${rd}</td>
+        <td><span style="font-weight:bold">${d.name}</span></td>
+        <td style="font-size:20px;text-align:center;" title="${country}">
+          ${flagHTML}
+        </td>
+        <td style="color:#ffd700;font-weight:bold;">${d.topWPM}</td>
+        <td style="color:#888;font-size:11px">${_gd}</td>
+      `;
+
+      if (d.name === cu) {
+        row.style.background = "#1a2a3d";
+        row.style.color = "#ffd700";
+        row.style.fontWeight = "bold";
+      }
+      leaderboardBody.appendChild(row);
+    });
+
+    leaderboardDiv.style.display="block";
+  }catch(e){
+    leaderboardBody.innerHTML="<tr><td colspan='5'>Error loading leaderboard</td></tr>";
+  }
+  const p=document.getElementById('lb-register-prompt');
+  if(p&&localStorage.getItem('rt_registered_name'))p.style.display='none';
+}
 
 /* ══════════════════════════════════════════════════════
    INLINE AUTH — self-contained login/signup modal
@@ -3209,7 +3279,202 @@ document.addEventListener('click', e => {
 initCountryDrop('game');
 </script>
 <script>
-const COUNTRY_FLAGS={"Afghanistan":"🇦🇫","Albania":"🇦🇱","Algeria":"🇩🇿","Andorra":"🇦🇩","Angola":"🇦🇴","Antigua and Barbuda":"🇦🇬","Argentina":"🇦🇷","Armenia":"🇦🇲","Australia":"🇦🇺","Austria":"🇦🇹","Azerbaijan":"🇦🇿","Bahamas":"🇧🇸","Bahrain":"🇧🇭","Bangladesh":"🇧🇩","Barbados":"🇧🇧","Belarus":"🇧🇾","Belgium":"🇧🇪","Belize":"🇧🇿","Benin":"🇧🇯","Bhutan":"🇧🇹","Bolivia":"🇧🇴","Bosnia and Herzegovina":"🇧🇦","Botswana":"🇧🇼","Brazil":"🇧🇷","Brunei":"🇧🇳","Bulgaria":"🇧🇬","Burkina Faso":"🇧🇫","Burundi":"🇧🇮","Cabo Verde":"🇨🇻","Cambodia":"🇰🇭","Cameroon":"🇨🇲","Canada":"🇨🇦","Central African Republic":"🇨🇫","Chad":"🇹🇩","Chile":"🇨🇱","China":"🇨🇳","Colombia":"🇨🇴","Comoros":"🇰🇲","Congo":"🇨🇬","Costa Rica":"🇨🇷","Croatia":"🇭🇷","Cuba":"🇨🇺","Cyprus":"🇨🇾","Czech Republic":"🇨🇿","Denmark":"🇩🇰","Djibouti":"🇩🇯","Dominica":"🇩🇲","Dominican Republic":"🇩🇴","Ecuador":"🇪🇨","Egypt":"🇪🇬","El Salvador":"🇸🇻","Equatorial Guinea":"🇬🇶","Eritrea":"🇪🇷","Estonia":"🇪🇪","Eswatini":"🇸🇿","Ethiopia":"🇪🇹","Fiji":"🇫🇯","Finland":"🇫🇮","France":"🇫🇷","Gabon":"🇬🇦","Gambia":"🇬🇲","Georgia":"🇬🇪","Germany":"🇩🇪","Ghana":"🇬🇭","Greece":"🇬🇷","Grenada":"🇬🇩","Guatemala":"🇬🇹","Guinea":"🇬🇳","Guinea-Bissau":"🇬🇼","Guyana":"🇬🇾","Haiti":"🇭🇹","Honduras":"🇭🇳","Hungary":"🇭🇺","Iceland":"🇮🇸","India":"🇮🇳","Indonesia":"🇮🇩","Iran":"🇮🇷","Iraq":"🇮🇶","Ireland":"🇮🇪","Israel":"🇮🇱","Italy":"🇮🇹","Jamaica":"🇯🇲","Japan":"🇯🇵","Jordan":"🇯🇴","Kazakhstan":"🇰🇿","Kenya":"🇰🇪","Kiribati":"🇰🇮","Kuwait":"🇰🇼","Kyrgyzstan":"🇰🇬","Laos":"🇱🇦","Latvia":"🇱🇻","Lebanon":"🇱🇧","Lesotho":"🇱🇸","Liberia":"🇱🇷","Libya":"🇱🇾","Liechtenstein":"🇱🇮","Lithuania":"🇱🇹","Luxembourg":"🇱🇺","Madagascar":"🇲🇬","Malawi":"🇲🇼","Malaysia":"🇲🇾","Maldives":"🇲🇻","Mali":"🇲🇱","Malta":"🇲🇹","Marshall Islands":"🇲🇭","Mauritania":"🇲🇷","Mauritius":"🇲🇺","Mexico":"🇲🇽","Micronesia":"🇫🇲","Moldova":"🇲🇩","Monaco":"🇲🇨","Mongolia":"🇲🇳","Montenegro":"🇲🇪","Morocco":"🇲🇦","Mozambique":"🇲🇿","Myanmar":"🇲🇲","Namibia":"🇳🇦","Nauru":"🇳🇷","Nepal":"🇳🇵","Netherlands":"🇳🇱","New Zealand":"🇳🇿","Nicaragua":"🇳🇮","Niger":"🇳🇪","Nigeria":"🇳🇬","North Korea":"🇰🇵","North Macedonia":"🇲🇰","Norway":"🇳🇴","Oman":"🇴🇲","Pakistan":"🇵🇰","Palau":"🇵🇼","Palestine":"🇵🇸","Panama":"🇵🇦","Papua New Guinea":"🇵🇬","Paraguay":"🇵🇾","Peru":"🇵🇪","Philippines":"🇵🇭","Poland":"🇵🇱","Portugal":"🇵🇹","Qatar":"🇶🇦","Romania":"🇷🇴","Russia":"🇷🇺","Rwanda":"🇷🇼","Saint Kitts and Nevis":"🇰🇳","Saint Lucia":"🇱🇨","Saint Vincent and the Grenadines":"🇻🇨","Samoa":"🇼🇸","San Marino":"🇸🇲","Sao Tome and Principe":"🇸🇹","Saudi Arabia":"🇸🇦","Senegal":"🇸🇳","Serbia":"🇷🇸","Seychelles":"🇸🇨","Sierra Leone":"🇸🇱","Singapore":"🇸🇬","Slovakia":"🇸🇰","Slovenia":"🇸🇮","Solomon Islands":"🇸🇧","Somalia":"🇸🇴","South Africa":"🇿🇦","South Korea":"🇰🇷","South Sudan":"🇸🇸","Spain":"🇪🇸","Sri Lanka":"🇱🇰","Sudan":"🇸🇩","Suriname":"🇸🇷","Sweden":"🇸🇪","Switzerland":"🇨🇭","Syria":"🇸🇾","Taiwan":"🇹🇼","Tajikistan":"🇹🇯","Tanzania":"🇹🇿","Thailand":"🇹🇭","Timor-Leste":"🇹🇱","Togo":"🇹🇬","Tonga":"🇹🇴","Trinidad and Tobago":"🇹🇹","Tunisia":"🇹🇳","Turkey":"🇹🇷","Turkmenistan":"🇹🇲","Tuvalu":"🇹🇻","Uganda":"🇺🇬","Ukraine":"🇺🇦","United Arab Emirates":"🇦🇪","United Kingdom":"🇬🇧","United States":"🇺🇸","Uruguay":"🇺🇾","Uzbekistan":"🇺🇿","Vanuatu":"🇻🇺","Vatican City":"🇻🇦","Venezuela":"🇻🇪","Vietnam":"🇻🇳","Yemen":"🇾🇪","Zambia":"🇿🇲","Zimbabwe":"🇿🇼"};
+const COUNTRY_FLAGS = {
+"Afghanistan":"https://flagcdn.com/w40/af.png",
+"Albania":"https://flagcdn.com/w40/al.png",
+"Algeria":"https://flagcdn.com/w40/dz.png",
+"Andorra":"https://flagcdn.com/w40/ad.png",
+"Angola":"https://flagcdn.com/w40/ao.png",
+"Antigua and Barbuda":"https://flagcdn.com/w40/ag.png",
+"Argentina":"https://flagcdn.com/w40/ar.png",
+"Armenia":"https://flagcdn.com/w40/am.png",
+"Australia":"https://flagcdn.com/w40/au.png",
+"Austria":"https://flagcdn.com/w40/at.png",
+"Azerbaijan":"https://flagcdn.com/w40/az.png",
+"Bahamas":"https://flagcdn.com/w40/bs.png",
+"Bahrain":"https://flagcdn.com/w40/bh.png",
+"Bangladesh":"https://flagcdn.com/w40/bd.png",
+"Barbados":"https://flagcdn.com/w40/bb.png",
+"Belarus":"https://flagcdn.com/w40/by.png",
+"Belgium":"https://flagcdn.com/w40/be.png",
+"Belize":"https://flagcdn.com/w40/bz.png",
+"Benin":"https://flagcdn.com/w40/bj.png",
+"Bhutan":"https://flagcdn.com/w40/bt.png",
+"Bolivia":"https://flagcdn.com/w40/bo.png",
+"Bosnia and Herzegovina":"https://flagcdn.com/w40/ba.png",
+"Botswana":"https://flagcdn.com/w40/bw.png",
+"Brazil":"https://flagcdn.com/w40/br.png",
+"Brunei":"https://flagcdn.com/w40/bn.png",
+"Bulgaria":"https://flagcdn.com/w40/bg.png",
+"Burkina Faso":"https://flagcdn.com/w40/bf.png",
+"Burundi":"https://flagcdn.com/w40/bi.png",
+"Cabo Verde":"https://flagcdn.com/w40/cv.png",
+"Cambodia":"https://flagcdn.com/w40/kh.png",
+"Cameroon":"https://flagcdn.com/w40/cm.png",
+"Canada":"https://flagcdn.com/w40/ca.png",
+"Central African Republic":"https://flagcdn.com/w40/cf.png",
+"Chad":"https://flagcdn.com/w40/td.png",
+"Chile":"https://flagcdn.com/w40/cl.png",
+"China":"https://flagcdn.com/w40/cn.png",
+"Colombia":"https://flagcdn.com/w40/co.png",
+"Comoros":"https://flagcdn.com/w40/km.png",
+"Congo":"https://flagcdn.com/w40/cg.png",
+"Costa Rica":"https://flagcdn.com/w40/cr.png",
+"Croatia":"https://flagcdn.com/w40/hr.png",
+"Cuba":"https://flagcdn.com/w40/cu.png",
+"Cyprus":"https://flagcdn.com/w40/cy.png",
+"Czech Republic":"https://flagcdn.com/w40/cz.png",
+"Denmark":"https://flagcdn.com/w40/dk.png",
+"Djibouti":"https://flagcdn.com/w40/dj.png",
+"Dominica":"https://flagcdn.com/w40/dm.png",
+"Dominican Republic":"https://flagcdn.com/w40/do.png",
+"Ecuador":"https://flagcdn.com/w40/ec.png",
+"Egypt":"https://flagcdn.com/w40/eg.png",
+"El Salvador":"https://flagcdn.com/w40/sv.png",
+"Equatorial Guinea":"https://flagcdn.com/w40/gq.png",
+"Eritrea":"https://flagcdn.com/w40/er.png",
+"Estonia":"https://flagcdn.com/w40/ee.png",
+"Eswatini":"https://flagcdn.com/w40/sz.png",
+"Ethiopia":"https://flagcdn.com/w40/et.png",
+"Fiji":"https://flagcdn.com/w40/fj.png",
+"Finland":"https://flagcdn.com/w40/fi.png",
+"France":"https://flagcdn.com/w40/fr.png",
+"Gabon":"https://flagcdn.com/w40/ga.png",
+"Gambia":"https://flagcdn.com/w40/gm.png",
+"Georgia":"https://flagcdn.com/w40/ge.png",
+"Germany":"https://flagcdn.com/w40/de.png",
+"Ghana":"https://flagcdn.com/w40/gh.png",
+"Greece":"https://flagcdn.com/w40/gr.png",
+"Grenada":"https://flagcdn.com/w40/gd.png",
+"Guatemala":"https://flagcdn.com/w40/gt.png",
+"Guinea":"https://flagcdn.com/w40/gn.png",
+"Guinea-Bissau":"https://flagcdn.com/w40/gw.png",
+"Guyana":"https://flagcdn.com/w40/gy.png",
+"Haiti":"https://flagcdn.com/w40/ht.png",
+"Honduras":"https://flagcdn.com/w40/hn.png",
+"Hungary":"https://flagcdn.com/w40/hu.png",
+"Iceland":"https://flagcdn.com/w40/is.png",
+"India":"https://flagcdn.com/w40/in.png",
+"Indonesia":"https://flagcdn.com/w40/id.png",
+"Iran":"https://flagcdn.com/w40/ir.png",
+"Iraq":"https://flagcdn.com/w40/iq.png",
+"Ireland":"https://flagcdn.com/w40/ie.png",
+"Israel":"https://flagcdn.com/w40/il.png",
+"Italy":"https://flagcdn.com/w40/it.png",
+"Jamaica":"https://flagcdn.com/w40/jm.png",
+"Japan":"https://flagcdn.com/w40/jp.png",
+"Jordan":"https://flagcdn.com/w40/jo.png",
+"Kazakhstan":"https://flagcdn.com/w40/kz.png",
+"Kenya":"https://flagcdn.com/w40/ke.png",
+"Kiribati":"https://flagcdn.com/w40/ki.png",
+"Kuwait":"https://flagcdn.com/w40/kw.png",
+"Kyrgyzstan":"https://flagcdn.com/w40/kg.png",
+"Laos":"https://flagcdn.com/w40/la.png",
+"Latvia":"https://flagcdn.com/w40/lv.png",
+"Lebanon":"https://flagcdn.com/w40/lb.png",
+"Lesotho":"https://flagcdn.com/w40/ls.png",
+"Liberia":"https://flagcdn.com/w40/lr.png",
+"Libya":"https://flagcdn.com/w40/ly.png",
+"Liechtenstein":"https://flagcdn.com/w40/li.png",
+"Lithuania":"https://flagcdn.com/w40/lt.png",
+"Luxembourg":"https://flagcdn.com/w40/lu.png",
+"Madagascar":"https://flagcdn.com/w40/mg.png",
+"Malawi":"https://flagcdn.com/w40/mw.png",
+"Malaysia":"https://flagcdn.com/w40/my.png",
+"Maldives":"https://flagcdn.com/w40/mv.png",
+"Mali":"https://flagcdn.com/w40/ml.png",
+"Malta":"https://flagcdn.com/w40/mt.png",
+"Marshall Islands":"https://flagcdn.com/w40/mh.png",
+"Mauritania":"https://flagcdn.com/w40/mr.png",
+"Mauritius":"https://flagcdn.com/w40/mu.png",
+"Mexico":"https://flagcdn.com/w40/mx.png",
+"Micronesia":"https://flagcdn.com/w40/fm.png",
+"Moldova":"https://flagcdn.com/w40/md.png",
+"Monaco":"https://flagcdn.com/w40/mc.png",
+"Mongolia":"https://flagcdn.com/w40/mn.png",
+"Montenegro":"https://flagcdn.com/w40/me.png",
+"Morocco":"https://flagcdn.com/w40/ma.png",
+"Mozambique":"https://flagcdn.com/w40/mz.png",
+"Myanmar":"https://flagcdn.com/w40/mm.png",
+"Namibia":"https://flagcdn.com/w40/na.png",
+"Nauru":"https://flagcdn.com/w40/nr.png",
+"Nepal":"https://flagcdn.com/w40/np.png",
+"Netherlands":"https://flagcdn.com/w40/nl.png",
+"New Zealand":"https://flagcdn.com/w40/nz.png",
+"Nicaragua":"https://flagcdn.com/w40/ni.png",
+"Niger":"https://flagcdn.com/w40/ne.png",
+"Nigeria":"https://flagcdn.com/w40/ng.png",
+"North Korea":"https://flagcdn.com/w40/kp.png",
+"North Macedonia":"https://flagcdn.com/w40/mk.png",
+"Norway":"https://flagcdn.com/w40/no.png",
+"Oman":"https://flagcdn.com/w40/om.png",
+"Pakistan":"https://flagcdn.com/w40/pk.png",
+"Palau":"https://flagcdn.com/w40/pw.png",
+"Palestine":"https://flagcdn.com/w40/ps.png",
+"Panama":"https://flagcdn.com/w40/pa.png",
+"Papua New Guinea":"https://flagcdn.com/w40/pg.png",
+"Paraguay":"https://flagcdn.com/w40/py.png",
+"Peru":"https://flagcdn.com/w40/pe.png",
+"Philippines":"https://flagcdn.com/w40/ph.png",
+"Poland":"https://flagcdn.com/w40/pl.png",
+"Portugal":"https://flagcdn.com/w40/pt.png",
+"Qatar":"https://flagcdn.com/w40/qa.png",
+"Romania":"https://flagcdn.com/w40/ro.png",
+"Russia":"https://flagcdn.com/w40/ru.png",
+"Rwanda":"https://flagcdn.com/w40/rw.png",
+"Saint Kitts and Nevis":"https://flagcdn.com/w40/kn.png",
+"Saint Lucia":"https://flagcdn.com/w40/lc.png",
+"Saint Vincent and the Grenadines":"https://flagcdn.com/w40/vc.png",
+"Samoa":"https://flagcdn.com/w40/ws.png",
+"San Marino":"https://flagcdn.com/w40/sm.png",
+"Sao Tome and Principe":"https://flagcdn.com/w40/st.png",
+"Saudi Arabia":"https://flagcdn.com/w40/sa.png",
+"Senegal":"https://flagcdn.com/w40/sn.png",
+"Serbia":"https://flagcdn.com/w40/rs.png",
+"Seychelles":"https://flagcdn.com/w40/sc.png",
+"Sierra Leone":"https://flagcdn.com/w40/sl.png",
+"Singapore":"https://flagcdn.com/w40/sg.png",
+"Slovakia":"https://flagcdn.com/w40/sk.png",
+"Slovenia":"https://flagcdn.com/w40/si.png",
+"Solomon Islands":"https://flagcdn.com/w40/sb.png",
+"Somalia":"https://flagcdn.com/w40/so.png",
+"South Africa":"https://flagcdn.com/w40/za.png",
+"South Korea":"https://flagcdn.com/w40/kr.png",
+"South Sudan":"https://flagcdn.com/w40/ss.png",
+"Spain":"https://flagcdn.com/w40/es.png",
+"Sri Lanka":"https://flagcdn.com/w40/lk.png",
+"Sudan":"https://flagcdn.com/w40/sd.png",
+"Suriname":"https://flagcdn.com/w40/sr.png",
+"Sweden":"https://flagcdn.com/w40/se.png",
+"Switzerland":"https://flagcdn.com/w40/ch.png",
+"Syria":"https://flagcdn.com/w40/sy.png",
+"Taiwan":"https://flagcdn.com/w40/tw.png",
+"Tajikistan":"https://flagcdn.com/w40/tj.png",
+"Tanzania":"https://flagcdn.com/w40/tz.png",
+"Thailand":"https://flagcdn.com/w40/th.png",
+"Timor-Leste":"https://flagcdn.com/w40/tl.png",
+"Togo":"https://flagcdn.com/w40/tg.png",
+"Tonga":"https://flagcdn.com/w40/to.png",
+"Trinidad and Tobago":"https://flagcdn.com/w40/tt.png",
+"Tunisia":"https://flagcdn.com/w40/tn.png",
+"Turkey":"https://flagcdn.com/w40/tr.png",
+"Turkmenistan":"https://flagcdn.com/w40/tm.png",
+"Tuvalu":"https://flagcdn.com/w40/tv.png",
+"Uganda":"https://flagcdn.com/w40/ug.png",
+"Ukraine":"https://flagcdn.com/w40/ua.png",
+"United Arab Emirates":"https://flagcdn.com/w40/ae.png",
+"United Kingdom":"https://flagcdn.com/w40/gb.png",
+"United States":"https://flagcdn.com/w40/us.png",
+"Uruguay":"https://flagcdn.com/w40/uy.png",
+"Uzbekistan":"https://flagcdn.com/w40/uz.png",
+"Vanuatu":"https://flagcdn.com/w40/vu.png",
+"Vatican City":"https://flagcdn.com/w40/va.png",
+"Venezuela":"https://flagcdn.com/w40/ve.png",
+"Vietnam":"https://flagcdn.com/w40/vn.png",
+"Yemen":"https://flagcdn.com/w40/ye.png",
+"Zambia":"https://flagcdn.com/w40/zm.png",
+"Zimbabwe":"https://flagcdn.com/w40/zw.png"
+};
 function getFlag(c){return COUNTRY_FLAGS[c]||'🌍';}
 function fmtDate(ts){if(!ts)return'';const d=new Date(ts);return d.getDate()+' '+['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][d.getMonth()]+' '+d.getFullYear();}
 </script>
