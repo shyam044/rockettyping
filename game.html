@@ -2696,28 +2696,7 @@ function animateResult(stats, entries, rankIdx, rankColor) {
   document.getElementById('race-result-title').style.color = rankColor;
   document.getElementById('ring-wpm').style.stroke = rankColor;
 
-  /* Build positions table */
-  const list = document.getElementById('positions-list');
-  list.innerHTML = '';
-  entries.forEach((e, idx) => {
-    const pct = Math.min(100, Math.round((e.progress / TRACK_WIDTH) * 100));
-    const finished = e.progress >= TRACK_WIDTH;
-    const barColor = BAR_COLORS[idx];
-    const row = document.createElement('div');
-    row.className = 'res-row' + (e.isPlayer ? ' is-player' : '');
-row.innerHTML = `
-  <td class="rank${rank}">${rd}</td>
-  <td><span style="font-weight:bold">${d.name}</span></td>
-  <td style="font-size:20px;text-align:center;" title="${country}">
-    ${_gf.startsWith('http') 
-      ? `<img src="${_gf}" alt="" style="width:28px;height:20px;object-fit:contain;vertical-align:middle;">` 
-      : _gf}
-  </td>
-  <td style="color:#ffd700;font-weight:bold;">${d.topWPM}</td>
-  <td style="color:#888;font-size:11px">${_gd}</td>
-`;
-    list.appendChild(row);
-  });
+const list = document.getElementById('positions-list');
 
   /* Helper: count up number */
   function countUp(el, target, suffix, duration) {
