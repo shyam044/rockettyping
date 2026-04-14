@@ -2552,7 +2552,7 @@ const vocabulary={nouns: ["ability", "absence", "academy", "account", "achieveme
             articles: ["a", "an", "the", "this", "that", "these", "those", "my", "your", "his", "her", "its", "our", "their",
                 "all", "another", "any", "both", "each", "either", "enough", "few", "fewer", "fewest", "many", "more", "most",
                 "much", "neither", "no", "other", "several", "some", "such", "what", "which", "whose", "each and every", "certain",
-                "certainly", "half", "little", "less", "least", "plenty", "various", "one", "two", "three", "first", "second", "third","verashia"]};
+                "certainly", "half", "little", "less", "least", "plenty", "various", "one", "two", "three", "first", "second", "third"]};
 const templates={easy:["{article} {adjective} {noun} {verb} {adverb}","{article} {noun} {verb} {preposition} {article} {adjective} {noun}"]};
 function randomItem(arr){return arr[Math.floor(Math.random()*arr.length)];}
 function generateSentence(){let t=randomItem(templates.easy);return t.replace(/{article}/g,()=>randomItem(vocabulary.articles)).replace(/{adjective}/g,()=>randomItem(vocabulary.adjectives)).replace(/{noun}/g,()=>randomItem(vocabulary.nouns)).replace(/{verb}/g,()=>randomItem(vocabulary.verbs)).replace(/{adverb}/g,()=>randomItem(vocabulary.adverbs)).replace(/{preposition}/g,()=>randomItem(vocabulary.prepositions)).toLowerCase();}
@@ -2696,7 +2696,38 @@ function animateResult(stats, entries, rankIdx, rankColor) {
   document.getElementById('race-result-title').style.color = rankColor;
   document.getElementById('ring-wpm').style.stroke = rankColor;
 
+/* Build positions table */
 const list = document.getElementById('positions-list');
+list.innerHTML = '';
+
+entries.forEach((e, idx) => {
+  const pct = Math.min(100, Math.round((e.progress / TRACK_WIDTH) * 100));
+  const finished = e.progress >= TRACK_WIDTH;
+  const barColor = BAR_COLORS[idx] || '#888888';
+
+  const row = document.createElement('div');
+  row.className = `res-row ${e.isPlayer ? 'is-player' : ''}`;
+
+  const posHTML = idx === 0 ? '🥇' : idx === 1 ? '🥈' : idx === 2 ? '🥉' : `${idx+1}<sup>th</sup>`;
+
+  row.innerHTML = `
+    <div class="res-rank">${posHTML}</div>
+    <div class="res-ship" style="font-size:19px;text-align:center;">${e.shipEmoji || '🚀'}</div>
+    <div class="res-name ${e.isPlayer ? 'you' : ''}">${e.name}</div>
+    <div class="res-bar-cell">
+      <div class="res-bar-wrap">
+        <div class="res-bar-fill" style="background:${barColor};width:0%"></div>
+        <div class="res-bar-shimmer"></div>
+      </div>
+      <div class="res-bar-pct">${pct}%</div>
+    </div>
+    <div class="res-status" style="color:${finished ? '#44ff88' : '#888888'}">
+      ${finished ? '● FINISHED' : '○ RACING'}
+    </div>
+  `;
+
+  list.appendChild(row);
+});
 
   /* Helper: count up number */
   function countUp(el, target, suffix, duration) {
@@ -3048,6 +3079,9 @@ function resetRace(){raceStarted=false;const avg=getAverageWPM(),pp=w=>w*0.5;opp
 document.querySelectorAll('.rstat').forEach(s=>s.classList.remove('rshow'));
 ['ring-wpm','ring-acc','ring-cons'].forEach(id=>{const r=document.getElementById(id);if(r){r.style.transition='none';r.style.strokeDashoffset='232.5';}});
 wordsOffset=0;wordsDiv.style.transform="translateX(0px)";wordDomStart=0;generateWords();renderInitialWords();assignAINames();assignShips();
+let currentShipAssignment = [
+  {emoji:'🚀'}, {emoji:'🛰️'}, {emoji:'🌠'}, {emoji:'☄️'}, {emoji:'🪐'}
+];
 // Reset big WPM display
 const bw=document.getElementById('race-wpm-number');if(bw){bw.textContent='—';bw.className='';}
 const ba=document.getElementById('race-wpm-acc');if(ba)ba.textContent='';
