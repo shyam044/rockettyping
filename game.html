@@ -2646,8 +2646,20 @@ function endRace(){
   const sfx=['ST','ND','RD','TH','TH'],emj=['🥇','🥈','🥉','4️⃣','5️⃣'],clr=['#ffd700','#c8c8c8','#cd7f32','#aaaaaa','#888888'],msg=['🚀 You launched past every rival!','⚡ Just off the top — insane speed!','🏅 Top 3 podium finish — great run!','💪 Solid race. Close to the podium!','🔥 Keep training, pilot — the stars await!'];
   if(rank===1)playSound('win');else if(rank<=3)playSound('finish');else playSound('lose');
   const stats=calculateStats();
-  const username=localStorage.getItem("rt_registered_name");
-  if(username){const ur=db.collection("leaderboard").doc(username);ur.get().then(d=>{if(!d.exists||stats.wpm>d.data().topWPM)ur.set({name:username,topWPM:stats.wpm,country:localStorage.getItem('rt_user_country')||'',updated:Date.now()});});}
+  // Use Firebase Auth identity — never trust localStorage alone for Firestore writes
+  const _authUser = auth.currentUser;
+  if(_authUser && stats.wpm > 0 && stats.wpm <= 300){
+    db.collection("users").doc(_authUser.uid).get().then(userSnap => {
+      if(!userSnap.exists) return;
+      const _verifiedName = userSnap.data().name;
+      const _verifiedCountry = userSnap.data().country || '';
+      const ur = db.collection("leaderboard").doc(_authUser.uid);
+      ur.get().then(d=>{
+        if(!d.exists||stats.wpm>d.data().topWPM)
+          ur.set({name:_verifiedName,topWPM:stats.wpm,country:_verifiedCountry,uid:_authUser.uid,updated:Date.now()});
+      });
+    });
+  }
   totalMatches++;totalWPM+=stats.wpm;localStorage.setItem("rt_matches",totalMatches);localStorage.setItem("rt_total_wpm",totalWPM);
   const ri=rank-1;
   const rankColor=clr[ri];
@@ -2713,7 +2725,7 @@ entries.forEach((e, idx) => {
   row.innerHTML = `
     <div class="res-rank">${posHTML}</div>
     <div class="res-ship" style="font-size:19px;text-align:center;">${e.shipEmoji || '🚀'}</div>
-    <div class="res-name ${e.isPlayer ? 'you' : ''}">${e.name}</div>
+    <div class="res-name ${e.isPlayer ? 'you' : ''}">${sanitizeStr(e.name)}</div>
     <div class="res-bar-cell">
       <div class="res-bar-wrap">
         <div class="res-bar-fill" style="background:${barColor};width:0%"></div>
@@ -3091,6 +3103,21 @@ function showRaceCountdown(cb){leaderboardBtn.style.display="none";const ov=docu
 restartBtn.addEventListener('click',()=>{leaderboardBtn.style.display="none";resultDiv.classList.remove('visible');resetRace();showRaceCountdown(()=>{});});
 
 
+
+/* ═══════════════════════════════════════════════════════════
+   SECURITY HELPER — sanitise every string before innerHTML
+   Prevents XSS from malicious Firestore data
+═══════════════════════════════════════════════════════════ */
+function sanitizeStr(s) {
+    if (s == null) return '';
+    return String(s)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#x27;')
+        .replace(/\//g, '&#x2F;');
+}
 /* Leaderboard */
 const leaderboardBtn=document.getElementById("leaderboard-btn"),leaderboardDiv=document.getElementById("leaderboard"),leaderboardBody=document.getElementById("leaderboard-body"),closeLeaderboard=document.getElementById("close-leaderboard");
 leaderboardBtn.onclick=loadLeaderboard;closeLeaderboard.onclick=()=>leaderboardDiv.style.display="none";
@@ -3100,7 +3127,8 @@ async function loadLeaderboard(){
   try{
     const snap=await db.collection("leaderboard").orderBy("topWPM","desc").limit(10).get();
     leaderboardBody.innerHTML="";
-    const cu=localStorage.getItem("rt_registered_name");
+    const _authCurrent = auth.currentUser;
+    const cu=_authCurrent?_authCurrent.uid:null;
 
     /* Collect rows and names that are missing country */
     const rows=[];
@@ -3140,17 +3168,21 @@ async function loadLeaderboard(){
 
       const _gd = fmtDate(d.updated || d.time || null);
 
+      const _sn = sanitizeStr(d.name);
+      const _sw = sanitizeStr(d.topWPM);
+      const _sc = sanitizeStr(country);
+      const _sgd = sanitizeStr(_gd);
       row.innerHTML = `
         <td class="rank${rank}">${rd}</td>
-        <td><span style="font-weight:bold">${d.name}</span></td>
-        <td style="font-size:20px;text-align:center;" title="${country}">
+        <td><span style="font-weight:bold">${_sn}</span></td>
+        <td style="font-size:20px;text-align:center;" title="${_sc}">
           ${flagHTML}
         </td>
-        <td style="color:#ffd700;font-weight:bold;">${d.topWPM}</td>
-        <td style="color:#888;font-size:11px">${_gd}</td>
+        <td style="color:#ffd700;font-weight:bold;">${_sw}</td>
+        <td style="color:#888;font-size:11px">${_sgd}</td>
       `;
 
-      if (d.name === cu) {
+      if (cu && d.uid && d.uid === cu) {
         row.style.background = "#1a2a3d";
         row.style.color = "#ffd700";
         row.style.fontWeight = "bold";
@@ -3163,7 +3195,7 @@ async function loadLeaderboard(){
     leaderboardBody.innerHTML="<tr><td colspan='5'>Error loading leaderboard</td></tr>";
   }
   const p=document.getElementById('lb-register-prompt');
-  if(p&&localStorage.getItem('rt_registered_name'))p.style.display='none';
+  if(p&&auth.currentUser)p.style.display='none';
 }
 
 /* ══════════════════════════════════════════════════════
@@ -3228,7 +3260,7 @@ document.getElementById('game-signup-btn').addEventListener('click', async () =>
     if (!snap.empty) { err.textContent = 'Username already taken. Choose another.'; return; }
     const cred = await auth.createUserWithEmailAndPassword(email, pw);
     await db.collection('users').doc(cred.user.uid).set({
-      name: username, email, country, uid: cred.user.uid, created: Date.now()
+      name: username, country, uid: cred.user.uid, created: Date.now()
     });
     closeAuthModal();
   } catch(e) {
