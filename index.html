@@ -2112,6 +2112,21 @@ if (registeredName && config.mode === 'time') {
             }
             requestAnimationFrame(step);
         }
+
+/* ═══════════════════════════════════════════════════════════
+   SECURITY HELPER — sanitise every string before innerHTML
+   Prevents XSS from malicious Firestore data
+═══════════════════════════════════════════════════════════ */
+function sanitizeStr(s) {
+    if (s == null) return '';
+    return String(s)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#x27;')
+        .replace(/\//g, '&#x2F;');
+}
         async function saveScore(name, wpm, accuracy, duration) {
             try {
 const docId = `${window._currentUser?.uid || name}_${duration}`;     // one best score per user per duration
@@ -2120,6 +2135,8 @@ const docId = `${window._currentUser?.uid || name}_${duration}`;     // one best
                 const existing = await getDoc(userRef);
                 const existingData = existing.data();
 
+                // Sanity-check: reject impossibly high WPM (>300 is physically impossible)
+                if (wpm > 300) { console.warn('Score rejected: WPM too high'); return; }
                 if (!existing.exists() || wpm > (existingData?.wpm || 0)) {
                     await setDoc(userRef, {
                         name: name,
@@ -2185,7 +2202,7 @@ const docId = `${window._currentUser?.uid || name}_${duration}`;     // one best
             let rank = 1;
 
                              entries.forEach(data => {
-                const isYou = registeredName && data.name === registeredName;
+                const isYou = window._currentUser && data.uid && data.uid === window._currentUser.uid;
 
                 const row = document.createElement('div');
                 row.className = `leaderboard-row ${rank === 1 ? 'top1' : rank === 2 ? 'top2' : rank === 3 ? 'top3' : ''} ${isYou ? 'you' : ''}`;
@@ -2203,15 +2220,20 @@ const docId = `${window._currentUser?.uid || name}_${duration}`;     // one best
                 else if (rank === 2) rankDisplay = "🥈";
                 else if (rank === 3) rankDisplay = "🥉";
 
+                const _safeName = sanitizeStr(data.name);
+                const _safeWpm  = sanitizeStr(data.wpm);
+                const _safeAcc  = sanitizeStr(data.accuracy);
+                const _safeDate = sanitizeStr(_date);
+                const _safeCountryTitle = sanitizeStr(_country);
                 row.innerHTML = `
                     <span class="rank">${rankDisplay}</span>
                     <span class="player">
-                        <span class="lb-player-name">${data.name}</span>
+                        <span class="lb-player-name">${_safeName}</span>
                     </span>
-                    <span class="lb-flag-cell" title="${_country}">${_flag}</span>
-                    <span style="font-weight:900;color:#ffd700">${data.wpm}</span>
-                    <span>${data.accuracy}%</span>
-                    <span class="lb-date-cell">${_date}</span>
+                    <span class="lb-flag-cell" title="${_safeCountryTitle}">${_flag}</span>
+                    <span style="font-weight:900;color:#ffd700">${_safeWpm}</span>
+                    <span>${_safeAcc}%</span>
+                    <span class="lb-date-cell">${_safeDate}</span>
                 `;
 
                 body.appendChild(row);
@@ -2303,7 +2325,7 @@ async function doSignup() {
         const cred = await createUserWithEmailAndPassword(auth, email, password);
         // Save profile to Firestore, keyed by uid
         await setDoc(doc(db, 'users', cred.user.uid), {
-            name: username, email, country, uid: cred.user.uid, created: Date.now()
+            name: username, country, uid: cred.user.uid, created: Date.now()
         });
         closeAuthModal();
     } catch (e) {
