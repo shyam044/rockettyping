@@ -2128,23 +2128,39 @@ function sanitizeStr(s) {
         .replace(/\//g, '&#x2F;');
 }
         async function saveScore(name, wpm, accuracy, duration) {
+            // SECURITY FIX: always use auth.currentUser — never fallback to localStorage for identity
+            const authUser = auth.currentUser;
+            if (!authUser) return; // must be authenticated
+
             try {
-const docId = `${window._currentUser?.uid || name}_${duration}`;     // one best score per user per duration
+                // SECURITY FIX: re-verify name & country from Firestore — never trust client-side vars alone
+                let verifiedName    = name;
+                let verifiedCountry = window._currentUser?.country || '';
+                try {
+                    const userSnap = await getDoc(doc(db, 'users', authUser.uid));
+                    if (userSnap.exists()) {
+                        verifiedName    = userSnap.data().name    || name;
+                        verifiedCountry = userSnap.data().country || '';
+                    }
+                } catch(verifyErr) { /* use session values as fallback */ }
+
+                const docId   = `${authUser.uid}_${duration}`; // keyed by real uid
                 const userRef = doc(db, "typing_test_scores", docId);
 
-                const existing = await getDoc(userRef);
+                const existing     = await getDoc(userRef);
                 const existingData = existing.data();
 
                 // Sanity-check: reject impossibly high WPM (>300 is physically impossible)
                 if (wpm > 300) { console.warn('Score rejected: WPM too high'); return; }
                 if (!existing.exists() || wpm > (existingData?.wpm || 0)) {
                     await setDoc(userRef, {
-                        name: name,
-                        wpm: wpm,
-                        accuracy: accuracy,
+                        name:         verifiedName,    // SECURITY FIX: verified from Firestore
+                        wpm:          wpm,
+                        accuracy:     accuracy,
                         testDuration: duration,
-                        country: window._currentUser?.country || localStorage.getItem('rt_user_country') || '',
-                        time: Date.now()
+                        country:      verifiedCountry, // SECURITY FIX: verified from Firestore
+                        uid:          authUser.uid,    // SECURITY FIX: uid now included (required by rules)
+                        time:         Date.now()
                     });
                 }
             } catch (e) {
@@ -2316,7 +2332,8 @@ async function doSignup() {
     if (!/^[a-z0-9_]+$/.test(username)) return errEl.textContent = 'Only lowercase letters, numbers, and _ allowed.';
     if (!country) return errEl.textContent = 'Please enter your country.';
     if (!email)   return errEl.textContent = 'Please enter your email.';
-    if (password.length < 6) return errEl.textContent = 'Password must be at least 6 characters.';
+    // SECURITY FIX: increased minimum from 6 to 8 characters
+    if (password.length < 8) return errEl.textContent = 'Password must be at least 8 characters.';
     try {
         // Check username not already taken
         const snap = await getDocs(query(collection(db, 'users'), where('name', '==', username)));
@@ -2329,8 +2346,10 @@ async function doSignup() {
         });
         closeAuthModal();
     } catch (e) {
+        // SECURITY FIX: never expose e.message — it can contain internal Firebase details
         if (e.code === 'auth/email-already-in-use') errEl.textContent = 'This email is already registered. Please login.';
-        else errEl.textContent = 'Signup failed: ' + e.message;
+        else errEl.textContent = 'Signup failed. Please try again.';
+        console.error('Signup error:', e.code);
     }
 }
 async function doSignOut() {
