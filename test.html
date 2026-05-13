@@ -158,6 +158,18 @@
         .champ-score { font-size: 13px; font-weight: 700; color: var(--orange); margin-top: 4px; }
         .champ-beat-note { font-size: 11px; color: var(--muted); margin-top: 10px; text-align: center; letter-spacing: 0.5px; }
         .lb-empty, .lb-loading, .lb-error { text-align: center; color: var(--muted); font-size: 13px; padding: 24px; }
+        .lb-row { display: flex; align-items: center; gap: 12px; padding: 10px 14px; border-radius: 10px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07); margin-bottom: 6px; }
+        .lb-row.is-you { border-color: rgba(0,230,204,0.4); background: rgba(0,230,204,0.06); }
+        .lb-rank { font-size: 14px; font-weight: 900; color: var(--muted); min-width: 32px; text-align: center; flex-shrink: 0; }
+        .lb-row.rank-1 .lb-rank { color: var(--gold2); }
+        .lb-row.rank-2 .lb-rank { color: #c0c0c0; }
+        .lb-row.rank-3 .lb-rank { color: #cd7f32; }
+        .lb-player-name { font-size: 14px; font-weight: 700; color: var(--text); }
+        .lb-row.is-you .lb-player-name { color: var(--cyan); }
+        .lb-player-meta { font-size: 11px; color: var(--muted); margin-top: 2px; }
+        .lb-player-wpm { font-size: 20px; font-weight: 900; color: var(--gold2); line-height: 1; }
+        .lb-row.is-you .lb-player-wpm { color: var(--cyan); }
+        .lb-beat-note { font-size: 11px; color: var(--muted); margin-top: 12px; text-align: center; letter-spacing: 0.5px; }
 
         .country-select-wrap { position: relative; width: 100%; margin-bottom: 11px; }
         .country-select-display { width: 100%; padding: 13px 15px; font-size: 14px; font-family: 'Roboto Mono', monospace; background: rgba(255,255,255,0.05); border: 2px solid rgba(226,183,20,0.25); border-radius: 9px; color: #fff; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: border-color .2s; user-select: none; }
@@ -180,6 +192,8 @@
         .auth-modal-box { background: rgba(10,10,35,0.98); border: 2px solid var(--orange); border-radius: 20px; padding: 36px 32px; width: 100%; max-width: 420px; position: relative; box-shadow: 0 0 60px rgba(255,215,0,0.2); }
         .auth-modal-close { position: absolute; top: 14px; right: 18px; background: none; border: none; color: var(--muted); font-size: 22px; cursor: pointer; line-height: 1; }
         .auth-tabs { display: flex; margin-bottom: 24px; border-bottom: 2px solid rgba(255,255,255,0.1); }
+        .debug-overlay { position: fixed; right: 14px; bottom: 14px; z-index: 1200; background: rgba(4,12,32,0.95); color: #fff; font-size: 12px; line-height: 1.4; padding: 10px 12px; border-radius: 12px; box-shadow: 0 8px 28px rgba(0,0,0,0.45); max-width: 320px; pointer-events: none; opacity: 0.92; }
+        .debug-overlay strong { color: #ffda6b; }
         .auth-tab-btn { flex: 1; background: none; border: none; padding: 12px; cursor: pointer; font-family: 'Roboto Mono', monospace; font-size: 14px; font-weight: 900; border-bottom: 3px solid transparent; margin-bottom: -2px; transition: color .2s; color: var(--muted); }
         .auth-tab-btn.active { color: var(--gold); border-bottom-color: var(--gold); }
         .auth-form-title { font-size: 18px; font-weight: 900; color: var(--gold); letter-spacing: 2px; margin-bottom: 18px; text-align: center; }
@@ -188,6 +202,8 @@
         .auth-err { color: var(--red); font-size: 12px; min-height: 16px; margin-bottom: 10px; }
         .auth-submit-btn { width: 100%; padding: 14px; background: linear-gradient(135deg, #e2b714, #ff9900); color: #0a0a23; border: none; border-radius: 9px; font-family: 'Roboto Mono', monospace; font-size: 15px; font-weight: 900; letter-spacing: 1px; cursor: pointer; transition: all .2s; }
         .auth-submit-btn:hover { box-shadow: 0 0 30px rgba(226,183,20,0.5); }
+        .debug-overlay { position: fixed; right: 14px; bottom: 14px; z-index: 1200; background: rgba(4,12,32,0.95); color: #fff; font-size: 12px; line-height: 1.4; padding: 10px 12px; border-radius: 12px; box-shadow: 0 8px 28px rgba(0,0,0,0.45); max-width: 320px; pointer-events: none; opacity: 0.92; }
+        .debug-overlay strong { color: #ffda6b; }
 
         @media (max-width: 560px) {
             .card { padding: 24px 16px; }
@@ -204,6 +220,7 @@
 </head>
 <body>
 <div id="app">
+    <!-- debug-overlay removed for production security -->
 
     <nav id="topnav">
         <a href="/" class="back-link">← ROCKET TYPING</a>
@@ -381,7 +398,7 @@ window.toggleCountryDrop=toggleCountryDrop;window.filterCountries=filterCountrie
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import {
     getFirestore, collection, query, getDocs,
-    doc, getDoc, setDoc, where, onSnapshot
+    doc, getDoc, setDoc, updateDoc, arrayUnion, where, onSnapshot
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 import {
     getAuth, onAuthStateChanged,
@@ -454,7 +471,7 @@ function escHtml(s) {
 const _lbUnsubs = {};
 
 function _renderChampionCard(container, d, highlightName, isPast) {
-    const isYou=!!(highlightName&&d.name===highlightName);
+    const isYou=!!(highlightName&&d.name===highlightName)||(window._currentUser&&d.uid&&d.uid===window._currentUser.uid);
     const ago=(()=>{
         if(!d.timestamp)return'';
         const diff=Math.floor((Date.now()-d.timestamp)/1000);
@@ -467,12 +484,12 @@ function _renderChampionCard(container, d, highlightName, isPast) {
             <div class="champ-crown">${isYou?'👑':'🥇'}</div>
             <div class="champ-info">
                 <div class="champ-name">${escHtml(d.name)}${isYou?' (you)':''}</div>
-                <div class="champ-meta">${d.country?getFlag(d.country)+' · ':''}${d.accuracy}% accuracy${ago?' · '+ago:''}</div>
+                <div class="champ-meta">${d.country?getFlag(d.country)+' · ':''}${escHtml(String(d.accuracy))}% accuracy${ago?' · '+ago:''}</div>
             </div>
             <div class="champ-right">
-                <div class="champ-wpm">${d.wpm}</div>
+                <div class="champ-wpm">${escHtml(String(d.wpm))}</div>
                 <div class="champ-wpm-lbl">WPM</div>
-                <div class="champ-score">${d.score} pts</div>
+                <div class="champ-score">${escHtml(String(d.score))} pts</div>
             </div>
         </div>
         <div class="champ-beat-note">${
@@ -486,136 +503,296 @@ function _renderChampionCard(container, d, highlightName, isPast) {
     return isYou?1:null;
 }
 
-function getTopDocRef(sundayKey) {
-    return doc(db,'sunday_championship',`top_${sundayKey}`);
+function _getTopDocPlayers(data) {
+    if (Array.isArray(data.players) && data.players.length) {
+        return data.players;
+    }
+    if (data.name) {
+        return [{
+            name: data.name,
+            wpm: data.wpm,
+            accuracy: data.accuracy,
+            score: data.score,
+            country: data.country || '',
+            timestamp: data.timestamp
+        }];
+    }
+    return [];
 }
 
-/* One-time read for past/closed screen */
-async function loadLeaderboardOnce(bodyId, sundayKey, highlightName=null, isPast=false) {
-    if(_lbUnsubs[bodyId]){_lbUnsubs[bodyId]();delete _lbUnsubs[bodyId];}
-    const container=document.getElementById(bodyId);
-    if(!container)return null;
-    container.innerHTML='<div class="lb-loading">Loading…</div>';
-    try {
-        const snap=await getDoc(getTopDocRef(sundayKey));
-        if(snap.exists()) return _renderChampionCard(container,snap.data(),highlightName,isPast);
-        container.innerHTML=`<div class="lb-empty">${isPast?'🏁 No champion was recorded last Sunday.':'🚀 No champion yet — be the first!'}</div>`;
-        return null;
-    } catch(err) {
-        console.error('Champion load error:',err);
-        container.innerHTML=`<div class="lb-error">Could not load champion.<br><small>${err.message}</small></div>`;
+function _renderTopLeaderboard(container, data, highlightName, isPast) {
+    const players = _getTopDocPlayers(data);
+    if (!players.length) {
+        container.innerHTML = `<div class="lb-empty">${isPast ? '🏁 No entries last Sunday.' : '🚀 No players yet — be the first!'}</div>`;
         return null;
     }
+    if (!Array.isArray(data.players) || data.players.length <= 1) {
+        return _renderChampionCard(container, players[0], highlightName, isPast);
+    }
+    return _renderFullLeaderboard(container, players, highlightName, isPast);
 }
 
-/* Real-time listener for live Sunday screens */
-function loadLeaderboard(bodyId, sundayKey, highlightName=null, isPast=false) {
-    if(_lbUnsubs[bodyId]){_lbUnsubs[bodyId]();delete _lbUnsubs[bodyId];}
-    const container=document.getElementById(bodyId);
-    if(!container)return Promise.resolve(null);
-    container.innerHTML='<div class="lb-loading">Loading…</div>';
-    return new Promise((resolve)=>{
-        let resolved=false;
-        const unsub=onSnapshot(
-            getTopDocRef(sundayKey),
-            (snap)=>{
-                if(!snap.exists()){
-                    container.innerHTML='<div class="lb-empty">🚀 No champion yet — be the first!</div>';
-                    if(!resolved){resolved=true;resolve(null);}
-                    return;
-                }
-                const rank=_renderChampionCard(container,snap.data(),highlightName,isPast);
-                if(!resolved){resolved=true;resolve(rank);}
-            },
-            (err)=>{
-                console.error('Champion snapshot error:',err);
-                container.innerHTML=`<div class="lb-error">Could not load champion.<br><small>${err.message}</small></div>`;
-                if(!resolved){resolved=true;resolve(null);}
-            }
-        );
-        _lbUnsubs[bodyId]=unsub;
-    });
+function getSundayKeyVariants(keyOrDate) {
+    const date = typeof keyOrDate === 'string' ? new Date(keyOrDate) : new Date(keyOrDate);
+    if (Number.isNaN(date.getTime())) return [];
+    const year = date.getFullYear();
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
+    const variants = [
+        `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`,
+        `${year}-${month}-${String(day).padStart(2, '0')}`,
+        `${year}-${String(month).padStart(2, '0')}-${day}`,
+        `${year}-${month}-${day}`
+    ];
+    return variants.filter((value, index, array) => array.indexOf(value) === index);
+}
+
+function getTopDocRefs(sundayKey) {
+    return getSundayKeyVariants(sundayKey).map(key => ({
+        key,
+        ref: doc(db, 'sunday_championship', `top_${key}`)
+    }));
+}
+
+function getTopDocRef(sundayKey) {
+    return doc(db, 'sunday_championship', `top_${sundayKey}`);
+}
+
+function setDebugInfo(message) {
+    // Debug overlay disabled in production
 }
 
 /* ─────────────────────────────────────────────────────────────────────
-   ✅ KEY FIX: updateChampionIfBetter — NO MORE runTransaction
-   
-   We simply call setDoc(topRef, newData) directly.
-   The Firestore security rules already enforce correctness:
-     • allow create  → any valid score can create the initial doc
-     • allow update  → only passes when request.resource.data.score > resource.data.score
-   
-   So if our score is lower than the current champion, Firestore rejects
-   the write (permission-denied) and we silently ignore it — correct!
-   If our score is higher, the write succeeds — also correct!
-   
-   This is far more reliable than runTransaction which can silently fail
-   when rules are evaluated at commit time vs. read time.
-───────────────────────────────────────────────────────────────────── */
-async function updateChampionIfBetter(name, wpm, accuracy, score, sundayKey, country) {
-    // Guard: must be authenticated
+   NEW APPROACH — store ALL players inside the top_ document as an array.
+
+   Structure of top_YYYY-MM-DD:
+   {
+     champion: { name, wpm, accuracy, score, country, timestamp },
+     players:  [ { name, wpm, accuracy, score, country, timestamp }, ... ]
+   }
+
+   No secondary collection query needed. No Firestore index needed.
+   Single document read shows the full leaderboard.
+   onSnapshot gives real-time updates.
+─────────────────────────────────────────────────────────────────────── */
+
+/* ── RENDER FULL LEADERBOARD FROM players ARRAY ── */
+function _renderFullLeaderboard(container, players, highlightName, isPast) {
+    if (!players || players.length === 0) {
+        container.innerHTML = `<div class="lb-empty">${isPast ? '🏁 No entries last Sunday.' : '🚀 No players yet — be the first!'}</div>`;
+        return null;
+    }
+    const sorted = [...players].sort((a, b) => b.score - a.score);
+    let myRank = null;
+    let html = '';
+    sorted.forEach((d, i) => {
+        const rank = i + 1;
+        const isYou = !!(highlightName && d.name === highlightName)||(window._currentUser&&d.uid&&d.uid===window._currentUser.uid);
+        if (isYou) myRank = rank;
+        const medal = rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : '#' + rank;
+        const ago = (() => {
+            if (!d.timestamp) return '';
+            const s = Math.floor((Date.now() - d.timestamp) / 1000);
+            if (s < 60) return s + 's ago';
+            if (s < 3600) return Math.floor(s / 60) + 'm ago';
+            return Math.floor(s / 3600) + 'h ago';
+        })();
+        html += `<div class="lb-row rank-${rank <= 3 ? rank : 'other'}${isYou ? ' is-you' : ''}">
+            <div class="lb-rank">${medal}</div>
+            <div style="flex:1;min-width:0;">
+                <div class="lb-player-name">${escHtml(d.name)}${isYou ? ' 👈' : ''}</div>
+                <div class="lb-player-meta">${d.country ? getFlag(d.country) + ' · ' : ''}${escHtml(String(d.accuracy))}% acc${ago ? ' · ' + ago : ''}</div>
+            </div>
+            <div style="text-align:right;flex-shrink:0;">
+                <div class="lb-player-wpm">${escHtml(String(d.wpm))}</div>
+                <div style="font-size:9px;letter-spacing:1px;color:var(--muted);">WPM</div>
+                <div style="font-size:11px;color:var(--orange);font-weight:700;">${escHtml(String(d.score))} pts</div>
+            </div>
+        </div>`;
+    });
+    const isYouChamp = !!(highlightName && sorted[0].name === highlightName);
+    const note = isPast
+        ? '🏆 Last Sunday\'s final standings'
+        : isYouChamp
+            ? '🎉 You are this Sunday\'s Champion!'
+            : `⬆️ Beat the top score to claim ${getPrizeString(window._currentUser?.country || '')}`;
+    container.innerHTML = html + `<div class="lb-beat-note">${note}</div>`;
+    if (isYouChamp && !isPast) confetti({ particleCount: 250, spread: 120, origin: { y: 0.5 } });
+    return myRank === 1 ? 1 : null;
+}
+
+/* ── ONE-TIME READ (weekday / past Sunday) ── */
+async function loadLeaderboardOnce(bodyId, sundayKey, highlightName = null, isPast = false) {
+    if (_lbUnsubs[bodyId]) { _lbUnsubs[bodyId](); delete _lbUnsubs[bodyId]; }
+    const container = document.getElementById(bodyId);
+    if (!container) return null;
+    container.innerHTML = '<div class="lb-loading">Loading…</div>';
+    const candidates = getTopDocRefs(sundayKey);
+    setDebugInfo(`Loading Sunday leaderboard for: ${sundayKey}\nTrying doc IDs:\n${candidates.map(c => `top_${c.key}`).join('\n')}`);
+    try {
+        for (const candidate of candidates) {
+            const snap = await getDoc(candidate.ref);
+            if (snap.exists()) {
+                setDebugInfo(`Loaded leaderboard from doc: top_${candidate.key}`);
+                const data = snap.data();
+                return _renderTopLeaderboard(container, data, highlightName, isPast);
+            }
+        }
+        setDebugInfo(`No Sunday leaderboard doc found for: ${sundayKey}`);
+        container.innerHTML = `<div class="lb-empty">${isPast ? '🏁 No entries last Sunday.' : '🚀 No players yet — be the first!'}</div>`;
+        return null;
+    } catch (err) {
+        console.error('loadLeaderboardOnce error:', err);
+        setDebugInfo(`Leaderboard load failed: ${err.message}`);
+        container.innerHTML = `<div class="lb-error">Could not load leaderboard.<br><small>${err.message}</small></div>`;
+        return null;
+    }
+}
+
+/* ── REAL-TIME LISTENER (live Sunday screens) ── */
+function loadLeaderboard(bodyId, sundayKey, highlightName = null, isPast = false, keepLoadingOnMissing = false) {
+    if (_lbUnsubs[bodyId]) { _lbUnsubs[bodyId](); delete _lbUnsubs[bodyId]; }
+    const container = document.getElementById(bodyId);
+    if (!container) return Promise.resolve(null);
+    container.innerHTML = '<div class="lb-loading">Loading…</div>';
+    const unsub = onSnapshot(
+        getTopDocRef(sundayKey),
+        (snap) => {
+            if (!snap.exists()) {
+                container.innerHTML = keepLoadingOnMissing
+                    ? '<div class="lb-loading">Loading…</div>'
+                    : '<div class="lb-empty">🚀 No players yet — be the first!</div>';
+                return;
+            }
+            const data = snap.data();
+            _renderTopLeaderboard(container, data, highlightName, isPast);
+        },
+        (err) => {
+            console.error('loadLeaderboard snapshot error:', err);
+            container.innerHTML = `<div class="lb-error">Could not load leaderboard.<br><small>${err.message}</small></div>`;
+        }
+    );
+    _lbUnsubs[bodyId] = unsub;
+    return Promise.resolve(null);
+}
+
+/* ── SAVE SCORE & UPDATE TOP_ DOC ──
+   The top_ document stores:
+     - champion fields at root level (for Firestore rule compatibility)
+     - a players[] array containing ALL participants
+
+   On every new score:
+   1. If top_ does not exist → create it with this player as champion + players:[thisPlayer]
+   2. If top_ exists and this score > current champion → update champion fields + append to players[]
+   3. If top_ exists and this score <= champion → just append to players[] (if not already there)
+
+   We check for duplicates by name to avoid double-entries on page reload.
+─────────────────────────────────────────────────────────────────────── */
+async function saveScoreAndUpdateLeaderboard(name, wpm, accuracy, score, sundayKey, country) {
     if (!auth.currentUser) {
-        console.warn('⚠️ updateChampionIfBetter: no auth user, skipping');
+        console.warn('saveScoreAndUpdateLeaderboard: not authenticated');
         return;
     }
-
     const topRef = getTopDocRef(sundayKey);
-    const newData = {
+    const playerEntry = {
         name, wpm, accuracy, score,
-        sundayDate: sundayKey,
         country: country || '',
+        uid: auth.currentUser?.uid || '',
         timestamp: Date.now()
     };
 
     try {
-        // ✅ FIX: Read first — decide create vs update explicitly
-        const currentSnap = await getDoc(topRef);
+        const snap = await getDoc(topRef);
 
-        if (!currentSnap.exists()) {
-            // No champion yet — CREATE the document
-            await setDoc(topRef, newData);
-            console.log('✅ Champion document CREATED:', newData);
+        if (!snap.exists()) {
+            // First player ever this Sunday — create the document
+            await setDoc(topRef, {
+                // Champion fields (required by Firestore rules for top_ docs)
+                name, wpm, accuracy, score,
+                sundayDate: sundayKey,
+                country: country || '',
+                timestamp: playerEntry.timestamp,
+                // Full players list
+                players: [playerEntry]
+            });
+            console.log('✅ Top doc CREATED, first player:', name);
         } else {
-            const existingScore = currentSnap.data().score;
-            if (score > existingScore) {
-                // New score is strictly higher — UPDATE
-                await setDoc(topRef, newData);
-                console.log('✅ Champion UPDATED (new:', score, '> old:', existingScore + ')');
+            const existing = snap.data();
+            const existingPlayers = existing.players || [];
+
+            // Check if this player already has an entry (prevent duplicates on reload)
+            const alreadyIn = existingPlayers.some(p => p.name === name);
+
+            if (score > (existing.score || 0)) {
+                // New champion — update root fields AND append to players (if not duplicate)
+                const updatedPlayers = alreadyIn
+                    ? existingPlayers.map(p => p.name === name ? playerEntry : p)
+                    : [...existingPlayers, playerEntry];
+                await setDoc(topRef, {
+                    name, wpm, accuracy, score,
+                    sundayDate: sundayKey,
+                    country: country || '',
+                    timestamp: playerEntry.timestamp,
+                    players: updatedPlayers
+                });
+                console.log('✅ New champion:', name, score);
             } else {
-                console.log('ℹ️ Score (' + score + ') not higher than champion (' + existingScore + '), no update');
+                // Not champion — just add to players array if not already there
+                if (!alreadyIn) {
+                    await updateDoc(topRef, { players: arrayUnion(playerEntry) });
+                    console.log('✅ Player added to leaderboard:', name, score);
+                } else {
+                    console.log('ℹ️ Player already in leaderboard:', name);
+                }
             }
         }
     } catch (err) {
         if (err.code === 'permission-denied') {
-            // Concurrent higher-score write beat us — safe to ignore
-            console.log('ℹ️ Permission denied — concurrent write with higher score');
+            console.log('ℹ️ Permission denied — concurrent write, retrying once...');
+            // Retry once after short delay (race condition)
+            setTimeout(() => saveScoreAndUpdateLeaderboard(name, wpm, accuracy, score, sundayKey, country), 1000);
         } else {
-            console.error('❌ Champion update failed:', err.code, err.message);
+            console.error('❌ saveScoreAndUpdateLeaderboard failed:', err.code, err.message);
         }
     }
 }
+
 /* ── FIREBASE SAVE ── */
 async function saveToFirebase(name, wpm, accuracy, score) {
-    const uid=auth.currentUser?.uid;
-    if(!uid){console.warn('saveToFirebase: no auth user');return;}
-
-    const sundayKey=getLocalSundayKey();
-    const country=window._currentUser?.country||'';
-    const ref=doc(db,'sunday_championship',`${uid}_${sundayKey}`);
-
-    // 1. Save individual attempt doc (idempotent — create only if not exists)
+    const authUser = auth.currentUser;
+    if (!authUser) { console.warn('saveToFirebase: no auth user'); return; }
+    const uid = authUser.uid;
+    // Always re-fetch verified name & country from Firestore — never trust client-side variables alone
+    let verifiedName    = name;
+    let verifiedCountry = '';
     try {
-        const existing=await getDoc(ref);
-        if(!existing.exists()){
-            await setDoc(ref,{name,wpm,accuracy,score,sundayDate:sundayKey,country,timestamp:Date.now()});
-            console.log('✅ Individual score saved');
+        const userSnap = await getDoc(doc(db, 'users', uid));
+        if (userSnap.exists()) {
+            verifiedName    = userSnap.data().name || name;
+            verifiedCountry = userSnap.data().country || '';
         }
-    } catch(err) {
-        console.error('Firebase individual save error:',err);
+    } catch (e) {
+        console.warn('Could not re-fetch user doc, using session values:', e);
+        verifiedCountry = window._currentUser?.country || '';
     }
-
-    // 2. Try to become champion — security rules enforce "only higher score wins"
-    await updateChampionIfBetter(name,wpm,accuracy,score,sundayKey,country);
+    const sundayKey = getLocalSundayKey();
+    // Save individual attempt doc (idempotent — one per uid per Sunday)
+    try {
+        const ref = doc(db, 'sunday_championship', `${uid}_${sundayKey}`);
+        const existing = await getDoc(ref);
+        if (!existing.exists()) {
+            await setDoc(ref, {
+                name: verifiedName, wpm, accuracy, score,
+                sundayDate: sundayKey, country: verifiedCountry,
+                uid, timestamp: Date.now()
+            });
+            console.log('✅ Individual score doc saved');
+        }
+    } catch (err) {
+        console.error('Individual score save error:', err);
+    }
+    // Update the shared leaderboard top_ doc
+    await saveScoreAndUpdateLeaderboard(verifiedName, wpm, accuracy, score, sundayKey, verifiedCountry);
 }
 
 /* ── PRIZE STRINGS ── */
@@ -649,15 +826,15 @@ function initPlayedScreen() {
     const attempt=getMyAttempt();
     if(attempt){
         document.getElementById('played-stats-box').innerHTML=`
-            <div class="played-stat"><div class="val">${attempt.wpm}</div><div class="lbl">WPM</div></div>
-            <div class="played-stat"><div class="val">${attempt.accuracy}%</div><div class="lbl">ACCURACY</div></div>
-            <div class="played-stat"><div class="val">${attempt.score}</div><div class="lbl">SCORE</div></div>`;
+            <div class="played-stat"><div class="val">${escHtml(String(attempt.wpm))}</div><div class="lbl">WPM</div></div>
+            <div class="played-stat"><div class="val">${escHtml(String(attempt.accuracy))}%</div><div class="lbl">ACCURACY</div></div>
+            <div class="played-stat"><div class="val">${escHtml(String(attempt.score))}</div><div class="lbl">SCORE</div></div>`;
     }
     const{d,h,m}=formatCountdown(msUntilNextSunday());
     document.getElementById('next-sunday-msg').textContent=`Next championship in ${d}d ${h}h ${m}m`;
     const sundayKey=getLocalSundayKey();
     if(isSunday()){
-        loadLeaderboard('played-lb-body',sundayKey,attempt?.name||null,false);
+        loadLeaderboard('played-lb-body',sundayKey,attempt?.name||null,false,true);
     } else {
         loadLeaderboardOnce('played-lb-body',sundayKey,attempt?.name||null,true);
     }
@@ -686,8 +863,8 @@ function initLobbyScreen() {
     };
     tickEnd(); setInterval(tickEnd,1000);
     startBtn.addEventListener('click',onStartClicked);
-    // Show current champion in lobby so players know what score to beat
-    loadLeaderboard('lobby-lb-body',getLocalSundayKey(),null,false);
+    // Show last Sunday champion for closed days or current champion on Sunday.
+    loadLeaderboard('lobby-lb-body',getLocalSundayKey(),null,false,true);
 }
 
 function onStartClicked() {
@@ -771,10 +948,17 @@ async function _endTest() {
     const score = Math.round(wpm * (accuracy / 100));
     const name = window._champPlayerName || "Anonymous";
 
-    console.log('🏁 Test completed → WPM:', wpm, 'Accuracy:', accuracy, 'Score:', score);  // ← Added detailed log
+    console.log('🏁 Test completed → WPM:', wpm, 'Accuracy:', accuracy, 'Score:', score);
+
+    // Sanity cap — 300 WPM is physically impossible; reject before saving
+    if (wpm > 300) {
+        console.warn('Score sanity check failed — WPM too high, not saving.');
+        _showResults(name, Math.min(wpm, 300), accuracy, score);
+        return;
+    }
 
     saveAttemptLocally(name, wpm, accuracy, score);
-    await saveToFirebase(name, wpm, accuracy, score);   // ← Made sure we wait for save
+    await saveToFirebase(name, wpm, accuracy, score);
     _showResults(name, wpm, accuracy, score);
 }
 
@@ -783,18 +967,9 @@ async function _showResults(name, wpm, accuracy, score) {
     _animateNum('r-wpm', wpm);
     document.getElementById('r-acc').textContent = accuracy + '%';
     document.getElementById('r-score').textContent = score;
-
-    const unsub = onSnapshot(getTopDocRef(getLocalSundayKey()), (snap) => {
-        console.log('🔄 Champion snapshot:', snap.exists() ? 'EXISTS' : 'NOT FOUND');  // ← Added log
-
-        const container = document.getElementById('results-lb-body');
-        if (!snap.exists()) {
-            container.innerHTML = '<div class="lb-empty">🚀 No champion yet — be the first!</div>';
-        } else {
-            _renderChampionCard(container, snap.data(), name, false);
-        }
-    });
-    _lbUnsubs['results-lb-body'] = unsub;
+    // Load full leaderboard — real-time so player sees their name appear immediately.
+    // Keep a loading state while the Sunday top document is created.
+    loadLeaderboard('results-lb-body', getLocalSundayKey(), name, false, true);
 }
 
 function _animateNum(id,end,dur=800){
@@ -845,7 +1020,7 @@ document.getElementById('t-signup-btn').addEventListener('click',async()=>{
         const snap=await getDocs(query(collection(db,'users'),where('name','==',username)));
         if(!snap.empty){err.textContent='Username already taken. Choose another.';return;}
         const cred=await createUserWithEmailAndPassword(auth,email,pw);
-        await setDoc(doc(db,'users',cred.user.uid),{name:username,email,country,uid:cred.user.uid,created:Date.now()});
+        await setDoc(doc(db,'users',cred.user.uid),{name:username,country,uid:cred.user.uid,created:Date.now()});
         closeAuthModal();
     } catch(e){
         err.textContent=e.code==='auth/email-already-in-use'?'This email is already registered. Please login.':'Signup failed: '+e.message;
