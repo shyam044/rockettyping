@@ -747,12 +747,14 @@ async function saveScoreAndUpdateLeaderboard(name, wpm, accuracy, score, sundayK
             }
         }
     } catch (err) {
-        if (err.code === 'permission-denied') {
+        if (err.code === 'permission-denied' && (saveScoreAndUpdateLeaderboard._retries || 0) < 1) {
+            // SECURITY FIX: track retry count to prevent infinite loop
+            saveScoreAndUpdateLeaderboard._retries = (saveScoreAndUpdateLeaderboard._retries || 0) + 1;
             console.log('ℹ️ Permission denied — concurrent write, retrying once...');
-            // Retry once after short delay (race condition)
             setTimeout(() => saveScoreAndUpdateLeaderboard(name, wpm, accuracy, score, sundayKey, country), 1000);
         } else {
-            console.error('❌ saveScoreAndUpdateLeaderboard failed:', err.code, err.message);
+            saveScoreAndUpdateLeaderboard._retries = 0;
+            console.error('❌ saveScoreAndUpdateLeaderboard failed permanently:', err.code, err.message);
         }
     }
 }
@@ -1015,7 +1017,8 @@ document.getElementById('t-signup-btn').addEventListener('click',async()=>{
     if(!/^[a-z0-9_]+$/.test(username)){err.textContent='Only lowercase letters, numbers, and _ allowed.';return;}
     if(!country){err.textContent='Please enter your country.';return;}
     if(!email){err.textContent='Please enter your email.';return;}
-    if(pw.length<6){err.textContent='Password must be at least 6 characters.';return;}
+    // SECURITY FIX: increased minimum from 6 to 8 characters
+    if(pw.length<8){err.textContent='Password must be at least 8 characters.';return;}
     try{
         const snap=await getDocs(query(collection(db,'users'),where('name','==',username)));
         if(!snap.empty){err.textContent='Username already taken. Choose another.';return;}
@@ -1023,7 +1026,9 @@ document.getElementById('t-signup-btn').addEventListener('click',async()=>{
         await setDoc(doc(db,'users',cred.user.uid),{name:username,country,uid:cred.user.uid,created:Date.now()});
         closeAuthModal();
     } catch(e){
-        err.textContent=e.code==='auth/email-already-in-use'?'This email is already registered. Please login.':'Signup failed: '+e.message;
+        // SECURITY FIX: never expose e.message to users
+        err.textContent=e.code==='auth/email-already-in-use'?'This email is already registered. Please login.':'Signup failed. Please try again.';
+        console.error('Signup error:',e.code);
     }
 });
 
