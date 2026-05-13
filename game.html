@@ -3254,7 +3254,8 @@ document.getElementById('game-signup-btn').addEventListener('click', async () =>
   if (!/^[a-z0-9_]+$/.test(username)) { err.textContent = 'Only lowercase letters, numbers, and _ allowed.'; return; }
   if (!country) { err.textContent = 'Please enter your country.'; return; }
   if (!email)   { err.textContent = 'Please enter your email.'; return; }
-  if (pw.length < 6) { err.textContent = 'Password must be at least 6 characters.'; return; }
+  // SECURITY FIX: increased minimum from 6 to 8 characters
+  if (pw.length < 8) { err.textContent = 'Password must be at least 8 characters.'; return; }
   try {
     const snap = await db.collection('users').where('name', '==', username).get();
     if (!snap.empty) { err.textContent = 'Username already taken. Choose another.'; return; }
@@ -3264,9 +3265,11 @@ document.getElementById('game-signup-btn').addEventListener('click', async () =>
     });
     closeAuthModal();
   } catch(e) {
+    // SECURITY FIX: never expose e.message
     err.textContent = e.code === 'auth/email-already-in-use'
       ? 'This email is already registered. Please login.'
-      : 'Signup failed: ' + e.message;
+      : 'Signup failed. Please try again.';
+    console.error('Signup error:', e.code);
   }
 });
 
