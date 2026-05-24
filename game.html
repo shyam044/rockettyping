@@ -1296,7 +1296,7 @@
         </div>
         <input type="hidden" id="game-signup-country">
         <input class="game-auth-input" id="game-signup-email" type="email" placeholder="Email">
-        <input class="game-auth-input" id="game-signup-password" type="password" placeholder="Password (min 6 chars)">
+        <input class="game-auth-input" id="game-signup-password" type="password" placeholder="Password (min 8 chars)">
         <div class="game-auth-err" id="game-signup-err"></div>
         <button class="game-auth-submit" id="game-signup-btn">CREATE ACCOUNT →</button>
       </div>
@@ -3266,10 +3266,18 @@ document.getElementById('game-signup-btn').addEventListener('click', async () =>
     closeAuthModal();
   } catch(e) {
     // SECURITY FIX: never expose e.message
-    err.textContent = e.code === 'auth/email-already-in-use'
-      ? 'This email is already registered. Please login.'
-      : 'Signup failed. Please try again.';
-    console.error('Signup error:', e.code);
+    if (e.code === 'auth/email-already-in-use') {
+      err.textContent = 'This email is already registered. Please login.';
+    } else if (e.code === 'permission-denied' || (e.code && e.code.includes('permission'))) {
+      err.textContent = 'Unable to check username availability. Please try again in a moment.';
+    } else if (e.code === 'auth/weak-password') {
+      err.textContent = 'Password must be at least 8 characters.';
+    } else if (e.code === 'auth/invalid-email') {
+      err.textContent = 'Please enter a valid email address.';
+    } else {
+      err.textContent = 'Signup failed. Please try again.';
+    }
+    console.error('Signup error:', e.code, e.message);
   }
 });
 
