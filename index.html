@@ -83,6 +83,11 @@
     <meta name="revisit-after" content="7 days">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- PERF: pre-connect to Firebase so socket is ready before JS fires -->
+    <link rel="preconnect" href="https://firestore.googleapis.com">
+    <link rel="preconnect" href="https://www.gstatic.com">
+    <link rel="dns-prefetch" href="https://firebase.googleapis.com">
+    <link rel="dns-prefetch" href="https://identitytoolkit.googleapis.com">
     <link rel="preload" as="image" href="/images/logo.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
@@ -782,6 +787,9 @@ window.createUserWithEmailAndPassword = createUserWithEmailAndPassword;
         let cachedRows = [];
         let rowsCacheInvalid = true;
         let caretUpdateRAF = null;
+        // PERF: Cache active word DOM element and its letter spans — avoids querySelector on every keystroke
+        let activeWordEl = null;
+        let activeLetterSpansArr = [];
 
         caret.id = 'caret';
         caret.classList.add('blink');
@@ -1222,26 +1230,26 @@ nouns: ["ability", "absence", "academy", "account", "achievement", "acid", "acti
         function randomItem(arr) {
             return arr[Math.floor(Math.random() * arr.length)];
         }
-        function weightedWord(list) {
-            const weights = {
-                1: 10,   // very common
-                2: 25,   // very common
-                3: 30,   // most common
-                4: 20,
-                5: 10,
-                6: 4,
-                7: 1,    // very rare
-                8: 0.5
-            };
+
+        // PERF: Build weighted pools ONCE at startup — not on every word generation.
+        // Old code rebuilt a pool of 1000s of items on each call; this is computed once.
+        function _buildWeightedPool(list) {
+            const weights = { 1: 10, 2: 25, 3: 30, 4: 20, 5: 10, 6: 4, 7: 1, 8: 0.5 };
             const pool = [];
             list.forEach(word => {
-                const len = word.length;
-                const weight = weights[len] || 0.3;
-
-                for (let i = 0; i < weight * 10; i++) {
-                    pool.push(word);
-                }
+                const w = Math.max(1, Math.round((weights[word.length] || 0.3) * 10));
+                for (let i = 0; i < w; i++) pool.push(word);
             });
+            return pool;
+        }
+        const _pools = {
+            nouns:      _buildWeightedPool(vocabulary.nouns),
+            verbs:      _buildWeightedPool(vocabulary.verbs),
+            adjectives: _buildWeightedPool(vocabulary.adjectives),
+            adverbs:    _buildWeightedPool(vocabulary.adverbs),
+        };
+        function weightedWord(pool) {
+            // pool is now already the pre-built array
             return pool[Math.floor(Math.random() * pool.length)];
         }
         function generateSentence() {
@@ -1250,14 +1258,14 @@ nouns: ["ability", "absence", "academy", "account", "achievement", "acid", "acti
             let template = randomItem(currentTemplates);
             let sentence = template
                 .replace("{article}", randomItem(vocabulary.articles))
-                .replace("{noun}", weightedWord(vocabulary.nouns))
-                .replace("{verb}", weightedWord(vocabulary.verbs))
-                .replace("{adjective}", weightedWord(vocabulary.adjectives))
-                .replace("{adverb}", weightedWord(vocabulary.adverbs))
+                .replace("{noun}", weightedWord(_pools.nouns))
+                .replace("{verb}", weightedWord(_pools.verbs))
+                .replace("{adjective}", weightedWord(_pools.adjectives))
+                .replace("{adverb}", weightedWord(_pools.adverbs))
                 .replace("{preposition}", randomItem(vocabulary.prepositions))
                 .replace("{article}", randomItem(vocabulary.articles))
-                .replace("{adjective}", weightedWord(vocabulary.adjectives))
-                .replace("{noun}", weightedWord(vocabulary.nouns))
+                .replace("{adjective}", weightedWord(_pools.adjectives))
+                .replace("{noun}", weightedWord(_pools.nouns))
                 .replace("{year}", randomItem(vocabulary.years))
                 .replace("{age}", randomItem(vocabulary.ages))
                 .replace("{month}", randomItem(vocabulary.months))
@@ -1298,19 +1306,31 @@ nouns: ["ability", "absence", "academy", "account", "achievement", "acid", "acti
         }
 
         function renderWords() {
+            // PERF: Use DocumentFragment — single DOM insertion instead of N insertions
+            const frag = document.createDocumentFragment();
             wordsDiv.innerHTML = '';
+            activeWordEl = null;
+            activeLetterSpansArr = [];
             words.forEach((word, i) => {
                 const wordSpan = document.createElement('div');
                 wordSpan.classList.add('word');
-                if (i === currentWordIndex) wordSpan.classList.add('active');
+                if (i === currentWordIndex) {
+                    wordSpan.classList.add('active');
+                    activeWordEl = wordSpan;
+                }
                 word.split('').forEach((letter) => {
                     const letterSpan = document.createElement('span');
                     letterSpan.classList.add('letter');
                     letterSpan.textContent = letter;
                     wordSpan.appendChild(letterSpan);
                 });
-                wordsDiv.appendChild(wordSpan);
+                frag.appendChild(wordSpan);
             });
+            wordsDiv.appendChild(frag);
+            // Cache letter spans for the active word right away
+            if (activeWordEl) {
+                activeLetterSpansArr = Array.from(activeWordEl.querySelectorAll('.letter'));
+            }
             scheduleCaretUpdate();
             rowsCacheInvalid = true;   // ← invalidate cache after full render
         }
@@ -1346,7 +1366,8 @@ nouns: ["ability", "absence", "academy", "account", "achievement", "acid", "acti
 
         // Improved updateCaret with cached rows (Issues 5 + 6)
         function updateCaret() {
-            const activeWord = wordsDiv.querySelector('.word.active');
+            // PERF: use cached activeWordEl — no DOM query
+            const activeWord = activeWordEl;
             if (!activeWord) return;
 
             const letters = activeWord.querySelectorAll('.letter');
@@ -1394,6 +1415,7 @@ if (!testActive && e.key !== 'Tab') {
     testActive = true;
     startTimer();
     caret.classList.remove('blink');
+    document.body.classList.add('typing-active'); // PERF: pause bg animations while typing
 
     // === HIDE DISTRACTIONS WHILE TYPING ===
     document.getElementById("intro-text").style.display = "none";
@@ -1436,10 +1458,9 @@ if (!testActive && e.key !== 'Tab') {
                     correctTimestamps.push(now);   // ← FIX: spaces count toward WPM line
                 } else {
                     missedChars += wordLen - currentLetterIndex;   // always positive now
-                    const activeWord = wordsDiv.querySelector('.word.active');
-                    const letters = activeWord.querySelectorAll('.letter');
-                    for (let i = currentLetterIndex; i < letters.length; i++) {
-                        letters[i].classList.add('incorrect');
+                    // PERF: use cached letter spans
+                    for (let i = currentLetterIndex; i < activeLetterSpansArr.length; i++) {
+                        activeLetterSpansArr[i].classList.add('incorrect');
                     }
                 }
 
@@ -1471,10 +1492,12 @@ if (!testActive && e.key !== 'Tab') {
                     wordObj.correct[currentLetterIndex] = false;
                     errorTimestamps.push(Date.now());
                 }
-                const activeWord = wordsDiv.querySelector('.word.active');
-                const lettersSpans = activeWord.querySelectorAll('.letter');
-                lettersSpans[currentLetterIndex].classList.toggle('correct', key === word[currentLetterIndex]);
-                lettersSpans[currentLetterIndex].classList.toggle('incorrect', key !== word[currentLetterIndex]);
+                // PERF: use cached letter spans array — no DOM query per keystroke
+                const span = activeLetterSpansArr[currentLetterIndex];
+                if (span) {
+                    span.classList.toggle('correct', key === word[currentLetterIndex]);
+                    span.classList.toggle('incorrect', key !== word[currentLetterIndex]);
+                }
                 currentLetterIndex++;
                 if (config.mode === "words" &&
                     currentWordIndex === words.length - 1 &&
@@ -1483,13 +1506,13 @@ if (!testActive && e.key !== 'Tab') {
                 }
             } else {
                 wordObj.extra.push(key);
-
-                const activeWord = wordsDiv.querySelector('.word.active');
+                // PERF: use cached activeWordEl
                 const extraSpan = document.createElement('span');
                 extraSpan.classList.add('letter', 'extra');
                 extraSpan.textContent = key;
-                activeWord.appendChild(extraSpan);
-
+                activeWordEl.appendChild(extraSpan);
+                // Keep letter spans cache in sync
+                activeLetterSpansArr.push(extraSpan);
                 currentLetterIndex++;
             }
             scheduleCaretUpdate();
@@ -1500,14 +1523,15 @@ if (!testActive && e.key !== 'Tab') {
             }
             if (currentLetterIndex > 0) {
                 const wordObj = typedWords[currentWordIndex];
-                const activeWord = wordsDiv.querySelector('.word.active');
-                const lettersSpans = activeWord.querySelectorAll('.letter');
+                // PERF: use cached references — no DOM query
+                const lettersSpans = activeLetterSpansArr;
                 const lastIndex = currentLetterIndex - 1;
                 totalKeystrokes = Math.max(0, totalKeystrokes - 1);
                 rawChars = Math.max(0, rawChars - 1);
-                if (wordObj.extra.length > 0 && lastIndex >= wordObj.letters.length) {
+                if (wordObj.extra.length > 0 && lastIndex >= words[currentWordIndex].length) {
                     wordObj.extra.pop();
-                    lettersSpans[lastIndex].remove();
+                    if (lettersSpans[lastIndex]) lettersSpans[lastIndex].remove();
+                    activeLetterSpansArr.splice(lastIndex, 1); // sync cache
                 } else if (wordObj.correct[lastIndex]) {
                     correctKeystrokes = Math.max(0, correctKeystrokes - 1);
                     correctChars = Math.max(0, correctChars - 1);
@@ -1534,13 +1558,18 @@ if (!testActive && e.key !== 'Tab') {
         function moveToNextWord() {
             spaces++;
             if (currentWordIndex < words.length - 1) {
-                wordsDiv.children[currentWordIndex].classList.remove('active');
+                // PERF: update cached active word reference
+                if (activeWordEl) activeWordEl.classList.remove('active');
                 currentWordIndex++;
+                activeWordEl = wordsDiv.children[currentWordIndex];
+                if (activeWordEl) {
+                    activeWordEl.classList.add('active');
+                    activeLetterSpansArr = Array.from(activeWordEl.querySelectorAll('.letter'));
+                }
 
                 if (config.mode === 'words') {
                     timerDiv.textContent = words.length - currentWordIndex;
                 }
-                wordsDiv.children[currentWordIndex].classList.add('active');
                 currentLetterIndex = 0;
                 extendWordsIfNeeded();
                 scheduleCaretUpdate();
@@ -1610,15 +1639,15 @@ if (!testActive && e.key !== 'Tab') {
                 : 100;
             let consistency = 100;
             if (keystrokeTimestamps.length > 5) {
+                // PERF: O(n) bucket count — old code was O(n × windows) with filter() per window
                 const windowSize = 1000;
-                const start = startTime;
-                const end = Date.now();
-                const windows = [];
-                for (let t = start; t <= end; t += windowSize) {
-                    const count = keystrokeTimestamps.filter(ts => ts >= t && ts < t + windowSize).length;
-                    windows.push(count);
-                }
-                const rawWpms = windows
+                const numBuckets = Math.ceil((Date.now() - startTime) / windowSize) || 1;
+                const buckets = new Array(numBuckets).fill(0);
+                keystrokeTimestamps.forEach(ts => {
+                    const b = Math.floor((ts - startTime) / windowSize);
+                    if (b >= 0 && b < numBuckets) buckets[b]++;
+                });
+                const rawWpms = buckets
                     .map(c => (c * (60000 / windowSize)) / 5)
                     .filter(w => w > 0);
                 if (rawWpms.length > 0) {
@@ -1653,42 +1682,39 @@ if (!testActive && e.key !== 'Tab') {
             else if (wpm >= 60) tipText = "Great momentum! You're on track for supersonic speeds.";
             document.getElementById('tip-text').textContent = tipText;
 
-            // === Build per-second chart data ===
-                 window._testStartTime = startTime;
+            // === Build per-second chart data (PERF: O(n) two-pointer, replaces O(n²) filter loops) ===
+            window._testStartTime = startTime;
             const testEndTime = Date.now();
             const elapsedMs = testEndTime - startTime;
             const totalSecs = Math.max(1, Math.ceil(elapsedMs / 1000));
 
             const _wpmPerSec = [], _rawPerSec = [], _burstPerSec = [];
+            const sortedCorr = correctTimestamps.slice().sort((a, b) => a - b);
+            const sortedKeys = keystrokeTimestamps.slice().sort((a, b) => a - b);
+
+            let corrPtr = 0, rawPtr = 0;
+            const burstBuckets = new Array(totalSecs).fill(0);
+            sortedKeys.forEach(ts => {
+                const b = Math.min(Math.floor((ts - startTime) / 1000), totalSecs - 1);
+                if (b >= 0) burstBuckets[b]++;
+            });
 
             for (let s = 1; s <= totalSecs; s++) {
-                let tAtSec = startTime + s * 1000;
-                if (tAtSec > testEndTime) tAtSec = testEndTime;
-
+                const tAtSec = Math.min(startTime + s * 1000, testEndTime);
+                while (corrPtr < sortedCorr.length && sortedCorr[corrPtr] <= tAtSec) corrPtr++;
+                while (rawPtr < sortedKeys.length && sortedKeys[rawPtr] <= tAtSec) rawPtr++;
                 const minElapsed = (tAtSec - startTime) / 60000;
-
-                const corrCount = correctTimestamps.filter(ts => ts <= tAtSec).length;
-                const rawCount = keystrokeTimestamps.filter(ts => ts <= tAtSec).length;
-
-                _wpmPerSec.push(minElapsed > 0 ? Math.round(corrCount / 5 / minElapsed) : 0);
-                _rawPerSec.push(minElapsed > 0 ? Math.round(rawCount / 5 / minElapsed) : 0);
-
-                const wStart = startTime + (s - 1) * 1000;
-                let windowEnd = startTime + s * 1000;
-                if (windowEnd > testEndTime) windowEnd = testEndTime;
-
-                const windowDurationMs = windowEnd - wStart;
-                const burstKeys = keystrokeTimestamps.filter(ts => ts >= wStart && ts <= windowEnd).length;
-
-                let burstWpm;
-                if (windowDurationMs >= 900) {
-                    // full second → normal accurate calculation
-                    burstWpm = Math.round((burstKeys / 5) * (60000 / windowDurationMs));
+                _wpmPerSec.push(minElapsed > 0 ? Math.round(corrPtr / 5 / minElapsed) : 0);
+                _rawPerSec.push(minElapsed > 0 ? Math.round(rawPtr  / 5 / minElapsed) : 0);
+                const bucketIdx = s - 1;
+                const wStart2 = startTime + bucketIdx * 1000;
+                const wEnd2   = Math.min(startTime + s * 1000, testEndTime);
+                const wDur    = wEnd2 - wStart2;
+                if (wDur >= 900) {
+                    _burstPerSec.push(Math.round((burstBuckets[bucketIdx] / 5) * (60000 / wDur)));
                 } else {
-                    // partial last second → repeat previous burst so graph doesn't drop
-                    burstWpm = _burstPerSec.length > 0 ? _burstPerSec[_burstPerSec.length - 1] : 0;
+                    _burstPerSec.push(_burstPerSec.length > 0 ? _burstPerSec[_burstPerSec.length - 1] : 0);
                 }
-                _burstPerSec.push(burstWpm);
             }
 
             window._chartData = {
@@ -1717,11 +1743,12 @@ if (!testActive && e.key !== 'Tab') {
             // Rocket chart animation — starts after a short delay so result is laid out
             setTimeout(() => drawRocketChart(), 400);
 
-// REPLACE lines 1394-1397:
-const registeredName = window._currentUser?.name;
-if (registeredName && config.mode === 'time') {
-    saveScore(registeredName, wpm, accuracy, config.time);
-}
+            // Save score to leaderboard (only registered users, time mode)
+            const registeredName = window._currentUser?.name;
+            if (registeredName && config.mode === 'time') {
+                saveScore(registeredName, wpm, accuracy, config.time);
+            }
+
             confetti({
                 particleCount: 180,
                 spread: 70,
@@ -2037,6 +2064,7 @@ if (registeredName && config.mode === 'time') {
 
         function resetTest() {
             document.getElementById("intro-text").style.display = "block";
+            document.body.classList.remove('typing-active'); // PERF: restore bg animations
             document.getElementById("test-config").style.display = "flex";
             document.getElementById("difficulty-container").style.display = "flex";
             document.getElementById("timer").style.display = "block";
@@ -2176,6 +2204,16 @@ function sanitizeStr(s) {
             const body = document.getElementById("leaderboard-body");
             const skeleton = document.getElementById("lb-skeleton");
 
+            // PERF: 30-second cache — avoid a Firestore round-trip on every tab switch
+            if (!window._lbCache) window._lbCache = {};
+            const cached = window._lbCache[duration];
+            if (cached && (Date.now() - cached.ts) < 30000) {
+                skeleton.innerHTML = '';
+                body.style.display = 'block';
+                _renderLeaderboardRows(body, cached.entries);
+                return;
+            }
+
             skeleton.innerHTML = Array(10).fill(`<div class="skeleton-row"></div>`).join('');
             body.style.display = "none";
 
@@ -2259,11 +2297,43 @@ function sanitizeStr(s) {
             skeleton.style.display = "none";
             body.style.display = "block";
 
+            // PERF: store in cache after successful render
+            if (!window._lbCache) window._lbCache = {};
+            window._lbCache[duration] = { ts: Date.now(), entries };
+
             if (registeredName && [...body.children].some(r => r.classList.contains('you'))) {
                 confetti({ particleCount: 80, spread: 60, origin: { y: 0.6 } });
             }
 
             // ← REMOVED the old updateLeaderboardPrompt() from here (now at top)
+        }
+
+        // PERF: Helper to render cached leaderboard entries without re-querying Firestore
+        function _renderLeaderboardRows(body, entries) {
+            body.innerHTML = '';
+            let rank = 1;
+            entries.forEach(data => {
+                const isYou = window._currentUser && data.uid && data.uid === window._currentUser.uid;
+                const row = document.createElement('div');
+                row.className = `leaderboard-row ${rank === 1 ? 'top1' : rank === 2 ? 'top2' : rank === 3 ? 'top3' : ''} ${isYou ? 'you' : ''}`;
+                const _country = data.country || (isYou ? (window._currentUser?.country || '') : '');
+                const _flag = getFlag(_country);
+                const _date = fmtDate(data.time);
+                let rankDisplay = rank;
+                if (rank === 1) rankDisplay = "🥇";
+                else if (rank === 2) rankDisplay = "🥈";
+                else if (rank === 3) rankDisplay = "🥉";
+                row.innerHTML = `
+                    <span class="rank">${rankDisplay}</span>
+                    <span class="player"><span class="lb-player-name">${sanitizeStr(data.name)}</span></span>
+                    <span class="lb-flag-cell" title="${sanitizeStr(_country)}">${_flag}</span>
+                    <span style="font-weight:900;color:#ffd700">${sanitizeStr(data.wpm)}</span>
+                    <span>${sanitizeStr(data.accuracy)}%</span>
+                    <span class="lb-date-cell">${sanitizeStr(_date)}</span>
+                `;
+                body.appendChild(row);
+                rank++;
+            });
         }
         window.addEventListener('firebase-ready', () => loadLeaderboard());
         document.getElementById("leaderboardModal").addEventListener("click", function (e) {
@@ -2447,8 +2517,12 @@ function toggleCountryDrop(prefix) {
     }
 }
 function filterCountries(prefix) {
-    const q = (document.getElementById(prefix+'-country-search')?.value||'').toLowerCase();
-    _buildCountryList(prefix, ALL_COUNTRIES.filter(c => c.toLowerCase().includes(q)));
+    // PERF: debounce — only rebuild list after 120ms of no typing
+    clearTimeout(filterCountries._timer);
+    filterCountries._timer = setTimeout(() => {
+        const q = (document.getElementById(prefix+'-country-search')?.value||'').toLowerCase();
+        _buildCountryList(prefix, q ? ALL_COUNTRIES.filter(c => c.toLowerCase().includes(q)) : ALL_COUNTRIES);
+    }, 120);
 }
 function selectCountry(prefix, country) {
     const hidden  = document.getElementById(prefix === 'idx' ? 'auth-signup-country' : prefix+'-signup-country');
