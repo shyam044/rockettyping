@@ -2417,9 +2417,18 @@ async function doSignup() {
         closeAuthModal();
     } catch (e) {
         // SECURITY FIX: never expose e.message — it can contain internal Firebase details
-        if (e.code === 'auth/email-already-in-use') errEl.textContent = 'This email is already registered. Please login.';
-        else errEl.textContent = 'Signup failed. Please try again.';
-        console.error('Signup error:', e.code);
+        if (e.code === 'auth/email-already-in-use') {
+            errEl.textContent = 'This email is already registered. Please login.';
+        } else if (e.code === 'permission-denied' || (e.code && e.code.includes('permission'))) {
+            errEl.textContent = 'Unable to check username availability. Please try again in a moment.';
+        } else if (e.code === 'auth/weak-password') {
+            errEl.textContent = 'Password must be at least 8 characters.';
+        } else if (e.code === 'auth/invalid-email') {
+            errEl.textContent = 'Please enter a valid email address.';
+        } else {
+            errEl.textContent = 'Signup failed. Please try again.';
+        }
+        console.error('Signup error:', e.code, e.message);
     }
 }
 async function doSignOut() {
