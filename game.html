@@ -1199,7 +1199,7 @@
       position:fixed;top:0;left:0;right:0;bottom:0;
       background:rgba(0,0,0,0.92);
       align-items:center;justify-content:center;
-      z-index:20000;display:none;
+      z-index:99999;display:none;
     }
     .game-modal-box {
       background:linear-gradient(145deg,#0f1b2e,#1a2a44);
@@ -1260,50 +1260,194 @@
     .game-topnav-logout:hover{border-color:#da3333;color:#da3333;}
   </style>
 
-  <!-- ══ INLINE AUTH MODAL (no redirect) ══ -->
-  <div id="game-auth-modal">
-    <div class="game-modal-box">
-      <button class="game-modal-close" id="game-auth-modal-close">×</button>
-      <div class="game-auth-tabs">
-        <button class="game-auth-tab active" id="game-tab-login">LOGIN</button>
-        <button class="game-auth-tab" id="game-tab-signup">SIGN UP</button>
+  <!-- ══ INLINE AUTH MODAL v4 (no redirect) ══ -->
+  <div id="game-auth-modal" role="dialog" aria-modal="true"
+       style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.88);
+              backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+              align-items:center;justify-content:center;z-index:99999;
+              padding:20px;box-sizing:border-box;">
+    <div style="background:linear-gradient(145deg,#12122a,#1a1a35);
+                border:1px solid rgba(226,183,20,0.25);border-radius:20px;
+                padding:32px 28px 24px;width:100%;max-width:400px;
+                position:relative;
+                box-shadow:0 25px 80px rgba(0,0,0,0.7),inset 0 1px 0 rgba(255,255,255,0.07);
+                animation:rtAuthSlideIn .28s cubic-bezier(.22,1,.36,1);box-sizing:border-box;">
+      <button id="game-auth-modal-close" aria-label="Close"
+              style="position:absolute;top:12px;right:14px;background:none;border:none;
+                     color:#646669;font-size:22px;cursor:pointer;padding:4px 8px;">×</button>
+
+      <!-- Logo -->
+      <div style="text-align:center;margin-bottom:18px;">
+        <span style="font-size:24px;">🚀</span>
+        <div style="font-family:'Roboto Mono',monospace;font-size:11px;
+                    color:#646669;letter-spacing:2px;margin-top:2px;">ROCKET TYPING</div>
       </div>
-      <!-- LOGIN -->
+
+      <!-- Tabs -->
+      <div style="display:flex;gap:0;margin-bottom:20px;border-bottom:1px solid rgba(255,255,255,0.08);">
+        <button class="game-auth-tab active" id="game-tab-login"
+                style="flex:1;background:none;border:none;border-bottom:2px solid #e2b714;
+                       color:#e2b714;padding:9px;cursor:pointer;
+                       font-family:'Roboto Mono',monospace;font-size:12px;font-weight:900;
+                       letter-spacing:1px;transition:all .2s;margin-bottom:-1px;">LOGIN</button>
+        <button class="game-auth-tab" id="game-tab-signup"
+                style="flex:1;background:none;border:none;border-bottom:2px solid transparent;
+                       color:#646669;padding:9px;cursor:pointer;
+                       font-family:'Roboto Mono',monospace;font-size:12px;font-weight:900;
+                       letter-spacing:1px;transition:all .2s;margin-bottom:-1px;">SIGN UP</button>
+      </div>
+
+      <!-- Social buttons -->
+      <div id="game-social-btns" style="display:flex;flex-direction:column;gap:9px;margin-bottom:16px;">
+        <button id="game-btn-google"
+                style="display:flex;align-items:center;justify-content:center;gap:9px;
+                       width:100%;padding:10px;border:1px solid rgba(255,255,255,0.15);
+                       border-radius:9px;background:rgba(255,255,255,0.04);color:#e8e8e8;
+                       cursor:pointer;font-family:'Roboto Mono',monospace;font-size:12px;
+                       font-weight:700;letter-spacing:.5px;transition:all .2s;">
+          <svg width="16" height="16" viewBox="0 0 18 18"><path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.874 2.684-6.615z" fill="#4285F4"/><path d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z" fill="#34A853"/><path d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z" fill="#FBBC05"/><path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z" fill="#EA4335"/></svg>
+          Continue with Google
+        </button>
+        <button id="game-btn-github"
+                style="display:flex;align-items:center;justify-content:center;gap:9px;
+                       width:100%;padding:10px;border:1px solid rgba(255,255,255,0.15);
+                       border-radius:9px;background:rgba(255,255,255,0.04);color:#e8e8e8;
+                       cursor:pointer;font-family:'Roboto Mono',monospace;font-size:12px;
+                       font-weight:700;letter-spacing:.5px;transition:all .2s;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="#e8e8e8"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+          Continue with GitHub
+        </button>
+      </div>
+
+      <!-- Divider -->
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
+        <div style="flex:1;height:1px;background:rgba(255,255,255,0.1);"></div>
+        <span style="color:#646669;font-size:10px;font-family:'Roboto Mono',monospace;letter-spacing:1px;">OR</span>
+        <div style="flex:1;height:1px;background:rgba(255,255,255,0.1);"></div>
+      </div>
+
+      <!-- LOGIN form -->
       <div id="game-form-login">
-        <h2 style="color:#e2b714;font-size:18px;margin:0 0 18px;letter-spacing:1px;">Welcome back 🚀</h2>
-        <input class="game-auth-input" id="game-login-email" type="email" placeholder="Email">
-        <input class="game-auth-input" id="game-login-password" type="password" placeholder="Password">
+        <input class="game-auth-input" id="game-login-email" type="email"
+               placeholder="Email address" autocomplete="email" autocapitalize="off">
+        <div style="position:relative;margin-bottom:8px;">
+          <input class="game-auth-input" id="game-login-password" type="password"
+                 placeholder="Password" autocomplete="current-password"
+                 style="margin-bottom:0;padding-right:40px;">
+          <button type="button" onclick="gameTogglePw('game-login-password',this)"
+                  tabindex="-1"
+                  style="position:absolute;right:10px;top:50%;transform:translateY(-50%);
+                         background:none;border:none;color:#646669;cursor:pointer;
+                         font-size:14px;padding:2px;">👁</button>
+        </div>
+        <div style="text-align:right;margin-bottom:10px;">
+          <button type="button" id="game-forgot-link"
+                  style="background:none;border:none;color:#e2b714;font-size:11px;
+                         font-family:'Roboto Mono',monospace;cursor:pointer;
+                         text-decoration:underline;opacity:.8;padding:0;">Forgot password?</button>
+        </div>
         <div class="game-auth-err" id="game-login-err"></div>
-        <button class="game-auth-submit" id="game-login-btn">LOGIN →</button>
+        <button class="game-auth-submit" id="game-login-btn">
+          <span id="game-login-btn-text">LOGIN →</span>
+        </button>
       </div>
-      <!-- SIGN UP -->
+
+      <!-- SIGN UP form -->
       <div id="game-form-signup" style="display:none;">
-        <h2 style="color:#e2b714;font-size:18px;margin:0 0 18px;letter-spacing:1px;">Create Account 🌟</h2>
-        <input class="game-auth-input" id="game-signup-username" type="text" maxlength="15" placeholder="Username (3–15 chars, letters/numbers/_)">
-        <div id="game-country-wrap" style="position:relative;width:100%;margin-bottom:11px;">
-            <div id="game-country-display" onclick="toggleCountryDrop('game')"
-                style="width:100%;padding:10px 14px;font-size:14px;font-family:'Roboto Mono',monospace;background:rgba(255,255,255,0.06);border:2px solid rgba(226,183,20,0.25);border-radius:8px;color:#fff;cursor:pointer;display:flex;justify-content:space-between;align-items:center;box-sizing:border-box;user-select:none;transition:border-color .2s;">
-                <span id="game-country-text" style="color:#646669;">Your country</span>
-                <span style="color:#e2b714;font-size:10px;flex-shrink:0;margin-left:8px;">▼</span>
+        <div style="position:relative;margin-bottom:4px;">
+          <input class="game-auth-input" id="game-signup-username" type="text" maxlength="15"
+                 placeholder="Username (3–15 chars, letters/numbers/_)"
+                 autocomplete="username" autocapitalize="off" autocorrect="off"
+                 style="margin-bottom:0;padding-right:36px;">
+          <span id="game-username-icon"
+                style="position:absolute;right:10px;top:50%;transform:translateY(-50%);
+                       font-size:13px;pointer-events:none;"></span>
+        </div>
+        <div id="game-username-hint"
+             style="font-size:10px;color:#646669;font-family:'Roboto Mono',monospace;
+                    margin-bottom:10px;min-height:14px;padding-left:3px;"></div>
+        <div id="game-country-wrap" style="position:relative;width:100%;margin-bottom:10px;">
+          <div id="game-country-display" onclick="toggleCountryDrop('game')"
+               style="width:100%;padding:10px 14px;font-size:13px;
+                      font-family:'Roboto Mono',monospace;background:rgba(255,255,255,0.05);
+                      border:1.5px solid rgba(226,183,20,0.25);border-radius:9px;color:#fff;
+                      cursor:pointer;display:flex;justify-content:space-between;align-items:center;
+                      box-sizing:border-box;user-select:none;transition:border-color .2s;">
+            <span id="game-country-text" style="color:#646669;">Your country</span>
+            <span style="color:#e2b714;font-size:10px;flex-shrink:0;margin-left:8px;">▼</span>
+          </div>
+          <div id="game-country-drop"
+               style="display:none;position:absolute;z-index:9999;top:calc(100% + 4px);
+                      left:0;right:0;background:#0f0f2a;
+                      border:1.5px solid rgba(226,183,20,0.4);border-radius:9px;
+                      overflow:hidden;box-shadow:0 12px 40px rgba(0,0,0,0.8);">
+            <div style="padding:8px;border-bottom:1px solid rgba(255,255,255,0.08);">
+              <input id="game-country-search" placeholder="Search country…"
+                     oninput="filterCountries('game')"
+                     style="width:100%;padding:7px 10px;font-size:12px;
+                            font-family:'Roboto Mono',monospace;
+                            background:rgba(255,255,255,0.06);
+                            border:1px solid rgba(226,183,20,0.2);border-radius:6px;
+                            color:#fff;outline:none;box-sizing:border-box;">
             </div>
-            <div id="game-country-drop" style="display:none;position:absolute;z-index:9999;top:calc(100% + 4px);left:0;right:0;background:#0f0f2a;border:2px solid rgba(226,183,20,0.4);border-radius:8px;overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,0.8);">
-                <div style="padding:8px;border-bottom:1px solid rgba(255,255,255,0.08);">
-                    <input id="game-country-search" placeholder="Search country…" oninput="filterCountries('game')"
-                        style="width:100%;padding:8px 10px;font-size:13px;font-family:'Roboto Mono',monospace;background:rgba(255,255,255,0.06);border:1px solid rgba(226,183,20,0.2);border-radius:6px;color:#fff;outline:none;box-sizing:border-box;">
-                </div>
-                <div id="game-country-list" style="max-height:200px;overflow-y:auto;"></div>
-            </div>
+            <div id="game-country-list" style="max-height:180px;overflow-y:auto;"></div>
+          </div>
         </div>
         <input type="hidden" id="game-signup-country">
-        <input class="game-auth-input" id="game-signup-email" type="email" placeholder="Email">
-        <input class="game-auth-input" id="game-signup-password" type="password" placeholder="Password (min 8 chars)">
+        <input class="game-auth-input" id="game-signup-email" type="email"
+               placeholder="Email address" autocomplete="email" autocapitalize="off">
+        <div style="position:relative;margin-bottom:6px;">
+          <input class="game-auth-input" id="game-signup-password" type="password"
+                 placeholder="Password (min 8 characters)" autocomplete="new-password"
+                 style="margin-bottom:0;padding-right:40px;">
+          <button type="button" onclick="gameTogglePw('game-signup-password',this)"
+                  tabindex="-1"
+                  style="position:absolute;right:10px;top:50%;transform:translateY(-50%);
+                         background:none;border:none;color:#646669;cursor:pointer;
+                         font-size:14px;padding:2px;">👁</button>
+        </div>
+        <div id="game-pw-bar-wrap"
+             style="height:3px;border-radius:3px;background:rgba(255,255,255,0.08);
+                    margin-bottom:5px;overflow:hidden;">
+          <div id="game-pw-bar"
+               style="height:100%;width:0%;border-radius:3px;
+                      transition:width .3s,background .3s;background:#e2b714;"></div>
+        </div>
+        <div id="game-pw-label"
+             style="font-size:10px;color:#646669;font-family:'Roboto Mono',monospace;
+                    margin-bottom:10px;min-height:13px;padding-left:3px;"></div>
         <div class="game-auth-err" id="game-signup-err"></div>
-        <button class="game-auth-submit" id="game-signup-btn">CREATE ACCOUNT →</button>
+        <button class="game-auth-submit" id="game-signup-btn">
+          <span id="game-signup-btn-text">CREATE ACCOUNT →</span>
+        </button>
       </div>
-    </div>
+
+      <!-- FORGOT PASSWORD form -->
+      <div id="game-form-forgot" style="display:none;">
+        <div style="text-align:center;margin-bottom:16px;">
+          <div style="font-size:24px;margin-bottom:6px;">🔑</div>
+          <div style="color:#e2b714;font-family:'Roboto Mono',monospace;font-size:14px;
+                      font-weight:900;letter-spacing:1px;">Reset Password</div>
+          <p style="color:#646669;font-size:11px;font-family:'Roboto Mono',monospace;margin:6px 0 0;">
+            We'll send a reset link to your email
+          </p>
+        </div>
+        <input class="game-auth-input" id="game-forgot-email" type="email"
+               placeholder="Your email address" autocomplete="email">
+        <div id="game-forgot-msg"
+             style="font-size:11px;min-height:16px;margin-bottom:10px;
+                    font-family:'Roboto Mono',monospace;"></div>
+        <button class="game-auth-submit" id="game-forgot-btn">SEND RESET LINK</button>
+        <button type="button" id="game-forgot-back"
+                style="display:block;margin:12px auto 0;background:none;border:none;
+                       color:#646669;font-size:11px;font-family:'Roboto Mono',monospace;
+                       cursor:pointer;text-decoration:underline;">← Back to login</button>
+      </div>
+
+    </div><!-- /modal-box -->
   </div>
 
-  <!-- ══ TOPNAV — shows username + logout when logged in ══ -->
+    <!-- ══ TOPNAV — shows username + logout when logged in ══ -->
   <div id="game-topnav"></div>
 
   <img id="logo" src="images/logo.png" alt="Rocket Typing Logo">
@@ -3199,92 +3343,279 @@ async function loadLeaderboard(){
 }
 
 /* ══════════════════════════════════════════════════════
-   INLINE AUTH — self-contained login/signup modal
-   (same pattern as test.html — no redirect to index)
+   INLINE AUTH v4 — Google/GitHub OAuth, pw strength,
+   show/hide, forgot password, loading states.
+   game.html uses Firebase compat SDK (firebase.auth())
 ══════════════════════════════════════════════════════ */
+
+// ── Open / Close ──────────────────────────────────────
 function openAuthModal(tab) {
   tab = tab || 'login';
   document.getElementById('game-auth-modal').style.display = 'flex';
   switchGameAuthTab(tab);
+  setTimeout(() => {
+    const f = tab === 'signup'
+      ? document.getElementById('game-signup-username')
+      : document.getElementById('game-login-email');
+    if (f) f.focus();
+  }, 100);
 }
 function closeAuthModal() {
   document.getElementById('game-auth-modal').style.display = 'none';
-}
-function switchGameAuthTab(tab) {
-  document.getElementById('game-form-login').style.display  = tab === 'login'  ? 'block' : 'none';
-  document.getElementById('game-form-signup').style.display = tab === 'signup' ? 'block' : 'none';
-  document.getElementById('game-tab-login').classList.toggle('active',  tab === 'login');
-  document.getElementById('game-tab-signup').classList.toggle('active', tab === 'signup');
+  ['game-login-err','game-signup-err','game-forgot-msg'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = '';
+  });
 }
 window.openAuthModal  = openAuthModal;
 window.closeAuthModal = closeAuthModal;
+
+// ── Tab switcher ──────────────────────────────────────
+function switchGameAuthTab(tab) {
+  ['login','signup','forgot'].forEach(t => {
+    const el = document.getElementById('game-form-' + t);
+    if (el) el.style.display = t === tab ? 'block' : 'none';
+  });
+  const social = document.getElementById('game-social-btns');
+  if (social) social.style.display = tab === 'forgot' ? 'none' : 'flex';
+  const tl = document.getElementById('game-tab-login');
+  const ts = document.getElementById('game-tab-signup');
+  if (tl) { tl.classList.toggle('active', tab === 'login');
+    tl.style.color = tab === 'login' ? '#e2b714' : '#646669';
+    tl.style.borderBottomColor = tab === 'login' ? '#e2b714' : 'transparent'; }
+  if (ts) { ts.classList.toggle('active', tab === 'signup');
+    ts.style.color = tab === 'signup' ? '#e2b714' : '#646669';
+    ts.style.borderBottomColor = tab === 'signup' ? '#e2b714' : 'transparent'; }
+  if (tab === 'forgot') {
+    const le = document.getElementById('game-login-email');
+    const fe = document.getElementById('game-forgot-email');
+    if (le && fe && le.value) fe.value = le.value;
+  }
+}
 window.switchGameAuthTab = switchGameAuthTab;
 
+// ── Event listeners ───────────────────────────────────
 document.getElementById('game-auth-modal-close').addEventListener('click', closeAuthModal);
-document.getElementById('game-auth-modal').addEventListener('click', function(e){
+document.getElementById('game-auth-modal').addEventListener('click', function(e) {
   if (e.target === this) closeAuthModal();
 });
-
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape' && document.getElementById('game-auth-modal').style.display === 'flex')
+    closeAuthModal();
+});
 document.getElementById('game-tab-login').addEventListener('click',  () => switchGameAuthTab('login'));
 document.getElementById('game-tab-signup').addEventListener('click', () => switchGameAuthTab('signup'));
+document.getElementById('game-forgot-link').addEventListener('click', () => switchGameAuthTab('forgot'));
+document.getElementById('game-forgot-back').addEventListener('click', () => switchGameAuthTab('login'));
 
+// ── Helpers ───────────────────────────────────────────
+function gameTogglePw(id, btn) {
+  const inp = document.getElementById(id);
+  if (!inp) return;
+  const show = inp.type === 'password';
+  inp.type = show ? 'text' : 'password';
+  btn.textContent = show ? '🙈' : '👁';
+}
+function gameSetLoading(btnId, textId, loading, label) {
+  const btn = document.getElementById(btnId);
+  const sp  = document.getElementById(textId);
+  if (!btn || !sp) return;
+  btn.disabled = loading; btn.style.opacity = loading ? '.7' : '1';
+  sp.innerHTML = loading
+    ? '<span style="display:inline-block;animation:rtSpin .7s linear infinite">⟳</span> ' + (label||'Please wait…')
+    : label;
+}
+function gameShowErr(id, msg) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.textContent = msg; el.style.color = '#ff6b6b';
+  el.style.animation = 'none'; void el.offsetWidth;
+  el.style.animation = 'rtShake .35s ease';
+}
+
+// ── Password strength ─────────────────────────────────
+document.getElementById('game-signup-password').addEventListener('input', function() {
+  const pw = this.value;
+  const bar = document.getElementById('game-pw-bar');
+  const lbl = document.getElementById('game-pw-label');
+  let score = 0;
+  if (pw.length >= 8)  score++;
+  if (pw.length >= 12) score++;
+  if (/[A-Z]/.test(pw)) score++;
+  if (/[0-9]/.test(pw)) score++;
+  if (/[^A-Za-z0-9]/.test(pw)) score++;
+  const pcts   = ['0%','25%','40%','65%','85%','100%'];
+  const colors = ['#444','#e74c3c','#e67e22','#f1c40f','#2ecc71','#00e6cc'];
+  const texts  = ['','Weak','Fair','Good','Strong','Very strong'];
+  if (bar) { bar.style.width = pcts[score]; bar.style.background = colors[score]; }
+  if (lbl) { lbl.textContent = texts[score]; lbl.style.color = colors[score]; }
+});
+
+// ── Username live validation ──────────────────────────
+document.getElementById('game-signup-username').addEventListener('input', function() {
+  const val  = this.value.trim().toLowerCase();
+  const icon = document.getElementById('game-username-icon');
+  const hint = document.getElementById('game-username-hint');
+  if (!val) { icon.textContent=''; hint.textContent=''; return; }
+  if (val.length < 3) {
+    icon.textContent='❌'; hint.textContent='Too short (min 3)'; hint.style.color='#ff6b6b'; return;
+  }
+  if (!/^[a-z0-9_]+$/.test(val)) {
+    icon.textContent='❌'; hint.textContent='Only lowercase letters, numbers, _'; hint.style.color='#ff6b6b'; return;
+  }
+  icon.textContent='✅'; hint.textContent='Looks good!'; hint.style.color='#4caf50';
+});
+
+// ── Login ─────────────────────────────────────────────
 document.getElementById('game-login-btn').addEventListener('click', async () => {
   const email = document.getElementById('game-login-email').value.trim();
   const pw    = document.getElementById('game-login-password').value;
-  const err   = document.getElementById('game-login-err');
-  err.textContent = '';
-  if (!email || !pw) { err.textContent = 'Please fill in all fields.'; return; }
+  gameShowErr('game-login-err', '');
+  if (!email) return gameShowErr('game-login-err', 'Please enter your email.');
+  if (!pw)    return gameShowErr('game-login-err', 'Please enter your password.');
+  gameSetLoading('game-login-btn','game-login-btn-text', true, 'Signing in…');
   try {
     await auth.signInWithEmailAndPassword(email, pw);
     closeAuthModal();
   } catch(e) {
-    err.textContent = (e.code === 'auth/invalid-credential' || e.code === 'auth/wrong-password')
-      ? 'Wrong email or password.' : 'Login failed. Try again.';
+    const msgs = {
+      'auth/invalid-credential': 'Wrong email or password.',
+      'auth/user-not-found':     'No account with this email.',
+      'auth/wrong-password':     'Wrong password.',
+      'auth/too-many-requests':  'Too many attempts. Try again later or reset your password.',
+    };
+    gameShowErr('game-login-err', msgs[e.code] || 'Login failed. Try again.');
+  } finally {
+    gameSetLoading('game-login-btn','game-login-btn-text', false, 'LOGIN →');
   }
 });
 
+// ── Sign Up ───────────────────────────────────────────
 document.getElementById('game-signup-btn').addEventListener('click', async () => {
   const username = document.getElementById('game-signup-username').value.trim().toLowerCase();
   const country  = document.getElementById('game-signup-country').value.trim();
   const email    = document.getElementById('game-signup-email').value.trim();
   const pw       = document.getElementById('game-signup-password').value;
-  const err      = document.getElementById('game-signup-err');
-  err.textContent = '';
-  if (username.length < 3 || username.length > 15) { err.textContent = 'Username must be 3–15 characters.'; return; }
-  if (!/^[a-z0-9_]+$/.test(username)) { err.textContent = 'Only lowercase letters, numbers, and _ allowed.'; return; }
-  if (!country) { err.textContent = 'Please enter your country.'; return; }
-  if (!email)   { err.textContent = 'Please enter your email.'; return; }
-  // SECURITY FIX: increased minimum from 6 to 8 characters
-  if (pw.length < 8) { err.textContent = 'Password must be at least 8 characters.'; return; }
+  gameShowErr('game-signup-err', '');
+  if (username.length < 3 || username.length > 15)
+    return gameShowErr('game-signup-err', 'Username must be 3–15 characters.');
+  if (!/^[a-z0-9_]+$/.test(username))
+    return gameShowErr('game-signup-err', 'Only lowercase letters, numbers, and _ allowed.');
+  if (!country) return gameShowErr('game-signup-err', 'Please select your country.');
+  if (!email)   return gameShowErr('game-signup-err', 'Please enter your email.');
+  if (pw.length < 8) return gameShowErr('game-signup-err', 'Password must be at least 8 characters.');
+  gameSetLoading('game-signup-btn','game-signup-btn-text', true, 'Creating account…');
   try {
     const snap = await db.collection('users').where('name', '==', username).get();
-    if (!snap.empty) { err.textContent = 'Username already taken. Choose another.'; return; }
+    if (!snap.empty) return gameShowErr('game-signup-err', 'Username already taken. Choose another.');
     const cred = await auth.createUserWithEmailAndPassword(email, pw);
     await db.collection('users').doc(cred.user.uid).set({
       name: username, country, uid: cred.user.uid, created: Date.now()
     });
+    // Send email verification
+    cred.user.sendEmailVerification().catch(() => {});
     closeAuthModal();
   } catch(e) {
-    // SECURITY FIX: never expose e.message
-    if (e.code === 'auth/email-already-in-use') {
-      err.textContent = 'This email is already registered. Please login.';
-    } else if (e.code === 'permission-denied' || (e.code && e.code.includes('permission'))) {
-      err.textContent = 'Unable to check username availability. Please try again in a moment.';
-    } else if (e.code === 'auth/weak-password') {
-      err.textContent = 'Password must be at least 8 characters.';
-    } else if (e.code === 'auth/invalid-email') {
-      err.textContent = 'Please enter a valid email address.';
-    } else {
-      err.textContent = 'Signup failed. Please try again.';
-    }
-    console.error('Signup error:', e.code, e.message);
+    const msgs = {
+      'auth/email-already-in-use': 'This email is already registered. Please log in.',
+      'auth/weak-password':         'Password must be at least 8 characters.',
+      'auth/invalid-email':         'Please enter a valid email address.',
+      'auth/too-many-requests':     'Too many attempts. Please try again later.',
+    };
+    gameShowErr('game-signup-err', msgs[e.code] || 'Signup failed. Please try again.');
+    console.error('Signup error:', e.code);
+  } finally {
+    gameSetLoading('game-signup-btn','game-signup-btn-text', false, 'CREATE ACCOUNT →');
   }
 });
 
-// Keep openRegisterModal pointing to inline modal (used by leaderboard prompt button)
+// ── Forgot password ───────────────────────────────────
+document.getElementById('game-forgot-btn').addEventListener('click', async () => {
+  const email = document.getElementById('game-forgot-email').value.trim();
+  const msgEl = document.getElementById('game-forgot-msg');
+  msgEl.textContent = ''; msgEl.style.color = '#ff6b6b';
+  if (!email) { msgEl.textContent = 'Please enter your email address.'; return; }
+  const btn = document.getElementById('game-forgot-btn');
+  btn.disabled = true; btn.style.opacity = '.7'; btn.textContent = 'Sending…';
+  try {
+    await auth.sendPasswordResetEmail(email);
+    msgEl.style.color = '#4caf50';
+    msgEl.textContent = '✓ Reset link sent! Check your inbox (and spam folder).';
+    document.getElementById('game-forgot-email').value = '';
+  } catch(e) {
+    // Don't reveal whether email exists
+    msgEl.style.color = '#4caf50';
+    msgEl.textContent = '✓ If that email is registered, a reset link was sent.';
+  } finally {
+    btn.disabled = false; btn.style.opacity = '1'; btn.textContent = 'SEND RESET LINK';
+  }
+});
+
+// ── Social (Google / GitHub) ──────────────────────────
+async function gameSocialLogin(providerName) {
+  const btnId = providerName === 'google' ? 'game-btn-google' : 'game-btn-github';
+  const btn   = document.getElementById(btnId);
+  const origHTML = btn ? btn.innerHTML : '';
+  if (btn) { btn.disabled = true; btn.style.opacity = '.7'; btn.textContent = 'Opening…'; }
+
+  const errElId = document.getElementById('game-form-login').style.display !== 'none'
+      ? 'game-login-err' : 'game-signup-err';
+
+  try {
+    let provider;
+    if (providerName === 'google') {
+      provider = new firebase.auth.GoogleAuthProvider();
+      provider.setCustomParameters({ prompt: 'select_account' });
+    } else {
+      provider = new firebase.auth.GithubAuthProvider();
+    }
+    const result = await auth.signInWithPopup(provider);
+    const user   = result.user;
+    const snap   = await db.collection('users').doc(user.uid).get();
+    if (!snap.exists) {
+      // First OAuth — need username
+      switchGameAuthTab('signup');
+      const ef = document.getElementById('game-signup-email');
+      if (ef) { ef.value = user.email || ''; ef.disabled = true; }
+      window._gamePendingOAuth = user;
+      const err = document.getElementById('game-signup-err');
+      if (err) { err.style.color = '#e2b714'; err.textContent = '✓ Signed in with ' + (providerName === 'google' ? 'Google' : 'GitHub') + '! Now pick a username to finish.'; }
+    } else {
+      closeAuthModal();
+    }
+  } catch(e) {
+    console.error('Social login error:', e.code, e.message);
+    if (e.code === 'auth/popup-closed-by-user' || e.code === 'auth/cancelled-popup-request') {
+      // silent
+    } else if (e.code === 'auth/popup-blocked') {
+      gameShowErr(errElId, 'Popup was blocked. Please allow popups for this site and try again.');
+    } else if (e.code === 'auth/unauthorized-domain') {
+      gameShowErr(errElId, 'This domain is not authorized. Add it in Firebase Console → Authentication → Authorized Domains.');
+    } else if (e.code === 'auth/account-exists-with-different-credential') {
+      gameShowErr(errElId, 'An account exists with this email. Try logging in with email/password.');
+    } else {
+      gameShowErr(errElId, (providerName === 'github' ? 'GitHub' : 'Google') + ' sign-in failed. (' + (e.code || e.message) + ')');
+    }
+  } finally {
+    if (btn) { btn.disabled = false; btn.style.opacity = '1'; btn.innerHTML = origHTML; }
+  }
+}
+document.getElementById('game-btn-google').addEventListener('click', () => gameSocialLogin('google'));
+document.getElementById('game-btn-github').addEventListener('click', () => gameSocialLogin('github'));
+
+// Hover effects for social buttons
+['game-btn-google','game-btn-github'].forEach(id => {
+  const b = document.getElementById(id);
+  if (!b) return;
+  b.addEventListener('mouseover', () => { b.style.background='rgba(255,255,255,0.09)'; b.style.borderColor='rgba(255,255,255,0.3)'; });
+  b.addEventListener('mouseout',  () => { b.style.background='rgba(255,255,255,0.04)'; b.style.borderColor='rgba(255,255,255,0.15)'; });
+});
+
+// openRegisterModal still works
 function openRegisterModal() { openAuthModal('signup'); }
 function closeRegisterModal() { closeAuthModal(); }
 async function submitRegister() { /* handled by game-signup-btn */ }
+
 </script>
 <script>
 /* ── COUNTRY DROPDOWN (game.html) ── */
