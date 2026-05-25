@@ -189,7 +189,12 @@
         .country-option:hover { background: rgba(226,183,20,0.12); color: var(--gold); }
 
         .auth-modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.92); display: flex; align-items: center; justify-content: center; z-index: 1100; }
-        .auth-modal-box { background: rgba(10,10,35,0.98); border: 2px solid var(--orange); border-radius: 20px; padding: 36px 32px; width: 100%; max-width: 420px; position: relative; box-shadow: 0 0 60px rgba(255,215,0,0.2); }
+        .auth-modal-box { background: linear-gradient(145deg,#12122a,#1a1a35); border: 1px solid rgba(226,183,20,0.25); border-radius: 20px; padding: 36px 32px; width: 100%; max-width: 420px; position: relative; box-shadow: 0 25px 80px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.07); box-sizing: border-box; }
+        @keyframes rtAuthSlideIn { from { opacity:0; transform:translateY(-18px) scale(0.97); } to { opacity:1; transform:translateY(0) scale(1); } }
+        @keyframes rtShake { 0%,100%{transform:translateX(0)} 20%{transform:translateX(-6px)} 40%{transform:translateX(6px)} 60%{transform:translateX(-4px)} 80%{transform:translateX(4px)} }
+        @keyframes rtSpin { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
+        .auth-modal-overlay { backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
+        #auth-modal input:-webkit-autofill, #auth-modal input:-webkit-autofill:hover, #auth-modal input:-webkit-autofill:focus { -webkit-text-fill-color:#fff; -webkit-box-shadow:0 0 0 1000px #1a1a35 inset; transition:background-color 5000s; }
         .auth-modal-close { position: absolute; top: 14px; right: 18px; background: none; border: none; color: var(--muted); font-size: 22px; cursor: pointer; line-height: 1; }
         .auth-tabs { display: flex; margin-bottom: 24px; border-bottom: 2px solid rgba(255,255,255,0.1); }
         .debug-overlay { position: fixed; right: 14px; bottom: 14px; z-index: 1200; background: rgba(4,12,32,0.95); color: #fff; font-size: 12px; line-height: 1.4; padding: 10px 12px; border-radius: 12px; box-shadow: 0 8px 28px rgba(0,0,0,0.45); max-width: 320px; pointer-events: none; opacity: 0.92; }
@@ -228,40 +233,166 @@
         <div id="topnav-user"></div>
     </nav>
 
-    <div id="auth-modal" class="auth-modal-overlay" style="display:none;">
-        <div class="auth-modal-box">
-            <button class="auth-modal-close" id="auth-modal-close">×</button>
-            <div class="auth-tabs">
-                <button class="auth-tab-btn active" id="tab-btn-login" onclick="window.switchTab('login')">LOGIN</button>
-                <button class="auth-tab-btn" id="tab-btn-signup" onclick="window.switchTab('signup')">SIGN UP</button>
-            </div>
-            <div id="auth-form-login">
-                <div class="auth-form-title">Welcome Back 🚀</div>
-                <input class="auth-input" id="t-login-email" type="email" placeholder="Email" autocomplete="email">
-                <input class="auth-input" id="t-login-password" type="password" placeholder="Password">
-                <div class="auth-err" id="t-login-err"></div>
-                <button class="auth-submit-btn" id="t-login-btn">LOGIN →</button>
-            </div>
-            <div id="auth-form-signup" style="display:none;">
-                <div class="auth-form-title">Create Account 🌟</div>
-                <input class="auth-input" id="t-signup-username" type="text" maxlength="15" placeholder="Username (3–15 chars, letters/numbers/_)">
-                <div class="country-select-wrap" id="t-country-wrap">
-                    <div class="country-select-display" id="t-country-display" onclick="toggleCountryDrop('t')">
-                        <span id="t-country-text" style="color:var(--muted)">Your country</span>
-                        <span class="country-arrow">▼</span>
-                    </div>
-                    <div class="country-drop" id="t-country-drop">
-                        <div class="country-search-wrap"><input class="country-search-input" id="t-country-search" placeholder="Search country…" oninput="filterCountries('t')"></div>
-                        <div class="country-list" id="t-country-list"></div>
-                    </div>
-                </div>
-                <input type="hidden" id="t-signup-country">
-                <input class="auth-input" id="t-signup-email" type="email" placeholder="Email" autocomplete="email">
-                <input class="auth-input" id="t-signup-password" type="password" placeholder="Password (min 6 chars)">
-                <div class="auth-err" id="t-signup-err"></div>
-                <button class="auth-submit-btn" id="t-signup-btn">CREATE ACCOUNT →</button>
-            </div>
+    <!-- ══ AUTH MODAL v4 — Sunday Championship ══ -->
+    <div id="auth-modal" class="auth-modal-overlay" style="display:none;"
+         role="dialog" aria-modal="true" aria-label="Sign in or create account">
+      <div class="auth-modal-box"
+           style="animation:rtAuthSlideIn .28s cubic-bezier(.22,1,.36,1);">
+        <button class="auth-modal-close" id="auth-modal-close" aria-label="Close">×</button>
+
+        <!-- Logo -->
+        <div style="text-align:center;margin-bottom:18px;">
+          <span style="font-size:26px;">🏆</span>
+          <div style="font-family:'Roboto Mono',monospace;font-size:11px;
+                      color:var(--muted);letter-spacing:2px;margin-top:3px;">SUNDAY CHAMPIONSHIP</div>
         </div>
+
+        <!-- Tabs -->
+        <div class="auth-tabs">
+          <button class="auth-tab-btn active" id="tab-btn-login"
+                  onclick="window.switchTab('login')">LOGIN</button>
+          <button class="auth-tab-btn" id="tab-btn-signup"
+                  onclick="window.switchTab('signup')">SIGN UP</button>
+        </div>
+
+        <!-- Social buttons -->
+        <div id="t-social-btns" style="display:flex;flex-direction:column;gap:9px;margin-bottom:16px;">
+          <button id="t-btn-google"
+                  style="display:flex;align-items:center;justify-content:center;gap:9px;
+                         width:100%;padding:11px;border:1px solid rgba(255,255,255,0.15);
+                         border-radius:9px;background:rgba(255,255,255,0.04);color:#e8e8e8;
+                         cursor:pointer;font-family:'Roboto Mono',monospace;font-size:12px;
+                         font-weight:700;letter-spacing:.5px;transition:all .2s;box-sizing:border-box;">
+            <svg width="16" height="16" viewBox="0 0 18 18"><path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.874 2.684-6.615z" fill="#4285F4"/><path d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z" fill="#34A853"/><path d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z" fill="#FBBC05"/><path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z" fill="#EA4335"/></svg>
+            Continue with Google
+          </button>
+          <button id="t-btn-github"
+                  style="display:flex;align-items:center;justify-content:center;gap:9px;
+                         width:100%;padding:11px;border:1px solid rgba(255,255,255,0.15);
+                         border-radius:9px;background:rgba(255,255,255,0.04);color:#e8e8e8;
+                         cursor:pointer;font-family:'Roboto Mono',monospace;font-size:12px;
+                         font-weight:700;letter-spacing:.5px;transition:all .2s;box-sizing:border-box;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="#e8e8e8"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+            Continue with GitHub
+          </button>
+        </div>
+
+        <!-- Divider -->
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
+          <div style="flex:1;height:1px;background:rgba(255,255,255,0.1);"></div>
+          <span style="color:var(--muted);font-size:10px;font-family:'Roboto Mono',monospace;letter-spacing:1px;">OR</span>
+          <div style="flex:1;height:1px;background:rgba(255,255,255,0.1);"></div>
+        </div>
+
+        <!-- LOGIN -->
+        <div id="auth-form-login">
+          <div class="auth-form-title">Welcome Back 🚀</div>
+          <input class="auth-input" id="t-login-email" type="email"
+                 placeholder="Email address" autocomplete="email" autocapitalize="off">
+          <div style="position:relative;margin-bottom:8px;">
+            <input class="auth-input" id="t-login-password" type="password"
+                   placeholder="Password" autocomplete="current-password"
+                   style="margin-bottom:0;padding-right:42px;"
+                   onkeydown="if(event.key==='Enter')window.tDoLogin()">
+            <button type="button" onclick="tTogglePw('t-login-password',this)"
+                    tabindex="-1"
+                    style="position:absolute;right:11px;top:50%;transform:translateY(-50%);
+                           background:none;border:none;color:var(--muted);cursor:pointer;
+                           font-size:15px;padding:2px;">👁</button>
+          </div>
+          <div style="text-align:right;margin-bottom:10px;">
+            <button type="button" onclick="window.switchTab('forgot')"
+                    style="background:none;border:none;color:var(--gold);font-size:11px;
+                           font-family:'Roboto Mono',monospace;cursor:pointer;
+                           text-decoration:underline;opacity:.8;padding:0;">Forgot password?</button>
+          </div>
+          <div class="auth-err" id="t-login-err"></div>
+          <button class="auth-submit-btn" id="t-login-btn">
+            <span id="t-login-btn-text">LOGIN →</span>
+          </button>
+        </div>
+
+        <!-- SIGN UP -->
+        <div id="auth-form-signup" style="display:none;">
+          <div class="auth-form-title">Create Account 🌟</div>
+          <div style="position:relative;margin-bottom:4px;">
+            <input class="auth-input" id="t-signup-username" type="text" maxlength="15"
+                   placeholder="Username (3–15 chars, letters/numbers/_)"
+                   autocomplete="username" autocapitalize="off" autocorrect="off"
+                   style="margin-bottom:0;padding-right:36px;">
+            <span id="t-username-icon"
+                  style="position:absolute;right:11px;top:50%;transform:translateY(-50%);
+                         font-size:13px;pointer-events:none;"></span>
+          </div>
+          <div id="t-username-hint"
+               style="font-size:10px;color:var(--muted);font-family:'Roboto Mono',monospace;
+                      margin-bottom:10px;min-height:14px;padding-left:3px;"></div>
+          <div class="country-select-wrap" id="t-country-wrap">
+            <div class="country-select-display" id="t-country-display" onclick="toggleCountryDrop('t')">
+              <span id="t-country-text" style="color:var(--muted)">Your country</span>
+              <span class="country-arrow">▼</span>
+            </div>
+            <div class="country-drop" id="t-country-drop">
+              <div class="country-search-wrap">
+                <input class="country-search-input" id="t-country-search"
+                       placeholder="Search country…" oninput="filterCountries('t')">
+              </div>
+              <div class="country-list" id="t-country-list"></div>
+            </div>
+          </div>
+          <input type="hidden" id="t-signup-country">
+          <input class="auth-input" id="t-signup-email" type="email"
+                 placeholder="Email address" autocomplete="email" autocapitalize="off">
+          <div style="position:relative;margin-bottom:6px;">
+            <input class="auth-input" id="t-signup-password" type="password"
+                   placeholder="Password (min 8 characters)" autocomplete="new-password"
+                   style="margin-bottom:0;padding-right:42px;"
+                   onkeydown="if(event.key==='Enter')window.tDoSignup()">
+            <button type="button" onclick="tTogglePw('t-signup-password',this)"
+                    tabindex="-1"
+                    style="position:absolute;right:11px;top:50%;transform:translateY(-50%);
+                           background:none;border:none;color:var(--muted);cursor:pointer;
+                           font-size:15px;padding:2px;">👁</button>
+          </div>
+          <!-- Strength bar -->
+          <div style="height:3px;border-radius:3px;background:rgba(255,255,255,0.08);
+                      margin-bottom:5px;overflow:hidden;">
+            <div id="t-pw-bar"
+                 style="height:100%;width:0%;border-radius:3px;
+                        transition:width .3s,background .3s;background:var(--gold);"></div>
+          </div>
+          <div id="t-pw-label"
+               style="font-size:10px;color:var(--muted);font-family:'Roboto Mono',monospace;
+                      margin-bottom:10px;min-height:14px;padding-left:3px;"></div>
+          <div class="auth-err" id="t-signup-err"></div>
+          <button class="auth-submit-btn" id="t-signup-btn">
+            <span id="t-signup-btn-text">CREATE ACCOUNT →</span>
+          </button>
+        </div>
+
+        <!-- FORGOT PASSWORD -->
+        <div id="auth-form-forgot" style="display:none;">
+          <div style="text-align:center;margin-bottom:18px;">
+            <div style="font-size:26px;margin-bottom:6px;">🔑</div>
+            <div class="auth-form-title" style="margin-bottom:6px;">Reset Password</div>
+            <p style="color:var(--muted);font-size:11px;font-family:'Roboto Mono',monospace;margin:0;">
+              We'll send a reset link to your email
+            </p>
+          </div>
+          <input class="auth-input" id="t-forgot-email" type="email"
+                 placeholder="Your email address" autocomplete="email"
+                 onkeydown="if(event.key==='Enter')window.tDoForgot()">
+          <div id="t-forgot-msg"
+               style="font-size:11px;min-height:16px;margin-bottom:10px;
+                      font-family:'Roboto Mono',monospace;"></div>
+          <button class="auth-submit-btn" id="t-forgot-btn">SEND RESET LINK</button>
+          <button type="button" onclick="window.switchTab('login')"
+                  style="display:block;margin:12px auto 0;background:none;border:none;
+                         color:var(--muted);font-size:11px;font-family:'Roboto Mono',monospace;
+                         cursor:pointer;text-decoration:underline;">← Back to login</button>
+        </div>
+
+      </div>
     </div>
 
     <!-- SCREEN 1: NOT SUNDAY -->
@@ -404,7 +535,12 @@ import {
     getAuth, onAuthStateChanged,
     signInWithEmailAndPassword,
     createUserWithEmailAndPassword,
-    signOut
+    signOut,
+    GoogleAuthProvider,
+    GithubAuthProvider,
+    signInWithPopup,
+    sendPasswordResetEmail,
+    sendEmailVerification
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 const app  = initializeApp({
@@ -982,65 +1118,250 @@ function _animateNum(id,end,dur=800){
 }
 
 /* ── AUTH MODAL ── */
-function openAuthModal(tab='login'){document.getElementById('auth-modal').style.display='flex';switchTab(tab);}
-function closeAuthModal(){document.getElementById('auth-modal').style.display='none';}
-function switchTab(tab){
-    document.getElementById('auth-form-login').style.display=tab==='login'?'block':'none';
-    document.getElementById('auth-form-signup').style.display=tab==='signup'?'block':'none';
-    document.getElementById('tab-btn-login').classList.toggle('active',tab==='login');
-    document.getElementById('tab-btn-signup').classList.toggle('active',tab==='signup');
+// ══════════════════════════════════════════════════════
+// AUTH MODULE v4 — Sunday Championship (test.html)
+// ══════════════════════════════════════════════════════
+
+// ── Open / Close ──────────────────────────────────────
+function openAuthModal(tab='login'){
+    document.getElementById('auth-modal').style.display='flex';
+    switchTab(tab);
+    setTimeout(()=>{
+        const f = tab==='signup'
+          ? document.getElementById('t-signup-username')
+          : document.getElementById('t-login-email');
+        if(f) f.focus();
+    }, 100);
 }
-window.openAuthModal=openAuthModal;window.closeAuthModal=closeAuthModal;window.switchTab=switchTab;
+function closeAuthModal(){
+    document.getElementById('auth-modal').style.display='none';
+    ['t-login-err','t-signup-err','t-forgot-msg'].forEach(id=>{
+        const el=document.getElementById(id); if(el) el.textContent='';
+    });
+}
+
+// ── Tab switcher ──────────────────────────────────────
+function switchTab(tab){
+    ['login','signup','forgot'].forEach(t=>{
+        const el=document.getElementById('auth-form-'+t);
+        if(el) el.style.display=t===tab?'block':'none';
+    });
+    const social=document.getElementById('t-social-btns');
+    if(social) social.style.display=tab==='forgot'?'none':'flex';
+    const tl=document.getElementById('tab-btn-login');
+    const ts=document.getElementById('tab-btn-signup');
+    if(tl){ tl.classList.toggle('active',tab==='login'); }
+    if(ts){ ts.classList.toggle('active',tab==='signup'); }
+    if(tab==='forgot'){
+        const le=document.getElementById('t-login-email');
+        const fe=document.getElementById('t-forgot-email');
+        if(le&&fe&&le.value) fe.value=le.value;
+    }
+}
+window.openAuthModal=openAuthModal;
+window.closeAuthModal=closeAuthModal;
+window.switchTab=switchTab;
 
 document.getElementById('auth-modal-close').addEventListener('click',closeAuthModal);
-document.getElementById('auth-modal').addEventListener('click',e=>{if(e.target===document.getElementById('auth-modal'))closeAuthModal();});
+document.getElementById('auth-modal').addEventListener('click',e=>{
+    if(e.target===document.getElementById('auth-modal')) closeAuthModal();
+});
+document.addEventListener('keydown',e=>{
+    if(e.key==='Escape'&&document.getElementById('auth-modal').style.display==='flex') closeAuthModal();
+});
 initCountryDrop('t');
 
-document.getElementById('t-login-btn').addEventListener('click',async()=>{
-    const email=document.getElementById('t-login-email').value.trim();
-    const pw=document.getElementById('t-login-password').value;
-    const err=document.getElementById('t-login-err');
-    err.textContent='';
-    if(!email||!pw){err.textContent='Please fill in all fields.';return;}
-    try{await signInWithEmailAndPassword(auth,email,pw);closeAuthModal();}
-    catch(e){err.textContent=(e.code==='auth/invalid-credential'||e.code==='auth/wrong-password')?'Wrong email or password.':'Login failed. Try again.';}
+// ── Helpers ───────────────────────────────────────────
+function tTogglePw(id, btn){
+    const inp=document.getElementById(id); if(!inp) return;
+    const show=inp.type==='password';
+    inp.type=show?'text':'password'; btn.textContent=show?'🙈':'👁';
+}
+function tSetLoading(btnId, textId, loading, label){
+    const btn=document.getElementById(btnId);
+    const sp=document.getElementById(textId);
+    if(!btn||!sp) return;
+    btn.disabled=loading; btn.style.opacity=loading?'.7':'1';
+    sp.innerHTML=loading
+      ?'<span style="display:inline-block;animation:rtSpin .7s linear infinite">⟳</span> '+(label||'Please wait…')
+      :label;
+}
+function tShowErr(id, msg){
+    const el=document.getElementById(id); if(!el) return;
+    el.textContent=msg; el.style.color='#ff6b6b';
+    el.style.animation='none'; void el.offsetWidth;
+    el.style.animation='rtShake .35s ease';
+}
+window.tTogglePw   = tTogglePw;
+window.tDoLogin    = tDoLogin;
+window.tDoSignup   = tDoSignup;
+window.openAuthModal  = openAuthModal;
+window.closeAuthModal = closeAuthModal;
+
+// ── Password strength ─────────────────────────────────
+document.getElementById('t-signup-password').addEventListener('input',function(){
+    const pw=this.value;
+    const bar=document.getElementById('t-pw-bar');
+    const lbl=document.getElementById('t-pw-label');
+    let s=0;
+    if(pw.length>=8) s++; if(pw.length>=12) s++;
+    if(/[A-Z]/.test(pw)) s++; if(/[0-9]/.test(pw)) s++;
+    if(/[^A-Za-z0-9]/.test(pw)) s++;
+    const pcts  =['0%','25%','40%','65%','85%','100%'];
+    const colors=['#444','#e74c3c','#e67e22','#f1c40f','#2ecc71','#00e6cc'];
+    const texts =['','Weak','Fair','Good','Strong','Very strong'];
+    if(bar){bar.style.width=pcts[s];bar.style.background=colors[s];}
+    if(lbl){lbl.textContent=texts[s];lbl.style.color=colors[s];}
 });
 
-document.getElementById('t-signup-btn').addEventListener('click',async()=>{
+// ── Username live validation ──────────────────────────
+document.getElementById('t-signup-username').addEventListener('input',function(){
+    const val=this.value.trim().toLowerCase();
+    const icon=document.getElementById('t-username-icon');
+    const hint=document.getElementById('t-username-hint');
+    if(!val){icon.textContent='';hint.textContent='';return;}
+    if(val.length<3){icon.textContent='❌';hint.textContent='Too short (min 3)';hint.style.color='#ff6b6b';return;}
+    if(!/^[a-z0-9_]+$/.test(val)){icon.textContent='❌';hint.textContent='Only lowercase letters, numbers, _';hint.style.color='#ff6b6b';return;}
+    icon.textContent='✅';hint.textContent='Looks good!';hint.style.color='#4caf50';
+});
+
+// ── Login ─────────────────────────────────────────────
+async function tDoLogin(){
+    const email=document.getElementById('t-login-email').value.trim();
+    const pw=document.getElementById('t-login-password').value;
+    tShowErr('t-login-err','');
+    if(!email) return tShowErr('t-login-err','Please enter your email.');
+    if(!pw)    return tShowErr('t-login-err','Please enter your password.');
+    tSetLoading('t-login-btn','t-login-btn-text',true,'Signing in…');
+    try{
+        await signInWithEmailAndPassword(auth,email,pw);
+        closeAuthModal();
+    } catch(e){
+        const msgs={'auth/invalid-credential':'Wrong email or password.',
+          'auth/user-not-found':'No account with this email.',
+          'auth/wrong-password':'Wrong password.',
+          'auth/too-many-requests':'Too many attempts. Try again later or reset your password.'};
+        tShowErr('t-login-err', msgs[e.code]||'Login failed. Try again.');
+    } finally {
+        tSetLoading('t-login-btn','t-login-btn-text',false,'LOGIN →');
+    }
+}
+document.getElementById('t-login-btn').addEventListener('click', tDoLogin);
+
+// ── Sign Up ───────────────────────────────────────────
+async function tDoSignup(){
     const username=document.getElementById('t-signup-username').value.trim().toLowerCase();
     const country=document.getElementById('t-signup-country').value.trim();
     const email=document.getElementById('t-signup-email').value.trim();
     const pw=document.getElementById('t-signup-password').value;
-    const err=document.getElementById('t-signup-err');
-    err.textContent='';
-    if(username.length<3||username.length>15){err.textContent='Username must be 3–15 characters.';return;}
-    if(!/^[a-z0-9_]+$/.test(username)){err.textContent='Only lowercase letters, numbers, and _ allowed.';return;}
-    if(!country){err.textContent='Please enter your country.';return;}
-    if(!email){err.textContent='Please enter your email.';return;}
-    // SECURITY FIX: increased minimum from 6 to 8 characters
-    if(pw.length<8){err.textContent='Password must be at least 8 characters.';return;}
+    tShowErr('t-signup-err','');
+    if(username.length<3||username.length>15) return tShowErr('t-signup-err','Username must be 3–15 characters.');
+    if(!/^[a-z0-9_]+$/.test(username)) return tShowErr('t-signup-err','Only lowercase letters, numbers, and _ allowed.');
+    if(!country) return tShowErr('t-signup-err','Please select your country.');
+    if(!email)   return tShowErr('t-signup-err','Please enter your email.');
+    if(pw.length<8) return tShowErr('t-signup-err','Password must be at least 8 characters.');
+    tSetLoading('t-signup-btn','t-signup-btn-text',true,'Creating account…');
     try{
         const snap=await getDocs(query(collection(db,'users'),where('name','==',username)));
-        if(!snap.empty){err.textContent='Username already taken. Choose another.';return;}
+        if(!snap.empty) return tShowErr('t-signup-err','Username already taken. Choose another.');
         const cred=await createUserWithEmailAndPassword(auth,email,pw);
         await setDoc(doc(db,'users',cred.user.uid),{name:username,country,uid:cred.user.uid,created:Date.now()});
+        sendEmailVerification(cred.user).catch(()=>{});
         closeAuthModal();
     } catch(e){
-        // SECURITY FIX: never expose e.message to users
-        if(e.code==='auth/email-already-in-use'){
-            err.textContent='This email is already registered. Please login.';
-        } else if(e.code==='permission-denied'||(e.code&&e.code.includes('permission'))){
-            err.textContent='Unable to check username availability. Please try again in a moment.';
-        } else if(e.code==='auth/weak-password'){
-            err.textContent='Password must be at least 8 characters.';
-        } else if(e.code==='auth/invalid-email'){
-            err.textContent='Please enter a valid email address.';
-        } else {
-            err.textContent='Signup failed. Please try again.';
-        }
-        console.error('Signup error:',e.code,e.message);
+        const msgs={'auth/email-already-in-use':'This email is already registered. Please log in.',
+          'auth/weak-password':'Password must be at least 8 characters.',
+          'auth/invalid-email':'Please enter a valid email address.',
+          'auth/too-many-requests':'Too many attempts. Please try again later.'};
+        tShowErr('t-signup-err', msgs[e.code]||'Signup failed. Please try again.');
+        console.error('Signup error:',e.code);
+    } finally {
+        tSetLoading('t-signup-btn','t-signup-btn-text',false,'CREATE ACCOUNT →');
     }
+}
+document.getElementById('t-signup-btn').addEventListener('click', tDoSignup);
+
+// ── Forgot password ───────────────────────────────────
+async function tDoForgot(){
+    const email=document.getElementById('t-forgot-email').value.trim();
+    const msgEl=document.getElementById('t-forgot-msg');
+    msgEl.textContent=''; msgEl.style.color='#ff6b6b';
+    if(!email){msgEl.textContent='Please enter your email address.';return;}
+    const btn=document.getElementById('t-forgot-btn');
+    btn.disabled=true; btn.style.opacity='.7'; btn.textContent='Sending…';
+    try{
+        await sendPasswordResetEmail(auth,email);
+        msgEl.style.color='#4caf50';
+        msgEl.textContent='✓ Reset link sent! Check your inbox (and spam folder).';
+        document.getElementById('t-forgot-email').value='';
+    } catch(e){
+        msgEl.style.color='#4caf50';
+        msgEl.textContent='✓ If that email is registered, a reset link was sent.';
+    } finally {
+        btn.disabled=false; btn.style.opacity='1'; btn.textContent='SEND RESET LINK';
+    }
+}
+window.tDoForgot=tDoForgot;
+document.getElementById('t-forgot-btn').addEventListener('click', tDoForgot);
+
+// ── Social login ──────────────────────────────────────
+async function tSocialLogin(providerName){
+    const btnId=providerName==='google'?'t-btn-google':'t-btn-github';
+    const btn=document.getElementById(btnId);
+    const origHTML=btn?btn.innerHTML:'';
+    if(btn){btn.disabled=true;btn.style.opacity='.7';btn.textContent='Opening…';}
+
+    const errElId = document.getElementById('auth-form-login').style.display!=='none'
+        ? 't-login-err' : 't-signup-err';
+
+    try{
+        let p;
+        if(providerName==='google'){
+            p=new GoogleAuthProvider(); p.setCustomParameters({prompt:'select_account'});
+        } else {
+            p=new GithubAuthProvider();
+        }
+        const result=await signInWithPopup(auth,p);
+        const user=result.user;
+        const snap=await getDoc(doc(db,'users',user.uid));
+        if(!snap.exists()){
+            // First OAuth — need username
+            window.switchTab('signup');
+            const ef=document.getElementById('t-signup-email');
+            if(ef){ef.value=user.email||'';ef.disabled=true;}
+            window._tPendingOAuth=user;
+            const err=document.getElementById('t-signup-err');
+            if(err){err.style.color='#e2b714';err.textContent='✓ Signed in with '+(providerName==='google'?'Google':'GitHub')+'! Now pick a username to finish.';}
+        } else {
+            closeAuthModal();
+        }
+    } catch(e){
+        console.error('Social login error:', e.code, e.message);
+        if(e.code==='auth/popup-closed-by-user'||e.code==='auth/cancelled-popup-request'){
+            // silent
+        } else if(e.code==='auth/popup-blocked'){
+            tShowErr(errElId,'Popup was blocked. Please allow popups for this site and try again.');
+        } else if(e.code==='auth/unauthorized-domain'){
+            tShowErr(errElId,'This domain is not authorized. Add it in Firebase Console → Authentication → Authorized Domains.');
+        } else if(e.code==='auth/account-exists-with-different-credential'){
+            tShowErr(errElId,'An account exists with this email. Try logging in with email/password.');
+        } else {
+            tShowErr(errElId,(providerName==='github'?'GitHub':'Google')+' sign-in failed. ('+(e.code||e.message)+')');
+        }
+    } finally {
+        if(btn){btn.disabled=false;btn.style.opacity='1';btn.innerHTML=origHTML;}
+    }
+}
+const tGoogleBtn=document.getElementById('t-btn-google');
+const tGithubBtn=document.getElementById('t-btn-github');
+if(tGoogleBtn) tGoogleBtn.addEventListener('click',()=>tSocialLogin('google'));
+if(tGithubBtn) tGithubBtn.addEventListener('click',()=>tSocialLogin('github'));
+['t-btn-google','t-btn-github'].forEach(id=>{
+    const b=document.getElementById(id); if(!b) return;
+    b.addEventListener('mouseover',()=>{b.style.background='rgba(255,255,255,0.09)';b.style.borderColor='rgba(255,255,255,0.3)';});
+    b.addEventListener('mouseout', ()=>{b.style.background='rgba(255,255,255,0.04)';b.style.borderColor='rgba(255,255,255,0.15)';});
 });
+
 
 /* ── TOPNAV ── */
 function updateTopnavUI(){
