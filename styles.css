@@ -820,3 +820,68 @@ footer a:hover { opacity: 0.8; }
 #authModal input:focus {
     z-index: 1110;
 }
+/* ═══════════════════════════════════════════════════════════════
+   AUTH MODAL v4 — Rocket Typing
+   Animations, spin, shake, slide-in, focus glow
+═══════════════════════════════════════════════════════════════ */
+
+/* Modal slide-in animation */
+@keyframes rtAuthSlideIn {
+  from { opacity: 0; transform: translateY(-18px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0)     scale(1);    }
+}
+
+/* Error shake */
+@keyframes rtShake {
+  0%,100% { transform: translateX(0); }
+  20%     { transform: translateX(-6px); }
+  40%     { transform: translateX(6px); }
+  60%     { transform: translateX(-4px); }
+  80%     { transform: translateX(4px); }
+}
+
+/* Button spinner */
+@keyframes rtSpin {
+  from { transform: rotate(0deg);   }
+  to   { transform: rotate(360deg); }
+}
+
+/* Auth modal overlay fade */
+#authModal {
+  pointer-events: auto;
+  animation: none;
+}
+#authModal[style*="flex"] {
+  animation: rtOverlayFadeIn .2s ease;
+}
+@keyframes rtOverlayFadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* Social button hover (handled inline; this is a fallback) */
+#btn-google:hover,
+#btn-github:hover {
+  background: rgba(255,255,255,0.09) !important;
+  border-color: rgba(255,255,255,0.3) !important;
+}
+
+/* Input autofill dark override */
+#authModal input:-webkit-autofill,
+#authModal input:-webkit-autofill:hover,
+#authModal input:-webkit-autofill:focus {
+  -webkit-text-fill-color: #fff;
+  -webkit-box-shadow: 0 0 0 1000px #1a1a35 inset;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+/* Auth input focus glow */
+#authModal input:focus {
+  z-index: 1110;
+  box-shadow: 0 0 0 3px rgba(226,183,20,0.15);
+}
+
+/* Strength bar pulse on Very Strong */
+#pw-strength-bar[style*="100%"] {
+  box-shadow: 0 0 8px rgba(0,230,204,0.5);
+}
