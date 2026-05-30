@@ -399,6 +399,280 @@ function fmtDate(ts) {
 }
 
 </style>
+<!-- ═══════════════════════════════════════════════════════════════
+     KEYMAP SCENE STYLES — Animated Typing Character
+═══════════════════════════════════════════════════════════════ -->
+<style>
+/* ── Toggle Row ── */
+#km-toggle-row {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    margin-top: 6px;
+    margin-bottom: 4px;
+    position: relative;
+    z-index: 5;
+    transition: opacity 0.25s ease, visibility 0.25s ease;
+}
+#km-toggle-row.km-toggle-hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+#km-toggle-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    background: rgba(10,10,35,0.7);
+    border: 1.5px solid rgba(226,183,20,0.3);
+    color: #e2b714;
+    padding: 7px 20px;
+    border-radius: 50px;
+    font-family: 'Roboto Mono', monospace;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 0 12px rgba(226,183,20,0.1);
+}
+#km-toggle-btn:hover {
+    border-color: rgba(226,183,20,0.75);
+    background: rgba(226,183,20,0.08);
+    box-shadow: 0 0 20px rgba(226,183,20,0.25);
+}
+.km-pill {
+    padding: 2px 11px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 900;
+    letter-spacing: 1px;
+    transition: all 0.2s;
+}
+.km-pill.on {
+    background: linear-gradient(135deg, #e2b714, #ff9900);
+    color: #0a0a23;
+    box-shadow: 0 0 10px rgba(226,183,20,0.45);
+}
+.km-pill.off {
+    background: rgba(255,255,255,0.08);
+    color: #646669;
+}
+
+/* ── Scene Container ── */
+#km-wrap {
+    overflow: visible;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+#km-scene {
+    display: inline-flex;
+    align-items: flex-end;
+    gap: 0;
+    padding: 10px 10px 8px;
+    background: rgba(0,0,0,0.28);
+    border-radius: 16px;
+    border: 1px solid rgba(226,183,20,0.1);
+    overflow: visible;
+    max-height: 220px;
+    transition: max-height 0.45s cubic-bezier(0.34,1.56,0.64,1),
+                opacity 0.35s ease,
+                padding 0.35s ease,
+                margin 0.35s ease;
+}
+#km-scene.km-hidden {
+    max-height: 0 !important;
+    opacity: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    overflow: hidden;
+    pointer-events: none;
+    border-color: transparent;
+}
+
+/* ── Character Column ── */
+#km-char-col {
+    flex-shrink: 0;
+    width: 150px;
+    overflow: visible;
+    position: relative;
+    z-index: 2;
+    align-self: flex-end;
+}
+#km-char {
+    width: 150px;
+    height: auto;
+    display: block;
+    overflow: visible;
+    filter: drop-shadow(0 6px 16px rgba(59,130,246,0.28));
+}
+
+/* ── Arm Animations ── */
+#km-fl, #km-fr {
+    transition: transform 0.11s cubic-bezier(0.34,1.56,0.64,1);
+}
+@keyframes km-tap-anim {
+    0%, 100% { transform: translateY(0px); }
+    42%       { transform: translateY(8px);  }
+}
+.km-tapping { animation: km-tap-anim 0.19s ease-out; }
+
+/* ── Keyboard + Mouse Column ── */
+#km-kb-col {
+    flex-shrink: 0;
+    display: flex;
+    align-items: flex-end;
+    gap: 18px;
+    padding-bottom: 2px;
+    margin-left: 6px;
+}
+#km-kb {
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+.km-row { display: flex; gap: 3px; }
+
+/* Base key */
+.km-key {
+    height: 26px;
+    min-width: 26px;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Roboto Mono', monospace;
+    font-size: 9.5px;
+    font-weight: 700;
+    color: #5a5f6a;
+    background: rgba(255,255,255,0.04);
+    border: 1.5px solid rgba(255,255,255,0.08);
+    user-select: none;
+    transition: background 0.07s, border-color 0.07s, color 0.07s,
+                transform 0.07s, box-shadow 0.07s;
+    letter-spacing: 0.3px;
+    box-shadow: inset 0 -2px 0 rgba(0,0,0,0.4);
+    position: relative;
+    overflow: hidden;
+    cursor: default;
+}
+/* Left-hand keys */
+.km-key.km-l { border-color: rgba(226,183,20,0.18); color: #7a7055; }
+/* Right-hand keys */
+.km-key.km-r { border-color: rgba(0,230,204,0.16); color: #406065; }
+/* Both hands */
+.km-key.km-b { border-color: rgba(150,120,210,0.22); color: #6a5888; }
+
+/* Press LEFT */
+.km-key.km-pl {
+    background: rgba(226,183,20,0.3) !important;
+    border-color: #e2b714 !important;
+    color: #ffd700 !important;
+    transform: translateY(2px) scale(0.95);
+    box-shadow: 0 0 14px rgba(226,183,20,0.7), inset 0 1px 0 rgba(255,255,255,0.1);
+}
+/* Press RIGHT */
+.km-key.km-pr {
+    background: rgba(0,230,204,0.28) !important;
+    border-color: #00e6cc !important;
+    color: #00e6cc !important;
+    transform: translateY(2px) scale(0.95);
+    box-shadow: 0 0 14px rgba(0,230,204,0.7), inset 0 1px 0 rgba(255,255,255,0.1);
+}
+/* Press BOTH (space) */
+.km-key.km-pb {
+    background: rgba(130,100,220,0.3) !important;
+    border-color: #9b72cf !important;
+    color: #d0a8ff !important;
+    transform: translateY(2px) scale(0.98);
+    box-shadow: 0 0 14px rgba(130,100,220,0.6);
+}
+/* Ripple overlay on press */
+.km-key::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 50% 0%, rgba(255,255,255,0.18) 0%, transparent 65%);
+    opacity: 0;
+    transition: opacity 0.07s;
+}
+.km-key.km-pl::after, .km-key.km-pr::after, .km-key.km-pb::after { opacity: 1; }
+
+/* ── Mouse ── */
+#km-mouse-wrap {
+    flex-shrink: 0;
+    width: 48px;
+    padding-bottom: 4px;
+}
+#km-mouse-svg {
+    width: 48px;
+    height: auto;
+    display: block;
+    filter: drop-shadow(0 4px 10px rgba(0,0,0,0.5));
+}
+.km-mbtn { transition: fill 0.08s ease, filter 0.08s ease; }
+#km-mouse-svg.km-lc #km-mlbtn {
+    fill: rgba(226,183,20,0.5) !important;
+    filter: drop-shadow(0 0 5px #e2b714);
+}
+#km-mouse-svg.km-rc #km-mrbtn {
+    fill: rgba(0,230,204,0.5) !important;
+    filter: drop-shadow(0 0 5px #00e6cc);
+}
+#km-mouse-svg.km-mc #km-mwheel { fill: #9b72cf !important; }
+/* Label under mouse */
+#km-mouse-wrap p {
+    text-align: center;
+    font-family: 'Roboto Mono', monospace;
+    font-size: 9px;
+    color: #444;
+    margin: 4px 0 0;
+    letter-spacing: 0.8px;
+}
+/* Click ripple on mouse */
+@keyframes km-mclick {
+    0%   { opacity: 0.8; transform: scale(0); }
+    100% { opacity: 0;   transform: scale(2.4); }
+}
+.km-mripple {
+    position: absolute;
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    background: rgba(226,183,20,0.5);
+    pointer-events: none;
+    animation: km-mclick 0.35s ease-out forwards;
+}
+
+/* ── Responsive ── */
+@media (max-width: 750px) {
+    #km-char-col { display: none; }
+    .km-key { height: 22px; min-width: 22px; font-size: 7.5px; }
+    #km-mouse-wrap { width: 40px; }
+    #km-mouse-svg { width: 40px; }
+}
+@media (max-width: 520px) {
+    .km-key { height: 18px; min-width: 18px; font-size: 6.5px; border-radius: 3px; }
+}
+/* Eye blink animation for the character */
+@keyframes km-blink {
+    0%,90%,100% { transform: scaleY(1); }
+    95%          { transform: scaleY(0.08); }
+}
+#km-eye-l, #km-eye-r {
+    transform-origin: center center;
+    animation: km-blink 4.5s infinite;
+}
+#km-eye-r { animation-delay: 0.06s; }
+
+/* Idle head bob */
+@keyframes km-bob {
+    0%, 100% { transform: translateY(0px); }
+    50%       { transform: translateY(-3px); }
+}
+#km-head-group { animation: km-bob 3.2s ease-in-out infinite; }
+</style>
 </head>
 <body>
     <div id="app">
@@ -456,6 +730,224 @@ function fmtDate(ts) {
         </div>
         <div id="words"></div>
         <input id="input" type="text" autofocus>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     KEYMAP SCENE — Animated Boy Character + Keyboard + Mouse
+     Shows real-time key highlighting with arm animations
+═══════════════════════════════════════════════════════════════ -->
+<div id="km-wrap">
+    <!-- Toggle Button -->
+    <div id="km-toggle-row">
+        <button id="km-toggle-btn" onclick="kmToggle()" title="Toggle keymap visualization">
+            <span>⌨️</span>
+            <span>KEY MAP</span>
+            <span id="km-pill" class="km-pill on">ON</span>
+        </button>
+    </div>
+
+    <!-- Scene: Character + Keyboard + Mouse -->
+    <div id="km-scene">
+
+        <!-- ── LEFT: Boy Character SVG ── -->
+        <div id="km-char-col">
+            <svg id="km-char" viewBox="0 0 200 268" overflow="visible" xmlns="http://www.w3.org/2000/svg">
+
+                <!-- CHAIR BACK -->
+                <rect x="152" y="138" width="16" height="108" rx="8" fill="#152B47" stroke="#1e3c62" stroke-width="1"/>
+                <!-- CHAIR SEAT -->
+                <rect x="25" y="230" width="136" height="19" rx="10" fill="#152B47" stroke="#1e3c62" stroke-width="1"/>
+                <!-- CHAIR ARMRESTS -->
+                <rect x="28" y="192" width="13" height="42" rx="6" fill="#0e2035"/>
+                <rect x="145" y="192" width="13" height="42" rx="6" fill="#0e2035"/>
+
+                <!-- PANTS / LOWER BODY -->
+                <rect x="63" y="228" width="36" height="26" rx="9" fill="#1e3a5f"/>
+                <rect x="103" y="228" width="36" height="26" rx="9" fill="#1e3a5f"/>
+                <!-- SHOES -->
+                <ellipse cx="81" cy="260" rx="23" ry="10" fill="#0a1628"/>
+                <ellipse cx="121" cy="260" rx="23" ry="10" fill="#0a1628"/>
+
+                <!-- SHIRT / TORSO -->
+                <rect x="58" y="144" width="84" height="90" rx="16" fill="#3B82F6"/>
+                <!-- Collar V -->
+                <path d="M 88 144 L 100 162 L 112 144 Z" fill="#2563EB" opacity="0.75"/>
+                <!-- Shirt center seam -->
+                <line x1="100" y1="163" x2="100" y2="228" stroke="#2563EB" stroke-width="1.5" opacity="0.4"/>
+                <!-- Chest pocket -->
+                <rect x="65" y="158" width="18" height="14" rx="4" fill="#2563EB" opacity="0.5"/>
+
+                <!-- NECK -->
+                <rect x="89" y="135" width="22" height="17" rx="9" fill="#FBBF9A"/>
+
+                <!-- LEFT UPPER ARM (behind body) -->
+                <rect x="30" y="147" width="31" height="76" rx="15" fill="#3B82F6"/>
+                <!-- RIGHT UPPER ARM (behind body) -->
+                <rect x="140" y="147" width="31" height="76" rx="15" fill="#3B82F6"/>
+
+                <!-- === HEAD GROUP (bobs gently) === -->
+                <g id="km-head-group">
+                    <!-- HEAD BASE -->
+                    <circle cx="100" cy="90" r="48" fill="#FBBF9A"/>
+                    <!-- LEFT EAR -->
+                    <ellipse cx="54" cy="95" rx="11" ry="14" fill="#FBBF9A"/>
+                    <ellipse cx="54" cy="95" rx="6.5" ry="9" fill="#F08060" opacity="0.3"/>
+                    <!-- RIGHT EAR -->
+                    <ellipse cx="146" cy="95" rx="11" ry="14" fill="#FBBF9A"/>
+                    <ellipse cx="146" cy="95" rx="6.5" ry="9" fill="#F08060" opacity="0.3"/>
+
+                    <!-- HAIR TOP -->
+                    <ellipse cx="100" cy="56" rx="48" ry="24" fill="#1C0A00"/>
+                    <!-- Hair sweep / bangs -->
+                    <path d="M 54 72 Q 72 48 100 53 Q 128 48 146 72 Q 134 61 100 64 Q 66 61 54 72 Z" fill="#2A1200"/>
+                    <!-- Hair side tufts -->
+                    <path d="M 56 88 Q 47 78 50 62 Q 54 74 57 85 Z" fill="#1C0A00"/>
+                    <path d="M 144 88 Q 153 78 150 62 Q 146 74 143 85 Z" fill="#1C0A00"/>
+                    <!-- Spiky hair strands on top -->
+                    <path d="M 84 50 Q 88 38 93 50 M 97 47 Q 100 36 104 47 M 107 50 Q 112 38 116 50"
+                          stroke="#1C0A00" stroke-width="7" fill="none" stroke-linecap="round"/>
+
+                    <!-- EYEBROWS -->
+                    <path d="M 79 74 Q 89 67 98 74" stroke="#5C3317" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+                    <path d="M 102 74 Q 111 67 121 74" stroke="#5C3317" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+
+                    <!-- EYE WHITES -->
+                    <ellipse cx="88.5" cy="89" rx="11" ry="10.5" fill="white"/>
+                    <ellipse cx="111.5" cy="89" rx="11" ry="10.5" fill="white"/>
+                    <!-- IRISES (animated blink via transform) -->
+                    <g id="km-eye-l" style="transform-origin: 88.5px 89px;">
+                        <circle cx="88.5" cy="89.5" r="7.2" fill="#2E5BAE"/>
+                        <circle cx="89.5" cy="90" r="4.2" fill="#0A0A1A"/>
+                        <circle cx="91" cy="87" r="2.2" fill="white"/>
+                    </g>
+                    <g id="km-eye-r" style="transform-origin: 111.5px 89px;">
+                        <circle cx="111.5" cy="89.5" r="7.2" fill="#2E5BAE"/>
+                        <circle cx="112.5" cy="90" r="4.2" fill="#0A0A1A"/>
+                        <circle cx="114" cy="87" r="2.2" fill="white"/>
+                    </g>
+                    <!-- Eyelash arcs -->
+                    <path d="M 78 82 Q 85 76 97 81" stroke="#0A0A1A" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+                    <path d="M 101 81 Q 107 76 122 82" stroke="#0A0A1A" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+                    <!-- BLUSH -->
+                    <ellipse cx="70" cy="104" rx="13" ry="7" fill="#F59E8A" opacity="0.32"/>
+                    <ellipse cx="130" cy="104" rx="13" ry="7" fill="#F59E8A" opacity="0.32"/>
+                    <!-- NOSE -->
+                    <path d="M 96 106 Q 100 114 104 106" stroke="#D4896A" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+                    <!-- SMILE -->
+                    <path d="M 85 120 Q 100 135 115 120" stroke="#C97B5A" stroke-width="2.8" fill="none" stroke-linecap="round"/>
+
+                    <!-- HEADPHONES (gamer style) -->
+                    <!-- Band over head -->
+                    <path d="M 58 62 Q 100 36 142 62" stroke="#0A1628" stroke-width="9" fill="none" stroke-linecap="round"/>
+                    <!-- Left cup frame + cable -->
+                    <path d="M 58 62 L 53 92" stroke="#0A1628" stroke-width="7" stroke-linecap="round"/>
+                    <!-- Right cup frame + cable -->
+                    <path d="M 142 62 L 147 92" stroke="#0A1628" stroke-width="7" stroke-linecap="round"/>
+                    <!-- Left ear cup -->
+                    <ellipse cx="52" cy="96" rx="14" ry="17" fill="#1E3A5F" stroke="#3B82F6" stroke-width="2"/>
+                    <ellipse cx="52" cy="96" rx="9" ry="11" fill="#0e2035"/>
+                    <circle  cx="52" cy="96" r="4" fill="#3B82F6" opacity="0.6"/>
+                    <!-- Right ear cup -->
+                    <ellipse cx="148" cy="96" rx="14" ry="17" fill="#1E3A5F" stroke="#3B82F6" stroke-width="2"/>
+                    <ellipse cx="148" cy="96" rx="9" ry="11" fill="#0e2035"/>
+                    <circle  cx="148" cy="96" r="4" fill="#3B82F6" opacity="0.6"/>
+                </g>
+                <!-- end head group -->
+
+                <!-- ELBOW CAPS (front, over upper arms) -->
+                <circle cx="46" cy="221" r="16" fill="#2563EB"/>
+                <circle cx="155" cy="221" r="16" fill="#2563EB"/>
+
+                <!-- ════ LEFT FOREARM GROUP (animated around elbow) ════ -->
+                <!-- transform-origin at left elbow (46, 221); default rotation 0deg = horizontal right -->
+                <g id="km-fl" style="transform-origin: 46px 221px; transform: rotate(0deg);">
+                    <!-- Tap sub-group -->
+                    <g id="km-fl-tap">
+                        <!-- Forearm (horizontal right) -->
+                        <rect x="44" y="211" width="130" height="22" rx="11" fill="#FBBF9A"/>
+                        <!-- Wrist cuff from shirt -->
+                        <rect x="44" y="211" width="20" height="22" rx="10" fill="#3B82F6" opacity="0.6"/>
+                        <!-- Hand palm -->
+                        <ellipse cx="181" cy="222" rx="20" ry="14" fill="#FBBF9A"/>
+                        <!-- Fingers (4 bumps curled up ready to type) -->
+                        <ellipse cx="169" cy="208" rx="8"   ry="7.5" fill="#FBBF9A"/>
+                        <ellipse cx="179" cy="204" rx="8"   ry="7.5" fill="#FBBF9A"/>
+                        <ellipse cx="189" cy="206" rx="8"   ry="7.5" fill="#FBBF9A"/>
+                        <ellipse cx="197" cy="212" rx="7"   ry="6.5" fill="#FBBF9A"/>
+                        <!-- Thumb (side) -->
+                        <ellipse cx="163" cy="220" rx="6"   ry="8"   fill="#FBBF9A"/>
+                        <!-- Knuckle lines -->
+                        <line x1="170" y1="215" x2="170" y2="222" stroke="#F08060" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
+                        <line x1="180" y1="212" x2="180" y2="219" stroke="#F08060" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
+                        <line x1="190" y1="213" x2="190" y2="220" stroke="#F08060" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
+                    </g>
+                </g>
+
+                <!-- ════ RIGHT FOREARM GROUP (animated around elbow) ════ -->
+                <g id="km-fr" style="transform-origin: 155px 221px; transform: rotate(0deg);">
+                    <g id="km-fr-tap">
+                        <!-- Forearm -->
+                        <rect x="153" y="211" width="130" height="22" rx="11" fill="#FBBF9A"/>
+                        <!-- Wrist cuff -->
+                        <rect x="153" y="211" width="20" height="22" rx="10" fill="#3B82F6" opacity="0.6"/>
+                        <!-- Hand -->
+                        <ellipse cx="290" cy="222" rx="20" ry="14" fill="#FBBF9A"/>
+                        <!-- Fingers -->
+                        <ellipse cx="278" cy="208" rx="8"   ry="7.5" fill="#FBBF9A"/>
+                        <ellipse cx="288" cy="204" rx="8"   ry="7.5" fill="#FBBF9A"/>
+                        <ellipse cx="298" cy="206" rx="8"   ry="7.5" fill="#FBBF9A"/>
+                        <ellipse cx="306" cy="212" rx="7"   ry="6.5" fill="#FBBF9A"/>
+                        <!-- Thumb -->
+                        <ellipse cx="272" cy="220" rx="6"   ry="8"   fill="#FBBF9A"/>
+                        <!-- Knuckle lines -->
+                        <line x1="279" y1="215" x2="279" y2="222" stroke="#F08060" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
+                        <line x1="289" y1="212" x2="289" y2="219" stroke="#F08060" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
+                        <line x1="299" y1="213" x2="299" y2="220" stroke="#F08060" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
+                    </g>
+                </g>
+
+            </svg>
+        </div>
+        <!-- end character column -->
+
+        <!-- ── RIGHT: Keyboard + Mouse ── -->
+        <div id="km-kb-col">
+            <div id="km-kb"><!-- Keys injected by JS --></div>
+
+            <!-- Mouse SVG -->
+            <div id="km-mouse-wrap">
+                <svg id="km-mouse-svg" viewBox="0 0 70 110" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Mouse body -->
+                    <path d="M 8 44 Q 8 12 35 8 Q 62 12 62 44 L 62 86 Q 62 104 35 104 Q 8 104 8 86 Z"
+                          fill="#1A2230" stroke="#2e3f52" stroke-width="1.5"/>
+                    <!-- Left button -->
+                    <path id="km-mlbtn" d="M 9 42 Q 9 14 34 10 L 34 52 L 9 52 Z"
+                          fill="#21293A" stroke="#2e3f52" stroke-width="1.2" class="km-mbtn"/>
+                    <!-- Right button -->
+                    <path id="km-mrbtn" d="M 61 42 Q 61 14 36 10 L 36 52 L 61 52 Z"
+                          fill="#21293A" stroke="#2e3f52" stroke-width="1.2" class="km-mbtn"/>
+                    <!-- Divider line -->
+                    <line x1="35" y1="10" x2="35" y2="52" stroke="#2e3f52" stroke-width="1.5"/>
+                    <!-- Scroll wheel -->
+                    <rect id="km-mwheel" x="30" y="20" width="10" height="20" rx="5" fill="#2e3f52"/>
+                    <!-- Wheel shine -->
+                    <rect x="31" y="21" width="4" height="18" rx="2" fill="rgba(255,255,255,0.07)"/>
+                    <!-- Bottom taper -->
+                    <ellipse cx="35" cy="86" rx="24" ry="8" fill="#16202f" opacity="0.5"/>
+                    <!-- Left click dot indicator -->
+                    <circle id="km-lclick-dot" cx="22" cy="34" r="4" fill="#e2b714" opacity="0"/>
+                    <!-- Right click dot indicator -->
+                    <circle id="km-rclick-dot" cx="48" cy="34" r="4" fill="#00e6cc" opacity="0"/>
+                    <!-- Mouse label -->
+                    <text x="35" y="97" text-anchor="middle" font-size="7" fill="#3a4a5a" font-family="Roboto Mono,monospace" letter-spacing="0.5">MOUSE</text>
+                </svg>
+                <p>Left / Right click</p>
+            </div>
+        </div>
+
+    </div><!-- #km-scene -->
+</div><!-- #km-wrap -->
+
+
 <div id="result" style="display: none;">
     <!-- MAIN ROW: stats LEFT + chart RIGHT -->
     <div class="result-layout">
@@ -1492,15 +1984,15 @@ nouns: ["ability", "absence", "academy", "account", "achievement", "acid", "acti
             return arr[Math.floor(Math.random() * arr.length)];
         }
 
-        // PERF: Build weighted pools ONCE at startup — not on every word generation.
-        // Old code rebuilt a pool of 1000s of items on each call; this is computed once.
+        // PERF: Build weighted index pool ONCE at startup — compact indices instead of duplicating word strings.
+        // Old approach stored thousands of duplicate string copies; this stores only integer indices.
         function _buildWeightedPool(list) {
             const weights = { 1: 10, 2: 25, 3: 30, 4: 20, 5: 10, 6: 4, 7: 1, 8: 0.5 };
             const pool = [];
-            list.forEach(word => {
-                const w = Math.max(1, Math.round((weights[word.length] || 0.3) * 10));
-                for (let i = 0; i < w; i++) pool.push(word);
-            });
+            for (let idx = 0; idx < list.length; idx++) {
+                const w = Math.max(1, Math.round((weights[list[idx].length] || 0.3) * 10));
+                for (let i = 0; i < w; i++) pool.push(idx);
+            }
             return pool;
         }
         const _pools = {
@@ -1509,40 +2001,34 @@ nouns: ["ability", "absence", "academy", "account", "achievement", "acid", "acti
             adjectives: _buildWeightedPool(vocabulary.adjectives),
             adverbs:    _buildWeightedPool(vocabulary.adverbs),
         };
-        function weightedWord(pool) {
-            // pool is now already the pre-built array
-            return pool[Math.floor(Math.random() * pool.length)];
+        function weightedWord(pool, list) {
+            return list[pool[Math.floor(Math.random() * pool.length)]];
         }
         function generateSentence() {
             const diff = config.difficulty;
             const currentTemplates = templates[diff] || templates.medium;
-            let template = randomItem(currentTemplates);
-            let sentence = template
-                .replace("{article}", randomItem(vocabulary.articles))
-                .replace("{noun}", weightedWord(_pools.nouns))
-                .replace("{verb}", weightedWord(_pools.verbs))
-                .replace("{adjective}", weightedWord(_pools.adjectives))
-                .replace("{adverb}", weightedWord(_pools.adverbs))
+            let sentence = randomItem(currentTemplates)
+                .replace("{article}",     randomItem(vocabulary.articles))
+                .replace("{noun}",        weightedWord(_pools.nouns,      vocabulary.nouns))
+                .replace("{verb}",        weightedWord(_pools.verbs,      vocabulary.verbs))
+                .replace("{adjective}",   weightedWord(_pools.adjectives, vocabulary.adjectives))
+                .replace("{adverb}",      weightedWord(_pools.adverbs,    vocabulary.adverbs))
                 .replace("{preposition}", randomItem(vocabulary.prepositions))
-                .replace("{article}", randomItem(vocabulary.articles))
-                .replace("{adjective}", weightedWord(_pools.adjectives))
-                .replace("{noun}", weightedWord(_pools.nouns))
-                .replace("{year}", randomItem(vocabulary.years))
-                .replace("{age}", randomItem(vocabulary.ages))
-                .replace("{month}", randomItem(vocabulary.months))
-                .replace("{day}", randomItem(vocabulary.days));
+                .replace("{article}",     randomItem(vocabulary.articles))
+                .replace("{adjective}",   weightedWord(_pools.adjectives, vocabulary.adjectives))
+                .replace("{noun}",        weightedWord(_pools.nouns,      vocabulary.nouns))
+                .replace("{year}",        randomItem(vocabulary.years))
+                .replace("{age}",         randomItem(vocabulary.ages))
+                .replace("{month}",       randomItem(vocabulary.months))
+                .replace("{day}",         randomItem(vocabulary.days));
 
-            if (diff === 'easy') {
-                sentence = sentence.toLowerCase();
-            } else {
-                sentence = sentence.charAt(0).toUpperCase() + sentence.slice(1);
-            }
+            sentence = diff === 'easy'
+                ? sentence.toLowerCase()
+                : sentence.charAt(0).toUpperCase() + sentence.slice(1);
 
-            // Randomly change . to ? for medium and hard (about 30% chance)
             if (diff !== 'easy' && sentence.endsWith('.') && Math.random() < 0.3) {
                 sentence = sentence.slice(0, -1) + '?';
             }
-
             return sentence;
         }
 
@@ -1552,17 +2038,18 @@ nouns: ["ability", "absence", "academy", "account", "achievement", "acid", "acti
             if (config.mode === "words") {
                 // generate exactly the number of words requested
                 while (words.length < config.words) {
-                    words = words.concat(generateSentence().split(" "));
+                    const chunk = generateSentence().split(" ");
+                    for (let i = 0; i < chunk.length && words.length < config.words; i++) {
+                        words.push(chunk[i]);
+                    }
                 }
-                words = words.slice(0, config.words);
             }
             else {
-                // time mode keeps big buffer
-                let fullText = "";
-                while (fullText.split(" ").length < 300) {
-                    fullText += generateSentence() + " ";
+                // time mode: build array directly — avoids O(n²) string concat + split
+                while (words.length < 300) {
+                    const chunk = generateSentence().split(" ");
+                    for (let i = 0; i < chunk.length; i++) words.push(chunk[i]);
                 }
-                words = fullText.trim().split(" ");
             }
         }
 
@@ -1588,9 +2075,9 @@ nouns: ["ability", "absence", "academy", "account", "achievement", "acid", "acti
                 frag.appendChild(wordSpan);
             });
             wordsDiv.appendChild(frag);
-            // Cache letter spans for the active word right away
+            // Cache letter spans for the active word right away — use children (faster than querySelectorAll)
             if (activeWordEl) {
-                activeLetterSpansArr = Array.from(activeWordEl.querySelectorAll('.letter'));
+                activeLetterSpansArr = Array.from(activeWordEl.children);
             }
             scheduleCaretUpdate();
             rowsCacheInvalid = true;   // ← invalidate cache after full render
@@ -1598,19 +2085,19 @@ nouns: ["ability", "absence", "academy", "account", "achievement", "acid", "acti
 
         // ==================== PERFORMANCE FIXES ====================
 
-        // Rebuild row cache only when DOM actually changes (Issue 5)
+        // Rebuild row cache only when DOM actually changes
         function rebuildRowsCache() {
             if (!rowsCacheInvalid) return;
-            
+
             cachedRows = [];
-            const wordElements = Array.from(wordsDiv.querySelectorAll('.word'));
-            
-            wordElements.forEach(word => {
-                const top = word.offsetTop;
+            // PERF: wordsDiv.children is a live HTMLCollection — no DOM query overhead
+            const children = wordsDiv.children;
+            for (let i = 0; i < children.length; i++) {
+                const top = children[i].offsetTop;
                 if (!cachedRows.some(r => Math.abs(r - top) < 5)) {
                     cachedRows.push(top);
                 }
-            });
+            }
             cachedRows.sort((a, b) => a - b);
             rowsCacheInvalid = false;
         }
@@ -1653,14 +2140,14 @@ nouns: ["ability", "absence", "academy", "account", "achievement", "acid", "acti
             let y = activeWord.offsetTop + target.offsetTop;
             if (after) x += target.offsetWidth;
 
-            // row-based scrolling using cached rows
+            // row-based scrolling — advance one row when cursor reaches row 3
             const currentRowTop = activeWord.offsetTop;
             const currentRowIndex = cachedRows.findIndex(r => Math.abs(r - currentRowTop) < 5);
             const currentScrollTop = wordsDiv.scrollTop;
             const visibleRowIndex = cachedRows.findIndex(r => r >= currentScrollTop - 5);
 
             if (currentRowIndex - visibleRowIndex >= 2) {
-               wordsDiv.scrollTo({ top: cachedRows[visibleRowIndex + 1], behavior: 'smooth' });
+                wordsDiv.scrollTo({ top: cachedRows[visibleRowIndex + 1], behavior: 'smooth' });
             }
 
             caret.style.height = `${target.offsetHeight}px`;
@@ -1685,6 +2172,9 @@ if (!testActive && e.key !== 'Tab') {
     if (document.getElementById("header-auth-btn")) {
         document.getElementById("header-auth-btn").style.display = "none";  // ← new
     }
+    // Hide keymap toggle button during typing
+    var kmToggleRow = document.getElementById('km-toggle-row');
+    if (kmToggleRow) kmToggleRow.classList.add('km-toggle-hidden');
 
     // Keep timer visible
     document.getElementById("test-config").style.display = "none";
@@ -1825,7 +2315,8 @@ if (!testActive && e.key !== 'Tab') {
                 activeWordEl = wordsDiv.children[currentWordIndex];
                 if (activeWordEl) {
                     activeWordEl.classList.add('active');
-                    activeLetterSpansArr = Array.from(activeWordEl.querySelectorAll('.letter'));
+                    // PERF: use direct children — faster than querySelectorAll
+                    activeLetterSpansArr = Array.from(activeWordEl.children);
                 }
 
                 if (config.mode === 'words') {
@@ -1834,7 +2325,7 @@ if (!testActive && e.key !== 'Tab') {
                 currentLetterIndex = 0;
                 extendWordsIfNeeded();
                 scheduleCaretUpdate();
-                rowsCacheInvalid = true;   // ← invalidate after word switch
+                rowsCacheInvalid = true;
             } else {
                 if (config.mode === 'words') {
                     endTest();
@@ -1844,26 +2335,28 @@ if (!testActive && e.key !== 'Tab') {
         function extendWordsIfNeeded() {
             if (config.mode !== 'time') return;
             if (currentWordIndex > words.length - 20) {
-                let extraText = "";
-                while (extraText.split(" ").length < 200) {
-                    extraText += generateSentence() + " ";
+                // PERF: build array directly instead of O(n²) string concat
+                const newWords = [];
+                while (newWords.length < 200) {
+                    const chunk = generateSentence().split(" ");
+                    for (let i = 0; i < chunk.length; i++) newWords.push(chunk[i]);
                 }
-                const newWords = extraText.trim().split(" ");
                 words = words.concat(newWords);
+                // PERF: single DocumentFragment — one DOM insertion instead of N
+                const frag = document.createDocumentFragment();
                 newWords.forEach(word => {
                     const wordSpan = document.createElement('div');
                     wordSpan.classList.add('word');
-
                     word.split('').forEach(letter => {
                         const letterSpan = document.createElement('span');
                         letterSpan.classList.add('letter');
                         letterSpan.textContent = letter;
                         wordSpan.appendChild(letterSpan);
                     });
-
-                    wordsDiv.appendChild(wordSpan);
+                    frag.appendChild(wordSpan);
                 });
-                rowsCacheInvalid = true;   // ← invalidate after extending words
+                wordsDiv.appendChild(frag);
+                rowsCacheInvalid = true;
             }
         }
         function startTimer() {
@@ -1992,6 +2485,9 @@ if (!testActive && e.key !== 'Tab') {
             document.getElementById('main-header').style.display = 'none';
             wordsDiv.style.display = 'none';
             timerDiv.style.display = 'none';
+            // Show keymap toggle button once test is finished
+            var kmToggleRowEnd = document.getElementById('km-toggle-row');
+            if (kmToggleRowEnd) kmToggleRowEnd.classList.remove('km-toggle-hidden');
 
             // Count-up animations (super satisfying)
             setTimeout(() => {
@@ -2011,8 +2507,8 @@ if (!testActive && e.key !== 'Tab') {
             }
 
             confetti({
-                particleCount: 180,
-                spread: 70,
+                particleCount: 80,
+                spread: 65,
                 origin: { y: 0.6 },
                 colors: ['#ffd700', '#ff9900', '#ffffff']
             });
@@ -2340,6 +2836,9 @@ if (!testActive && e.key !== 'Tab') {
     if (document.getElementById("header-auth-btn")) {
         document.getElementById("header-auth-btn").style.display = "flex";   // ← new
     }
+            // Show keymap toggle button again after test
+            var kmToggleRow = document.getElementById('km-toggle-row');
+            if (kmToggleRow) kmToggleRow.classList.remove('km-toggle-hidden');
             clearInterval(timerInterval);
             testActive = false;
             caret.classList.add('blink');
@@ -3086,6 +3585,256 @@ initCountryDrop('idx');
 </script>
 
 
-</body>
+<!-- ═══════════════════════════════════════════════════════════════
+     KEYMAP SYSTEM — Rocket Typing
+     Animated boy character with real-time keyboard + mouse display
+═══════════════════════════════════════════════════════════════ -->
+<script>
+(function(){
+'use strict';
 
+/* ── Keyboard Layout Definition ──────────────────────────────────
+   [displayLabel, keyCode, widthMultiplier, hand(L/R/B)]
+───────────────────────────────────────────────────────────────── */
+var KB_LAYOUT = [
+    [ // Row 0 — Number row
+        ['`','Backquote',1,'L'],['1','Digit1',1,'L'],['2','Digit2',1,'L'],['3','Digit3',1,'L'],
+        ['4','Digit4',1,'L'],['5','Digit5',1,'L'],['6','Digit6',1,'R'],['7','Digit7',1,'R'],
+        ['8','Digit8',1,'R'],['9','Digit9',1,'R'],['0','Digit0',1,'R'],['-','Minus',1,'R'],
+        ['=','Equal',1,'R'],['⌫','Backspace',2,'R']
+    ],
+    [ // Row 1 — QWERTY
+        ['Tab','Tab',1.5,'L'],['Q','KeyQ',1,'L'],['W','KeyW',1,'L'],['E','KeyE',1,'L'],
+        ['R','KeyR',1,'L'],['T','KeyT',1,'L'],['Y','KeyY',1,'R'],['U','KeyU',1,'R'],
+        ['I','KeyI',1,'R'],['O','KeyO',1,'R'],['P','KeyP',1,'R'],['[','BracketLeft',1,'R'],
+        [']','BracketRight',1,'R'],['\\','Backslash',1.5,'R']
+    ],
+    [ // Row 2 — Home row
+        ['Caps','CapsLock',1.8,'L'],['A','KeyA',1,'L'],['S','KeyS',1,'L'],['D','KeyD',1,'L'],
+        ['F','KeyF',1,'L'],['G','KeyG',1,'L'],['H','KeyH',1,'R'],['J','KeyJ',1,'R'],
+        ['K','KeyK',1,'R'],['L','KeyL',1,'R'],[';','Semicolon',1,'R'],["'","Quote",1,'R'],
+        ['↵','Enter',2.3,'R']
+    ],
+    [ // Row 3 — Bottom
+        ['⇧','ShiftLeft',2.3,'L'],['Z','KeyZ',1,'L'],['X','KeyX',1,'L'],['C','KeyC',1,'L'],
+        ['V','KeyV',1,'L'],['B','KeyB',1,'L'],['N','KeyN',1,'R'],['M','KeyM',1,'R'],
+        [',','Comma',1,'R'],['.','Period',1,'R'],['/','Slash',1,'R'],['⇧','ShiftRight',2.7,'R']
+    ],
+    [ // Row 4 — Space row
+        ['Ctrl','ControlLeft',1.5,'L'],['⊞','MetaLeft',1.3,'L'],['Alt','AltLeft',1.3,'L'],
+        ['Space','Space',6.2,'B'],
+        ['Alt','AltRight',1.3,'R'],['Ctrl','ControlRight',1.5,'R']
+    ]
+];
+
+/* ── Arm rotation (degrees) per key code ───────────────────────
+   Forearms start HORIZONTAL (pointing right). Rotation pivot = elbow.
+   Negative = arm swings UP (number row reach)
+   Positive  = arm swings DOWN (space row reach / mouse)
+───────────────────────────────────────────────────────────────── */
+var L_ROT = {
+    // Number row — reach up-left
+    'Backquote':-30,'Digit1':-28,'Digit2':-28,'Digit3':-28,'Digit4':-28,'Digit5':-28,
+    // QWERTY row
+    'Tab':-15,'KeyQ':-15,'KeyW':-15,'KeyE':-15,'KeyR':-14,'KeyT':-13,
+    // Home row (resting)
+    'CapsLock':-5,'KeyA':-5,'KeyS':-5,'KeyD':-5,'KeyF':-4,'KeyG':-4,
+    // Bottom row
+    'ShiftLeft':8,'KeyZ':8,'KeyX':8,'KeyC':8,'KeyV':8,'KeyB':8,
+    // Mod row
+    'ControlLeft':14,'MetaLeft':14,'AltLeft':13
+};
+var R_ROT = {
+    // Number row — reach up-right
+    'Digit6':-24,'Digit7':-24,'Digit8':-24,'Digit9':-24,'Digit0':-24,
+    'Minus':-24,'Equal':-24,'Backspace':-22,
+    // QWERTY row
+    'KeyY':-12,'KeyU':-12,'KeyI':-12,'KeyO':-12,'KeyP':-11,
+    'BracketLeft':-10,'BracketRight':-10,'Backslash':-10,
+    // Home row
+    'KeyH':0,'KeyJ':0,'KeyK':0,'KeyL':0,'Semicolon':0,'Quote':1,'Enter':2,
+    // Bottom row
+    'KeyN':9,'KeyM':9,'Comma':9,'Period':9,'Slash':9,'ShiftRight':10,
+    // Mod row
+    'AltRight':13,'ControlRight':14
+};
+var MOUSE_ROT   = 32;  // right arm rests on mouse
+var SPACE_L_ROT =  13;
+var SPACE_R_ROT =  14;
+
+/* Key code → hand */
+var KEY_HAND = {};
+KB_LAYOUT.forEach(function(row){
+    row.forEach(function(k){ KEY_HAND[k[1]] = k[3]; });
+});
+
+/* ── State ──────────────────────────────────────────────────── */
+var keymapOn = true;
+var rightArmTimer = null;
+var UNIT  = 26; // base key width (px)
+var GAP   = 3;  // gap between keys (px)
+
+/* ── Build Keyboard ─────────────────────────────────────────── */
+function buildKeyboard(){
+    var kbEl = document.getElementById('km-kb');
+    if(!kbEl) return;
+    kbEl.innerHTML = '';
+    KB_LAYOUT.forEach(function(row){
+        var rowEl = document.createElement('div');
+        rowEl.className = 'km-row';
+        row.forEach(function(k){
+            var label=k[0], code=k[1], w=k[2], hand=k[3].toLowerCase();
+            var el = document.createElement('div');
+            el.className = 'km-key km-'+hand;
+            el.dataset.code = code;
+            el.dataset.hand = hand;
+            el.style.minWidth  = (UNIT*w + GAP*(w-1)) + 'px';
+            el.style.flexBasis = (UNIT*w + GAP*(w-1)) + 'px';
+            el.textContent = label;
+            rowEl.appendChild(el);
+        });
+        kbEl.appendChild(rowEl);
+    });
+}
+
+/* ── Highlight Key ──────────────────────────────────────────── */
+function highlightKey(code){
+    var el = document.querySelector('.km-key[data-code="'+code+'"]');
+    if(!el) return;
+    var hand = el.dataset.hand;
+    var cls = hand==='l' ? 'km-pl' : (hand==='r' ? 'km-pr' : 'km-pb');
+    el.classList.remove('km-pl','km-pr','km-pb');
+    el.classList.add(cls);
+    clearTimeout(el._khTimer);
+    el._khTimer = setTimeout(function(){ el.classList.remove('km-pl','km-pr','km-pb'); }, 210);
+}
+
+/* ── Animate Arm ────────────────────────────────────────────── */
+function setArm(which, deg){
+    var id = which==='L' ? 'km-fl' : 'km-fr';
+    var tapId = which==='L' ? 'km-fl-tap' : 'km-fr-tap';
+    var armEl = document.getElementById(id);
+    var tapEl = document.getElementById(tapId);
+    if(!armEl) return;
+    armEl.style.transform = 'rotate('+deg+'deg)';
+    if(tapEl){
+        tapEl.classList.remove('km-tapping');
+        void tapEl.offsetWidth; // reflow
+        tapEl.classList.add('km-tapping');
+    }
+}
+
+function handleArm(code){
+    var hand = KEY_HAND[code];
+    if(!hand) return;
+    if(code === 'Space'){
+        setArm('L', SPACE_L_ROT);
+        setArm('R', SPACE_R_ROT);
+        clearTimeout(rightArmTimer);
+        rightArmTimer = setTimeout(function(){ setArm('R', MOUSE_ROT); }, 1600);
+        return;
+    }
+    if(hand==='L'){
+        var rot = L_ROT[code];
+        if(rot !== undefined) setArm('L', rot);
+    } else if(hand==='R'){
+        var rot2 = R_ROT[code];
+        if(rot2 !== undefined) setArm('R', rot2);
+        clearTimeout(rightArmTimer);
+        rightArmTimer = setTimeout(function(){ setArm('R', MOUSE_ROT); }, 1600);
+    }
+}
+
+/* ── Mouse Click Animations ─────────────────────────────────── */
+function handleMouseDown(btn){
+    if(!keymapOn) return;
+    var svg = document.getElementById('km-mouse-svg');
+    if(!svg) return;
+    var lDot = document.getElementById('km-lclick-dot');
+    var rDot = document.getElementById('km-rclick-dot');
+    if(btn===0){
+        svg.classList.add('km-lc');
+        if(lDot){ lDot.style.opacity='1'; lDot.style.transition='opacity 0.05s'; }
+    } else if(btn===2){
+        svg.classList.add('km-rc');
+        if(rDot){ rDot.style.opacity='1'; rDot.style.transition='opacity 0.05s'; }
+    } else {
+        svg.classList.add('km-mc');
+    }
+}
+function handleMouseUp(){
+    var svg = document.getElementById('km-mouse-svg');
+    if(!svg) return;
+    svg.classList.remove('km-lc','km-rc','km-mc');
+    var lDot = document.getElementById('km-lclick-dot');
+    var rDot = document.getElementById('km-rclick-dot');
+    if(lDot){ lDot.style.opacity='0'; }
+    if(rDot){ rDot.style.opacity='0'; }
+}
+
+/* ── Toggle ─────────────────────────────────────────────────── */
+window.kmToggle = function(){
+    keymapOn = !keymapOn;
+    var scene = document.getElementById('km-scene');
+    var pill  = document.getElementById('km-pill');
+    if(keymapOn){
+        if(scene){ scene.classList.remove('km-hidden'); }
+        if(pill){ pill.textContent='ON'; pill.className='km-pill on'; }
+    } else {
+        if(scene){ scene.classList.add('km-hidden'); }
+        if(pill){ pill.textContent='OFF'; pill.className='km-pill off'; }
+    }
+    try{ localStorage.setItem('rt_keymap', keymapOn?'1':'0'); }catch(e){}
+};
+
+/* ── Init ────────────────────────────────────────────────────── */
+function kmInit(){
+    // Load saved preference
+    try{
+        var saved = localStorage.getItem('rt_keymap');
+        if(saved === '0'){
+            keymapOn = false;
+            var sc = document.getElementById('km-scene');
+            var pl = document.getElementById('km-pill');
+            if(sc) sc.classList.add('km-hidden');
+            if(pl){ pl.textContent='OFF'; pl.className='km-pill off'; }
+        }
+    }catch(e){}
+
+    buildKeyboard();
+
+    // Set right arm to mouse rest position initially
+    var fr = document.getElementById('km-fr');
+    if(fr) fr.style.transform = 'rotate('+MOUSE_ROT+'deg)';
+
+    // Left arm resting at home row default
+    var fl = document.getElementById('km-fl');
+    if(fl) fl.style.transform = 'rotate(-4deg)';
+
+    // Keydown listener
+    document.addEventListener('keydown', function(e){
+        if(!keymapOn) return;
+        highlightKey(e.code);
+        handleArm(e.code);
+    });
+
+    // Mouse down/up
+    document.addEventListener('mousedown', function(e){ handleMouseDown(e.button); });
+    document.addEventListener('mouseup',   function(){   handleMouseUp(); });
+
+    // Prevent context menu from stealing mouse-up on right-click
+    document.addEventListener('contextmenu', function(){ handleMouseUp(); });
+}
+
+// Kick off after DOM ready
+if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', kmInit);
+} else {
+    setTimeout(kmInit, 0);
+}
+
+})();
+</script>
+
+</body>
 </html>
