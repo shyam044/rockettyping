@@ -1,0 +1,1202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Learn to Type Free – Beginner Typing Course | Rocket Typing</title>
+  <meta name="description" content="Free beginner typing course on Rocket Typing. Learn touch typing from scratch with 15 guided lessons, interactive keyboard visualization, and real-time feedback. Go from 0 to 60+ WPM.">
+  <meta name="keywords" content="learn to type, typing course beginner, touch typing, free typing lessons, how to type without looking, typing for beginners">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://www.rockettyping.com/learn.html">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Learn to Type – Free Beginner Course | Rocket Typing">
+  <meta property="og:description" content="Learn touch typing from scratch with 15 structured lessons, interactive keyboard, and real-time finger guidance.">
+  <meta property="og:url" content="https://www.rockettyping.com/learn.html">
+  <meta property="og:image" content="https://www.rockettyping.com/images/og-banner.png">
+  <meta property="og:site_name" content="Rocket Typing">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="google-adsense-account" content="ca-pub-8311353174841359">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16.png">
+  <link rel="apple-touch-icon" href="/images/logo-192.png">
+  <meta name="theme-color" content="#323437">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-136SVFZRDF"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-136SVFZRDF');</script>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8311353174841359" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+  <link rel="stylesheet" href="styles.css">
+<style>
+/* ═══════════════════════════════════════════════════════════════
+   LEARN PAGE — Rocket Typing
+═══════════════════════════════════════════════════════════════ */
+body { overflow-y: auto !important; }
+/* Lesson view gets no-scroll treatment */
+body.lesson-active { overflow: hidden !important; }
+.lv { display: none !important; }
+.lv.lv-active { display: block !important; }
+#view-lesson.lv.lv-active { display: flex !important; }
+
+/* ─── XP Bar ─── */
+#lp-xp-wrap {
+  display:flex; align-items:center; gap:10px;
+  background:rgba(10,10,35,0.7);
+  border:1.5px solid rgba(226,183,20,0.25);
+  border-radius:50px; padding:6px 14px;
+  box-shadow:0 0 12px rgba(226,183,20,0.1);
+}
+#lp-level-badge {
+  background:linear-gradient(135deg,#e2b714,#ff9900);
+  color:#0a0a23; font-weight:900;
+  padding:3px 11px; border-radius:50px;
+  font-size:11px; letter-spacing:1px; white-space:nowrap;
+}
+#lp-xp-track { width:90px; height:7px; background:rgba(255,255,255,0.1); border-radius:50px; overflow:hidden; }
+#lp-xp-fill { height:100%; background:linear-gradient(90deg,#e2b714,#ff9900); border-radius:50px; transition:width 0.6s cubic-bezier(0.34,1.56,0.64,1); width:0%; }
+#lp-xp-text { font-size:11px; color:#e2b714; font-weight:700; white-space:nowrap; }
+
+/* ─── HERO ─── */
+#view-hero {
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  padding:110px 20px 60px; text-align:center; min-height:90vh; position:relative;
+}
+.hero-rocket { font-size:72px; animation:lp-float 3s ease-in-out infinite; margin-bottom:20px; filter:drop-shadow(0 0 30px rgba(226,183,20,0.5)); }
+@keyframes lp-float { 0%,100%{transform:translateY(0) rotate(-10deg);} 50%{transform:translateY(-14px) rotate(-10deg);} }
+.hero-badge {
+  display:inline-flex; align-items:center; gap:8px;
+  background:rgba(0,230,204,0.12); border:1px solid rgba(0,230,204,0.35);
+  color:#00e6cc; font-size:12px; font-weight:700;
+  letter-spacing:2px; text-transform:uppercase;
+  padding:6px 16px; border-radius:50px; margin-bottom:20px;
+}
+.hero-title {
+  font-size:clamp(32px,6vw,56px); font-weight:900; color:#ffd700;
+  text-shadow:0 0 60px rgba(255,215,0,0.4); margin:0 0 14px;
+  line-height:1.1; letter-spacing:-1px;
+}
+.hero-sub { font-size:clamp(14px,2vw,18px); color:rgba(255,255,255,0.65); margin-bottom:50px; max-width:520px; line-height:1.6; }
+.hero-features { display:flex; gap:16px; margin-bottom:48px; flex-wrap:wrap; justify-content:center; }
+.hero-feat {
+  background:rgba(255,255,255,0.05); border:1px solid rgba(226,183,20,0.2);
+  border-radius:14px; padding:18px 22px; min-width:145px; max-width:175px;
+  transition:all 0.3s ease; cursor:default;
+}
+.hero-feat:hover { border-color:rgba(226,183,20,0.5); transform:translateY(-4px); box-shadow:0 12px 30px rgba(0,0,0,0.3); }
+.hero-feat-icon { font-size:26px; margin-bottom:8px; }
+.hero-feat-title { color:#ffd700; font-weight:900; font-size:13px; letter-spacing:0.5px; }
+.hero-feat-desc { color:rgba(255,255,255,0.5); font-size:11px; margin-top:4px; line-height:1.4; }
+.hero-btns { display:flex; gap:14px; flex-wrap:wrap; justify-content:center; margin-bottom:24px; }
+.btn-start {
+  background:linear-gradient(135deg,#e2b714,#ff9900,#e2b714); background-size:200% 200%;
+  color:#0a0a23; border:none; padding:16px 42px; border-radius:50px;
+  font-family:'Roboto Mono',monospace; font-size:16px; font-weight:900;
+  letter-spacing:1.5px; cursor:pointer;
+  box-shadow:0 0 30px rgba(226,183,20,0.5),0 8px 24px rgba(0,0,0,0.4);
+  transition:all 0.3s ease; animation:glowPulse 3s infinite alternate;
+  display:flex; align-items:center; gap:10px;
+}
+.btn-start:hover { transform:translateY(-4px) scale(1.05); box-shadow:0 0 50px rgba(255,153,0,0.7),0 16px 36px rgba(0,0,0,0.4); }
+.btn-curriculum {
+  background:transparent; border:2px solid rgba(0,230,204,0.5);
+  color:#00e6cc; padding:14px 32px; border-radius:50px; cursor:pointer;
+  font-family:'Roboto Mono',monospace; font-size:14px; font-weight:700;
+  letter-spacing:1px; transition:all 0.25s ease;
+  display:flex; align-items:center; gap:10px;
+}
+.btn-curriculum:hover { background:rgba(0,230,204,0.1); border-color:#00e6cc; transform:translateY(-2px); }
+.hero-bottom-note { font-size:12px; color:rgba(255,255,255,0.3); }
+
+/* ─── CURRICULUM ─── */
+#view-curriculum { padding:90px 24px 60px; }
+.curr-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:36px; flex-wrap:wrap; gap:16px; }
+.curr-title { font-size:26px; font-weight:900; color:#ffd700; text-shadow:0 0 20px rgba(255,215,0,0.3); }
+.curr-summary { display:flex; gap:16px; flex-wrap:wrap; }
+.curr-stat { display:flex; align-items:center; gap:7px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); border-radius:30px; padding:6px 14px; font-size:12px; color:rgba(255,255,255,0.7); }
+.curr-stat-val { font-weight:900; color:#00e6cc; }
+.stage-block { margin-bottom:36px; }
+.stage-label { display:flex; align-items:center; gap:12px; margin-bottom:14px; padding:8px 16px; border-radius:0 10px 10px 0; border-left:4px solid #e2b714; background:linear-gradient(90deg,rgba(226,183,20,0.1),transparent); }
+.stage-num { font-size:11px; color:#e2b714; font-weight:900; letter-spacing:2px; text-transform:uppercase; }
+.stage-name { font-size:15px; color:#fff; font-weight:700; }
+.stage-prog { margin-left:auto; font-size:12px; color:rgba(255,255,255,0.45); }
+.lesson-cards { display:grid; grid-template-columns:repeat(auto-fill,minmax(185px,1fr)); gap:12px; }
+.lesson-card {
+  background:rgba(255,255,255,0.04); border:1.5px solid rgba(255,255,255,0.1);
+  border-radius:14px; padding:16px; cursor:pointer;
+  transition:all 0.25s ease; position:relative; overflow:hidden; min-height:118px;
+}
+.lesson-card:hover { border-color:rgba(226,183,20,0.45); background:rgba(226,183,20,0.06); transform:translateY(-3px); box-shadow:0 10px 28px rgba(0,0,0,0.35); }
+.lesson-card.lc-done { border-color:rgba(0,230,204,0.3); background:rgba(0,230,204,0.04); }
+.lc-num { font-size:10px; color:rgba(255,255,255,0.35); letter-spacing:1.5px; text-transform:uppercase; }
+.lc-emoji { font-size:22px; margin:6px 0 8px; }
+.lc-title { font-size:13px; color:#fff; font-weight:700; margin-bottom:3px; }
+.lc-sub { font-size:11px; color:rgba(255,255,255,0.45); margin-bottom:12px; line-height:1.35; }
+.lc-footer { display:flex; align-items:center; justify-content:space-between; }
+.lc-stars { display:flex; gap:2px; }
+.lc-star { font-size:13px; }
+.lc-xp { font-size:11px; color:#00e6cc; font-weight:700; }
+
+/* Stage chip (used in hands panel title) */
+.lv-stage-chip { display:inline-block; font-size:9px; letter-spacing:2px; text-transform:uppercase; color:#e2b714; background:rgba(226,183,20,0.1); border:1px solid rgba(226,183,20,0.25); padding:2px 10px; border-radius:50px; }
+
+/* ─── LESSON VIEW — no-scroll single page ─── */
+#view-lesson {
+  padding:72px 16px 8px;
+  height:100vh;
+  box-sizing:border-box;
+  display:flex;
+  flex-direction:column;
+  overflow:hidden;
+}
+.lv-topbar { display:flex; align-items:center; gap:14px; margin-bottom:10px; flex-shrink:0; }
+.lv-back {
+  background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.15);
+  color:#e2b714; padding:8px 16px; border-radius:8px; cursor:pointer;
+  font-family:'Roboto Mono',monospace; font-size:12px; font-weight:700;
+  transition:all 0.2s; white-space:nowrap; display:flex; align-items:center; gap:6px;
+}
+.lv-back:hover { background:rgba(226,183,20,0.12); border-color:rgba(226,183,20,0.4); }
+#lv-prog-bar-wrap { flex:1; height:5px; background:rgba(255,255,255,0.08); border-radius:50px; overflow:hidden; }
+#lv-prog-fill { height:100%; background:linear-gradient(90deg,#00e6cc,#e2b714); border-radius:50px; transition:width 0.4s ease; width:0%; }
+#lv-ex-indicator { font-size:12px; color:rgba(255,255,255,0.4); white-space:nowrap; font-weight:700; }
+
+/* New lesson grid */
+.lv-lesson-grid {
+  display:grid;
+  grid-template-columns:260px 1fr;
+  gap:14px;
+  flex:1;
+  overflow:hidden;
+  min-height:0;
+}
+@media(max-width:860px){
+  .lv-lesson-grid{ grid-template-columns:1fr; overflow-y:auto; }
+}
+
+/* Left: Hands Panel */
+.lv-hands-panel {
+  display:flex; flex-direction:column; gap:8px;
+  background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.07);
+  border-radius:16px; padding:12px; overflow:hidden;
+}
+.lv-hands-title {
+  display:flex; flex-direction:column; gap:4px; flex-shrink:0;
+}
+.lv-hands-wrap {
+  flex:1; display:flex; align-items:center; justify-content:center; min-height:0;
+}
+#hands-svg { width:100%; max-height:200px; }
+
+/* Finger press animation */
+@keyframes fingerPress {
+  0%   { transform: translateY(0px); }
+  40%  { transform: translateY(7px); }
+  70%  { transform: translateY(7px); }
+  100% { transform: translateY(0px); }
+}
+@keyframes fingerPressThumb {
+  0%   { transform: rotate(-30deg) translateY(0px); }
+  40%  { transform: rotate(-30deg) translateY(6px); }
+  70%  { transform: rotate(-30deg) translateY(6px); }
+  100% { transform: rotate(-30deg) translateY(0px); }
+}
+@keyframes fingerPressThumbR {
+  0%   { transform: rotate(30deg) translateY(0px); }
+  40%  { transform: rotate(30deg) translateY(6px); }
+  70%  { transform: rotate(30deg) translateY(6px); }
+  100% { transform: rotate(30deg) translateY(0px); }
+}
+.finger-active {
+  animation: fingerPress 0.45s ease-in-out;
+}
+.finger-active-th-l rect {
+  animation: fingerPressThumb 0.45s ease-in-out !important;
+}
+.finger-active-th-r rect {
+  animation: fingerPressThumbR 0.45s ease-in-out !important;
+}
+/* Highlight active finger */
+.finger-glow rect, .finger-glow ellipse {
+  fill: #e2b714 !important;
+  filter: drop-shadow(0 0 8px rgba(226,183,20,0.9));
+}
+.finger-glow-teal rect, .finger-glow-teal ellipse {
+  fill: #00e6cc !important;
+  filter: drop-shadow(0 0 8px rgba(0,230,204,0.9));
+}
+
+/* Right column */
+.lv-right-col {
+  display:flex; flex-direction:column; gap:10px; overflow:hidden; min-height:0;
+}
+
+/* Keyboard Container */
+.lv-kb-container {
+  background:rgba(0,0,0,0.35); border:1px solid rgba(255,255,255,0.07);
+  border-radius:14px; padding:10px 10px 8px;
+  display:flex; flex-direction:column; align-items:center;
+  overflow:hidden; flex-shrink:0;
+}
+#learn-kb { display:flex; flex-direction:column; gap:3px; width:100%; }
+.lk-row { display:flex; gap:3px; justify-content:center; }
+.lk-key {
+  height:35px; background:rgba(30,30,70,0.8); border:1px solid rgba(255,255,255,0.1);
+  border-radius:5px; display:flex; align-items:center; justify-content:center;
+  font-family:'Roboto Mono',monospace; font-size:9.5px; font-weight:600;
+  color:rgba(255,255,255,0.45); position:relative; transition:all 0.1s ease;
+  flex-shrink:0; user-select:none; cursor:default;
+  box-shadow:0 2px 0 rgba(0,0,0,0.3),inset 0 1px 0 rgba(255,255,255,0.06);
+}
+.lk-LP{background:rgba(244,143,177,0.14);border-color:rgba(244,143,177,0.28);color:#F48FB1;}
+.lk-LR{background:rgba(206,147,216,0.14);border-color:rgba(206,147,216,0.28);color:#CE93D8;}
+.lk-LM{background:rgba(144,202,249,0.14);border-color:rgba(144,202,249,0.28);color:#90CAF9;}
+.lk-LI{background:rgba(165,214,167,0.14);border-color:rgba(165,214,167,0.28);color:#A5D6A7;}
+.lk-TH{background:rgba(120,144,156,0.14);border-color:rgba(120,144,156,0.28);color:#90A4AE;}
+.lk-RI{background:rgba(255,204,128,0.14);border-color:rgba(255,204,128,0.28);color:#FFCC80;}
+.lk-RM{background:rgba(128,222,234,0.14);border-color:rgba(128,222,234,0.28);color:#80DEEA;}
+.lk-RR{background:rgba(255,171,145,0.14);border-color:rgba(255,171,145,0.28);color:#FFAB91;}
+.lk-RP{background:rgba(239,154,154,0.14);border-color:rgba(239,154,154,0.28);color:#EF9A9A;}
+.lk-key.lk-target {
+  background:#e2b714 !important; border-color:#ffd700 !important;
+  color:#0a0a23 !important; font-weight:900 !important;
+  transform:scale(1.12) translateY(-2px) !important;
+  box-shadow:0 0 20px rgba(226,183,20,0.9),0 4px 10px rgba(0,0,0,0.4) !important;
+  animation:lk-pulse 0.8s ease-in-out infinite alternate !important; z-index:10;
+}
+@keyframes lk-pulse { from{box-shadow:0 0 10px rgba(226,183,20,0.6);} to{box-shadow:0 0 28px rgba(226,183,20,1.0);} }
+.lk-key.lk-shift-hint { background:rgba(226,183,20,0.22) !important; border-color:rgba(226,183,20,0.6) !important; color:#e2b714 !important; }
+.lk-key.lk-correct { background:rgba(0,230,204,0.3) !important; border-color:#00e6cc !important; color:#fff !important; }
+.lk-key.lk-wrong { background:rgba(218,51,51,0.35) !important; border-color:#da3333 !important; color:#fff !important; }
+.lk-key.lk-homekey::after { content:''; position:absolute; bottom:5px; left:50%; transform:translateX(-50%); width:5px; height:2.5px; background:currentColor; border-radius:2px; opacity:0.6; }
+
+/* Finger Legend */
+#lv-finger-legend { display:flex; flex-wrap:wrap; gap:5px; margin-top:6px; justify-content:center; }
+.fl-chip { display:flex; align-items:center; gap:5px; font-size:9px; color:rgba(255,255,255,0.6); background:rgba(255,255,255,0.05); padding:2px 8px; border-radius:20px; }
+.fl-dot { width:7px; height:7px; border-radius:50%; flex-shrink:0; }
+
+/* Next Key Hint */
+#lv-next-key-hint { display:flex; align-items:center; gap:10px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:8px 12px; flex-shrink:0; }
+.nkh-label { font-size:9px; color:rgba(255,255,255,0.4); text-transform:uppercase; letter-spacing:1.5px; }
+.nkh-key {
+  background:rgba(226,183,20,0.15); border:2px solid #e2b714;
+  color:#ffd700; font-size:16px; font-weight:900; width:34px; height:34px;
+  border-radius:8px; display:flex; align-items:center; justify-content:center;
+  animation:keyPulse 0.9s ease-in-out infinite alternate;
+}
+@keyframes keyPulse { from{box-shadow:0 0 8px rgba(226,183,20,0.4);} to{box-shadow:0 0 22px rgba(226,183,20,0.9);} }
+.nkh-finger { display:flex; align-items:center; gap:7px; font-size:11px; color:rgba(255,255,255,0.75); }
+.nkh-dot { width:11px; height:11px; border-radius:50%; flex-shrink:0; }
+
+/* Exercise Area */
+#lv-exercise {
+  background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.08);
+  border-radius:14px; padding:14px;
+  flex:1; min-height:0; display:flex; flex-direction:column;
+}
+#lv-ex-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; flex-shrink:0; }
+#lv-ex-name { font-size:11px; font-weight:900; color:#e2b714; letter-spacing:2px; text-transform:uppercase; }
+.lv-ex-dots { display:flex; gap:5px; }
+.lv-dot { width:7px; height:7px; border-radius:50%; background:rgba(255,255,255,0.18); transition:background 0.25s ease; }
+.lv-dot.active { background:#e2b714; }
+.lv-dot.done   { background:#00e6cc; }
+
+#lv-display {
+  font-size:clamp(16px,2.2vw,24px); font-family:'Roboto Mono',monospace;
+  line-height:1.7; letter-spacing:2px; padding:12px 16px;
+  background:rgba(255,255,255,0.025); border:1px solid rgba(255,255,255,0.06);
+  border-radius:10px; min-height:60px; margin-bottom:10px; flex-shrink:0;
+  user-select:none; position:relative; transition:border-color 0.3s ease; word-break:break-all;
+}
+#lv-display.lv-done-flash { border-color:rgba(0,230,204,0.6); }
+.td-c          { color:#555770; display:inline; }
+.td-c.correct  { color:#e2ffee; }
+.td-c.wrong    { color:#da3333; background:rgba(218,51,51,0.12); border-radius:3px; }
+.td-caret { display:inline-block; width:2.5px; height:1.15em; background:#00e6cc; border-radius:2px; vertical-align:text-bottom; animation:lv-blink 1s step-end infinite; box-shadow:0 0 6px #00e6cc; }
+@keyframes lv-blink { 50%{opacity:0;} }
+
+#lv-stats { display:flex; gap:20px; padding-top:10px; border-top:1px solid rgba(255,255,255,0.07); flex-wrap:wrap; flex-shrink:0; }
+.lv-stat-chip { display:flex; flex-direction:column; gap:2px; }
+.lv-stat-lbl { font-size:9px; color:rgba(255,255,255,0.35); text-transform:uppercase; letter-spacing:1.5px; }
+.lv-stat-val { font-size:18px; font-weight:900; color:#e2b714; }
+
+.lv-action-row { display:flex; gap:12px; margin-top:12px; flex-wrap:wrap; flex-shrink:0; }
+.btn-continue,.btn-retry { display:none; border:none; cursor:pointer; font-family:'Roboto Mono',monospace; font-weight:900; letter-spacing:1px; padding:12px 28px; border-radius:50px; transition:all 0.25s ease; font-size:14px; }
+.btn-continue { background:linear-gradient(135deg,#e2b714,#ff9900); color:#0a0a23; box-shadow:0 0 20px rgba(226,183,20,0.4); animation:glowPulse 2s infinite alternate; }
+.btn-continue:hover { transform:translateY(-3px) scale(1.05); box-shadow:0 0 35px rgba(255,153,0,0.7); }
+.btn-retry { background:transparent; border:2px solid rgba(0,230,204,0.4); color:#00e6cc; }
+.btn-retry:hover { background:rgba(0,230,204,0.08); border-color:#00e6cc; transform:translateY(-2px); }
+.btn-continue.visible { display:inline-flex; align-items:center; gap:8px; }
+.btn-retry.visible    { display:inline-flex; align-items:center; gap:8px; }
+
+#lv-input { position:absolute; opacity:0; pointer-events:none; width:1px; height:1px; }
+
+.lv-acc-bar { height:4px; border-radius:50px; overflow:hidden; background:rgba(255,255,255,0.08); margin-top:8px; }
+.lv-acc-fill { height:100%; border-radius:50px; transition:width 0.5s ease,background 0.5s ease; }
+
+/* ─── COMPLETE VIEW ─── */
+#view-complete { display:flex; flex-direction:column; align-items:center; justify-content:center; padding:110px 24px 60px; text-align:center; min-height:80vh; }
+.vc-rocket { font-size:64px; margin-bottom:20px; animation:lp-float 2.5s ease-in-out infinite; }
+.vc-stars { display:flex; gap:10px; margin-bottom:20px; }
+.vc-star { font-size:52px; opacity:0; filter:drop-shadow(0 0 12px rgba(226,183,20,0.6)); }
+@keyframes starPop { 0%{opacity:0;transform:scale(0) rotate(-30deg);} 100%{opacity:1;transform:scale(1) rotate(0deg);} }
+.vc-title { font-size:34px; font-weight:900; color:#ffd700; margin-bottom:8px; }
+.vc-sub   { font-size:15px; color:rgba(255,255,255,0.6); margin-bottom:24px; }
+.vc-xp-badge { display:inline-block; background:linear-gradient(135deg,#00e6cc,#0099cc); color:#0a0a23; padding:8px 26px; border-radius:50px; font-size:17px; font-weight:900; margin-bottom:36px; box-shadow:0 0 25px rgba(0,230,204,0.4); }
+.vc-stats { display:flex; gap:20px; margin-bottom:44px; flex-wrap:wrap; justify-content:center; }
+.vc-stat { background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); border-radius:14px; padding:16px 24px; min-width:90px; }
+.vc-stat-val { font-size:30px; font-weight:900; color:#fff; }
+.vc-stat-lbl { font-size:10px; color:rgba(255,255,255,0.45); text-transform:uppercase; letter-spacing:1px; margin-top:3px; }
+.vc-btns { display:flex; gap:12px; flex-wrap:wrap; justify-content:center; }
+.btn-next-lesson { background:linear-gradient(135deg,#e2b714,#ff9900); color:#0a0a23; border:none; padding:14px 36px; border-radius:50px; font-family:'Roboto Mono',monospace; font-size:15px; font-weight:900; cursor:pointer; letter-spacing:1px; box-shadow:0 0 25px rgba(226,183,20,0.4); transition:all 0.25s ease; display:flex; align-items:center; gap:8px; }
+.btn-next-lesson:hover { transform:translateY(-3px) scale(1.05); box-shadow:0 0 40px rgba(255,153,0,0.6); }
+.btn-redo,.btn-map { background:transparent; padding:12px 26px; border-radius:50px; cursor:pointer; font-family:'Roboto Mono',monospace; font-size:13px; font-weight:700; transition:all 0.25s ease; display:flex; align-items:center; gap:8px; }
+.btn-redo { border:2px solid rgba(226,183,20,0.4); color:#e2b714; }
+.btn-redo:hover  { background:rgba(226,183,20,0.1); border-color:#e2b714; transform:translateY(-2px); }
+.btn-map  { border:2px solid rgba(255,255,255,0.2); color:rgba(255,255,255,0.6); }
+.btn-map:hover   { background:rgba(255,255,255,0.06); color:#fff; transform:translateY(-2px); }
+
+
+
+/* Course complete */
+#course-complete-msg { display:none; background:linear-gradient(135deg,rgba(226,183,20,0.12),rgba(0,230,204,0.08)); border:2px solid #e2b714; border-radius:16px; padding:24px 32px; margin-top:24px; text-align:center; max-width:480px; }
+#course-complete-msg .cc-title { font-size:20px; font-weight:900; color:#ffd700; margin-bottom:8px; }
+#course-complete-msg .cc-sub { font-size:13px; color:rgba(255,255,255,0.65); margin-bottom:18px; line-height:1.55; }
+
+@media(max-width:600px){
+  #lp-xp-track{width:55px;}
+  #lv-display{font-size:16px;letter-spacing:1px;}
+  .lv-stat-val{font-size:16px;}
+  .lesson-cards{grid-template-columns:1fr 1fr;}
+  .hero-feat{min-width:130px;}
+  .vc-stat-val{font-size:22px;}
+}
+</style>
+</head>
+<body>
+<div id="app">
+
+<!-- HEADER -->
+<header id="main-header" style="position:absolute;top:20px;left:20px;right:20px;display:flex;align-items:center;justify-content:space-between;z-index:10;">
+  <div style="display:flex;flex-direction:column;align-items:flex-start;cursor:pointer;" onclick="window.location.href='index.html'">
+    <img src="images/logo.png" alt="Rocket Typing" style="width:120px;margin-bottom:5px;" />
+    <div>
+      <button onclick="event.stopPropagation();window.location.href='index.html'" class="play-game-btn" style="font-size:13px;padding:10px 22px;">
+        <span>⌨️</span> TYPING TEST
+      </button>
+    </div>
+  </div>
+  <div id="lp-xp-wrap">
+    <span id="lp-level-badge">Lv. 1</span>
+    <div id="lp-xp-track"><div id="lp-xp-fill"></div></div>
+    <span id="lp-xp-text">0 XP</span>
+  </div>
+</header>
+
+
+
+<!-- ═══ VIEW: HERO ═══ -->
+<div id="view-hero" class="lv lv-active">
+  <div class="hero-rocket">🚀</div>
+  <div class="hero-badge">✨ World-Class Typing Course</div>
+  <h1 class="hero-title">Learn to Type<br>From Zero to Pro</h1>
+  <p class="hero-sub">15 structured lessons that take you from hunt-and-peck to confident touch typing — step by step, finger by finger.</p>
+  <div class="hero-features">
+    <div class="hero-feat"><div class="hero-feat-icon">⌨️</div><div class="hero-feat-title">15 Lessons</div><div class="hero-feat-desc">6 stages from home row basics to full sentences</div></div>
+    <div class="hero-feat"><div class="hero-feat-icon">👆</div><div class="hero-feat-title">Finger Guides</div><div class="hero-feat-desc">Real-time visual showing exactly which finger to use</div></div>
+    <div class="hero-feat"><div class="hero-feat-icon">🎯</div><div class="hero-feat-title">Live Feedback</div><div class="hero-feat-desc">Instant correct/wrong highlighting per character</div></div>
+    <div class="hero-feat"><div class="hero-feat-icon">⭐</div><div class="hero-feat-title">XP &amp; Stars</div><div class="hero-feat-desc">Earn stars and level up as you master each lesson</div></div>
+    <div class="hero-feat"><div class="hero-feat-icon">🚀</div><div class="hero-feat-title">60+ WPM Goal</div><div class="hero-feat-desc">Progress from 0 to professional typing speed</div></div>
+  </div>
+  <div class="hero-btns">
+    <button class="btn-start" onclick="lp.startLearning()">🚀 Start Learning Now</button>
+    <button class="btn-curriculum" onclick="lp.showCurriculum()">📚 View All Lessons</button>
+  </div>
+  <p class="hero-bottom-note">Free forever · No signup required · Progress saved automatically</p>
+</div>
+
+<!-- ═══ VIEW: CURRICULUM ═══ -->
+<div id="view-curriculum" class="lv">
+  <div class="curr-header">
+    <div class="curr-title">📚 Your Typing Journey</div>
+    <div class="curr-summary">
+      <div class="curr-stat"><span id="cs-done" class="curr-stat-val">0</span>&nbsp;Done</div>
+      <div class="curr-stat"><span id="cs-stars" class="curr-stat-val">0</span>&nbsp;Stars</div>
+      <div class="curr-stat"><span id="cs-xp" class="curr-stat-val">0</span>&nbsp;XP</div>
+    </div>
+  </div>
+  <div id="curriculum-grid"></div>
+  <div style="text-align:center;margin-top:30px;">
+    <button class="btn-curriculum" onclick="lp.showView('hero')">← Back to Home</button>
+  </div>
+</div>
+
+<!-- ═══ VIEW: LESSON ═══ -->
+<div id="view-lesson" class="lv">
+  <div class="lv-topbar">
+    <button class="lv-back" onclick="lp.showCurriculum()">← Lessons</button>
+    <div id="lv-prog-bar-wrap"><div id="lv-prog-fill"></div></div>
+    <span id="lv-ex-indicator">1 / 1</span>
+  </div>
+
+  <!-- Main lesson grid: hands anim + keyboard side by side, then typing below -->
+  <div class="lv-lesson-grid">
+
+    <!-- LEFT: Animated Hands Panel -->
+    <div class="lv-hands-panel">
+      <div class="lv-hands-title">
+        <span class="lv-stage-chip" id="lv-stage-chip">STAGE 1</span>
+        <span id="lv-lesson-title" style="font-size:14px;color:#fff;font-weight:900;"></span>
+      </div>
+      <!-- SVG Hands Animation -->
+      <div class="lv-hands-wrap">
+        <svg id="hands-svg" viewBox="0 0 340 190" xmlns="http://www.w3.org/2000/svg">
+          <!-- LEFT HAND -->
+          <g id="lhand" transform="translate(10,10)">
+            <!-- Palm -->
+            <ellipse cx="75" cy="148" rx="52" ry="32" fill="#c8956c" stroke="#a0724a" stroke-width="1.5"/>
+            <!-- Fingers: pinky, ring, middle, index, thumb -->
+            <!-- Pinky (LP) -->
+            <g id="lf-LP">
+              <rect x="18" y="82" width="16" height="56" rx="8" fill="#c8956c" stroke="#a0724a" stroke-width="1.5"/>
+              <ellipse cx="26" cy="82" rx="8" ry="8" fill="#c8956c" stroke="#a0724a" stroke-width="1.5"/>
+            </g>
+            <!-- Ring (LR) -->
+            <g id="lf-LR">
+              <rect x="37" y="68" width="18" height="72" rx="9" fill="#c8956c" stroke="#a0724a" stroke-width="1.5"/>
+              <ellipse cx="46" cy="68" rx="9" ry="9" fill="#c8956c" stroke="#a0724a" stroke-width="1.5"/>
+            </g>
+            <!-- Middle (LM) -->
+            <g id="lf-LM">
+              <rect x="58" y="60" width="18" height="78" rx="9" fill="#c8956c" stroke="#a0724a" stroke-width="1.5"/>
+              <ellipse cx="67" cy="60" rx="9" ry="9" fill="#c8956c" stroke="#a0724a" stroke-width="1.5"/>
+            </g>
+            <!-- Index (LI) -->
+            <g id="lf-LI">
+              <rect x="79" y="66" width="18" height="72" rx="9" fill="#c8956c" stroke="#a0724a" stroke-width="1.5"/>
+              <ellipse cx="88" cy="66" rx="9" ry="9" fill="#c8956c" stroke="#a0724a" stroke-width="1.5"/>
+            </g>
+            <!-- Thumb (TH) -->
+            <g id="lf-TH">
+              <rect x="104" y="118" width="16" height="40" rx="8" transform="rotate(-30,112,138)" fill="#c8956c" stroke="#a0724a" stroke-width="1.5"/>
+            </g>
+            <!-- Fingernails -->
+            <rect x="20" y="84" width="12" height="8" rx="4" fill="#f5c9a3" opacity="0.7"/>
+            <rect x="39" y="70" width="14" height="9" rx="4" fill="#f5c9a3" opacity="0.7"/>
+            <rect x="60" y="62" width="14" height="9" rx="4" fill="#f5c9a3" opacity="0.7"/>
+            <rect x="81" y="68" width="14" height="9" rx="4" fill="#f5c9a3" opacity="0.7"/>
+          </g>
+
+          <!-- RIGHT HAND -->
+          <g id="rhand" transform="translate(182,10)">
+            <!-- Palm -->
+            <ellipse cx="75" cy="148" rx="52" ry="32" fill="#c8956c" stroke="#a0724a" stroke-width="1.5"/>
+            <!-- Index (RI) -->
+            <g id="rf-RI">
+              <rect x="37" y="66" width="18" height="72" rx="9" fill="#c8956c" stroke="#a0724a" stroke-width="1.5"/>
+              <ellipse cx="46" cy="66" rx="9" ry="9" fill="#c8956c" stroke="#a0724a" stroke-width="1.5"/>
+            </g>
+            <!-- Middle (RM) -->
+            <g id="rf-RM">
+              <rect x="58" y="60" width="18" height="78" rx="9" fill="#c8956c" stroke="#a0724a" stroke-width="1.5"/>
+              <ellipse cx="67" cy="60" rx="9" ry="9" fill="#c8956c" stroke="#a0724a" stroke-width="1.5"/>
+            </g>
+            <!-- Ring (RR) -->
+            <g id="rf-RR">
+              <rect x="79" y="68" width="18" height="72" rx="9" fill="#c8956c" stroke="#a0724a" stroke-width="1.5"/>
+              <ellipse cx="88" cy="68" rx="9" ry="9" fill="#c8956c" stroke="#a0724a" stroke-width="1.5"/>
+            </g>
+            <!-- Pinky (RP) -->
+            <g id="rf-RP">
+              <rect x="100" y="82" width="16" height="56" rx="8" fill="#c8956c" stroke="#a0724a" stroke-width="1.5"/>
+              <ellipse cx="108" cy="82" rx="8" ry="8" fill="#c8956c" stroke="#a0724a" stroke-width="1.5"/>
+            </g>
+            <!-- Thumb (TH right) -->
+            <g id="rf-TH">
+              <rect x="6" y="118" width="16" height="40" rx="8" transform="rotate(30,14,138)" fill="#c8956c" stroke="#a0724a" stroke-width="1.5"/>
+            </g>
+            <!-- Fingernails -->
+            <rect x="39" y="68" width="14" height="9" rx="4" fill="#f5c9a3" opacity="0.7"/>
+            <rect x="60" y="62" width="14" height="9" rx="4" fill="#f5c9a3" opacity="0.7"/>
+            <rect x="81" y="70" width="14" height="9" rx="4" fill="#f5c9a3" opacity="0.7"/>
+            <rect x="102" y="84" width="12" height="8" rx="4" fill="#f5c9a3" opacity="0.7"/>
+          </g>
+
+          <!-- Next key label -->
+          <text id="hands-key-label" x="170" y="185" text-anchor="middle" font-family="Roboto Mono,monospace" font-size="11" fill="rgba(255,255,255,0.5)">waiting…</text>
+        </svg>
+      </div>
+      <!-- Next key hint (compact, no instruction text) -->
+      <div id="lv-next-key-hint">
+        <div><div class="nkh-label">Next Key</div><div class="nkh-key" id="nkh-char">—</div></div>
+        <div class="nkh-finger"><div class="nkh-dot" id="nkh-dot"></div><span id="nkh-fname">—</span></div>
+      </div>
+    </div>
+
+    <!-- RIGHT: Keyboard + Exercise -->
+    <div class="lv-right-col">
+      <!-- Keyboard -->
+      <div class="lv-kb-container">
+        <div id="learn-kb"></div>
+        <div id="lv-finger-legend"></div>
+      </div>
+
+      <!-- Exercise area -->
+      <div id="lv-exercise">
+        <div id="lv-ex-header">
+          <span id="lv-ex-name">Exercise 1</span>
+          <div class="lv-ex-dots" id="lv-ex-dots"></div>
+        </div>
+        <div id="lv-display" onclick="lp.focusInput()"></div>
+        <input id="lv-input" type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" />
+        <div class="lv-acc-bar"><div class="lv-acc-fill" id="lv-acc-fill" style="width:100%;background:#00e6cc;"></div></div>
+        <div id="lv-stats">
+          <div class="lv-stat-chip"><div class="lv-stat-lbl">WPM</div><div class="lv-stat-val" id="stat-wpm">—</div></div>
+          <div class="lv-stat-chip"><div class="lv-stat-lbl">Accuracy</div><div class="lv-stat-val" id="stat-acc">—</div></div>
+          <div class="lv-stat-chip"><div class="lv-stat-lbl">Progress</div><div class="lv-stat-val" id="stat-prog">0/0</div></div>
+          <div class="lv-stat-chip"><div class="lv-stat-lbl">Streak 🔥</div><div class="lv-stat-val" id="stat-streak">0</div></div>
+        </div>
+        <div class="lv-action-row">
+          <button class="btn-continue" id="btn-continue" onclick="lp.nextExercise()">Next Exercise →</button>
+          <button class="btn-retry"    id="btn-retry"    onclick="lp.retryExercise()">↺ Try Again</button>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- .lv-lesson-grid -->
+</div>
+
+<!-- ═══ VIEW: COMPLETE ═══ -->
+<div id="view-complete" class="lv">
+  <div class="vc-rocket">🚀</div>
+  <div class="vc-stars">
+    <div class="vc-star" id="vc-star1">⭐</div>
+    <div class="vc-star" id="vc-star2">⭐</div>
+    <div class="vc-star" id="vc-star3">⭐</div>
+  </div>
+  <div class="vc-title" id="vc-title">Lesson Complete!</div>
+  <div class="vc-sub"   id="vc-sub">Great job!</div>
+  <div class="vc-xp-badge" id="vc-xp">+50 XP</div>
+  <div class="vc-stats">
+    <div class="vc-stat"><div class="vc-stat-val" id="vc-wpm">0</div><div class="vc-stat-lbl">Best WPM</div></div>
+    <div class="vc-stat"><div class="vc-stat-val" id="vc-acc">0%</div><div class="vc-stat-lbl">Accuracy</div></div>
+    <div class="vc-stat"><div class="vc-stat-val" id="vc-exdone">0</div><div class="vc-stat-lbl">Exercises</div></div>
+  </div>
+  <div class="vc-btns">
+    <button class="btn-next-lesson" id="btn-next-lesson" onclick="lp.nextLesson()">Next Lesson →</button>
+    <button class="btn-redo" onclick="lp.redoLesson()">↺ Redo</button>
+    <button class="btn-map"  onclick="lp.showCurriculum()">📚 All Lessons</button>
+  </div>
+  <div id="course-complete-msg">
+    <div class="cc-title">🎉 You Completed the Entire Course!</div>
+    <div class="cc-sub">You've mastered all 15 lessons. Now test your speed against the world on the full typing test!</div>
+    <button class="btn-start" style="margin:0 auto;" onclick="window.location.href='index.html'">🚀 Take The Typing Test</button>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <a href="index.html">Home</a> · <a href="game.html">Rocket Race</a> · <a href="learn.html">Learn to Type</a>
+  <p style="margin-top:8px;font-size:11px;">© 2025 Rocket Typing. Free typing lessons for everyone.</p>
+</footer>
+
+</div><!-- #app -->
+
+<!-- ═══════════════════════════════════════════════════════════════
+     JAVASCRIPT ENGINE
+═══════════════════════════════════════════════════════════════ -->
+<script>
+(function(){
+'use strict';
+
+/* ── Finger colours & names ── */
+var FC={LP:'#F48FB1',LR:'#CE93D8',LM:'#90CAF9',LI:'#A5D6A7',TH:'#90A4AE',RI:'#FFCC80',RM:'#80DEEA',RR:'#FFAB91',RP:'#EF9A9A'};
+var FN={LP:'Left Pinky',LR:'Left Ring',LM:'Left Middle',LI:'Left Index',TH:'Both Thumbs',RI:'Right Index',RM:'Right Middle',RR:'Right Ring',RP:'Right Pinky'};
+
+/* ── Keyboard layout ── */
+var KB=[
+  [['`','Backquote','LP',1],['1','Digit1','LP',1],['2','Digit2','LR',1],['3','Digit3','LM',1],['4','Digit4','LI',1],['5','Digit5','LI',1],['6','Digit6','RI',1],['7','Digit7','RI',1],['8','Digit8','RM',1],['9','Digit9','RR',1],['0','Digit0','RP',1],['-','Minus','RP',1],['=','Equal','RP',1],['⌫','Backspace','RP',2]],
+  [['Tab','Tab','LP',1.5],['Q','KeyQ','LP',1],['W','KeyW','LR',1],['E','KeyE','LM',1],['R','KeyR','LI',1],['T','KeyT','LI',1],['Y','KeyY','RI',1],['U','KeyU','RI',1],['I','KeyI','RM',1],['O','KeyO','RR',1],['P','KeyP','RP',1],['[','BracketLeft','RP',1],[']','BracketRight','RP',1],['\\','Backslash','RP',1.5]],
+  [['⇪','CapsLock','LP',1.75],['A','KeyA','LP',1],['S','KeyS','LR',1],['D','KeyD','LM',1],['F','KeyF','LI',1],['G','KeyG','LI',1],['H','KeyH','RI',1],['J','KeyJ','RI',1],['K','KeyK','RM',1],['L','KeyL','RR',1],[';','Semicolon','RP',1],["'",'Quote','RP',1],['↵','Enter','RP',2.25]],
+  [['⇧','ShiftLeft','LP',2.25],['Z','KeyZ','LP',1],['X','KeyX','LR',1],['C','KeyC','LM',1],['V','KeyV','LI',1],['B','KeyB','LI',1],['N','KeyN','RI',1],['M','KeyM','RI',1],[',','Comma','RM',1],['.','Period','RR',1],['/','Slash','RP',1],['⇧','ShiftRight','RP',2.75]],
+  [['Ctrl','ControlLeft','LP',1.25],['Alt','AltLeft','LP',1.25],['SPACE','Space','TH',6.5],['Alt','AltRight','RP',1.25],['Ctrl','ControlRight','RP',1.25]]
+];
+
+/* ── char → keyCode ── */
+var C2K={a:'KeyA',b:'KeyB',c:'KeyC',d:'KeyD',e:'KeyE',f:'KeyF',g:'KeyG',h:'KeyH',i:'KeyI',j:'KeyJ',k:'KeyK',l:'KeyL',m:'KeyM',n:'KeyN',o:'KeyO',p:'KeyP',q:'KeyQ',r:'KeyR',s:'KeyS',t:'KeyT',u:'KeyU',v:'KeyV',w:'KeyW',x:'KeyX',y:'KeyY',z:'KeyZ',A:'KeyA',B:'KeyB',C:'KeyC',D:'KeyD',E:'KeyE',F:'KeyF',G:'KeyG',H:'KeyH',I:'KeyI',J:'KeyJ',K:'KeyK',L:'KeyL',M:'KeyM',N:'KeyN',O:'KeyO',P:'KeyP',Q:'KeyQ',R:'KeyR',S:'KeyS',T:'KeyT',U:'KeyU',V:'KeyV',W:'KeyW',X:'KeyX',Y:'KeyY',Z:'KeyZ','1':'Digit1','2':'Digit2','3':'Digit3','4':'Digit4','5':'Digit5','6':'Digit6','7':'Digit7','8':'Digit8','9':'Digit9','0':'Digit0',' ':'Space','`':'Backquote','-':'Minus','=':'Equal','[':'BracketLeft',']':'BracketRight','\\':'Backslash',';':'Semicolon',"'":'Quote',',':'Comma','.':'Period','/':'Slash','~':'Backquote','!':'Digit1','@':'Digit2','#':'Digit3','$':'Digit4','%':'Digit5','^':'Digit6','&':'Digit7','*':'Digit8','(':'Digit9',')':'Digit0','_':'Minus','+':'Equal',':':'Semicolon','"':'Quote','<':'Comma','>':'Period','?':'Slash'};
+
+/* ── code → finger ── */
+var K2F={};
+KB.forEach(function(row){row.forEach(function(k){K2F[k[1]]=k[2];});});
+
+var NEEDS_SHIFT='ABCDEFGHIJKLMNOPQRSTUVWXYZ~!@#$%^&*()_+{}|:"<>?'.split('').reduce(function(o,c){o[c]=true;return o;},{});
+
+function shiftFor(code){
+  var f=K2F[code];
+  if(!f)return null;
+  return f.charAt(0)==='L'?'ShiftRight':'ShiftLeft';
+}
+
+/* ── Lesson Data ── */
+var STAGES=[{id:1,name:'Home Row Foundation',emoji:'🏠'},{id:2,name:'Top Row Keys',emoji:'📈'},{id:3,name:'Bottom Row Keys',emoji:'📉'},{id:4,name:'Shift & Capitals',emoji:'⇧'},{id:5,name:'Number Row',emoji:'🔢'},{id:6,name:'Speed Building',emoji:'🚀'}];
+
+var LESSONS=[
+  {id:1,stage:1,emoji:'🖐️',title:'Home Row: Left Hand',sub:'Your anchor keys — ASDF',
+   desc:'Place your left fingers on <b>A</b> (pinky), <b>S</b> (ring), <b>D</b> (middle), <b>F</b> (index). This is the "home row" — your fingers always return here between keystrokes.',
+   tip:'Feel the small bump on the <b>F</b> key! That tactile bump lets you find your position without looking. <b>Never look at the keyboard.</b>',
+   highlight:['KeyA','KeyS','KeyD','KeyF'],
+   exercises:[
+     {name:'Single Keys',     text:'a a a a s s s s d d d d f f f f a s d f f d s a'},
+     {name:'Key Pairs',       text:'as as sd sd df df fa fa fs sf ad da as sa df fd'},
+     {name:'Home Row Flow',   text:'asdf fdsa asdf fdsa asff ffas ddss ssdd afds'},
+     {name:'Real Words',      text:'as sad fad add ads dad dads a sad fad fads salads'}
+   ],xp:50},
+
+  {id:2,stage:1,emoji:'🤚',title:'Home Row: Right Hand',sub:'Mirror keys — JKL;',
+   desc:'Place your right fingers on <b>J</b> (index), <b>K</b> (middle), <b>L</b> (ring), <b>;</b> (pinky). Feel the bump on the <b>J</b> key — it\'s your right-hand anchor.',
+   tip:'The J bump mirrors the F bump. Both are the most important keys for finding your hand position without looking at the keyboard.',
+   highlight:['KeyJ','KeyK','KeyL','Semicolon'],
+   exercises:[
+     {name:'Single Keys',     text:'j j j j k k k k l l l l j k l j k l'},
+     {name:'Key Pairs',       text:'jk jk kl kl jl jl kj jk lk kl lj jl'},
+     {name:'Home Row Flow',   text:'jkl jlk klj ljk jjkk llkk jkjk lklk'},
+     {name:'Combinations',    text:'jk kl lj kj lk jl kl jk lj kj jk ll'}
+   ],xp:50},
+
+  {id:3,stage:1,emoji:'⌨️',title:'Full Home Row',sub:'Both hands together — ASDFGHJKL;',
+   desc:'Now use both hands on the full home row. Left on <b>ASDF</b>, right on <b>JKL;</b>. The <b>G</b> key is your left index, <b>H</b> is your right index — both stretch slightly from home.',
+   tip:'When you reach for G or H, keep your other fingers lightly resting on home keys. <b>Always return after every keystroke.</b>',
+   highlight:['KeyA','KeyS','KeyD','KeyF','KeyG','KeyH','KeyJ','KeyK','KeyL','Semicolon'],
+   exercises:[
+     {name:'Both Hands',      text:'asdf jkl asdf jkl fjdk slak fjkl'},
+     {name:'G and H Keys',    text:'fgh fgh ghj ghj gfh hjk ghf jhg fhg'},
+     {name:'Full Home Row',   text:'asdfjkl jklfdsaasdfghjkl asdf ghjkl'},
+     {name:'Home Row Words',  text:'all fall hall shall glad had ash asks lass'}
+   ],xp:75},
+
+  {id:4,stage:2,emoji:'📈',title:'Top Row: E R T (Left)',sub:'Left hand reaches up',
+   desc:'From your home row, stretch up: <b>E</b> = left middle, <b>R</b> = left index, <b>T</b> = left index (stretch). <b>W</b> = left ring, <b>Q</b> = left pinky.',
+   tip:'Think of a diagonal stretch from home. Keep your other fingers hovering over ASDF while you reach up to the top row.',
+   highlight:['KeyQ','KeyW','KeyE','KeyR','KeyT'],
+   exercises:[
+     {name:'Reach Practice',  text:'de de ed ed fr fr rf rf ft tf wq qw'},
+     {name:'Top Row Combos',  text:'re er et te tr rt qw wq we ew rw wr'},
+     {name:'Short Words',     text:'red tree test rest art rate wet set'},
+     {name:'Mixed Words',     text:'stars faster draft trade great water'}
+   ],xp:75},
+
+  {id:5,stage:2,emoji:'✋',title:'Top Row: Y U I O P (Right)',sub:'Right hand reaches up',
+   desc:'From JKL;, stretch up: <b>Y</b> = right index, <b>U</b> = right index, <b>I</b> = right middle, <b>O</b> = right ring, <b>P</b> = right pinky.',
+   tip:'Mirror the exact same upward stretch as your left hand. Keep JKL; as your anchor points. Always return after every keystroke.',
+   highlight:['KeyY','KeyU','KeyI','KeyO','KeyP'],
+   exercises:[
+     {name:'Reach Practice',  text:'ju ju uj ki ki ik lo lo ol jp yh'},
+     {name:'Top Row Combos',  text:'yu uy io oi op po py yp iu ui oy'},
+     {name:'Short Words',     text:'you oil pull pour join lip yolk pout'},
+     {name:'Mixed Words',     text:'your jury folk look prior pilot input'}
+   ],xp:75},
+
+  {id:6,stage:2,emoji:'🌟',title:'Full Top Row',sub:'All ten top row keys together',
+   desc:'Combine both hands across the full top row. Practice smooth transitions between top row and home row — always return to ASDF / JKL; between keystrokes.',
+   tip:'Speed comes from muscle memory. Go slow now, and speed will naturally follow with practice. Accuracy first, always.',
+   highlight:['KeyQ','KeyW','KeyE','KeyR','KeyT','KeyY','KeyU','KeyI','KeyO','KeyP'],
+   exercises:[
+     {name:'Top Row Words',   text:'type write quite pretty power report'},
+     {name:'Mixed Words',     text:'either power future pretty write true'},
+     {name:'Common Words',    text:'water power future pretty write quite'},
+     {name:'Full Sentence',   text:'try to write quite well every time you type'}
+   ],xp:100},
+
+  {id:7,stage:3,emoji:'⬇️',title:'Bottom Row: Z X C V B (Left)',sub:'Left hand curls downward',
+   desc:'From ASDF, your fingers curl downward: <b>Z</b> = left pinky, <b>X</b> = left ring, <b>C</b> = left middle, <b>V</b> = left index, <b>B</b> = left index (stretch).',
+   tip:'The bottom row uses a slight downward curl. Keep your wrists relaxed — tension causes errors and strain over time.',
+   highlight:['KeyZ','KeyX','KeyC','KeyV','KeyB'],
+   exercises:[
+     {name:'Reach Down',      text:'az xz xc cv vb az xa cx vc bv vx cx'},
+     {name:'Combos',          text:'zx xc vc bv vx zc zv xv bx bc xb zb'},
+     {name:'Short Words',     text:'cave rave brave have cab vex box'},
+     {name:'Mixed Words',     text:'exact exhaust excite above because'}
+   ],xp:75},
+
+  {id:8,stage:3,emoji:'⬇️',title:'Bottom Row: N M , . / (Right)',sub:'Right hand curls downward',
+   desc:'From JKL;, your right fingers curl down: <b>N</b> = right index, <b>M</b> = right index, <b>,</b> = right middle, <b>.</b> = right ring, <b>/</b> = right pinky.',
+   tip:'Comma and period are crucial for sentence-level typing. Practice until they feel completely natural and automatic.',
+   highlight:['KeyN','KeyM','Comma','Period','Slash'],
+   exercises:[
+     {name:'Reach Down',      text:'jn jn km km nm mn jm kn lm'},
+     {name:'N and M',         text:'nm mn in on no mn nm ni mo on'},
+     {name:'Short Words',     text:'man neon moon noon mine name moon'},
+     {name:'With Punctuation',text:'run. jump. win. no. yes. done. next.'}
+   ],xp:75},
+
+  {id:9,stage:3,emoji:'🔤',title:'All Letters Combined',sub:'Every key — three rows mastered',
+   desc:'You now know all 26 letter keys! Practice words that use all three rows together. Focus on accuracy — speed will grow naturally with every session.',
+   tip:'The famous pangram "the quick brown fox" uses every letter of the alphabet. It\'s the perfect all-round practice sentence!',
+   highlight:[],
+   exercises:[
+     {name:'Classic Pangram', text:'the quick brown fox jumps over the lazy dog'},
+     {name:'Pangram 2',       text:'pack my box with five dozen liquor jugs'},
+     {name:'Common Words',    text:'practice makes perfect every single day you type'},
+     {name:'Mixed Sentence',  text:'type fast by focusing on every single letter you see'}
+   ],xp:125},
+
+  {id:10,stage:4,emoji:'⇧',title:'Using Shift Keys',sub:'Capitals the right way',
+   desc:'Always use the <b>opposite</b> hand\'s Shift key when capitalizing. Left Shift for right-hand letters. Right Shift for left-hand letters. Never use the same hand for both.',
+   tip:'<b>GOLDEN RULE:</b> Left hand letter = Right Shift. Right hand letter = Left Shift. This keeps both hands balanced and your speed up.',
+   highlight:['ShiftLeft','ShiftRight'],
+   exercises:[
+     {name:'Capitals Only',   text:'A S D F G H J K L'},
+     {name:'Mixed Case',      text:'Hello World Type Fast Now Go Win'},
+     {name:'Full Sentence',   text:'The Quick Brown Fox Jumps Over The Lazy Dog'},
+     {name:'Proper Nouns',    text:'I Love Rocket Typing Every Single Day'}
+   ],xp:100},
+
+  {id:11,stage:5,emoji:'1️⃣',title:'Numbers 1 to 5',sub:'Left hand number row',
+   desc:'Stretch up from home row: <b>1</b> = left pinky, <b>2</b> = left ring, <b>3</b> = left middle, <b>4</b> = left index, <b>5</b> = left index (stretch).',
+   tip:'Keep your left hand anchored on ASDF while you stretch up. Return immediately after each digit — same rule as letters.',
+   highlight:['Digit1','Digit2','Digit3','Digit4','Digit5'],
+   exercises:[
+     {name:'Single Digits',   text:'1 1 1 2 2 2 3 3 3 4 4 4 5 5 5 1 2'},
+     {name:'Sequences',       text:'12 23 34 45 123 234 345 1234 12345'},
+     {name:'Mixed Digits',    text:'1 2 3 4 5 4 3 2 1 5 3 1 4 2 5 3 1'},
+     {name:'In Context',      text:'type 12 then 345 and 51 more times 24'}
+   ],xp:75},
+
+  {id:12,stage:5,emoji:'6️⃣',title:'Numbers 6 to 0',sub:'Right hand number row',
+   desc:'Stretch up from JKL;: <b>6</b> = right index, <b>7</b> = right index (stretch), <b>8</b> = right middle, <b>9</b> = right ring, <b>0</b> = right pinky.',
+   tip:'Mirror the same upward stretch as your left hand for 1–5. Both hands work symmetrically on the number row.',
+   highlight:['Digit6','Digit7','Digit8','Digit9','Digit0'],
+   exercises:[
+     {name:'Single Digits',   text:'6 6 6 7 7 7 8 8 8 9 9 9 0 0 0 6 7'},
+     {name:'Sequences',       text:'67 78 89 90 678 789 890 6789 67890'},
+     {name:'All Numbers',     text:'1234567890 0987654321 13579 24680'},
+     {name:'In Context',      text:'score 789 points then 60 for a total of 100'}
+   ],xp:75},
+
+  {id:13,stage:6,emoji:'⚡',title:'Common Word Sprint',sub:'Top 50 most-used English words',
+   desc:'These words make up over 50% of everything you type in everyday life. Mastering them gives you a massive speed boost. Focus on smooth, fluid typing.',
+   tip:'Don\'t look at your fingers! If you feel lost, glance at the keyboard diagram — never the actual keys. This is touch typing.',
+   highlight:[],
+   exercises:[
+     {name:'Top Words Set 1', text:'the and that have with from they this will'},
+     {name:'Top Words Set 2', text:'more when time good your about what there just'},
+     {name:'Top Words Set 3', text:'some people also which into look than like how'},
+     {name:'Full Sentence',   text:'if you want to type fast just practice every day'}
+   ],xp:150},
+
+  {id:14,stage:6,emoji:'📝',title:'Full Sentences',sub:'Punctuation, capitals — real typing',
+   desc:'Practice complete sentences with proper capitalization and punctuation. This is exactly what real-world typing looks like in emails, documents, and messages.',
+   tip:'Try to keep your rhythm smooth and consistent. A steady pace of 35 WPM beats bursts of 60 followed by long pauses.',
+   highlight:[],
+   exercises:[
+     {name:'Sentence 1',      text:'Practice makes perfect. Type every day to improve your speed.'},
+     {name:'Sentence 2',      text:'The best way to type fast is to type without looking down.'},
+     {name:'Sentence 3',      text:'Keep your eyes on the screen, not on your fingers or the keys.'},
+     {name:'Sentence 4',      text:'Touch typing frees your mind so you can focus on your ideas.'}
+   ],xp:150},
+
+  {id:15,stage:6,emoji:'🚀',title:'Speed Challenge',sub:'Final test — put it all together!',
+   desc:'You have learned everything! Now combine every skill you have built. Type these passages as fast and accurately as you can. This is your final challenge!',
+   tip:'You\'ve come so far! A smooth 35–50 WPM is excellent for a beginner. Keep practising daily and 80+ WPM is absolutely within reach.',
+   highlight:[],
+   exercises:[
+     {name:'Challenge 1',     text:'Touch typing is the key to becoming a real typing master. With practice and patience you will reach your goal.'},
+     {name:'Challenge 2',     text:'The quick brown fox jumps over the lazy dog. Pack my box with five dozen liquor jugs. Type it all.'},
+     {name:'Challenge 3',     text:'Rocket Typing will help you become one of the fastest typists in the world. Start today and never stop practising.'}
+   ],xp:200}
+];
+
+/* ══════════════════════════
+   STATE
+══════════════════════════ */
+var S={
+  view:'hero',lesson:null,exIdx:0,exStats:[],exDone:false,
+  progress:{},xp:0,level:1,
+  text:'',pos:0,typed:[],startTime:null,
+  keystrokes:0,errors:0,streak:0,timerHandle:null
+};
+var XP_TH=[0,100,300,600,1000,1500,2200,3000,4000,5500,8000,12000];
+
+/* ══════════════════════════
+   PROGRESS (localStorage)
+══════════════════════════ */
+function loadProg(){
+  try{var r=localStorage.getItem('rt_learn_v3');if(r){var p=JSON.parse(r);S.progress=p.progress||{};S.xp=p.xp||0;S.level=p.level||1;}}catch(e){}
+}
+function saveProg(){
+  try{localStorage.setItem('rt_learn_v3',JSON.stringify({progress:S.progress,xp:S.xp,level:S.level}));}catch(e){}
+}
+function addXP(amt){
+  S.xp+=amt; var old=S.level;
+  while(S.level<XP_TH.length-1&&S.xp>=XP_TH[S.level])S.level++;
+  saveProg(); updateXPBar();
+  if(S.level>old)showLevelUp();
+}
+function updateXPBar(){
+  var fill=document.getElementById('lp-xp-fill');
+  var prev=XP_TH[S.level-1]||0,next=XP_TH[S.level]||(S.xp+1);
+  var pct=Math.min(100,((S.xp-prev)/(next-prev))*100);
+  if(fill)fill.style.width=pct+'%';
+  var b=document.getElementById('lp-level-badge');if(b)b.textContent='Lv. '+S.level;
+  var t=document.getElementById('lp-xp-text');if(t)t.textContent=S.xp+' XP';
+}
+function showLevelUp(){
+  /* Level Up toast removed */
+}
+
+/* ══════════════════════════
+   BUILD KEYBOARD
+══════════════════════════ */
+var U=36,G=3;
+function buildKeyboard(){
+  var kb=document.getElementById('learn-kb');if(!kb)return;
+  kb.innerHTML='';
+  KB.forEach(function(row){
+    var re=document.createElement('div');re.className='lk-row';
+    row.forEach(function(k){
+      var el=document.createElement('div');
+      var px=Math.round(U*k[3]+G*(k[3]-1));
+      el.className='lk-key lk-'+k[2];
+      el.dataset.code=k[1];
+      el.style.minWidth=px+'px';el.style.width=px+'px';el.style.flexShrink='0';
+      el.textContent=k[0];
+      if(k[1]==='KeyF'||k[1]==='KeyJ')el.classList.add('lk-homekey');
+      re.appendChild(el);
+    });
+    kb.appendChild(re);
+  });
+  buildLegend();
+}
+function buildLegend(){
+  var lg=document.getElementById('lv-finger-legend');if(!lg)return;
+  lg.innerHTML='';
+  var order=['LP','LR','LM','LI','TH','RI','RM','RR','RP'];
+  order.forEach(function(f){
+    var chip=document.createElement('div');chip.className='fl-chip';
+    chip.innerHTML='<div class="fl-dot" style="background:'+FC[f]+'"></div>'+FN[f];
+    lg.appendChild(chip);
+  });
+}
+function scaleKB(){
+  var wrap=document.querySelector('.lv-kb-container');
+  var kb=document.getElementById('learn-kb');
+  if(!wrap||!kb)return;
+  var avail=wrap.clientWidth-28;
+  var natural=14*(U+G)+2;
+  if(avail<natural){
+    var sc=avail/natural;
+    kb.style.transform='scale('+sc+')';kb.style.transformOrigin='top center';
+    kb.style.marginBottom=((sc-1)*kb.scrollHeight)+'px';
+  }else{kb.style.transform='';kb.style.marginBottom='';}
+}
+
+function setTarget(ch){
+  document.querySelectorAll('.lk-target,.lk-shift-hint').forEach(function(el){el.classList.remove('lk-target','lk-shift-hint');});
+  if(ch===null||ch===undefined||ch==='')return;
+  var code=C2K[ch]||(ch===' '?'Space':null);
+  if(!code)return;
+  var el=document.querySelector('.lk-key[data-code="'+code+'"]');
+  if(el)el.classList.add('lk-target');
+  if(NEEDS_SHIFT[ch]){var sc=shiftFor(code);if(sc){var se=document.querySelector('.lk-key[data-code="'+sc+'"]');if(se)se.classList.add('lk-shift-hint');}}
+  var nc=document.getElementById('nkh-char');if(nc)nc.textContent=ch===' '?'⎵':ch;
+  var f=K2F[code]||'TH';
+  var nd=document.getElementById('nkh-dot');if(nd)nd.style.background=FC[f]||'#fff';
+  var nf=document.getElementById('nkh-fname');if(nf)nf.textContent=FN[f]||'';
+  animateHandFinger(f);
+  // Update hands label
+  var hl=document.getElementById('hands-key-label');if(hl)hl.textContent=(ch===' '?'SPACE':ch.toUpperCase())+' — '+( FN[f]||'');
+}
+/* Hand finger animation helpers */
+var _fingerMap={
+  LP:'lf-LP', LR:'lf-LR', LM:'lf-LM', LI:'lf-LI',
+  TH:'lf-TH',  /* left thumb for TH */
+  RI:'rf-RI',  RM:'rf-RM',  RR:'rf-RR',  RP:'rf-RP'
+};
+var _currentFingerEl=null;
+function animateHandFinger(finger){
+  // Reset previous glow
+  if(_currentFingerEl){
+    _currentFingerEl.classList.remove('finger-glow','finger-glow-teal');
+  }
+  // For TH (thumbs) show both
+  var ids=[];
+  if(finger==='TH'){ids=['lf-TH','rf-TH'];}
+  else{var mid=_fingerMap[finger];if(mid)ids=[mid];}
+  ids.forEach(function(id){
+    var g=document.getElementById(id);
+    if(!g)return;
+    g.classList.add('finger-glow');
+    _currentFingerEl=g;
+  });
+}
+function triggerFingerPress(finger){
+  var ids=[];
+  if(finger==='TH'){ids=['lf-TH','rf-TH'];}
+  else{var mid=_fingerMap[finger];if(mid)ids=[mid];}
+  ids.forEach(function(id){
+    var g=document.getElementById(id);
+    if(!g)return;
+    // Re-trigger animation by cloning
+    var clone=g.cloneNode(true);
+    clone.classList.add('finger-active');
+    clone.classList.add('finger-glow-teal');
+    clone.classList.remove('finger-glow');
+    g.parentNode.replaceChild(clone,g);
+    setTimeout(function(){
+      clone.classList.remove('finger-active');
+      clone.classList.remove('finger-glow-teal');
+      clone.classList.add('finger-glow');
+    },450);
+  });
+}
+
+function flashKey(code,ok){
+  var el=document.querySelector('.lk-key[data-code="'+code+'"]');if(!el)return;
+  var cls=ok?'lk-correct':'lk-wrong';el.classList.add(cls);
+  setTimeout(function(){el.classList.remove(cls);},180);
+}
+
+/* ══════════════════════════
+   TYPING ENGINE
+══════════════════════════ */
+function engineInit(text){
+  clearInterval(S.timerHandle);
+  S.text=text;S.pos=0;S.typed=[];S.startTime=null;
+  S.keystrokes=0;S.errors=0;S.streak=0;S.exDone=false;
+  renderDisplay();updateStats();setTarget(text[0]||null);
+  var bc=document.getElementById('btn-continue');var br=document.getElementById('btn-retry');
+  if(bc)bc.classList.remove('visible');if(br)br.classList.remove('visible');
+  var d=document.getElementById('lv-display');if(d)d.classList.remove('lv-done-flash');
+  var ab=document.getElementById('lv-acc-fill');if(ab){ab.style.width='100%';ab.style.background='#00e6cc';}
+}
+function engineType(ch){
+  if(S.exDone||S.pos>=S.text.length)return;
+  if(!S.startTime){S.startTime=Date.now();S.timerHandle=setInterval(updateStats,600);}
+  S.keystrokes++;
+  var ok=(ch===S.text[S.pos]);
+  if(!ok){S.errors++;S.streak=0;}else{S.streak++;}
+  // Animate current finger press
+  var code=C2K[ch]||(ch===' '?'Space':null);
+  var f=code?K2F[code]||'TH':'TH';
+  triggerFingerPress(f);
+  S.typed.push({ch:ch,ok:ok});S.pos++;
+  if(code)flashKey(code,ok);
+  renderDisplay();updateStats();
+  if(S.pos<S.text.length){setTarget(S.text[S.pos]);}
+  else{setTarget(null);S.exDone=true;clearInterval(S.timerHandle);onExerciseDone();}
+}
+function engineBS(){
+  if(S.pos<=0||S.exDone)return;
+  S.pos--;S.typed.pop();renderDisplay();setTarget(S.text[S.pos]);updateStats();
+}
+function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function renderDisplay(){
+  var d=document.getElementById('lv-display');if(!d)return;
+  var h='';
+  for(var i=0;i<S.text.length;i++){
+    var c=S.text[i];var show=c===' '?'·':c;
+    if(i<S.pos){var t=S.typed[i];var cl=t&&t.ok?'correct':'wrong';h+='<span class="td-c '+cl+'">'+esc(show)+'</span>';}
+    else if(i===S.pos){h+='<span class="td-caret"></span><span class="td-c">'+esc(show)+'</span>';}
+    else{h+='<span class="td-c">'+esc(show)+'</span>';}
+  }
+  d.innerHTML=h;
+}
+function getWPM(){var e=S.startTime?(Date.now()-S.startTime)/60000:0.0001;return Math.round(Math.max(0,(S.pos-S.errors))/5/e);}
+function getAcc(){return S.keystrokes>0?Math.round((1-S.errors/S.keystrokes)*100):100;}
+function updateStats(){
+  var wpm=S.startTime?getWPM():0;var acc=getAcc();
+  var w=document.getElementById('stat-wpm');if(w)w.textContent=S.startTime?wpm:'—';
+  var a=document.getElementById('stat-acc');if(a)a.textContent=S.startTime?acc+'%':'—';
+  var p=document.getElementById('stat-prog');if(p)p.textContent=S.pos+'/'+S.text.length;
+  var sk=document.getElementById('stat-streak');if(sk)sk.textContent=S.streak;
+  var ab=document.getElementById('lv-acc-fill');
+  if(ab&&S.keystrokes>0){ab.style.width=acc+'%';ab.style.background=acc>=90?'#00e6cc':acc>=70?'#e2b714':'#da3333';}
+}
+
+/* ══════════════════════════
+   EXERCISE / LESSON FLOW
+══════════════════════════ */
+function loadExercise(idx){
+  S.exIdx=idx;
+  var lesson=S.lesson;var ex=lesson.exercises[idx];
+  var en=document.getElementById('lv-ex-name');if(en)en.textContent=ex.name;
+  var dots=document.getElementById('lv-ex-dots');
+  if(dots){dots.innerHTML='';lesson.exercises.forEach(function(_,i){var d=document.createElement('div');d.className='lv-dot'+(i===idx?' active':i<idx?' done':'');dots.appendChild(d);});}
+  var pf=document.getElementById('lv-prog-fill');if(pf)pf.style.width=((idx/lesson.exercises.length)*100)+'%';
+  var pi=document.getElementById('lv-ex-indicator');if(pi)pi.textContent=(idx+1)+' / '+lesson.exercises.length;
+  engineInit(ex.text);
+  focusInput();
+  highlightLessonKeys(lesson.highlight||[]);
+}
+function onExerciseDone(){
+  var wpm=getWPM(),acc=getAcc();
+  S.exStats.push({wpm:wpm,acc:acc});
+  var d=document.getElementById('lv-display');if(d)d.classList.add('lv-done-flash');
+  setTimeout(function(){
+    var isLast=S.exIdx>=S.lesson.exercises.length-1;
+    var bc=document.getElementById('btn-continue');var br=document.getElementById('btn-retry');
+    if(bc){bc.classList.add('visible');bc.textContent=isLast?'🏆 Finish Lesson':'Next Exercise →';}
+    if(br)br.classList.add('visible');
+    if(isLast&&acc>=80){
+      var t=3;var si=setInterval(function(){
+        t--;if(bc)bc.textContent='🏆 Finish Lesson ('+t+'s...)';
+        if(t<=0){clearInterval(si);if(S.exDone)finishLesson();}
+      },1000);
+    }
+    if(acc>=98&&typeof confetti==='function'){confetti({particleCount:45,spread:55,origin:{y:0.7},colors:['#e2b714','#00e6cc','#ff9900']});}
+  },300);
+}
+
+function finishLesson(){
+  if(!S.lesson)return;clearInterval(S.timerHandle);
+  var bestWPM=0,totalAcc=0;
+  S.exStats.forEach(function(e){if(e.wpm>bestWPM)bestWPM=e.wpm;totalAcc+=e.acc;});
+  var avgAcc=S.exStats.length>0?Math.round(totalAcc/S.exStats.length):100;
+  var stars=avgAcc>=95?3:avgAcc>=80?2:avgAcc>=60?1:0;
+  var lid=S.lesson.id;var prev=S.progress[lid]||{};
+  S.progress[lid]={done:true,stars:Math.max(stars,prev.stars||0),bestWPM:Math.max(bestWPM,prev.bestWPM||0),bestAcc:Math.max(avgAcc,prev.bestAcc||0)};
+  var xpGain=Math.max(10,Math.round(S.lesson.xp*(prev.done?0.3:1)*(avgAcc/100)));
+  addXP(xpGain);saveProg();
+  lp.showView('complete');
+  // Animate stars
+  var s1=document.getElementById('vc-star1'),s2=document.getElementById('vc-star2'),s3=document.getElementById('vc-star3');
+  [s1,s2,s3].forEach(function(el){if(el){el.style.opacity='0';el.style.animation='none';el.style.filter='';}});
+  setTimeout(function(){
+    function animStar(el,delay,show){if(!el)return;if(show){el.style.animation='starPop 0.45s '+delay+'s cubic-bezier(0.34,1.56,0.64,1) forwards';}else{el.style.filter='grayscale(1)';el.style.opacity='0.2';}}
+    animStar(s1,0,stars>=1);animStar(s2,0.15,stars>=2);animStar(s3,0.3,stars>=3);
+  },100);
+  var titles=['Keep Going! 💪','Good Job! 👍','Great Work! 🌟','Perfect! 🏆'];
+  var vt=document.getElementById('vc-title');if(vt)vt.textContent=titles[Math.min(stars,3)];
+  var vs=document.getElementById('vc-sub');if(vs)vs.textContent='Lesson '+lid+': '+S.lesson.title+' — Complete!';
+  var vx=document.getElementById('vc-xp');if(vx)vx.textContent='+'+xpGain+' XP Earned';
+  var vw=document.getElementById('vc-wpm');if(vw)vw.textContent=bestWPM;
+  var va=document.getElementById('vc-acc');if(va)va.textContent=avgAcc+'%';
+  var ve=document.getElementById('vc-exdone');if(ve)ve.textContent=S.exStats.length;
+  var hasNext=LESSONS.some(function(l){return l.id===lid+1;});
+  var nb=document.getElementById('btn-next-lesson');
+  if(nb){nb.style.display=hasNext?'':'none';if(hasNext)nb.textContent='Next: Lesson '+(lid+1)+' →';}
+  var cc=document.getElementById('course-complete-msg');if(cc)cc.style.display=(!hasNext)?'block':'none';
+  if(typeof confetti==='function'){
+    confetti({particleCount:stars===3?130:70,spread:75,origin:{y:0.5},colors:stars===3?['#e2b714','#ff9900','#ffd700','#fff']:['#00e6cc','#e2b714','#ff9900']});
+  }
+}
+
+function highlightLessonKeys(codes){
+  document.querySelectorAll('.lk-key').forEach(function(el){el.style.opacity=codes.length>0?'0.4':'';el.style.transform='';});
+  codes.forEach(function(code){var el=document.querySelector('.lk-key[data-code="'+code+'"]');if(el){el.style.opacity='1';el.style.transform='scale(1.06)';}});
+  // Reset all finger glows
+  ['lf-LP','lf-LR','lf-LM','lf-LI','lf-TH','rf-RI','rf-RM','rf-RR','rf-RP','rf-TH'].forEach(function(id){
+    var g=document.getElementById(id);if(g){g.classList.remove('finger-glow','finger-glow-teal','finger-active');}
+  });
+}
+
+/* ══════════════════════════
+   CURRICULUM
+══════════════════════════ */
+function buildCurriculum(){
+  var grid=document.getElementById('curriculum-grid');if(!grid)return;grid.innerHTML='';
+  var td=0,ts=0;
+  Object.keys(S.progress).forEach(function(k){var p=S.progress[k];if(p&&p.done){td++;ts+=(p.stars||0);}});
+  var e1=document.getElementById('cs-done');if(e1)e1.textContent=td;
+  var e2=document.getElementById('cs-stars');if(e2)e2.textContent=ts;
+  var e3=document.getElementById('cs-xp');if(e3)e3.textContent=S.xp;
+  STAGES.forEach(function(stage){
+    var sLessons=LESSONS.filter(function(l){return l.stage===stage.id;});
+    var done=sLessons.filter(function(l){return S.progress[l.id]&&S.progress[l.id].done;}).length;
+    var block=document.createElement('div');block.className='stage-block';
+    var lbl=document.createElement('div');lbl.className='stage-label';
+    lbl.innerHTML='<span class="stage-num">Stage '+stage.id+'</span><span style="font-size:18px;">'+stage.emoji+'</span><span class="stage-name">'+stage.name+'</span><span class="stage-prog">'+done+'/'+sLessons.length+' done</span>';
+    block.appendChild(lbl);
+    var cards=document.createElement('div');cards.className='lesson-cards';
+    sLessons.forEach(function(lesson){
+      var prog=S.progress[lesson.id]||{};var d=!!prog.done;var st=prog.stars||0;
+      var card=document.createElement('div');card.className='lesson-card'+(d?' lc-done':'');
+      card.onclick=function(){lp.startLesson(lesson.id);};
+      var sh=[1,2,3].map(function(i){return '<span class="lc-star">'+(i<=st?'⭐':'☆')+'</span>';}).join('');
+      card.innerHTML='<div class="lc-num">Lesson '+lesson.id+'</div><div class="lc-emoji">'+lesson.emoji+'</div><div class="lc-title">'+lesson.title+'</div><div class="lc-sub">'+lesson.sub+'</div><div class="lc-footer"><div class="lc-stars">'+sh+'</div><div class="lc-xp">+'+lesson.xp+' XP</div></div>'+(d?'<div style="position:absolute;top:10px;right:10px;font-size:13px;color:#00e6cc;">✓</div>':'');
+      cards.appendChild(card);
+    });
+    block.appendChild(cards);grid.appendChild(block);
+  });
+}
+
+/* ══════════════════════════
+   INPUT
+══════════════════════════ */
+function focusInput(){var inp=document.getElementById('lv-input');if(inp)inp.focus();}
+
+function initInput(){
+  var inp=document.getElementById('lv-input');if(!inp)return;
+  inp.addEventListener('keydown',function(e){
+    if(S.view!=='lesson')return;
+    if(e.key==='Backspace'){e.preventDefault();engineBS();return;}
+    if(e.key==='Tab'){e.preventDefault();return;}
+  });
+  inp.addEventListener('keypress',function(e){
+    if(S.view!=='lesson')return;
+    if(e.ctrlKey||e.metaKey||e.altKey)return;
+    if(e.key&&e.key.length===1){e.preventDefault();engineType(e.key);}
+  });
+  inp.addEventListener('input',function(){
+    if(S.view!=='lesson')return;
+    var v=inp.value;inp.value='';
+    if(v&&v.length>0)engineType(v[v.length-1]);
+  });
+  var disp=document.getElementById('lv-display');
+  if(disp)disp.addEventListener('click',focusInput);
+  document.addEventListener('click',function(e){if(S.view==='lesson'&&!e.target.closest('button'))focusInput();});
+}
+
+/* ══════════════════════════
+   PUBLIC API
+══════════════════════════ */
+window.lp={
+  showView:function(name){
+    document.querySelectorAll('.lv').forEach(function(el){el.classList.remove('lv-active');});
+    var el=document.getElementById('view-'+name);if(el)el.classList.add('lv-active');
+    S.view=name;
+    if(name==='lesson'){document.body.classList.add('lesson-active');}
+    else{document.body.classList.remove('lesson-active');window.scrollTo(0,0);}
+  },
+  showCurriculum:function(){lp.showView('curriculum');buildCurriculum();updateXPBar();},
+  startLearning:function(){
+    var first=null;
+    for(var i=0;i<LESSONS.length;i++){if(!S.progress[LESSONS[i].id]||!S.progress[LESSONS[i].id].done){first=LESSONS[i];break;}}
+    if(!first)first=LESSONS[0];
+    lp.startLesson(first.id);
+  },
+  startLesson:function(id){
+    var lesson=null;for(var i=0;i<LESSONS.length;i++){if(LESSONS[i].id===id){lesson=LESSONS[i];break;}}
+    if(!lesson)return;
+    S.lesson=lesson;S.exIdx=0;S.exStats=[];
+    var sc=document.getElementById('lv-stage-chip');
+    var stageName='';for(var i=0;i<STAGES.length;i++){if(STAGES[i].id===lesson.stage){stageName=STAGES[i].name;break;}}
+    if(sc)sc.textContent='STAGE '+lesson.stage+' — '+stageName;
+    var ti=document.getElementById('lv-lesson-title');if(ti)ti.textContent=lesson.emoji+' '+lesson.title;
+    var hl=document.getElementById('hands-key-label');if(hl)hl.textContent='';
+    lp.showView('lesson');loadExercise(0);setTimeout(scaleKB,100);
+  },
+  nextExercise:function(){var l=S.lesson;if(S.exIdx>=l.exercises.length-1){finishLesson();}else{loadExercise(S.exIdx+1);}},
+  retryExercise:function(){loadExercise(S.exIdx);},
+  nextLesson:function(){var nid=S.lesson.id+1;var found=null;for(var i=0;i<LESSONS.length;i++){if(LESSONS[i].id===nid){found=LESSONS[i];break;}}if(found){lp.startLesson(nid);}else{lp.showCurriculum();}},
+  redoLesson:function(){lp.startLesson(S.lesson.id);},
+  focusInput:focusInput
+};
+
+/* ══════════════════════════
+   INIT
+══════════════════════════ */
+function init(){
+  loadProg();updateXPBar();buildKeyboard();initInput();
+  window.addEventListener('resize',function(){if(S.view==='lesson')scaleKB();});
+  // URL param support: ?lesson=N
+  try{var q=new URLSearchParams(window.location.search);var ln=parseInt(q.get('lesson'));if(ln&&ln>=1&&ln<=15){setTimeout(function(){lp.startLesson(ln);},200);}}catch(e){}
+}
+
+if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',init);}else{init();}
+
+})();
+</script>
+</body>
+</html>
