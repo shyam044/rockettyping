@@ -103,6 +103,8 @@
         crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
     <link rel="stylesheet" href="styles.css">
+    <!-- Quotes database — loaded before main script so QUOTES_ALL is available -->
+    <script src="quotes.js"></script>
     <!-- PWA + SEO additions -->
     <link rel="preload" href="styles.css" as="style">
     <link rel="alternate" hreflang="en" href="https://www.rockettyping.com/" />
@@ -742,6 +744,10 @@ body.typing-active #km-fr {
             </div>
         </div>
         <div id="words"></div>
+        <!-- Quote attribution — only visible in Quotes mode -->
+        <div id="quote-meta" style="display:none;text-align:right;padding:4px 24px 0;font-size:13px;color:#646669;font-style:italic;transition:opacity 0.3s;min-height:20px;">
+            <span id="quote-author-label"></span>
+        </div>
         <input id="input" type="text" autofocus>
 
 <!-- ═══════════════════════════════════════════════════════════════
@@ -1614,6 +1620,8 @@ window.sendEmailVerification = sendEmailVerification;
                 btn.classList.add('active');
                 config.mode = btn.dataset.mode;
                 saveConfig();
+                /* Hide attribution bar immediately when leaving quotes mode */
+                if (config.mode !== 'quotes') setQuoteAuthor('');
                 resetTest();
             });
         });
@@ -2030,9 +2038,34 @@ nouns: ["ability", "absence", "academy", "account", "achievement", "acid", "acti
                 "The {noun} said, \"{adjective}!\""
             ]
         };
-        const quotesPool = [
-"Fahhhhh"
-        ];
+        /**
+         * quotesPool — sourced from quotes.js (QUOTES_ALL).
+         * Falls back to a minimal built-in set if the file didn't load.
+         */
+        const quotesPool = (typeof QUOTES_ALL !== 'undefined' && QUOTES_ALL.length > 0)
+            ? QUOTES_ALL
+            : [
+                { text: "The only way to do great work is to love what you do.", author: "Steve Jobs" },
+                { text: "In the middle of every difficulty lies opportunity.", author: "Albert Einstein" },
+                { text: "The journey of a thousand miles begins with one step.", author: "Lao Tzu" }
+              ];
+
+        /* Track the active quote's author so we can display it */
+        let activeQuoteAuthor = '';
+
+        /* Helper: show or hide the author attribution bar */
+        function setQuoteAuthor(author) {
+            const metaEl = document.getElementById('quote-meta');
+            const labelEl = document.getElementById('quote-author-label');
+            if (!metaEl || !labelEl) return;
+            if (author) {
+                labelEl.textContent = '— ' + author;
+                metaEl.style.display = 'block';
+            } else {
+                metaEl.style.display = 'none';
+                labelEl.textContent = '';
+            }
+        }
 
         function randomItem(arr) {
             return arr[Math.floor(Math.random() * arr.length)];
@@ -2090,8 +2123,12 @@ nouns: ["ability", "absence", "academy", "account", "achievement", "acid", "acti
             words = [];
 
             if (config.mode === 'quotes') {
-                const quote = randomItem(quotesPool);
-                words = quote.split(' ');
+                const quoteObj = randomItem(quotesPool);
+                /* Support both object form { text, author } and legacy plain strings */
+                const quoteText = (typeof quoteObj === 'object' && quoteObj.text) ? quoteObj.text : String(quoteObj);
+                activeQuoteAuthor = (typeof quoteObj === 'object' && quoteObj.author) ? quoteObj.author : '';
+                words = quoteText.split(' ');
+                setQuoteAuthor(activeQuoteAuthor);
                 return;
             }
 
@@ -3081,6 +3118,9 @@ if (!testActive && e.key !== 'Tab') {
             input.focus();
 
             if (config.mode === 'time' || config.mode === 'words' || config.mode === 'quotes') generateWords();
+
+            /* Show/hide author attribution based on mode */
+            if (config.mode !== 'quotes') setQuoteAuthor('');
 
             timerDiv.classList.remove('highlight');
             if (config.mode === 'time') {
