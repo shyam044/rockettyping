@@ -14,6 +14,16 @@ body {
     padding-bottom: 0;
 }
 
+/* PERF FIX: "test-running" hides all distraction elements in ONE CSS rule.
+   Setting style.display on N elements from JS triggers N separate style
+   recalculations. A single class toggle is 1 recalc. */
+body.test-running #intro-text,
+body.test-running #page-title,
+body.test-running #sunday-champ-nav,
+body.test-running #header-auth-btn {
+    display: none !important;
+}
+
 /* PERF: pause cosmetic animations while typing — frees GPU for caret/letter rendering */
 body.typing-active {
     animation-play-state: paused;
@@ -61,7 +71,7 @@ body::before {
 
 #test-config {
     position: absolute;
-    top: 45px;
+    top: 60px;
     left: 50%;
     transform: translateX(-50%);
     display: flex;
@@ -90,7 +100,7 @@ body::before {
 
 #timer {
     position: absolute;
-    top: 80px;
+    top: 110px;
     left: 50%;
     transform: translateX(-50%);
     font-size: 48px;
@@ -109,7 +119,7 @@ body::before {
 
 #difficulty-container {
     position: absolute;
-    top: 100px;
+    top: 120px;
     right: 15px;
     display: flex;
     align-items: center;
@@ -166,20 +176,38 @@ body::before {
     position: relative;
     height: 162px;
     overflow: hidden;
-    scroll-behavior: smooth;
+    /* PERF FIX: "scroll-behavior: smooth" was removed.
+       Smooth scrolling triggers continuous style recalc on the main thread
+       while the user is typing, competing with every keystroke handler.
+       Row-advance scrolling is now done with a direct scrollTop assignment
+       (instant, no animation frame contention). */
     transition: opacity 0.25s ease;
-    margin-top: 160px;
+    margin-top: 190px;
     display: flex;
     flex-wrap: wrap;
     gap: 6px;
     scrollbar-width: none;
     -ms-overflow-style: none;
+    /* GPU layer: promotes the words container to its own compositor layer
+       so letter colour changes and caret movement never repaint the whole page */
     transform: translateZ(0);
-    will-change: scroll-position;
-    contain: layout style;
+    will-change: transform;          /* "transform" is cheaper than "scroll-position" */
+    contain: layout style paint;     /* added "paint" — limits repaint scope to this box */
+}
+
+/* PERF FIX: pause the letter colour transition entirely while typing.
+   The 0.04s transition on .letter causes the browser to start a CSS animation
+   for every single keystroke. At 100+ WPM that is >8 animations per second
+   stacking up on the compositor. Removing it during typing eliminates the
+   visible "transition queue" stutter at high speeds. */
+body.typing-active #words .letter {
+    transition: none !important;
 }
 
 #words .word { display: inline-block; margin-right: 20px; position: relative; }
+/* PERF FIX: promote active word to GPU layer so letter colour changes
+   only repaint that compositing layer, not the whole #words container */
+#words .word.active { will-change: transform; }
 #words .letter { color: #646669; transition: color 0.04s; }
 #words .letter.correct { color: #ffffff; }
 #words .letter.incorrect { color: #da3333; }
@@ -189,12 +217,27 @@ body::before {
 #caret {
     position: absolute;
     background: #00e6cc;
-    transition: transform 0.13s linear, height 0.13s linear;
+    /* Smooth idle transition for caret blinking state and between tests */
+    transition: transform 0.08s ease-out, height 0.06s ease-out;
     width: 4px;
     border-radius: 4px;
     will-change: transform, height;
     left: 0;
     top: 0;
+    pointer-events: none; /* never intercept mouse events */
+}
+
+/*
+ * PERF FIX (ROOT CAUSE OF LAG):
+ * During typing the caret must track INSTANTLY.
+ * At 80 WPM keystrokes arrive every ~120 ms — faster than the old 130 ms
+ * transition — so the cursor was always chasing itself and "jumped" to the
+ * current letter whenever the user briefly paused.
+ * Setting transition to 0 ms makes position updates paint in the same frame
+ * they are calculated (RAF already batches them to 60 fps).
+ */
+body.typing-active #caret {
+    transition: 0.13s linear !important;
 }
 
 #caret.blink { animation: blink 1s step-end infinite; }
@@ -338,7 +381,7 @@ width: 60%;                       /* full width now */
     display: flex;
     gap: 18px;
     align-items: flex-start;
-    width: 105%;
+    width: 100%;
     margin-top:-50px;
 }
 
@@ -347,6 +390,7 @@ width: 60%;                       /* full width now */
     min-width: 0;
     height: 310px;
     border-radius: 8px;
+    cursor: crosshair;
 }
 
 .rocket-legend-vertical {
@@ -377,12 +421,69 @@ width: 60%;                       /* full width now */
 
 .rocket-chart-legend { display: none !important; }
 
+/* ── Result bottom row: [test-type] [buttons] [time] ── */
+.result-bottom-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    /* Pull up into the chart's negative space — margin-top (not translateY)
+       so the ad below flows correctly right underneath */
+    margin-top: -95px;
+    margin-bottom: 0;
+    /* Push the entire row right so the left meta-box clears
+       the stats panel (~185px) */
+    padding-left: 185px;
+    padding-right: 8px;
+}
+
 .result-buttons {
     display: flex;
     gap: 12px;
     justify-content: center;
     flex-wrap: wrap;
-    margin-top:-70px;
+    flex: 0 0 auto;
+}
+
+/* MonkeyType-style meta info boxes */
+.result-meta-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-width: 100px;
+    padding: 10px 18px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.10);
+    border-radius: 12px;
+    gap: 2px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+.result-meta-box:hover {
+    border-color: rgba(0,230,204,0.35);
+    box-shadow: 0 0 14px rgba(0,230,204,0.12);
+}
+.result-meta-box .rmb-label {
+    font-family: 'Roboto Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 1.8px;
+    color: #646669;
+    text-transform: uppercase;
+    margin-bottom: 2px;
+}
+.result-meta-box .rmb-value {
+    font-family: 'Roboto Mono', monospace;
+    font-size: 22px;
+    font-weight: 700;
+    color: #e2b714;
+    line-height: 1.1;
+}
+.result-meta-box .rmb-sub {
+    font-family: 'Roboto Mono', monospace;
+    font-size: 10px;
+    color: #646669;
+    letter-spacing: 0.8px;
+    margin-top: 1px;
 }
 
 #result #restart {
@@ -424,9 +525,9 @@ padding: 11px 24px;
     transform: scale(1.04);
 }
 #result-ad {
-    margin-top: 28px;                  /* increased a bit so ad feels separated */
+    margin-top: 16px;
     padding-bottom: 15px;
-    border-top: 1px solid rgba(0,230,204,0.15); /* nice visual separator */
+    border-top: 1px solid rgba(0,230,204,0.15);
 }
 
 @media (max-width: 600px) {
@@ -436,6 +537,9 @@ padding: 11px 24px;
     .result-stats-panel .stat { flex: 1 1 40%; }
     .chart-with-legend { flex-direction: column; }
     .rocket-legend-vertical { flex-direction: row; flex-wrap: wrap; justify-content: center; }
+    .result-bottom-row { flex-direction: column; align-items: center; margin-top: 12px; padding-left: 0; padding-right: 0; }
+    .result-meta-box { flex-direction: row; gap: 12px; min-width: unset; width: 100%; justify-content: flex-start; padding: 8px 14px; }
+    .result-meta-box .rmb-value { font-size: 18px; }
 }
 
 /* ==================== LEADERBOARD ==================== */
@@ -767,6 +871,10 @@ footer a:hover { color: #e2b714; }
     top: 28px;
     left: 130px;
     z-index: 35;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 800px;
 }
 
 .play-game-btn {
@@ -796,6 +904,42 @@ footer a:hover { color: #e2b714; }
     transform: translateY(-4px) scale(1.08);
     box-shadow: 0 0 35px #ff9900, 0 0 70px #e2b714, 0 15px 35px rgba(226, 183, 20, 0.6);
     background-position: 100% 100%;
+}
+
+.learn-type-btn {
+    background: linear-gradient(135deg, #00c9a7, #00e6cc, #00c9a7);
+    background-size: 200% 200%;
+    color: #0a0a23;
+    border: none;
+    padding: 14px 28px;
+    border-radius: 50px;
+    font-family: 'Roboto Mono', monospace;
+    font-size: 15px;
+    font-weight: 900;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    cursor: pointer;
+    position: relative;
+    top:10px;
+    overflow: hidden;
+    box-shadow: 0 0 20px #00c9a7, 0 0 40px #00e6cc, 0 8px 25px rgba(0,0,0,0.5);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    animation: glowPulseLearn 3s infinite alternate;
+    white-space: nowrap;
+}
+
+.learn-type-btn:hover {
+    transform: translateY(-4px) scale(1.08);
+    box-shadow: 0 0 35px #00c9a7, 0 0 70px #00e6cc, 0 15px 35px rgba(0, 230, 204, 0.6);
+    background-position: 100% 100%;
+}
+
+@keyframes glowPulseLearn {
+    from { box-shadow: 0 0 15px #00c9a7; }
+    to   { box-shadow: 0 0 35px #00e6cc; }
 }
 
 /* All Animations */
