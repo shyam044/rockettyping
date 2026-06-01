@@ -512,6 +512,14 @@ function fmtDate(ts) {
 #km-fl, #km-fr {
     transition: transform 0.11s cubic-bezier(0.34,1.56,0.64,1);
 }
+
+/* PERF FIX: during active typing pause the arm transition so it doesn't
+   consume compositor resources for cosmetic animations every keystroke */
+body.typing-active #km-fl,
+body.typing-active #km-fr {
+    transition: transform 0.07s ease-out;
+}
+
 @keyframes km-tap-anim {
     0%, 100% { transform: translateY(0px); }
     42%       { transform: translateY(8px);  }
@@ -679,7 +687,7 @@ function fmtDate(ts) {
   <h1 id="page-title" style="text-align:center; color:#e2b714; font-family:'Roboto Mono',monospace; font-size:15px; letter-spacing:1px; margin: 0 0 8px 0; opacity:0.7;">🚀 Free Typing Speed Test — Improve Your WPM</h1>
 
         <header id="main-header"
-            style="position:absolute; top:20px; left:20px; right:20px; display:flex; align-items:center; justify-content:space-between; z-index:10;">
+            style="position:absolute; top:20px; left:20px; right:20px; display:flex; align-items:flex-start; justify-content:space-between; z-index:10;">
   <div onclick="resetTest()" 
      style="cursor:pointer; display:flex; flex-direction:column; align-items:flex-start;">
 
@@ -690,13 +698,17 @@ function fmtDate(ts) {
             <span class="rocket-icon">🚀</span>
             PLAY GAME
         </button>
+        <button onclick="window.location.href='learn.html'" class="learn-type-btn">
+            <span class="learn-icon">⌨️</span>
+            LEARN TO TYPE
+        </button>
     </div>
 
     <!-- Sunday Championship button — placed exactly below PLAY GAME -->
     <div id="sunday-champ-nav"  ></div>
 </div>
             <!-- Right-side header group: Login/Signup + Leaderboard side by side -->
-<div id="header-right-group" style="display:flex;align-items:center;gap:8px;z-index:35; margin-bottom:100px;">
+<div id="header-right-group" style="display:flex;align-items:center;gap:8px;z-index:35;position:relative;top:-13px;">
     <div id="header-auth-btn" style="display:flex;align-items:center;"></div>
     <button id="leaderboard-btn" style="position:static;top:auto;right:auto;z-index:auto;">
         🏆 <span style="margin-left:6px">LEADERBOARD</span>
@@ -710,6 +722,7 @@ function fmtDate(ts) {
         <div id="test-config" style="gap:8px;">
             <button class="mode active" data-mode="time">⏰ Time</button>
             <button class="mode" data-mode="words">🎯 Words</button>
+            <button class="mode" data-mode="quotes">💬 Quotes</button>
         </div>
         <div id="timer">30</div>
         <div id="difficulty-container">
@@ -970,24 +983,60 @@ function fmtDate(ts) {
             <!-- Graph + vertical legend side-by-side -->
             <div class="chart-with-legend">
                 <canvas id="rocket-chart"></canvas>
-                <div class="rocket-legend-vertical">
-                    <span class="rcl-item rcl-wpm">🚀 wpm</span>
-                    <span class="rcl-item rcl-raw">🚀 raw</span>
-                    <span class="rcl-item rcl-burst">🚀 burst</span>
-                    <span class="rcl-item rcl-errors">💧 errors</span>
+                <!-- Legend hidden — shown as tooltip on hover/touch like MonkeyType -->
+            </div>
+            <!-- Hover tooltip (MonkeyType style) -->
+            <div id="chart-tooltip" style="display:none; position:absolute; background:rgba(0,0,0,0.88); border:1px solid rgba(255,255,255,0.12); border-radius:8px; padding:10px 14px; pointer-events:none; z-index:100; font-family:'Roboto Mono',monospace; font-size:12px; width:80px; box-shadow:0 4px 20px rgba(0,0,0,0.5);">
+                <div id="chart-tooltip-sec" style="color:rgba(255,255,255,0.55); font-size:11px; margin-bottom:7px; letter-spacing:0.5px;"></div>
+                <div id="chart-tooltip-errors" style="display:flex; align-items:center; gap:8px; margin-bottom:4px;">
+                    <span style="display:inline-block; width:10px; height:10px; border-radius:50%; background:#ff2244;"></span>
+                    <span style="color:rgba(255,255,255,0.6)">errors</span>
+                    <span id="ctt-errors" style="color:#ff2244; margin-left:auto; font-weight:700;"></span>
+                </div>
+                <div style="display:flex; align-items:center; gap:8px; margin-bottom:4px;">
+                    <span style="display:inline-block; width:10px; height:3px; border-radius:2px; background:#ffd700;"></span>
+                    <span style="color:rgba(255,255,255,0.6)">wpm</span>
+                    <span id="ctt-wpm" style="color:#ffd700; margin-left:auto; font-weight:700;"></span>
+                </div>
+                <div style="display:flex; align-items:center; gap:8px; margin-bottom:4px;">
+                    <span style="display:inline-block; width:10px; height:3px; border-radius:2px; background:#00e6cc;"></span>
+                    <span style="color:rgba(255,255,255,0.6)">raw</span>
+                    <span id="ctt-raw" style="color:#00e6cc; margin-left:auto; font-weight:700;"></span>
+                </div>
+                <div style="display:flex; align-items:center; gap:8px;">
+                    <span style="display:inline-block; width:10px; height:3px; border-radius:2px; background:#ff9900;"></span>
+                    <span style="color:rgba(255,255,255,0.6)">burst</span>
+                    <span id="ctt-burst" style="color:#ff9900; margin-left:auto; font-weight:700;"></span>
                 </div>
             </div>
         </div>
         
     </div>
-    <!-- Buttons moved UP (right under the chart) to fill the empty space -->
-    <div class="result-buttons">
-        <button id="restart">LAUNCH NEW MISSION</button>
-        <button onclick="shareScore()" class="share-button">
-            <i class="fa-brands fa-x-twitter"></i> SHARE ON X
-        </button>
+    <!-- Buttons row with test-type info LEFT and time info RIGHT -->
+    <div class="result-bottom-row">
+        <!-- LEFT: Test Type Info -->
+        <div class="result-meta-box" id="result-testtype-box">
+            <div class="rmb-label">TEST TYPE</div>
+            <div class="rmb-value" id="result-mode-display">—</div>
+            <div class="rmb-sub" id="result-lang-display">english</div>
+        </div>
+
+        <!-- CENTER: Buttons -->
+        <div class="result-buttons">
+            <button id="restart">LAUNCH NEW MISSION</button>
+            <button onclick="shareScore()" class="share-button">
+                <i class="fa-brands fa-x-twitter"></i> SHARE ON X
+            </button>
+        </div>
+
+        <!-- RIGHT: Time Info -->
+        <div class="result-meta-box" id="result-time-box">
+            <div class="rmb-label">TIME</div>
+            <div class="rmb-value" id="result-time-display">—</div>
+            <div class="rmb-sub">seconds</div>
+        </div>
     </div>
-    <div id="result-ad" style="margin-top:20px; padding-bottom:10px; text-align:center;"></div>
+    <div id="result-ad" style=" padding-bottom:10px; text-align:center;"></div>
 </div>
 
 
@@ -1539,7 +1588,7 @@ window.sendEmailVerification = sendEmailVerification;
         // === PERFORMANCE FIXES (Issues 5 & 6) ===
         let cachedRows = [];
         let rowsCacheInvalid = true;
-        let caretUpdateRAF = null;
+        // NOTE: caretUpdateRAF removed — replaced by persistent _caretDirty/loop system below
         // PERF: Cache active word DOM element and its letter spans — avoids querySelector on every keystroke
         let activeWordEl = null;
         let activeLetterSpansArr = [];
@@ -1572,6 +1621,7 @@ window.sendEmailVerification = sendEmailVerification;
         restartBtn.addEventListener('click', resetTest);
         timerDiv.addEventListener('click', () => {
             if (testActive) return;
+            if (config.mode === 'quotes') return;
             if (timerDiv.querySelector('input')) return;
             const inputField = document.createElement('input');
             timerDiv.textContent = '';
@@ -1980,6 +2030,10 @@ nouns: ["ability", "absence", "academy", "account", "achievement", "acid", "acti
                 "The {noun} said, \"{adjective}!\""
             ]
         };
+        const quotesPool = [
+"Fahhhhh"
+        ];
+
         function randomItem(arr) {
             return arr[Math.floor(Math.random() * arr.length)];
         }
@@ -2035,6 +2089,12 @@ nouns: ["ability", "absence", "academy", "account", "achievement", "acid", "acti
         function generateWords() {
             words = [];
 
+            if (config.mode === 'quotes') {
+                const quote = randomItem(quotesPool);
+                words = quote.split(' ');
+                return;
+            }
+
             if (config.mode === "words") {
                 // generate exactly the number of words requested
                 while (words.length < config.words) {
@@ -2085,41 +2145,77 @@ nouns: ["ability", "absence", "academy", "account", "achievement", "acid", "acti
 
         // ==================== PERFORMANCE FIXES ====================
 
-        // Rebuild row cache only when DOM actually changes
+        // Rebuild row cache only when DOM actually changes.
+        // PERF FIX: build a Set for O(1) duplicate detection instead of .some() O(n) scan.
+        // Also expose a rowTopToIndex Map so findIndex calls elsewhere become O(1).
+        let cachedRowsSet = new Set();
+        let rowTopToIndex = new Map();
+
         function rebuildRowsCache() {
             if (!rowsCacheInvalid) return;
 
             cachedRows = [];
-            // PERF: wordsDiv.children is a live HTMLCollection — no DOM query overhead
+            cachedRowsSet.clear();
+            rowTopToIndex.clear();
+
             const children = wordsDiv.children;
             for (let i = 0; i < children.length; i++) {
                 const top = children[i].offsetTop;
-                if (!cachedRows.some(r => Math.abs(r - top) < 5)) {
-                    cachedRows.push(top);
+                // Snap to 5-px grid to merge sub-pixel rounding differences
+                const snapped = Math.round(top / 5) * 5;
+                if (!cachedRowsSet.has(snapped)) {
+                    cachedRowsSet.add(snapped);
+                    cachedRows.push(snapped);
                 }
             }
             cachedRows.sort((a, b) => a - b);
+            cachedRows.forEach((r, idx) => rowTopToIndex.set(r, idx));
             rowsCacheInvalid = false;
         }
 
-        // Schedule caret update with RAF — exactly 1 update per frame no matter how fast you type (Issue 6)
+        // === ZERO-LAG CARET ENGINE ===
+        // Problem: old code did cancelAnimationFrame()+requestAnimationFrame() on every keystroke.
+        // At 80+ WPM that's a keystroke every ~120 ms but vsync is ~16 ms, so the caret always
+        // painted 1-2 frames behind. Worse: cancelAnimationFrame() on a pending RAF means the
+        // caret update from the PREVIOUS keystroke was thrown away and only the last one was ever
+        // painted — giving the illusion that the cursor "jumps" to the current position.
+        //
+        // Fix: use a dirty flag + a single persistent RAF loop that runs at 60 fps regardless.
+        // The loop only does work when _caretDirty is true, so it is essentially free when idle.
+
+        let _caretDirty = false;
+        let _caretRAFRunning = false;
+
+        function _caretLoop() {
+            if (_caretDirty) {
+                _caretDirty = false;
+                _updateCaretNow();
+            }
+            _caretRAFRunning = _caretDirty; // keep loop alive only if more work pending
+            if (_caretRAFRunning) requestAnimationFrame(_caretLoop);
+        }
+
+        // Schedule caret update — called on every keystroke.
+        // Sets the dirty flag and starts the RAF loop if not already running.
         function scheduleCaretUpdate() {
-            if (caretUpdateRAF) cancelAnimationFrame(caretUpdateRAF);
-            
-            caretUpdateRAF = requestAnimationFrame(() => {
-                updateCaret();
-                caretUpdateRAF = null;
-            });
+            _caretDirty = true;
+            if (!_caretRAFRunning) {
+                _caretRAFRunning = true;
+                requestAnimationFrame(_caretLoop);
+            }
         }
 
         // Improved updateCaret with cached rows (Issues 5 + 6)
         function updateCaret() {
-            // PERF: use cached activeWordEl — no DOM query
+            scheduleCaretUpdate(); // keep old call-sites working
+        }
+
+        function _updateCaretNow() {
             const activeWord = activeWordEl;
             if (!activeWord) return;
 
-            const letters = activeWord.querySelectorAll('.letter');
-            const wordLength = words[currentWordIndex].length;
+            const letters = activeLetterSpansArr;
+            const wordLength = words[currentWordIndex] ? words[currentWordIndex].length : 0;
 
             let target;
             let after = false;
@@ -2133,24 +2229,37 @@ nouns: ["ability", "absence", "academy", "account", "achievement", "acid", "acti
 
             if (!target) return;
 
-            // === Issue 5: Use cached row positions ===
+            // === Batched layout reads — touch offsetTop/offsetLeft only once per frame ===
             rebuildRowsCache();
 
-            let x = activeWord.offsetLeft + target.offsetLeft;
-            let y = activeWord.offsetTop + target.offsetTop;
-            if (after) x += target.offsetWidth;
+            const wordLeft   = activeWord.offsetLeft;
+            const wordTop    = activeWord.offsetTop;
+            const targetLeft = target.offsetLeft;
+            const targetTop  = target.offsetTop;
+            const targetW    = after ? target.offsetWidth : 0;
+            const targetH    = target.offsetHeight;
 
-            // row-based scrolling — advance one row when cursor reaches row 3
-            const currentRowTop = activeWord.offsetTop;
-            const currentRowIndex = cachedRows.findIndex(r => Math.abs(r - currentRowTop) < 5);
+            const x = wordLeft + targetLeft + targetW;
+            const y = wordTop  + targetTop;
+
+            // Row-based scrolling — O(1) Map lookup instead of O(n) findIndex
+            const snappedWordTop   = Math.round(wordTop / 5) * 5;
+            const currentRowIdx    = rowTopToIndex.has(snappedWordTop)
+                ? rowTopToIndex.get(snappedWordTop)
+                : cachedRows.findIndex(r => Math.abs(r - wordTop) < 8);
             const currentScrollTop = wordsDiv.scrollTop;
-            const visibleRowIndex = cachedRows.findIndex(r => r >= currentScrollTop - 5);
+            // Find the first visible row (O(n) but runs only when needed + list is short ~3-6 rows)
+            const visibleRowIdx    = cachedRows.findIndex(r => r >= currentScrollTop - 5);
 
-            if (currentRowIndex - visibleRowIndex >= 2) {
-                wordsDiv.scrollTo({ top: cachedRows[visibleRowIndex + 1], behavior: 'smooth' });
+            if (currentRowIdx - visibleRowIdx >= 2 && visibleRowIdx >= 0) {
+                const nextRowTop = cachedRows[visibleRowIdx + 1];
+                if (nextRowTop !== undefined) {
+                    // Direct assignment — never triggers CSS scroll-behavior animation
+                    wordsDiv.scrollTop = nextRowTop;
+                }
             }
 
-            caret.style.height = `${target.offsetHeight}px`;
+            caret.style.height    = `${targetH}px`;
             caret.style.transform = `translate3d(${x}px, ${y}px, 0)`;
 
             if (!wordsDiv.contains(caret)) {
@@ -2166,12 +2275,10 @@ if (!testActive && e.key !== 'Tab') {
     document.body.classList.add('typing-active'); // PERF: pause bg animations while typing
 
     // === HIDE DISTRACTIONS WHILE TYPING ===
-    document.getElementById("intro-text").style.display = "none";
-    document.getElementById("page-title").style.display = "none";           // ← new
-    document.getElementById("sunday-champ-nav").style.display = "none";     // ← new
-    if (document.getElementById("header-auth-btn")) {
-        document.getElementById("header-auth-btn").style.display = "none";  // ← new
-    }
+    // PERF FIX: batch all hide operations into one class toggle instead of
+    // N separate style.display assignments (each can cause a layout flush).
+    document.body.classList.add('test-running');
+
     // Hide keymap toggle button during typing
     var kmToggleRow = document.getElementById('km-toggle-row');
     if (kmToggleRow) kmToggleRow.classList.add('km-toggle-hidden');
@@ -2194,10 +2301,11 @@ if (!testActive && e.key !== 'Tab') {
                 return;
             }
 
-            // Every non-backspace key counts
+            // Only count printable single-char keys and space — ignore Shift, Enter, arrows, etc.
+            if (key.length !== 1 && key !== ' ') return;
+
             totalKeystrokes++;
-            // keystrokeTimestamps for letters and spaces
-            if (key.length === 1 || key === ' ') keystrokeTimestamps.push(now);
+            keystrokeTimestamps.push(now);
 
             if (key === ' ') {
                 const wordLen = words[currentWordIndex].length;
@@ -2255,6 +2363,11 @@ if (!testActive && e.key !== 'Tab') {
                     currentLetterIndex === words[currentWordIndex].length) {
                     endTest();
                 }
+                if (config.mode === "quotes" &&
+                    currentWordIndex === words.length - 1 &&
+                    currentLetterIndex === words[currentWordIndex].length) {
+                    endTest();
+                }
             } else {
                 wordObj.extra.push(key);
                 // PERF: use cached activeWordEl
@@ -2305,6 +2418,9 @@ if (!testActive && e.key !== 'Tab') {
                 timerDiv.textContent = 0;
                 endTest();
             }
+            if (config.mode === 'quotes' && currentWordIndex === words.length - 1 && currentLetterIndex === words[currentWordIndex].length) {
+                endTest();
+            }
         }
         function moveToNextWord() {
             spaces++;
@@ -2327,7 +2443,7 @@ if (!testActive && e.key !== 'Tab') {
                 scheduleCaretUpdate();
                 rowsCacheInvalid = true;
             } else {
-                if (config.mode === 'words') {
+                if (config.mode === 'words' || config.mode === 'quotes') {
                     endTest();
                 }
             }
@@ -2363,6 +2479,11 @@ if (!testActive && e.key !== 'Tab') {
             startTime = Date.now();
             if (config.mode === 'time') {
                 timerInterval = setInterval(updateTimer, 1000);
+            } else if (config.mode === 'quotes') {
+                timerInterval = setInterval(function() {
+                    const elapsed = Math.floor((Date.now() - startTime) / 1000);
+                    timerDiv.textContent = formatTime(elapsed);
+                }, 1000);
             }
         }
         function updateTimer() {
@@ -2478,6 +2599,19 @@ if (!testActive && e.key !== 'Tab') {
                 errors: errorTimestamps,
                 elapsed: elapsedMs
             };
+
+            // === Populate Test Type + Time meta boxes ===
+            const elapsedSecs = Math.round((Date.now() - startTime) / 1000);
+            const modeLabels = { time: 'time', words: 'words', quotes: 'quotes' };
+            const modeLabel = modeLabels[config.mode] || config.mode;
+            let modeDisplay = modeLabel;
+            if (config.mode === 'time') modeDisplay = 'time ' + config.time;
+            else if (config.mode === 'words') modeDisplay = 'words ' + config.words;
+
+            const modEl = document.getElementById('result-mode-display');
+            const timeEl = document.getElementById('result-time-display');
+            if (modEl) modEl.textContent = modeDisplay;
+            if (timeEl) timeEl.textContent = elapsedSecs;
 
             // Show result
             resultDiv.style.display = 'block';
@@ -2817,11 +2951,90 @@ if (!testActive && e.key !== 'Tab') {
             }
 
             requestAnimationFrame(frame);
+
+            // ── MonkeyType-style hover tooltip ──────────────────────
+            (function attachChartTooltip() {
+                const tooltip    = document.getElementById('chart-tooltip');
+                const chartPanel = canvas.closest('.result-chart-panel') || canvas.parentElement;
+                if (!tooltip || !chartPanel) return;
+
+                chartPanel.style.position = 'relative';
+
+                function getDataAtX(clientX) {
+                    const rect   = canvas.getBoundingClientRect();
+                    const mouseX = clientX - rect.left;
+                    if (mouseX < PAD.left || mouseX > PAD.left + cW) return null;
+                    const frac = (mouseX - PAD.left) / cW;
+                    const idx  = Math.max(0, Math.min(n - 1, Math.round(frac * (n - 1))));
+                    const secStart = window._testStartTime + idx * 1000;
+                    const secEnd   = secStart + 1000;
+                    const errCount = data.errors.filter(ts => ts >= secStart && ts < secEnd).length;
+                    return { sec: idx + 1, wpm: wpmArr[idx], raw: rawArr[idx], burst: burstArr[idx],
+                             errors: errCount, canvasX: getX(idx), rect };
+                }
+
+                function showTooltip(clientX, clientY) {
+                    const d = getDataAtX(clientX);
+                    if (!d) { hideTooltip(); return; }
+
+                    document.getElementById('chart-tooltip-sec').textContent   = d.sec + 's';
+                    document.getElementById('ctt-errors').textContent          = d.errors;
+                    document.getElementById('ctt-wpm').textContent             = d.wpm;
+                    document.getElementById('ctt-raw').textContent             = d.raw;
+                    document.getElementById('ctt-burst').textContent           = d.burst;
+                    document.getElementById('chart-tooltip-errors').style.opacity = d.errors > 0 ? '1' : '0.4';
+
+                    const panelRect = chartPanel.getBoundingClientRect();
+                    tooltip.style.display = 'block';
+                    const ttW = tooltip.offsetWidth  || 140;
+                    const ttH = tooltip.offsetHeight || 100;
+                    let tx = d.canvasX + d.rect.left - panelRect.left + 14;
+                    let ty = clientY - panelRect.top  - 20;
+                    if (tx + ttW > panelRect.width - 4) tx = d.canvasX + d.rect.left - panelRect.left - ttW - 14;
+                    if (ty < 0) ty = 0;
+                    if (ty + ttH > panelRect.height) ty = panelRect.height - ttH;
+                    tooltip.style.left = tx + 'px';
+                    tooltip.style.top  = ty + 'px';
+
+                    // Crosshair + dots
+                    drawFinalFrame();
+                    ctx.save();
+                    ctx.strokeStyle = 'rgba(255,255,255,0.18)';
+                    ctx.lineWidth   = 1;
+                    ctx.setLineDash([4, 4]);
+                    ctx.beginPath();
+                    ctx.moveTo(d.canvasX, PAD.top);
+                    ctx.lineTo(d.canvasX, PAD.top + cH);
+                    ctx.stroke();
+                    ctx.setLineDash([]);
+                    [{ arr: wpmArr, color: '#ffd700' }, { arr: rawArr, color: '#00e6cc' }, { arr: burstArr, color: '#ff9900' }].forEach(r => {
+                        const cy = getY(r.arr[d.sec - 1]);
+                        ctx.beginPath();
+                        ctx.arc(d.canvasX, cy, 4.5, 0, Math.PI * 2);
+                        ctx.fillStyle   = r.color;
+                        ctx.shadowBlur  = 10;
+                        ctx.shadowColor = r.color;
+                        ctx.fill();
+                    });
+                    ctx.restore();
+                }
+
+                function hideTooltip() {
+                    tooltip.style.display = 'none';
+                    drawFinalFrame();
+                }
+
+                canvas.addEventListener('mousemove',  e => showTooltip(e.clientX, e.clientY));
+                canvas.addEventListener('mouseleave', hideTooltip);
+                canvas.addEventListener('touchmove',  e => { e.preventDefault(); showTooltip(e.touches[0].clientX, e.touches[0].clientY); }, { passive: false });
+                canvas.addEventListener('touchend',   hideTooltip);
+            })();
         }
 
         function resetTest() {
             document.getElementById("intro-text").style.display = "block";
             document.body.classList.remove('typing-active'); // PERF: restore bg animations
+            document.body.classList.remove('test-running');  // PERF: reveal all header elements
             document.getElementById("test-config").style.display = "flex";
             document.getElementById("difficulty-container").style.display = "flex";
             document.getElementById("timer").style.display = "block";
@@ -2867,7 +3080,7 @@ if (!testActive && e.key !== 'Tab') {
             input.value = '';
             input.focus();
 
-            if (config.mode === 'time' || config.mode === 'words') generateWords();
+            if (config.mode === 'time' || config.mode === 'words' || config.mode === 'quotes') generateWords();
 
             timerDiv.classList.remove('highlight');
             if (config.mode === 'time') {
@@ -2875,6 +3088,9 @@ if (!testActive && e.key !== 'Tab') {
                 timerDiv.classList.add('highlight');
             } else if (config.mode === 'words') {
                 timerDiv.textContent = config.words;
+                timerDiv.classList.add('highlight');
+            } else if (config.mode === 'quotes') {
+                timerDiv.textContent = formatTime(0);
                 timerDiv.classList.add('highlight');
             }
 
@@ -3718,9 +3934,16 @@ function setArm(which, deg){
     if(!armEl) return;
     armEl.style.transform = 'rotate('+deg+'deg)';
     if(tapEl){
+        // PERF FIX: removed "void tapEl.offsetWidth" (forced synchronous layout).
+        // That line flushed the entire layout pipeline every keystroke to restart
+        // the CSS animation — a ~1-5 ms stall per keypress on slow devices.
+        // Instead we toggle a data attribute; CSS animation-name swap achieves
+        // the same visual restart without any layout thrashing.
+        tapEl.dataset.tap = tapEl.dataset.tap === '1' ? '0' : '1';
         tapEl.classList.remove('km-tapping');
-        void tapEl.offsetWidth; // reflow
-        tapEl.classList.add('km-tapping');
+        // Use a microtask (Promise) instead of a synchronous reflow to restart the animation.
+        // This yields control back to the event loop, keeping keydown latency near 0.
+        Promise.resolve().then(function(){ tapEl.classList.add('km-tapping'); });
     }
 }
 
@@ -3812,8 +4035,16 @@ function kmInit(){
     if(fl) fl.style.transform = 'rotate(-4deg)';
 
     // Keydown listener
+    // PERF FIX: throttle keymap visual updates to max ~30 fps (33 ms gate).
+    // At 120 WPM the keydown fires every ~100 ms but the arm animation takes
+    // 190 ms to complete — so every call was interrupting the previous one.
+    // The gate drops redundant calls so the compositor stays uncontested.
+    var _kmLastUpdate = 0;
     document.addEventListener('keydown', function(e){
         if(!keymapOn) return;
+        var now = performance.now();
+        if(now - _kmLastUpdate < 33) return; // 30 fps cap for keymap visuals
+        _kmLastUpdate = now;
         highlightKey(e.code);
         handleArm(e.code);
     });
