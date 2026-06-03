@@ -402,6 +402,665 @@ function fmtDate(ts) {
 
 </style>
 <!-- ═══════════════════════════════════════════════════════════════
+     PROFILE MODAL STYLES
+═══════════════════════════════════════════════════════════════ -->
+<style>
+/* ── Profile Modal Overlay ── */
+#profileModal {
+    position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.88);
+    backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+    align-items: center; justify-content: center;
+    z-index: 1200; display: none; padding: 0; box-sizing: border-box;
+    overflow-y: auto;
+}
+#profileModal.open { display: flex; }
+
+#profileModalBox {
+    background: linear-gradient(145deg, #0e0e28, #1a1a38);
+    border: 1px solid rgba(226,183,20,0.25);
+    border-radius: 0;
+    padding: 0;
+    width: 100%; max-width: 100%;
+    max-height: 100vh;
+    position: relative;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.04), inset 0 1px 0 rgba(255,255,255,0.06);
+    animation: pmSlideIn .3s cubic-bezier(.22,1,.36,1);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    font-family: 'Roboto Mono', monospace;
+}
+
+/* ── Scrollable inner body ── */
+#pm-scroll-body {
+    overflow-y: auto;
+    overflow-x: hidden;
+    flex: 1 1 auto;
+    padding-bottom: 32px;
+    padding-top: 70px;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(226,183,20,0.3) transparent;
+}
+#pm-scroll-body::-webkit-scrollbar { width: 5px; }
+#pm-scroll-body::-webkit-scrollbar-track { background: transparent; }
+#pm-scroll-body::-webkit-scrollbar-thumb {
+    background: rgba(226,183,20,0.3);
+    border-radius: 4px;
+}
+#pm-scroll-body::-webkit-scrollbar-thumb:hover { background: rgba(226,183,20,0.55); }
+@keyframes pmSlideIn {
+    from { opacity:0; transform: translateY(24px) scale(0.97); }
+    to   { opacity:1; transform: translateY(0) scale(1); }
+}
+
+/* ── Banner / Header Area ── */
+.pm-banner {
+    height: 110px;
+    background: linear-gradient(135deg, #0a0a23 0%, #1e1e4a 40%, #2a1040 70%, #0a0a23 100%);
+    position: sticky;
+    top: 0;
+    overflow: visible;
+    border-radius: 0;
+    flex-shrink: 0;
+    z-index: 20;
+}
+/* clip only the gradient bg, not the avatar child */
+.pm-banner > *:not(.pm-avatar-wrap) { overflow: hidden; }
+.pm-banner::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse at 50% 100%, rgba(226,183,20,0.18) 0%, transparent 70%);
+}
+/* Stars in banner */
+.pm-banner::before {
+    content: '✦ ✧ ✦ ✧ ✦ ✧ ✦';
+    position: absolute; top: 18px; width: 100%;
+    text-align: center; color: rgba(226,183,20,0.2);
+    font-size: 14px; letter-spacing: 14px;
+}
+
+/* ── Avatar Ring ── */
+.pm-avatar-wrap {
+    position: absolute;
+    bottom: -54px; left: 50%; transform: translateX(-50%);
+    z-index: 5;
+    cursor: pointer;
+}
+.pm-avatar-ring {
+    width: 110px; height: 110px;
+    border-radius: 50%;
+    border: 4px solid #e2b714;
+    box-shadow: 0 0 0 4px #0e0e28, 0 0 28px rgba(226,183,20,0.5);
+    background: linear-gradient(135deg, #1a1a3e, #2a2060);
+    display: flex; align-items: center; justify-content: center;
+    overflow: hidden;
+    position: relative;
+    transition: box-shadow .25s;
+}
+.pm-avatar-ring:hover { box-shadow: 0 0 0 4px #0e0e28, 0 0 40px rgba(226,183,20,0.75); }
+.pm-avatar-ring img {
+    width: 100%; height: 100%; object-fit: cover;
+    border-radius: 50%;
+}
+.pm-avatar-initial {
+    font-size: 42px; font-weight: 900;
+    color: #0a0a23;
+    background: linear-gradient(135deg, #e2b714, #ff9900);
+    width: 100%; height: 100%;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 50%;
+    font-family: 'Roboto Mono', monospace;
+}
+/* Camera overlay on hover */
+.pm-avatar-ring::after {
+    content: '📷';
+    position: absolute; inset: 0;
+    background: rgba(0,0,0,0.52);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 28px;
+    border-radius: 50%;
+    opacity: 0;
+    transition: opacity .2s;
+    display: grid; place-items: center;
+}
+.pm-avatar-ring:hover::after { opacity: 1; }
+
+/* "Add Photo" label under avatar */
+.pm-add-photo-label {
+    text-align: center;
+    font-size: 11px; color: #e2b714;
+    letter-spacing: 1px;
+    margin-top: 6px;
+    opacity: 0.75;
+    font-family: 'Roboto Mono', monospace;
+}
+#pm-avatar-input { display: none; }
+
+/* ── Modal Body ── */
+.pm-body {
+    padding: 10px 36px 0;
+    text-align: center;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.pm-username {
+    font-size: 22px; font-weight: 900;
+    color: #fff; letter-spacing: 1px;
+    margin: 0 0 4px;
+}
+.pm-country-row {
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    font-size: 13px; color: #888; margin-bottom: 16px;
+}
+.pm-country-row img { width: 22px; height: 16px; object-fit: contain; }
+.pm-member-since {
+    font-size: 11px; color: #555; letter-spacing: .5px;
+    margin-top: -10px; margin-bottom: 16px;
+}
+
+/* ── Stats Grid ── */
+.pm-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin: 18px 0;
+}
+.pm-stat-card {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(226,183,20,0.14);
+    border-radius: 14px;
+    padding: 16px 10px;
+    text-align: center;
+    transition: border-color .2s, background .2s;
+}
+.pm-stat-card:hover {
+    border-color: rgba(226,183,20,0.35);
+    background: rgba(226,183,20,0.05);
+}
+.pm-stat-icon {
+    font-size: 20px; margin-bottom: 6px; display: block;
+}
+.pm-stat-val {
+    font-size: 24px; font-weight: 900;
+    color: #ffd700; display: block; letter-spacing: .5px;
+}
+.pm-stat-label {
+    font-size: 9px; color: #555;
+    letter-spacing: 1.2px; margin-top: 4px;
+    display: block; text-transform: uppercase;
+}
+
+/* ── Wide Stat Cards (for 2-col bottom row) ── */
+.pm-stats-grid-2 {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin: 0 0 18px;
+}
+
+/* ── Divider ── */
+.pm-divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(226,183,20,0.18), transparent);
+    margin: 18px 0;
+}
+
+/* ── Speed Bar Visual ── */
+.pm-speed-bar-wrap { margin: 16px 0 0; text-align: left; }
+.pm-speed-bar-label {
+    display: flex; justify-content: space-between;
+    font-size: 10px; color: #666; margin-bottom: 4px; letter-spacing: .5px;
+}
+.pm-speed-bar-track {
+    background: rgba(255,255,255,0.06);
+    border-radius: 6px; height: 8px; overflow: hidden;
+    position: relative;
+}
+.pm-speed-bar-fill {
+    height: 100%; border-radius: 6px;
+    background: linear-gradient(90deg, #3b82f6, #e2b714, #ff9900);
+    transition: width 1.2s cubic-bezier(0.34,1.56,0.64,1);
+    position: relative;
+}
+.pm-speed-bar-dot {
+    position: absolute; right: -1px; top: 50%;
+    transform: translateY(-50%);
+    width: 12px; height: 12px; border-radius: 50%;
+    background: #ffd700; border: 2px solid #fff;
+    box-shadow: 0 0 8px rgba(255,215,0,0.7);
+}
+
+/* ── Recent Tests ── */
+.pm-recent-header {
+    text-align: left; font-size: 11px; color: #646669;
+    letter-spacing: 1.5px; margin-bottom: 8px; font-weight: 700;
+}
+.pm-recent-scroll {
+    max-height: 400px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    border: 1px solid rgba(226,183,20,0.1);
+    border-radius: 10px;
+    background: rgba(0,0,0,0.18);
+    scrollbar-width: thin;
+    scrollbar-color: rgba(226,183,20,0.25) transparent;
+}
+.pm-recent-scroll::-webkit-scrollbar { width: 4px; }
+.pm-recent-scroll::-webkit-scrollbar-track { background: transparent; }
+.pm-recent-scroll::-webkit-scrollbar-thumb {
+    background: rgba(226,183,20,0.25);
+    border-radius: 4px;
+}
+.pm-recent-row {
+    display: grid;
+    grid-template-columns: 1fr 70px 70px 90px;
+    gap: 4px;
+    padding: 10px 14px;
+    font-size: 12px;
+    color: #888;
+    transition: background .15s;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+.pm-recent-row:last-child { border-bottom: none; }
+.pm-recent-row:hover { background: rgba(255,255,255,0.05); }
+.pm-recent-row span:nth-child(2) { color: #ffd700; font-weight: 900; text-align: center; }
+.pm-recent-row span:nth-child(3) { color: #00e6cc; text-align: center; }
+.pm-recent-row span:nth-child(4) { color: #888; text-align: right; }
+.pm-recent-row-head {
+    font-size: 9px; color: #444; letter-spacing: 1px; font-weight: 700;
+    padding: 6px 14px 6px; margin-top: 4px;
+    display: grid;
+    grid-template-columns: 1fr 70px 70px 90px;
+    gap: 4px;
+    border-bottom: 1px solid rgba(226,183,20,0.1);
+}
+.pm-recent-row-head span:not(:first-child) { text-align: center; }
+.pm-recent-row-head span:last-child { text-align: right; }
+
+/* ── Close Button ── */
+.pm-close {
+    position: absolute; top: 14px; right: 16px;
+    background: none; border: none; color: #646669;
+    font-size: 22px; cursor: pointer; line-height: 1;
+    z-index: 10; padding: 4px 8px; border-radius: 4px;
+    transition: color .15s;
+}
+.pm-close:hover { color: #fff; }
+
+/* ── Loading ── */
+.pm-loading {
+    text-align: center; padding: 20px 0;
+    color: #646669; font-size: 12px; letter-spacing: 1px;
+}
+.pm-loading-dot {
+    display: inline-block; width: 8px; height: 8px;
+    border-radius: 50%; background: #e2b714;
+    margin: 0 3px;
+    animation: pm-pulse 1.2s ease-in-out infinite;
+}
+.pm-loading-dot:nth-child(2) { animation-delay: .2s; }
+.pm-loading-dot:nth-child(3) { animation-delay: .4s; }
+@keyframes pm-pulse {
+    0%,80%,100% { opacity: .2; transform: scale(.85); }
+    40%          { opacity: 1;  transform: scale(1.1); }
+}
+
+/* ── Rank Badge ── */
+.pm-rank-badge {
+    display: inline-block;
+    padding: 3px 14px;
+    border-radius: 20px;
+    font-size: 11px; font-weight: 900;
+    letter-spacing: 1px;
+    margin-bottom: 12px;
+}
+
+/* ── Edit username / country buttons ── */
+.pm-edit-row {
+    display: flex; gap: 8px; justify-content: center; margin-bottom: 12px;
+}
+.pm-edit-btn {
+    font-size: 10px; padding: 4px 12px; border-radius: 20px;
+    border: 1px solid rgba(226,183,20,0.3); color: #e2b714;
+    background: none; cursor: pointer; letter-spacing: .8px;
+    font-family: 'Roboto Mono', monospace; transition: all .2s;
+}
+.pm-edit-btn:hover { background: rgba(226,183,20,0.1); border-color: rgba(226,183,20,0.65); }
+
+/* Mobile */
+@media (max-width: 720px) {
+    #profileModalBox { border-radius: 0; max-width: 100%; }
+    .pm-stats-grid { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+    .pm-body { padding: 10px 16px 0; }
+    .pm-stat-val { font-size: 18px; }
+    .pm-recent-row, .pm-recent-row-head { grid-template-columns: 1fr 60px 60px 70px; }
+}
+</style>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     MUSK SCORE STYLES
+═══════════════════════════════════════════════════════════════ -->
+<style>
+/* ── Musk Score Hero Card ── */
+.pm-musk-card {
+    position: relative;
+    background: linear-gradient(135deg, rgba(10,10,35,0.95) 0%, rgba(30,10,60,0.95) 50%, rgba(10,10,35,0.95) 100%);
+    border: 2px solid transparent;
+    border-radius: 18px;
+    padding: 20px 18px 16px;
+    margin: 18px 0 4px;
+    text-align: center;
+    overflow: hidden;
+    cursor: default;
+    transition: transform .2s, box-shadow .2s;
+}
+.pm-musk-card::before {
+    content: '';
+    position: absolute; inset: 0;
+    border-radius: 18px;
+    padding: 2px;
+    background: linear-gradient(135deg, #e2b714, #ff6600, #9b72cf, #e2b714);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor; mask-composite: exclude;
+    animation: musk-border-spin 4s linear infinite;
+    background-size: 300% 300%;
+}
+@keyframes musk-border-spin {
+    0%   { background-position: 0% 50%; }
+    50%  { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+.pm-musk-card:hover { transform: translateY(-2px); box-shadow: 0 12px 40px rgba(226,183,20,0.3); }
+
+/* Rocket icon floating top */
+.pm-musk-rocket {
+    font-size: 28px;
+    display: block;
+    margin-bottom: 4px;
+    animation: musk-float 3s ease-in-out infinite;
+}
+@keyframes musk-float {
+    0%, 100% { transform: translateY(0px); }
+    50%       { transform: translateY(-5px); }
+}
+
+/* "MUSK SCORE" label */
+.pm-musk-label {
+    font-size: 10px; font-weight: 900;
+    letter-spacing: 3px; color: #e2b714;
+    text-transform: uppercase;
+    margin-bottom: 6px; display: block;
+    text-shadow: 0 0 12px rgba(226,183,20,0.6);
+}
+
+/* The big number */
+.pm-musk-number {
+    font-size: 56px; font-weight: 900;
+    background: linear-gradient(135deg, #ffd700 30%, #ff9900 70%, #ff6600);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1; letter-spacing: -2px;
+    display: block;
+    filter: drop-shadow(0 0 14px rgba(255,165,0,0.5));
+    transition: transform .35s cubic-bezier(0.34,1.56,0.64,1);
+}
+.pm-musk-number.pop {
+    animation: musk-pop .5s cubic-bezier(0.34,1.56,0.64,1);
+}
+@keyframes musk-pop {
+    0%   { transform: scale(1); }
+    40%  { transform: scale(1.35); }
+    100% { transform: scale(1); }
+}
+
+/* sub-label: "points earned" */
+.pm-musk-sub {
+    font-size: 10px; color: #555; letter-spacing: 1px;
+    margin-top: 4px; display: block;
+}
+
+/* Progress ring to next score */
+.pm-musk-progress-wrap {
+    margin-top: 12px;
+    display: flex; flex-direction: column; align-items: center; gap: 5px;
+}
+.pm-musk-progress-label {
+    display: flex; justify-content: space-between; width: 100%;
+    font-size: 9px; color: #555; letter-spacing: .5px;
+}
+.pm-musk-progress-track {
+    width: 100%; height: 6px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 6px; overflow: hidden;
+}
+.pm-musk-progress-fill {
+    height: 100%; border-radius: 6px;
+    background: linear-gradient(90deg, #e2b714, #ff9900, #ff6600);
+    transition: width 1.2s cubic-bezier(0.34,1.56,0.64,1);
+    box-shadow: 0 0 8px rgba(226,183,20,0.5);
+}
+
+/* Tooltip on hover */
+.pm-musk-tooltip {
+    position: absolute; bottom: calc(100% + 8px); left: 50%;
+    transform: translateX(-50%);
+    background: #0e0e28;
+    border: 1px solid rgba(226,183,20,0.35);
+    border-radius: 10px; padding: 12px 16px;
+    font-size: 11px; color: #d1d0c5;
+    line-height: 1.7; white-space: nowrap;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.6);
+    pointer-events: none;
+    opacity: 0; transition: opacity .2s;
+    z-index: 50;
+    text-align: left;
+}
+.pm-musk-tooltip::after {
+    content: '';
+    position: absolute; top: 100%; left: 50%;
+    transform: translateX(-50%);
+    border: 6px solid transparent;
+    border-top-color: rgba(226,183,20,0.35);
+}
+.pm-musk-card:hover .pm-musk-tooltip { opacity: 1; }
+.pm-musk-tooltip strong { color: #e2b714; }
+.pm-musk-tooltip .tt-ex { color: #666; font-size: 10px; }
+
+/* ── Milestone Toast ── */
+#musk-milestone-toast {
+    position: fixed;
+    bottom: 30px; left: 50%;
+    transform: translateX(-50%) translateY(120px);
+    background: linear-gradient(135deg, #0e0e28, #1a1040);
+    border: 2px solid #e2b714;
+    border-radius: 16px;
+    padding: 14px 28px;
+    display: flex; align-items: center; gap: 14px;
+    z-index: 9999;
+    box-shadow: 0 0 40px rgba(226,183,20,0.4), 0 10px 40px rgba(0,0,0,0.6);
+    font-family: 'Roboto Mono', monospace;
+    transition: transform .45s cubic-bezier(0.34,1.56,0.64,1), opacity .35s;
+    opacity: 0;
+    pointer-events: none;
+}
+#musk-milestone-toast.show {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+}
+.musk-toast-rocket { font-size: 28px; animation: musk-float 2s ease-in-out infinite; }
+.musk-toast-text { display: flex; flex-direction: column; gap: 2px; }
+.musk-toast-title {
+    font-size: 13px; font-weight: 900; color: #ffd700;
+    letter-spacing: 1px;
+}
+.musk-toast-sub { font-size: 11px; color: #888; letter-spacing: .5px; }
+.musk-toast-score {
+    font-size: 32px; font-weight: 900;
+    background: linear-gradient(135deg, #ffd700, #ff9900);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1;
+}
+</style>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     PROFILE MODAL HTML
+═══════════════════════════════════════════════════════════════ -->
+<div id="profileModal" role="dialog" aria-modal="true" aria-label="User Profile">
+  <div id="profileModalBox">
+    <button class="pm-close" onclick="closeProfileModal()" aria-label="Close">×</button>
+
+    <!-- Banner with avatar (sticky at top, not scrolled) -->
+    <div class="pm-banner">
+      <div class="pm-avatar-wrap" id="pm-avatar-wrap">
+        <div class="pm-avatar-ring" id="pm-avatar-ring">
+          <!-- filled by JS -->
+        </div>
+        <div class="pm-add-photo-label" id="pm-add-photo-label">+ ADD PHOTO</div>
+      </div>
+    </div>
+    <input type="file" id="pm-avatar-input" accept="image/*">
+
+    <!-- Scrollable body -->
+    <div id="pm-scroll-body">
+    <!-- Body -->
+    <div class="pm-body">
+      <div id="pm-loading" class="pm-loading">
+        <span class="pm-loading-dot"></span><span class="pm-loading-dot"></span><span class="pm-loading-dot"></span>
+      </div>
+      <div id="pm-content" style="display:none;">
+        <h2 class="pm-username" id="pm-username-display"></h2>
+        <div class="pm-country-row" id="pm-country-row"></div>
+        <div class="pm-member-since" id="pm-member-since"></div>
+
+        <!-- Rank badge -->
+        <div id="pm-rank-badge"></div>
+
+        <!-- ✦ MUSK SCORE — headline feature ✦ -->
+        <div class="pm-musk-card" id="pm-musk-card" style="display:none;">
+          <div class="pm-musk-tooltip" id="pm-musk-tooltip">
+            <strong>🚀 How Musk Score works</strong><br>
+            Every second you spend typing adds up.<br>
+            <strong>60 seconds = 1 Musk Score point.</strong><br><br>
+            <span class="tt-ex">Example: 1s + 9s + 50s = 60s → score +1<br>
+            120s total = Musk Score 2, and so on.</span>
+          </div>
+          <span class="pm-musk-rocket">🚀</span>
+          <span class="pm-musk-label">Musk Score</span>
+          <span class="pm-musk-number" id="pm-musk-number">0</span>
+          <span class="pm-musk-sub" id="pm-musk-sub">total seconds typed</span>
+          <div class="pm-musk-progress-wrap">
+            <div class="pm-musk-progress-label">
+              <span id="pm-musk-prog-left">0s this round</span>
+              <span id="pm-musk-prog-right">next point at 60s</span>
+            </div>
+            <div class="pm-musk-progress-track">
+              <div class="pm-musk-progress-fill" id="pm-musk-bar" style="width:0%"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Speed visual bar -->
+        <div class="pm-speed-bar-wrap" id="pm-speed-bar-wrap" style="display:none;">
+          <div class="pm-speed-bar-label">
+            <span id="pm-bar-low-label">LOW</span>
+            <span id="pm-bar-avg-label">AVG SPEED</span>
+            <span id="pm-bar-high-label">PEAK</span>
+          </div>
+          <div class="pm-speed-bar-track">
+            <div class="pm-speed-bar-fill" id="pm-speed-bar" style="width:0%;">
+              <div class="pm-speed-bar-dot"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pm-divider"></div>
+
+        <!-- 3-col stats: Avg WPM | Best WPM | Tests -->
+        <div class="pm-stats-grid">
+          <div class="pm-stat-card">
+            <span class="pm-stat-icon">⚡</span>
+            <span class="pm-stat-val" id="pm-avg-wpm">—</span>
+            <span class="pm-stat-label">Avg Speed</span>
+          </div>
+          <div class="pm-stat-card">
+            <span class="pm-stat-icon">🚀</span>
+            <span class="pm-stat-val" id="pm-best-wpm">—</span>
+            <span class="pm-stat-label">Best WPM</span>
+          </div>
+          <div class="pm-stat-card">
+            <span class="pm-stat-icon">🎯</span>
+            <span class="pm-stat-val" id="pm-total-tests">—</span>
+            <span class="pm-stat-label">Tests</span>
+          </div>
+        </div>
+
+        <!-- 2-col: Accuracy | Consistency -->
+        <div class="pm-stats-grid-2">
+          <div class="pm-stat-card">
+            <span class="pm-stat-icon">✅</span>
+            <span class="pm-stat-val" id="pm-accuracy">—</span>
+            <span class="pm-stat-label">Avg Accuracy</span>
+          </div>
+          <div class="pm-stat-card">
+            <span class="pm-stat-icon">📈</span>
+            <span class="pm-stat-val" id="pm-consistency">—</span>
+            <span class="pm-stat-label">Consistency</span>
+          </div>
+        </div>
+
+        <!-- 3-col: Low | Avg | High speed breakdown -->
+        <div class="pm-stats-grid" id="pm-speed-breakdown" style="display:none;">
+          <div class="pm-stat-card">
+            <span class="pm-stat-icon">🐢</span>
+            <span class="pm-stat-val" id="pm-low-wpm">—</span>
+            <span class="pm-stat-label">Low Speed</span>
+          </div>
+          <div class="pm-stat-card" style="border-color:rgba(226,183,20,0.3);background:rgba(226,183,20,0.05);">
+            <span class="pm-stat-icon">⚡</span>
+            <span class="pm-stat-val" id="pm-avg-wpm2">—</span>
+            <span class="pm-stat-label">Avg Speed</span>
+          </div>
+          <div class="pm-stat-card">
+            <span class="pm-stat-icon">🔥</span>
+            <span class="pm-stat-val" id="pm-high-wpm">—</span>
+            <span class="pm-stat-label">High Speed</span>
+          </div>
+        </div>
+
+        <div class="pm-divider" id="pm-recent-divider" style="display:none;"></div>
+
+        <!-- Recent tests -->
+        <div id="pm-recent-section" style="display:none; text-align:left;">
+          <div class="pm-recent-header">RECENT TESTS</div>
+          <div class="pm-recent-row-head">
+            <span>MODE</span><span>WPM</span><span>ACC</span><span>DATE</span>
+          </div>
+          <div class="pm-recent-scroll">
+            <div id="pm-recent-list"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    </div><!-- end pm-scroll-body -->
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     MUSK SCORE MILESTONE TOAST
+═══════════════════════════════════════════════════════════════ -->
+<div id="musk-milestone-toast">
+  <span class="musk-toast-rocket">🚀</span>
+  <div class="musk-toast-text">
+    <span class="musk-toast-title">MUSK SCORE UNLOCKED!</span>
+    <span class="musk-toast-sub">You just hit <span id="musk-toast-secs"></span> seconds of typing</span>
+  </div>
+  <span class="musk-toast-score" id="musk-toast-score">1</span>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════
      KEYMAP SCENE STYLES — Animated Typing Character
 ═══════════════════════════════════════════════════════════════ -->
 <style>
@@ -529,13 +1188,44 @@ body.typing-active #km-fr {
 .km-tapping { animation: km-tap-anim 0.19s ease-out; }
 
 /* ── Keyboard + Mouse Column ── */
+/* Outer wrapper to position sound toggle */
+#km-kb-outer {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    margin-left: 6px;
+}
+
+/* Sound toggle button */
+#km-sound-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 10px 5px 8px;
+    border-radius: 20px;
+    border: 1.5px solid rgba(255,255,255,0.12);
+    background: rgba(255,255,255,0.05);
+    cursor: pointer;
+    font-family: 'Roboto Mono', monospace;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    color: #9aa0a8;
+    margin-bottom: 16px;
+    transition: background 0.2s, border-color 0.2s;
+    align-self: flex-end;
+}
+#km-sound-btn:hover { background: rgba(255,255,255,0.09); border-color: rgba(255,255,255,0.22); }
+#km-sound-icon { font-size: 13px; line-height: 1; }
+#km-sound-label { color: #b8bdc6; letter-spacing: 1px; }
+
 #km-kb-col {
     flex-shrink: 0;
     display: flex;
     align-items: flex-end;
     gap: 18px;
     padding-bottom: 2px;
-    margin-left: 6px;
 }
 #km-kb {
     flex-shrink: 0;
@@ -929,6 +1619,13 @@ body.typing-active #km-fr {
         <!-- end character column -->
 
         <!-- ── RIGHT: Keyboard + Mouse ── -->
+        <div id="km-kb-outer">
+            <!-- Sound toggle — top-right of keyboard+mouse block -->
+            <button id="km-sound-btn" onclick="kmSoundToggle()" title="Toggle keyboard sound">
+                <span id="km-sound-icon">🔊</span>
+                <span id="km-sound-label">SOUND</span>
+                <span id="km-sound-pill" class="km-pill on">ON</span>
+            </button>
         <div id="km-kb-col">
             <div id="km-kb"><!-- Keys injected by JS --></div>
 
@@ -961,7 +1658,8 @@ body.typing-active #km-fr {
                 </svg>
                 <p>Left / Right click</p>
             </div>
-        </div>
+        </div><!-- #km-kb-col -->
+        </div><!-- #km-kb-outer -->
 
     </div><!-- #km-scene -->
 </div><!-- #km-wrap -->
@@ -1490,9 +2188,19 @@ window.sendEmailVerification = sendEmailVerification;
         const headerAuthBtn = document.getElementById('header-auth-btn');
         if (loggedIn) {
             if (prompt) prompt.style.display = 'none';
+            // Get saved avatar
+            const savedAvatar = localStorage.getItem('rt_avatar_' + (window._currentUser?.uid || ''));
+            const avatarHtml = savedAvatar
+                ? `<img src="${savedAvatar}" style="width:30px;height:30px;border-radius:50%;object-fit:cover;border:2px solid #e2b714;margin-right:6px;vertical-align:middle;">`
+                : `<span style="display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,#e2b714,#ff9900);color:#0a0a23;font-size:13px;font-weight:900;margin-right:6px;vertical-align:middle;">${(username||'?')[0].toUpperCase()}</span>`;
             if (headerAuthBtn) headerAuthBtn.innerHTML =
-                `<span style="color:#e2b714;font-size:13px;">👤 ${username}</span>
-                 <button onclick="doSignOut()" style="margin-left:8px;background:none;border:1px solid #646669;color:#646669;border-radius:4px;padding:4px 8px;cursor:pointer;font-size:11px;font-family:'Roboto Mono',monospace;">LOGOUT</button>`;
+                `<span onclick="openProfileModal()" style="cursor:pointer;display:inline-flex;align-items:center;gap:4px;color:#e2b714;font-size:13px;padding:4px 8px;border-radius:20px;border:1px solid rgba(226,183,20,0.3);transition:all .2s;"
+                  onmouseover="this.style.background='rgba(226,183,20,0.1)'"
+                  onmouseout="this.style.background='none'"
+                  title="View Profile">${avatarHtml}${username}</span>
+                 <button onclick="doSignOut()" style="margin-left:4px;background:none;border:1px solid #646669;color:#646669;border-radius:4px;padding:4px 8px;cursor:pointer;font-size:11px;font-family:'Roboto Mono',monospace;transition:all .2s;"
+                  onmouseover="this.style.borderColor='#e2b714';this.style.color='#e2b714'"
+                  onmouseout="this.style.borderColor='#646669';this.style.color='#646669'">LOGOUT</button>`;
         } else {
             if (prompt) prompt.style.display = 'flex';
             if (headerAuthBtn) headerAuthBtn.innerHTML =
@@ -2514,6 +3222,7 @@ if (!testActive && e.key !== 'Tab') {
         }
         function startTimer() {
             startTime = Date.now();
+            window._lastTestStartTime = startTime; // Musk Score: track start
             if (config.mode === 'time') {
                 timerInterval = setInterval(updateTimer, 1000);
             } else if (config.mode === 'quotes') {
@@ -2528,6 +3237,23 @@ if (!testActive && e.key !== 'Tab') {
             const elapsed = Math.floor((Date.now() - startTime) / 1000);
             const remaining = config.time - elapsed;
             timerDiv.textContent = formatTime(remaining);
+
+            // ── Musk Score: real-time milestone check (fires while user is still typing) ──
+            try {
+                const _u = window._currentUser;
+                if (_u) {
+                    const _mk = 'rt_musk_' + (_u.uid || 'guest');
+                    const _prevBase = parseFloat(localStorage.getItem(_mk) || '0');
+                    const _nowTotal = _prevBase + elapsed;
+                    const _prevScore = Math.floor(_prevBase / 60);
+                    const _nowScore  = Math.floor(_nowTotal / 60);
+                    if (_nowScore > _prevScore && (!window._muskLastToastScore || window._muskLastToastScore < _nowScore)) {
+                        window._muskLastToastScore = _nowScore;
+                        _showMuskToast(_nowScore, Math.round(_nowTotal));
+                    }
+                }
+            } catch(_e) {}
+
             if (remaining <= 0) {
                 endTest();
             }
@@ -2673,8 +3399,10 @@ if (!testActive && e.key !== 'Tab') {
 
             // Save score to leaderboard (only registered users, time mode)
             const registeredName = window._currentUser?.name;
-            if (registeredName && config.mode === 'time') {
-                saveScore(registeredName, wpm, accuracy, config.time);
+            window._lastConsistency = consistency; // store for profile stats
+            // Always save to localStorage; Firestore leaderboard only for logged-in + time mode
+            if (config.mode === 'time') {
+                saveScore(registeredName || 'guest', wpm, accuracy, config.time);
             }
 
             confetti({
@@ -3092,6 +3820,7 @@ if (!testActive && e.key !== 'Tab') {
             clearInterval(timerInterval);
             testActive = false;
             caret.classList.add('blink');
+            window._muskLastToastScore = null; // reset per-test milestone tracker
             currentWordIndex = 0;
             currentLetterIndex = 0;
             typedHistory = [];
@@ -3172,12 +3901,47 @@ function sanitizeStr(s) {
         .replace(/\//g, '&#x2F;');
 }
         async function saveScore(name, wpm, accuracy, duration) {
-            // SECURITY FIX: always use auth.currentUser — never fallback to localStorage for identity
             const authUser = auth.currentUser;
-            if (!authUser) return; // must be authenticated
+            const uid = authUser ? authUser.uid : (window._currentUser?.uid || 'guest');
 
+            // ── Save every run to localStorage — used by profile stats, zero Firestore reads ──
+            if (wpm > 0) {
+                try {
+                    const KEY = 'rt_scores_' + uid;
+                    let scores = [];
+                    try { scores = JSON.parse(localStorage.getItem(KEY) || '[]'); } catch(_e) { scores = []; }
+                    scores.push({
+                        wpm:          wpm,
+                        accuracy:     accuracy,
+                        testDuration: duration,
+                        time:         Date.now(),
+                        consistency:  typeof window._lastConsistency === 'number' ? window._lastConsistency : null
+                    });
+                    if (scores.length > 200) scores = scores.slice(-200); // cap at 200 runs
+                    localStorage.setItem(KEY, JSON.stringify(scores));
+                } catch (lsErr) { console.warn('localStorage score save failed:', lsErr); }
+            }
+
+            // ── Musk Score: accumulate total seconds typed ─────────────────────
+            if (wpm > 0) {
+                try {
+                    const MUSK_KEY = 'rt_musk_' + uid;
+                    const prevSecs = parseFloat(localStorage.getItem(MUSK_KEY) || '0');
+                    // duration = the test's chosen time (for time mode) or elapsed seconds
+                    const thisSecs = Math.round((Date.now() - (window._lastTestStartTime || Date.now())) / 1000);
+                    const addSecs  = Math.max(1, thisSecs);
+                    const newTotal = prevSecs + addSecs;
+                    localStorage.setItem(MUSK_KEY, newTotal.toString());
+
+                    // Fire milestone toast if a new whole Musk Score was just crossed
+                    const prevScore = Math.floor(prevSecs / 60);
+                    const newScore  = Math.floor(newTotal / 60);
+                    if (newScore > prevScore) {
+                        _showMuskToast(newScore, Math.round(newTotal));
+                    }
+                } catch(_me) {}
+            }
             try {
-                // SECURITY FIX: re-verify name & country from Firestore — never trust client-side vars alone
                 let verifiedName    = name;
                 let verifiedCountry = window._currentUser?.country || '';
                 try {
@@ -3188,23 +3952,22 @@ function sanitizeStr(s) {
                     }
                 } catch(verifyErr) { /* use session values as fallback */ }
 
-                const docId   = `${authUser.uid}_${duration}`; // keyed by real uid
+                const docId   = `${authUser.uid}_${duration}`;
                 const userRef = doc(db, "typing_test_scores", docId);
-
                 const existing     = await getDoc(userRef);
                 const existingData = existing.data();
 
-                // Sanity-check: reject impossibly high WPM (>300 is physically impossible)
                 if (wpm > 300) { console.warn('Score rejected: WPM too high'); return; }
                 if (!existing.exists() || wpm > (existingData?.wpm || 0)) {
                     await setDoc(userRef, {
-                        name:         verifiedName,    // SECURITY FIX: verified from Firestore
+                        name:         verifiedName,
                         wpm:          wpm,
                         accuracy:     accuracy,
                         testDuration: duration,
-                        country:      verifiedCountry, // SECURITY FIX: verified from Firestore
-                        uid:          authUser.uid,    // SECURITY FIX: uid now included (required by rules)
-                        time:         Date.now()
+                        country:      verifiedCountry,
+                        uid:          authUser.uid,
+                        time:         Date.now(),
+                        consistency:  typeof window._lastConsistency === 'number' ? window._lastConsistency : null
                     });
                 }
             } catch (e) {
@@ -3722,6 +4485,529 @@ function sanitizeStr(s) {
     window.doSocialLogin       = doSocialLogin;
     window.doSignOut           = doSignOut;
 
+// ══════════════════════════════════════════════════════════════
+//  PROFILE MODAL MODULE
+//  Shows user stats: country, avg/high/low speed, accuracy,
+//  consistency, total tests, rank, recent history, avatar upload.
+// ══════════════════════════════════════════════════════════════
+
+window.openProfileModal = async function() {
+    const user = window._currentUser;
+    if (!user) { openAuthModal('login'); return; }
+
+    const modal = document.getElementById('profileModal');
+    modal.classList.add('open');
+    // Prevent scrolling on body
+    document.body.style.overflow = 'hidden';
+
+    // Show loading
+    document.getElementById('pm-loading').style.display = 'block';
+    document.getElementById('pm-content').style.display = 'none';
+
+    // Render avatar immediately (from localStorage cache)
+    _renderProfileAvatar(user.uid, user.name);
+
+    // ── Instagram-style crop picker ──────────────────────────────
+    // Inject crop modal styles once
+    if (!document.getElementById('pm-crop-styles')) {
+        const cropStyle = document.createElement('style');
+        cropStyle.id = 'pm-crop-styles';
+        cropStyle.textContent = `
+        #pm-crop-overlay {
+            position:fixed;inset:0;background:rgba(0,0,0,0.92);
+            z-index:9999;display:none;align-items:center;justify-content:center;flex-direction:column;
+        }
+        #pm-crop-overlay.open{display:flex;}
+        #pm-crop-box {
+            background:#111;border-radius:16px;padding:20px;
+            display:flex;flex-direction:column;align-items:center;gap:14px;
+            max-width:340px;width:90vw;
+            font-family:'Roboto Mono',monospace;
+            border:1px solid rgba(226,183,20,0.3);
+        }
+        #pm-crop-title{color:#e2b714;font-size:13px;letter-spacing:1px;font-weight:900;}
+        #pm-crop-hint{color:#666;font-size:11px;text-align:center;}
+        #pm-crop-viewport{
+            width:240px;height:240px;border-radius:50%;
+            overflow:hidden;position:relative;
+            border:3px solid #e2b714;
+            box-shadow:0 0 0 4px rgba(226,183,20,0.15);
+            cursor:grab;user-select:none;
+            background:#000;flex-shrink:0;
+        }
+        #pm-crop-viewport:active{cursor:grabbing;}
+        #pm-crop-img{
+            position:absolute;
+            transform-origin:0 0;
+            pointer-events:none;
+            image-rendering:auto;
+        }
+        #pm-crop-scale-row{display:flex;align-items:center;gap:10px;width:240px;}
+        #pm-crop-scale-row label{color:#888;font-size:10px;letter-spacing:.5px;white-space:nowrap;}
+        #pm-crop-scale{flex:1;accent-color:#e2b714;}
+        #pm-crop-actions{display:flex;gap:10px;}
+        .pm-crop-btn{
+            padding:8px 22px;border-radius:20px;font-family:'Roboto Mono',monospace;
+            font-size:12px;font-weight:900;letter-spacing:1px;cursor:pointer;border:none;
+        }
+        .pm-crop-btn.save{background:linear-gradient(135deg,#e2b714,#ff9900);color:#0a0a23;}
+        .pm-crop-btn.cancel{background:rgba(255,255,255,0.07);color:#888;border:1px solid rgba(255,255,255,0.12);}
+
+        /* ── Lightbox ── */
+        #pm-lightbox{
+            position:fixed;inset:0;background:rgba(0,0,0,0.92);
+            z-index:9998;display:none;align-items:center;justify-content:center;
+            cursor:zoom-out;
+        }
+        #pm-lightbox.open{display:flex;}
+        #pm-lightbox img{
+            max-width:min(90vw,500px);max-height:min(90vh,500px);
+            border-radius:50%;border:4px solid #e2b714;
+            box-shadow:0 0 60px rgba(226,183,20,0.4);
+            pointer-events:none;
+        }
+        `;
+        document.head.appendChild(cropStyle);
+    }
+
+    // Inject crop overlay DOM once
+    if (!document.getElementById('pm-crop-overlay')) {
+        document.body.insertAdjacentHTML('beforeend', `
+        <div id="pm-crop-overlay">
+          <div id="pm-crop-box">
+            <div id="pm-crop-title">✂ POSITION YOUR PHOTO</div>
+            <div id="pm-crop-hint">Drag to reposition · Scroll or use slider to zoom</div>
+            <div id="pm-crop-viewport"><img id="pm-crop-img" draggable="false"></div>
+            <div id="pm-crop-scale-row">
+              <label>ZOOM</label>
+              <input type="range" id="pm-crop-scale" min="1" max="3" step="0.01" value="1">
+            </div>
+            <div id="pm-crop-actions">
+              <button class="pm-crop-btn cancel" id="pm-crop-cancel">Cancel</button>
+              <button class="pm-crop-btn save" id="pm-crop-save">Save Photo</button>
+            </div>
+          </div>
+        </div>
+        <div id="pm-lightbox"><img id="pm-lightbox-img" src="" alt="Profile photo"></div>
+        `);
+    }
+
+    // ── Crop logic ────────────────────────────────────────────────
+    const cropOverlay  = document.getElementById('pm-crop-overlay');
+    const cropImg      = document.getElementById('pm-crop-img');
+    const cropVP       = document.getElementById('pm-crop-viewport');
+    const cropScale    = document.getElementById('pm-crop-scale');
+    const cropSaveBtn  = document.getElementById('pm-crop-save');
+    const cropCancelBtn= document.getElementById('pm-crop-cancel');
+
+    let _cropState = { x:0, y:0, scale:1, natW:0, natH:0 };
+
+    function _applyCropTransform() {
+        const { x, y, scale } = _cropState;
+        cropImg.style.transform = `translate(${x}px,${y}px) scale(${scale})`;
+    }
+
+    function _clampCrop() {
+        const { scale, natW, natH } = _cropState;
+        const vp = 240;
+        const imgW = natW * scale, imgH = natH * scale;
+        _cropState.x = Math.min(0, Math.max(_cropState.x, vp - imgW));
+        _cropState.y = Math.min(0, Math.max(_cropState.y, vp - imgH));
+    }
+
+    // Drag
+    let _dragging = false, _dx = 0, _dy = 0;
+    cropVP.addEventListener('mousedown', function(e) {
+        _dragging = true; _dx = e.clientX - _cropState.x; _dy = e.clientY - _cropState.y;
+        e.preventDefault();
+    });
+    document.addEventListener('mousemove', function(e) {
+        if (!_dragging) return;
+        _cropState.x = e.clientX - _dx; _cropState.y = e.clientY - _dy;
+        _clampCrop(); _applyCropTransform();
+    });
+    document.addEventListener('mouseup', function() { _dragging = false; });
+
+    // Touch drag
+    let _tx = 0, _ty = 0;
+    cropVP.addEventListener('touchstart', function(e) {
+        const t = e.touches[0];
+        _dragging = true; _tx = t.clientX - _cropState.x; _ty = t.clientY - _cropState.y;
+        e.preventDefault();
+    }, {passive:false});
+    cropVP.addEventListener('touchmove', function(e) {
+        if (!_dragging) return;
+        const t = e.touches[0];
+        _cropState.x = t.clientX - _tx; _cropState.y = t.clientY - _ty;
+        _clampCrop(); _applyCropTransform();
+        e.preventDefault();
+    }, {passive:false});
+    cropVP.addEventListener('touchend', function() { _dragging = false; });
+
+    // Scroll to zoom
+    cropVP.addEventListener('wheel', function(e) {
+        e.preventDefault();
+        const oldScale = _cropState.scale;
+        _cropState.scale = Math.max(1, Math.min(3, oldScale - e.deltaY * 0.005));
+        cropScale.value = _cropState.scale;
+        _clampCrop(); _applyCropTransform();
+    }, {passive:false});
+
+    // Slider zoom
+    cropScale.addEventListener('input', function() {
+        _cropState.scale = parseFloat(cropScale.value);
+        _clampCrop(); _applyCropTransform();
+    });
+
+    // Cancel
+    cropCancelBtn.addEventListener('click', function() {
+        cropOverlay.classList.remove('open');
+    });
+
+    // Save: render cropped circle to canvas
+    cropSaveBtn.addEventListener('click', function() {
+        const vp = 240;
+        const canvas = document.createElement('canvas');
+        canvas.width = vp; canvas.height = vp;
+        const ctx2 = canvas.getContext('2d');
+        ctx2.drawImage(
+            cropImg,
+            -_cropState.x / _cropState.scale,
+            -_cropState.y / _cropState.scale,
+            vp / _cropState.scale,
+            vp / _cropState.scale,
+            0, 0, vp, vp
+        );
+        const resized = canvas.toDataURL('image/jpeg', 0.88);
+        try {
+            localStorage.setItem('rt_avatar_' + user.uid, resized);
+        } catch(storageErr) {
+            window._profileAvatarSession = resized;
+        }
+        _renderProfileAvatar(user.uid, user.name);
+        updateAuthUI(true, user.name);
+        document.getElementById('pm-add-photo-label').textContent = '✓ PHOTO SAVED';
+        setTimeout(() => {
+            document.getElementById('pm-add-photo-label').textContent = '✎ CHANGE PHOTO';
+        }, 2000);
+        cropOverlay.classList.remove('open');
+    });
+
+    // ── File input — open crop picker (no size limit) ─────────────
+    const avatarInput = document.getElementById('pm-avatar-input');
+    avatarInput.onchange = function(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+        // No size limit — removed
+        const reader = new FileReader();
+        reader.onload = function(ev) {
+            const base64 = ev.target.result;
+            const img = new Image();
+            img.onload = function() {
+                _cropState.natW = img.naturalWidth;
+                _cropState.natH = img.naturalHeight;
+                _cropState.scale = 1;
+                cropScale.value = 1;
+                // Fit image inside 240px viewport initially
+                const vp = 240;
+                const fitScale = Math.max(vp / img.naturalWidth, vp / img.naturalHeight);
+                _cropState.scale = fitScale;
+                cropScale.min = fitScale.toFixed(3);
+                cropScale.value = fitScale;
+                cropImg.style.width = img.naturalWidth + 'px';
+                cropImg.style.height = img.naturalHeight + 'px';
+                cropImg.src = base64;
+                // Center initially
+                _cropState.x = (vp - img.naturalWidth * fitScale) / 2;
+                _cropState.y = (vp - img.naturalHeight * fitScale) / 2;
+                _applyCropTransform();
+                cropOverlay.classList.add('open');
+            };
+            img.src = base64;
+        };
+        reader.readAsDataURL(file);
+        // Reset input so same file can be re-selected
+        avatarInput.value = '';
+    };
+
+    // ── Lightbox: click avatar to view full ──────────────────────
+    const lightbox    = document.getElementById('pm-lightbox');
+    const lightboxImg = document.getElementById('pm-lightbox-img');
+    const avatarRing  = document.getElementById('pm-avatar-ring');
+
+    // We intercept click on avatar ring for lightbox (only when photo exists)
+    // Override the pm-avatar-wrap click to check photo first
+    const avatarWrap = avatarRing ? avatarRing.parentElement : null;
+    if (avatarWrap) {
+        // Remove old inline onclick
+        avatarWrap.removeAttribute('onclick');
+        avatarWrap.addEventListener('click', function(e) {
+            const saved = localStorage.getItem('rt_avatar_' + user.uid) || window._profileAvatarSession;
+            if (saved) {
+                // Show lightbox
+                lightboxImg.src = saved;
+                lightbox.classList.add('open');
+            } else {
+                // No photo yet — open file picker
+                document.getElementById('pm-avatar-input').click();
+            }
+        });
+    }
+
+    // Close lightbox on click anywhere
+    lightbox.addEventListener('click', function() {
+        lightbox.classList.remove('open');
+    });
+
+    // Lightbox: also allow changing photo via long-press or by clicking ✎ CHANGE PHOTO label
+    document.getElementById('pm-add-photo-label').addEventListener('click', function(e) {
+        e.stopPropagation();
+        document.getElementById('pm-avatar-input').click();
+    });
+
+    // Close on backdrop click
+    modal.onclick = function(e) { if (e.target === modal) closeProfileModal(); };
+
+    // Escape key
+    document._pmEscHandler = function(e) {
+        if (e.key === 'Escape') closeProfileModal();
+    };
+    document.addEventListener('keydown', document._pmEscHandler);
+
+    // Load stats from localStorage — zero Firestore reads for profile stats
+    try {
+        // Read all stored test runs
+        const LS_KEY = 'rt_scores_' + user.uid;
+        let allScores = [];
+        try { allScores = JSON.parse(localStorage.getItem(LS_KEY) || '[]'); } catch(_e) { allScores = []; }
+
+        // Compute stats
+        const wpmValues = allScores.map(s => s.wpm).filter(Boolean);
+        const accValues = allScores.map(s => s.accuracy).filter(Boolean);
+
+        const avgWpm = wpmValues.length > 0
+            ? Math.round(wpmValues.reduce((a,b)=>a+b,0) / wpmValues.length) : 0;
+        const bestWpm = wpmValues.length > 0 ? Math.max(...wpmValues) : 0;
+        const lowWpm  = wpmValues.length > 0 ? Math.min(...wpmValues) : 0;
+        const avgAcc  = accValues.length > 0
+            ? Math.round(accValues.reduce((a,b)=>a+b,0) / accValues.length) : 0;
+        const totalTests = allScores.length;
+
+        const consValues = allScores.map(s => s.consistency).filter(v => v != null && v > 0);
+        const avgCons = consValues.length > 0
+            ? Math.round(consValues.reduce((a,b)=>a+b,0) / consValues.length) : null;
+
+        // Member since — stored locally on first test
+        const JOIN_KEY = 'rt_joined_' + user.uid;
+        if (!localStorage.getItem(JOIN_KEY) && allScores.length > 0) {
+            // Backfill from earliest score if available
+            const earliest = Math.min(...allScores.map(s => s.time || Date.now()));
+            localStorage.setItem(JOIN_KEY, earliest.toString());
+        } else if (!localStorage.getItem(JOIN_KEY)) {
+            localStorage.setItem(JOIN_KEY, Date.now().toString());
+        }
+        const createdTs = parseInt(localStorage.getItem(JOIN_KEY)) || null;
+        const memberSince = createdTs ? 'Member since ' + fmtDate(createdTs) : '';
+
+        // Country — from session only, no Firestore needed
+        const country = user.country || '';
+
+        // Rank badge based on best WPM
+        const rank = _getRankBadge(bestWpm);
+
+        // Recent scores sorted by date — show all (up to 200 cap from localStorage)
+        const recentScores = allScores
+            .slice()
+            .sort((a,b) => (b.time||0) - (a.time||0));
+
+        // ── Render ──
+        document.getElementById('pm-loading').style.display = 'none';
+        document.getElementById('pm-content').style.display = 'block';
+
+        document.getElementById('pm-username-display').textContent = user.name || '—';
+
+        // Country row
+        const flagHtml = country
+            ? (COUNTRY_FLAGS[country]
+                ? `<img src="${COUNTRY_FLAGS[country]}" alt="${country}" style="width:22px;height:16px;object-fit:contain;"> ${country}`
+                : `🌍 ${country}`)
+            : '<span style="color:#444">No country set</span>';
+        document.getElementById('pm-country-row').innerHTML = flagHtml;
+
+        document.getElementById('pm-member-since').textContent = memberSince;
+
+        // Rank badge
+        document.getElementById('pm-rank-badge').innerHTML =
+            `<span class="pm-rank-badge" style="background:${rank.bg};color:${rank.color};border:1px solid ${rank.color}40;">${rank.icon} ${rank.label}</span>`;
+
+        // ── Musk Score ──
+        _renderMuskScore(user.uid);
+
+        // Stats
+        document.getElementById('pm-avg-wpm').textContent  = avgWpm  || '—';
+        document.getElementById('pm-best-wpm').textContent = bestWpm || '—';
+        document.getElementById('pm-total-tests').textContent = totalTests || '0';
+        document.getElementById('pm-accuracy').textContent    = avgAcc ? avgAcc + '%' : '—';
+        document.getElementById('pm-consistency').textContent = avgCons != null ? avgCons + '%' : '—';
+
+        // Speed breakdown (only if has scores)
+        if (wpmValues.length > 1) {
+            document.getElementById('pm-speed-breakdown').style.display = 'grid';
+            document.getElementById('pm-low-wpm').textContent  = lowWpm;
+            document.getElementById('pm-avg-wpm2').textContent = avgWpm;
+            document.getElementById('pm-high-wpm').textContent = bestWpm;
+
+            // Speed bar: position avg within [low, high] range
+            const barWrap = document.getElementById('pm-speed-bar-wrap');
+            barWrap.style.display = 'block';
+            document.getElementById('pm-bar-low-label').textContent  = lowWpm + ' WPM';
+            document.getElementById('pm-bar-high-label').textContent = bestWpm + ' WPM';
+            document.getElementById('pm-bar-avg-label').textContent  = 'AVG ' + avgWpm + ' WPM';
+            const range = bestWpm - lowWpm;
+            const pct = range > 0 ? Math.round(((avgWpm - lowWpm) / range) * 100) : 50;
+            setTimeout(() => {
+                document.getElementById('pm-speed-bar').style.width = Math.max(5, Math.min(100, pct)) + '%';
+            }, 200);
+        }
+
+        // Recent tests
+        if (recentScores.length > 0) {
+            document.getElementById('pm-recent-divider').style.display = 'block';
+            document.getElementById('pm-recent-section').style.display = 'block';
+            const list = document.getElementById('pm-recent-list');
+            list.innerHTML = '';
+            recentScores.forEach(s => {
+                const row = document.createElement('div');
+                row.className = 'pm-recent-row';
+                const modeLabel = s.testDuration ? ('time ' + s.testDuration + 's') : (s.mode || '—');
+                row.innerHTML = `
+                    <span style="color:#646669;">${sanitizeStr(modeLabel)}</span>
+                    <span>${sanitizeStr(s.wpm)} <span style="font-size:9px;color:#888">wpm</span></span>
+                    <span>${sanitizeStr(s.accuracy)}%</span>
+                    <span>${sanitizeStr(fmtDate(s.time))}</span>
+                `;
+                list.appendChild(row);
+            });
+        }
+
+    } catch(err) {
+        console.error('Profile load error:', err);
+        document.getElementById('pm-loading').innerHTML =
+            '<span style="color:#ff6b6b;">Failed to load profile. Please try again.</span>';
+    }
+};
+
+function _renderProfileAvatar(uid, name) {
+    const ring = document.getElementById('pm-avatar-ring');
+    if (!ring) return;
+    const saved = (uid && localStorage.getItem('rt_avatar_' + uid))
+               || window._profileAvatarSession;
+    const label = document.getElementById('pm-add-photo-label');
+    if (saved) {
+        ring.innerHTML = `<img src="${saved}" alt="Profile photo">`;
+        if (label) label.textContent = '✎ CHANGE PHOTO';
+    } else {
+        const initial = (name || '?')[0].toUpperCase();
+        ring.innerHTML = `<div class="pm-avatar-initial">${initial}</div>`;
+        if (label) label.textContent = '+ ADD PHOTO';
+    }
+}
+
+function _getRankBadge(bestWpm) {
+    if (bestWpm >= 120) return { label:'SUPERSONIC', icon:'🌌', bg:'rgba(138,43,226,0.15)', color:'#c084fc' };
+    if (bestWpm >= 90)  return { label:'ELITE PILOT', icon:'🚀', bg:'rgba(226,183,20,0.12)', color:'#ffd700' };
+    if (bestWpm >= 70)  return { label:'FAST TYPER', icon:'⚡', bg:'rgba(0,230,204,0.1)',   color:'#00e6cc' };
+    if (bestWpm >= 50)  return { label:'REGULAR',    icon:'🌠', bg:'rgba(59,130,246,0.12)', color:'#60a5fa' };
+    if (bestWpm >= 30)  return { label:'ROOKIE',     icon:'🌟', bg:'rgba(255,153,0,0.1)',   color:'#ff9900' };
+    return                       { label:'BEGINNER',  icon:'🐣', bg:'rgba(255,255,255,0.05)',color:'#888' };
+}
+
+// ══════════════════════════════════════════════════════════════
+//  MUSK SCORE MODULE
+// ══════════════════════════════════════════════════════════════
+
+/* Show the milestone toast with confetti */
+function _showMuskToast(score, totalSecs) {
+    const toast = document.getElementById('musk-milestone-toast');
+    if (!toast) return;
+    document.getElementById('musk-toast-score').textContent = score;
+    document.getElementById('musk-toast-secs').textContent  = totalSecs + 's';
+    toast.classList.add('show');
+    // confetti burst
+    try {
+        confetti({ particleCount: 120, spread: 80, origin: { y: 0.8 },
+            colors: ['#ffd700','#ff9900','#ff6600','#ffffff'] });
+    } catch(e) {}
+    clearTimeout(window._muskToastTimer);
+    window._muskToastTimer = setTimeout(function() {
+        toast.classList.remove('show');
+    }, 4000);
+}
+
+/* Render Musk Score card inside profile modal */
+function _renderMuskScore(uid) {
+    const card = document.getElementById('pm-musk-card');
+    if (!card) return;
+
+    const MUSK_KEY = 'rt_musk_' + uid;
+    const totalSecs = parseFloat(localStorage.getItem(MUSK_KEY) || '0');
+    const score     = Math.floor(totalSecs / 60);
+    const remainder = totalSecs % 60;
+    const pct       = Math.round((remainder / 60) * 100);
+
+    // Show card
+    card.style.display = 'block';
+
+    const numEl = document.getElementById('pm-musk-number');
+    const subEl = document.getElementById('pm-musk-sub');
+    const barEl = document.getElementById('pm-musk-bar');
+    const leftEl  = document.getElementById('pm-musk-prog-left');
+    const rightEl = document.getElementById('pm-musk-prog-right');
+
+    if (numEl) {
+        numEl.textContent = score;
+        // animate the number
+        setTimeout(function() { numEl.classList.add('pop'); }, 100);
+        setTimeout(function() { numEl.classList.remove('pop'); }, 700);
+    }
+    if (subEl) {
+        subEl.textContent = Math.round(totalSecs) + ' total seconds typed';
+    }
+    if (leftEl)  leftEl.textContent  = Math.round(remainder) + 's this round';
+    if (rightEl) rightEl.textContent = 'next point at ' + (60 - Math.round(remainder)) + 's';
+    if (barEl) {
+        setTimeout(function() {
+            barEl.style.width = Math.max(2, Math.min(100, pct)) + '%';
+        }, 200);
+    }
+
+    // Update tooltip dynamically
+    const tt = document.getElementById('pm-musk-tooltip');
+    if (tt) {
+        tt.innerHTML = `
+            <strong>🚀 How Musk Score works</strong><br>
+            Every second you type adds up across all sessions.<br>
+            <strong>60 seconds typed = 1 Musk Score point.</strong><br><br>
+            <span class="tt-ex">Your total: ${Math.round(totalSecs)}s typed<br>
+            ${score} × 60s = ${score} point${score !== 1 ? 's' : ''}<br>
+            ${Math.round(remainder)}s toward your next point</span>
+        `;
+    }
+}
+
+window.closeProfileModal = function() {
+    const modal = document.getElementById('profileModal');
+    modal.classList.remove('open');
+    document.body.style.overflow = '';
+    if (document._pmEscHandler) {
+        document.removeEventListener('keydown', document._pmEscHandler);
+        document._pmEscHandler = null;
+    }
+    // Reset avatar input so same file can be re-selected
+    const inp = document.getElementById('pm-avatar-input');
+    if (inp) inp.value = '';
+};
+
 function updateLeaderboardPrompt() {
     const prompt = document.getElementById('lb-register-prompt');
     if (window._currentUser) {
@@ -4035,6 +5321,71 @@ function handleMouseUp(){
     if(rDot){ rDot.style.opacity='0'; }
 }
 
+/* ── Sound Engine ───────────────────────────────────────────── */
+var soundOn = true;
+var _audioCtx = null;
+
+function _getAudioCtx(){
+    if(!_audioCtx){
+        try{ _audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }catch(e){}
+    }
+    return _audioCtx;
+}
+
+function playKeyClick(){
+    if(!soundOn) return;
+    var ctx = _getAudioCtx();
+    if(!ctx) return;
+
+    // Mechanical click: short sharp noise burst + tiny pitch thud
+    var bufSize = ctx.sampleRate * 0.035; // 35 ms
+    var buf = ctx.createBuffer(1, bufSize, ctx.sampleRate);
+    var data = buf.getChannelData(0);
+    for(var i=0; i<bufSize; i++){
+        // White noise with exponential decay
+        data[i] = (Math.random()*2-1) * Math.pow(1 - i/bufSize, 4) * 0.55;
+    }
+
+    var src = ctx.createBufferSource();
+    src.buffer = buf;
+
+    // High-pass filter to make it crisp/clicky not muddy
+    var hp = ctx.createBiquadFilter();
+    hp.type = 'highpass';
+    hp.frequency.value = 900;
+
+    // Slight bandpass for that 'thock' tone
+    var bp = ctx.createBiquadFilter();
+    bp.type = 'bandpass';
+    bp.frequency.value = 2800;
+    bp.Q.value = 0.7;
+
+    var gain = ctx.createGain();
+    gain.gain.setValueAtTime(0.45, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.04);
+
+    src.connect(hp);
+    hp.connect(bp);
+    bp.connect(gain);
+    gain.connect(ctx.destination);
+    src.start();
+    src.stop(ctx.currentTime + 0.04);
+}
+
+window.kmSoundToggle = function(){
+    soundOn = !soundOn;
+    var icon  = document.getElementById('km-sound-icon');
+    var pill  = document.getElementById('km-sound-pill');
+    if(soundOn){
+        if(icon)  icon.textContent = '🔊';
+        if(pill){ pill.textContent='ON';  pill.className='km-pill on'; }
+    } else {
+        if(icon)  icon.textContent = '🔇';
+        if(pill){ pill.textContent='OFF'; pill.className='km-pill off'; }
+    }
+    try{ localStorage.setItem('rt_keysound', soundOn?'1':'0'); }catch(e){}
+};
+
 /* ── Toggle ─────────────────────────────────────────────────── */
 window.kmToggle = function(){
     keymapOn = !keymapOn;
@@ -4052,7 +5403,7 @@ window.kmToggle = function(){
 
 /* ── Init ────────────────────────────────────────────────────── */
 function kmInit(){
-    // Load saved preference
+    // Load saved keymap preference
     try{
         var saved = localStorage.getItem('rt_keymap');
         if(saved === '0'){
@@ -4061,6 +5412,18 @@ function kmInit(){
             var pl = document.getElementById('km-pill');
             if(sc) sc.classList.add('km-hidden');
             if(pl){ pl.textContent='OFF'; pl.className='km-pill off'; }
+        }
+    }catch(e){}
+
+    // Load saved sound preference
+    try{
+        var savedSound = localStorage.getItem('rt_keysound');
+        if(savedSound === '0'){
+            soundOn = false;
+            var si = document.getElementById('km-sound-icon');
+            var sp = document.getElementById('km-sound-pill');
+            if(si) si.textContent = '🔇';
+            if(sp){ sp.textContent='OFF'; sp.className='km-pill off'; }
         }
     }catch(e){}
 
@@ -4081,6 +5444,8 @@ function kmInit(){
     // The gate drops redundant calls so the compositor stays uncontested.
     var _kmLastUpdate = 0;
     document.addEventListener('keydown', function(e){
+        // Sound plays on every keydown regardless of keymap fps cap
+        playKeyClick();
         if(!keymapOn) return;
         var now = performance.now();
         if(now - _kmLastUpdate < 33) return; // 30 fps cap for keymap visuals
