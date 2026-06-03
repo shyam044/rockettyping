@@ -2871,8 +2871,9 @@ nouns: ["ability", "absence", "academy", "account", "achievement", "acid", "acti
                 }
             }
             else {
-                // time mode: build array directly — avoids O(n²) string concat + split
-                while (words.length < 300) {
+                // time mode: start with only 80 words so initial renderWords() is fast.
+                // extendWordsIfNeeded() will silently add more as the user types.
+                while (words.length < 80) {
                     const chunk = generateSentence().split(" ");
                     for (let i = 0; i < chunk.length; i++) words.push(chunk[i]);
                 }
@@ -2924,10 +2925,14 @@ nouns: ["ability", "absence", "academy", "account", "achievement", "acid", "acti
             cachedRowsSet.clear();
             rowTopToIndex.clear();
 
+            // PERF FIX: Only scan the first 60 children instead of all 80-300.
+            // Row positions stabilise after a few rows — scanning ALL words forces
+            // offsetTop reads on every element, triggering a full layout reflow
+            // that stalls keystrokes for the first 3-4 words in time mode.
             const children = wordsDiv.children;
-            for (let i = 0; i < children.length; i++) {
+            const scanLimit = Math.min(children.length, 60);
+            for (let i = 0; i < scanLimit; i++) {
                 const top = children[i].offsetTop;
-                // Snap to 5-px grid to merge sub-pixel rounding differences
                 const snapped = Math.round(top / 5) * 5;
                 if (!cachedRowsSet.has(snapped)) {
                     cachedRowsSet.add(snapped);
@@ -3038,23 +3043,28 @@ if (!testActive && e.key !== 'Tab') {
     testActive = true;
     startTimer();
     caret.classList.remove('blink');
-    document.body.classList.add('typing-active'); // PERF: pause bg animations while typing
 
-    // === HIDE DISTRACTIONS WHILE TYPING ===
-    // PERF FIX: batch all hide operations into one class toggle instead of
-    // N separate style.display assignments (each can cause a layout flush).
-    document.body.classList.add('test-running');
+    // PERF FIX: Defer all DOM hide/class operations to a macrotask so they
+    // do NOT block processing of the very first keypress. The first key now
+    // registers instantly; the UI hides on the next event-loop tick (~0 ms
+    // visual delay) without causing a synchronous layout flush on key-1.
+    setTimeout(function() {
+        document.body.classList.add('typing-active'); // pause bg animations while typing
 
-    // Hide keymap toggle button during typing
-    var kmToggleRow = document.getElementById('km-toggle-row');
-    if (kmToggleRow) kmToggleRow.classList.add('km-toggle-hidden');
+        // === HIDE DISTRACTIONS WHILE TYPING ===
+        document.body.classList.add('test-running');
 
-    // Keep timer visible
-    document.getElementById("test-config").style.display = "none";
-    document.getElementById("difficulty-container").style.display = "none";
-    document.getElementById("leaderboard-btn").style.display = "none";
-    document.getElementById('footer').style.display = 'none';
-    document.getElementById("play-game").style.display = "none";
+        // Hide keymap toggle button during typing
+        var kmToggleRow = document.getElementById('km-toggle-row');
+        if (kmToggleRow) kmToggleRow.classList.add('km-toggle-hidden');
+
+        // Keep timer visible
+        document.getElementById("test-config").style.display = "none";
+        document.getElementById("difficulty-container").style.display = "none";
+        document.getElementById("leaderboard-btn").style.display = "none";
+        document.getElementById('footer').style.display = 'none';
+        document.getElementById("play-game").style.display = "none";
+    }, 0);
 }
             if (!testActive) return;
 
@@ -3216,29 +3226,33 @@ if (!testActive && e.key !== 'Tab') {
         }
         function extendWordsIfNeeded() {
             if (config.mode !== 'time') return;
-            if (currentWordIndex > words.length - 20) {
-                // PERF: build array directly instead of O(n²) string concat
+            // Trigger earlier (50-word buffer) so we never get close to the end,
+            // and do ALL DOM work inside setTimeout so it never blocks a keystroke.
+            if (currentWordIndex > words.length - 50) {
                 const newWords = [];
-                while (newWords.length < 200) {
+                while (newWords.length < 150) {
                     const chunk = generateSentence().split(" ");
                     for (let i = 0; i < chunk.length; i++) newWords.push(chunk[i]);
                 }
+                // Extend the logical array immediately (needed for boundary checks)
                 words = words.concat(newWords);
-                // PERF: single DocumentFragment — one DOM insertion instead of N
-                const frag = document.createDocumentFragment();
-                newWords.forEach(word => {
-                    const wordSpan = document.createElement('div');
-                    wordSpan.classList.add('word');
-                    word.split('').forEach(letter => {
-                        const letterSpan = document.createElement('span');
-                        letterSpan.classList.add('letter');
-                        letterSpan.textContent = letter;
-                        wordSpan.appendChild(letterSpan);
+                // Defer DOM work to the next macrotask — never blocks a keystroke
+                setTimeout(function() {
+                    const frag = document.createDocumentFragment();
+                    newWords.forEach(function(word) {
+                        const wordSpan = document.createElement('div');
+                        wordSpan.classList.add('word');
+                        word.split('').forEach(function(letter) {
+                            const letterSpan = document.createElement('span');
+                            letterSpan.classList.add('letter');
+                            letterSpan.textContent = letter;
+                            wordSpan.appendChild(letterSpan);
+                        });
+                        frag.appendChild(wordSpan);
                     });
-                    frag.appendChild(wordSpan);
-                });
-                wordsDiv.appendChild(frag);
-                rowsCacheInvalid = true;
+                    wordsDiv.appendChild(frag);
+                    rowsCacheInvalid = true;
+                }, 0);
             }
         }
         function startTimer() {
