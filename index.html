@@ -689,6 +689,36 @@ function fmtDate(ts) {
 }
 .pm-close:hover { color: #fff; }
 
+/* Back to typing test button */
+.pm-back-btn-wrap {
+    padding: 14px 20px 18px;
+    border-top: 1px solid rgba(255,255,255,0.07);
+    background: #1a1b26;
+    text-align: center;
+    flex-shrink: 0;
+}
+.pm-back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 28px;
+    border-radius: 50px;
+    border: 1.5px solid rgba(226,183,20,0.4);
+    background: rgba(226,183,20,0.07);
+    color: #e2b714;
+    font-family: 'Roboto Mono', monospace;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.pm-back-btn:hover {
+    background: rgba(226,183,20,0.15);
+    border-color: rgba(226,183,20,0.8);
+    box-shadow: 0 0 16px rgba(226,183,20,0.2);
+}
+
 /* ── Loading ── */
 .pm-loading {
     text-align: center; padding: 20px 0;
@@ -1045,6 +1075,12 @@ function fmtDate(ts) {
       </div>
     </div>
     </div><!-- end pm-scroll-body -->
+    <!-- Back to typing test button -->
+    <div class="pm-back-btn-wrap">
+        <button class="pm-back-btn" onclick="closeProfileModal()">
+            ⌨️ &nbsp;Back to Typing Test
+        </button>
+    </div>
   </div>
 </div>
 
@@ -1188,7 +1224,7 @@ body.typing-active #km-fr {
 .km-tapping { animation: km-tap-anim 0.19s ease-out; }
 
 /* ── Keyboard + Mouse Column ── */
-/* Outer wrapper to position sound toggle */
+/* Outer wrapper for sound toggle + keyboard/mouse block */
 #km-kb-outer {
     position: relative;
     display: flex;
@@ -1212,9 +1248,8 @@ body.typing-active #km-fr {
     font-weight: 700;
     letter-spacing: 0.5px;
     color: #9aa0a8;
-    margin-bottom: 16px;
+    margin-bottom: 6px;
     transition: background 0.2s, border-color 0.2s;
-    align-self: flex-end;
 }
 #km-sound-btn:hover { background: rgba(255,255,255,0.09); border-color: rgba(255,255,255,0.22); }
 #km-sound-icon { font-size: 13px; line-height: 1; }
@@ -1620,7 +1655,6 @@ body.typing-active #km-fr {
 
         <!-- ── RIGHT: Keyboard + Mouse ── -->
         <div id="km-kb-outer">
-            <!-- Sound toggle — top-right of keyboard+mouse block -->
             <button id="km-sound-btn" onclick="kmSoundToggle()" title="Toggle keyboard sound">
                 <span id="km-sound-icon">🔊</span>
                 <span id="km-sound-label">SOUND</span>
@@ -5334,42 +5368,31 @@ function _getAudioCtx(){
 
 function playKeyClick(){
     if(!soundOn) return;
+    // Only play during an active test — not on result screen or idle
+    if(typeof testActive !== 'undefined' && !testActive) return;
     var ctx = _getAudioCtx();
     if(!ctx) return;
 
-    // Mechanical click: short sharp noise burst + tiny pitch thud
-    var bufSize = ctx.sampleRate * 0.035; // 35 ms
+    var bufSize = ctx.sampleRate * 0.035;
     var buf = ctx.createBuffer(1, bufSize, ctx.sampleRate);
     var data = buf.getChannelData(0);
     for(var i=0; i<bufSize; i++){
-        // White noise with exponential decay
         data[i] = (Math.random()*2-1) * Math.pow(1 - i/bufSize, 4) * 0.55;
     }
-
     var src = ctx.createBufferSource();
     src.buffer = buf;
-
-    // High-pass filter to make it crisp/clicky not muddy
     var hp = ctx.createBiquadFilter();
     hp.type = 'highpass';
     hp.frequency.value = 900;
-
-    // Slight bandpass for that 'thock' tone
     var bp = ctx.createBiquadFilter();
     bp.type = 'bandpass';
     bp.frequency.value = 2800;
     bp.Q.value = 0.7;
-
     var gain = ctx.createGain();
     gain.gain.setValueAtTime(0.45, ctx.currentTime);
     gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.04);
-
-    src.connect(hp);
-    hp.connect(bp);
-    bp.connect(gain);
-    gain.connect(ctx.destination);
-    src.start();
-    src.stop(ctx.currentTime + 0.04);
+    src.connect(hp); hp.connect(bp); bp.connect(gain); gain.connect(ctx.destination);
+    src.start(); src.stop(ctx.currentTime + 0.04);
 }
 
 window.kmSoundToggle = function(){
@@ -5444,7 +5467,7 @@ function kmInit(){
     // The gate drops redundant calls so the compositor stays uncontested.
     var _kmLastUpdate = 0;
     document.addEventListener('keydown', function(e){
-        // Sound plays on every keydown regardless of keymap fps cap
+        // Play click sound only during active test
         playKeyClick();
         if(!keymapOn) return;
         var now = performance.now();
