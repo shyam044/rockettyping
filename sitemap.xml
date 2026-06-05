@@ -4,15 +4,23 @@
   <!-- Home – Typing Test -->
   <url>
     <loc>https://www.rockettyping.com/</loc>
-    <lastmod>2026-04-08</lastmod>
+    <lastmod>2026-06-05</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
+  </url>
+
+  <!-- Learn to Type – Beginner Course -->
+  <url>
+    <loc>https://www.rockettyping.com/learn.html</loc>
+    <lastmod>2026-06-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
   </url>
 
   <!-- Rocket Race – Typing Game -->
   <url>
     <loc>https://www.rockettyping.com/game.html</loc>
-    <lastmod>2026-04-08</lastmod>
+    <lastmod>2026-06-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
@@ -20,23 +28,23 @@
   <!-- Sunday Championship -->
   <url>
     <loc>https://www.rockettyping.com/test.html</loc>
-    <lastmod>2026-04-08</lastmod>
+    <lastmod>2026-06-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
 
-  <!-- About -->
+  <!-- About – Typing Guide & Benchmarks -->
   <url>
     <loc>https://www.rockettyping.com/about.html</loc>
-    <lastmod>2026-04-08</lastmod>
+    <lastmod>2026-06-05</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
+    <priority>0.8</priority>
   </url>
 
   <!-- Contact -->
   <url>
     <loc>https://www.rockettyping.com/contact.html</loc>
-    <lastmod>2026-04-08</lastmod>
+    <lastmod>2026-06-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
@@ -44,7 +52,7 @@
   <!-- Privacy Policy -->
   <url>
     <loc>https://www.rockettyping.com/privacy.html</loc>
-    <lastmod>2026-04-08</lastmod>
+    <lastmod>2026-06-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.4</priority>
   </url>
@@ -52,7 +60,7 @@
   <!-- Terms of Service -->
   <url>
     <loc>https://www.rockettyping.com/terms.html</loc>
-    <lastmod>2026-04-08</lastmod>
+    <lastmod>2026-06-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.4</priority>
   </url>
