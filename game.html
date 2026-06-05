@@ -3172,7 +3172,11 @@ function endRace(){
   const stats=calculateStats();
   // Use Firebase Auth identity — never trust localStorage alone for Firestore writes
   const _authUser = auth.currentUser;
-  if(_authUser && stats.wpm > 0 && stats.wpm <= 300){
+  // SECURITY v4: WPM cap lowered 300→220; accuracy gate added (≥50%);
+  // three anti-cheat fields added to the Firestore payload so the rules
+  // can cross-validate them and reject direct window.setDoc() forgeries.
+  const _raceElapsedMs = startTime ? (Date.now() - startTime) : 0;
+  if(_authUser && stats.wpm > 0 && stats.wpm < 220 && stats.acc >= 50){
     db.collection("users").doc(_authUser.uid).get().then(userSnap => {
       if(!userSnap.exists) return;
       const _verifiedName = userSnap.data().name;
@@ -3180,7 +3184,19 @@ function endRace(){
       const ur = db.collection("leaderboard").doc(_authUser.uid);
       ur.get().then(d=>{
         if(!d.exists||stats.wpm>d.data().topWPM)
-          ur.set({name:_verifiedName,topWPM:stats.wpm,country:_verifiedCountry,uid:_authUser.uid,updated:Date.now()});
+          ur.set({
+            name:              _verifiedName,
+            topWPM:            stats.wpm,
+            country:           _verifiedCountry,
+            uid:               _authUser.uid,
+            updated:           Date.now(),
+            // ── Anti-cheat fields — cross-validated by Firestore rules ──
+            // A direct window.db.collection(...).set() call without consistent
+            // values for these three fields is rejected by the security rules.
+            correctKeystrokes: correctKeystrokes,
+            keystrokeCount:    totalKeystrokes,
+            elapsedMs:         _raceElapsedMs
+          });
       });
     });
   }
