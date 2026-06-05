@@ -3,24 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>About Rocket Typing – Free Online Typing Speed Test</title>
-    <meta name="description" content="Rocket Typing is a free typing test used by thousands of typists daily. Learn how to increase your WPM, see typing benchmarks by level, and get pro tips for faster, accurate typing.">
+    <title>About Rocket Typing – Free Online Typing Speed Test & Touch Typing Guide</title>
+    <meta name="description" content="Everything you need to know about improving your typing speed. Rocket Typing offers free WPM tests, touch typing guides, keyboard layout comparisons, ergonomics tips, and typing benchmarks for all skill levels.">
     <meta name="robots" content="index, follow">
+    <meta name="google-adsense-account" content="ca-pub-8311353174841359">
     <link rel="canonical" href="https://www.rockettyping.com/about.html">
     <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16.png">
-    <meta property="og:title" content="About Rocket Typing – Free Online Typing Test">
-    <meta property="og:description" content="Learn about Rocket Typing – free typing speed test with real-time WPM feedback, leaderboards, and difficulty modes.">
+    <meta property="og:title" content="About Rocket Typing – Free Typing Speed Test & Touch Typing Guide">
+    <meta property="og:description" content="Learn about Rocket Typing — free WPM tests, touch typing tutorials, keyboard comparisons, ergonomics, and benchmarks for all skill levels.">
     <meta property="og:url" content="https://www.rockettyping.com/about.html">
     <meta property="og:image" content="https://www.rockettyping.com/images/og-banner.png">
     <meta property="og:type" content="website">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="About Rocket Typing – Free Typing Speed Test">
-    <meta name="twitter:description" content="Learn how Rocket Typing works, pro tips to improve your WPM, and typing benchmarks for all skill levels.">
+    <meta name="twitter:description" content="WPM benchmarks, touch typing techniques, keyboard layouts, and pro tips to go from 0 to 100 WPM.">
     <meta name="twitter:image" content="https://www.rockettyping.com/images/og-banner.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700;900&display=swap" rel="stylesheet">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8311353174841359" crossorigin="anonymous"></script>
     <style>
         :root {
             --bg: #323437;
@@ -40,7 +42,6 @@
             min-height: 100vh;
             padding-bottom: 80px;
         }
-        /* NAV */
         .site-nav {
             display: flex; align-items: center; justify-content: space-between;
             padding: 16px 32px;
@@ -54,11 +55,9 @@
             font-size: 13px; letter-spacing: 1px;
             transition: color .2s;
         }
-        .site-nav .nav-links a:hover { color: var(--gold); }
-        /* CONTENT */
-        .container {
-            max-width: 820px; margin: 48px auto; padding: 0 20px;
-        }
+        .site-nav .nav-links a:hover,
+        .site-nav .nav-links a.active { color: var(--gold); }
+        .container { max-width: 860px; margin: 48px auto; padding: 0 20px; }
         .card {
             background: rgba(43,45,48,0.95);
             border: 1px solid var(--border);
@@ -68,50 +67,52 @@
         h1 {
             font-size: 26px; font-weight: 900;
             color: var(--gold); letter-spacing: 2px;
-            margin-bottom: 28px;
+            margin-bottom: 10px;
+        }
+        .page-subtitle {
+            font-size: 13px; color: var(--muted);
+            margin-bottom: 28px; line-height: 1.6;
         }
         h2 {
             font-size: 17px; font-weight: 900;
             color: var(--orange); letter-spacing: 1px;
-            margin: 32px 0 12px;
+            margin: 36px 0 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid rgba(255,153,0,0.2);
         }
         h3 {
             font-size: 14px; font-weight: 700;
             color: var(--gold); letter-spacing: 1px;
-            margin: 24px 0 10px;
+            margin: 22px 0 10px;
         }
         p {
-            font-size: 14px; line-height: 1.8;
+            font-size: 14px; line-height: 1.85;
             color: var(--text); margin-bottom: 14px;
         }
-        ul {
-            padding-left: 20px; margin-bottom: 14px;
+        ul, ol {
+            padding-left: 22px; margin-bottom: 14px;
         }
-        ul li {
-            font-size: 14px; line-height: 1.8;
-            color: #ccc; margin-bottom: 6px;
+        ul li, ol li {
+            font-size: 14px; line-height: 1.85;
+            color: #ccc; margin-bottom: 7px;
         }
-        ul li strong { color: var(--gold); }
-        /* Benchmark table */
-        .bench-table {
-            width: 100%; border-collapse: collapse;
-            font-size: 13px; margin-top: 12px;
+        ul li strong, ol li strong { color: var(--gold); }
+        /* TOC */
+        .toc {
+            background: rgba(226,183,20,0.05);
+            border: 1px solid rgba(226,183,20,0.18);
+            border-radius: 10px; padding: 20px 24px;
+            margin-bottom: 32px;
         }
-        .bench-table th {
-            background: rgba(226,183,20,0.08);
-            color: var(--gold); padding: 10px 14px;
-            text-align: left; border: 1px solid #3a3a3a;
-            letter-spacing: 1px; font-size: 12px;
-        }
-        .bench-table td {
-            padding: 10px 14px; border: 1px solid #3a3a3a;
-            color: #ccc;
-        }
-        .bench-table tr:hover td { background: rgba(255,255,255,0.03); }
+        .toc-title { font-size: 12px; color: var(--gold); letter-spacing: 2px; text-transform: uppercase; font-weight: 900; margin-bottom: 12px; }
+        .toc ol { padding-left: 18px; margin: 0; }
+        .toc ol li { margin-bottom: 5px; }
+        .toc a { color: var(--muted); text-decoration: none; font-size: 13px; transition: color .2s; }
+        .toc a:hover { color: var(--gold); }
         /* Stat cards */
         .stat-row {
             display: grid; grid-template-columns: repeat(3, 1fr);
-            gap: 16px; margin: 28px 0;
+            gap: 16px; margin: 24px 0;
         }
         .stat-card {
             background: rgba(226,183,20,0.06);
@@ -119,7 +120,7 @@
             border-radius: 10px; padding: 18px 16px;
             text-align: center;
         }
-        .stat-card .num { font-size: 32px; font-weight: 900; color: var(--gold); }
+        .stat-card .num { font-size: 30px; font-weight: 900; color: var(--gold); }
         .stat-card .lbl { font-size: 11px; color: var(--muted); letter-spacing: 1.5px; margin-top: 4px; }
         /* Feature list */
         .feature-grid {
@@ -132,10 +133,98 @@
             border-radius: 8px; padding: 12px 14px;
             font-size: 13px; color: var(--text);
         }
+        /* Benchmark table */
+        .bench-table {
+            width: 100%; border-collapse: collapse;
+            font-size: 13px; margin: 14px 0;
+        }
+        .bench-table th {
+            background: rgba(226,183,20,0.08);
+            color: var(--gold); padding: 10px 14px;
+            text-align: left; border: 1px solid #3a3a3a;
+            letter-spacing: 1px; font-size: 12px;
+        }
+        .bench-table td {
+            padding: 10px 14px; border: 1px solid #3a3a3a;
+            color: #ccc; vertical-align: top;
+        }
+        .bench-table tr:hover td { background: rgba(255,255,255,0.03); }
+        /* Info box */
+        .info-box {
+            background: rgba(0,230,204,0.05);
+            border: 1px solid rgba(0,230,204,0.2);
+            border-radius: 10px; padding: 16px 20px;
+            font-size: 13px; color: var(--text);
+            margin: 18px 0; line-height: 1.75;
+        }
+        .info-box strong { color: #00e6cc; }
+        /* Warning box */
+        .warn-box {
+            background: rgba(255,153,0,0.06);
+            border: 1px solid rgba(255,153,0,0.25);
+            border-radius: 10px; padding: 16px 20px;
+            font-size: 13px; color: var(--text);
+            margin: 18px 0; line-height: 1.75;
+        }
+        .warn-box strong { color: var(--orange); }
+        /* Keyboard layout visual */
+        .layout-compare {
+            display: grid; grid-template-columns: 1fr 1fr 1fr;
+            gap: 12px; margin: 16px 0;
+        }
+        .layout-card {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid #3a3a3a;
+            border-radius: 10px; padding: 16px;
+        }
+        .layout-card .lc-name { font-size: 13px; font-weight: 900; color: var(--gold); margin-bottom: 6px; }
+        .layout-card .lc-keys {
+            font-size: 11px; color: var(--muted);
+            letter-spacing: 2px; margin-bottom: 8px;
+            font-family: 'Roboto Mono', monospace;
+        }
+        .layout-card .lc-desc { font-size: 12px; color: #aaa; line-height: 1.5; }
+        .layout-card .lc-tag {
+            display: inline-block; margin-top: 8px;
+            font-size: 10px; padding: 2px 8px;
+            border-radius: 50px; letter-spacing: 1px;
+        }
+        .tag-popular { background: rgba(226,183,20,0.15); color: var(--gold); }
+        .tag-advanced { background: rgba(0,230,204,0.1); color: #00e6cc; }
+        .tag-niche { background: rgba(255,255,255,0.06); color: #888; }
+        /* Finger map */
+        .finger-table { width: 100%; border-collapse: collapse; font-size: 12px; margin: 14px 0; }
+        .finger-table th { background: rgba(255,255,255,0.05); color: #888; padding: 8px 10px; border: 1px solid #3a3a3a; text-align: center; }
+        .finger-table td { padding: 8px 10px; border: 1px solid #3a3a3a; text-align: center; color: #ccc; }
+        .finger-table .left { color: #00e6cc; }
+        .finger-table .right { color: #e2b714; }
         /* FAQ */
-        .faq-item { margin-bottom: 18px; }
-        .faq-q { font-weight: 700; color: var(--gold); font-size: 13px; margin-bottom: 4px; }
-        .faq-a { font-size: 13px; color: #ccc; line-height: 1.7; }
+        .faq-item { margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid #333; }
+        .faq-item:last-child { border-bottom: none; }
+        .faq-q { font-weight: 700; color: var(--gold); font-size: 13px; margin-bottom: 6px; }
+        .faq-a { font-size: 13px; color: #ccc; line-height: 1.75; }
+        /* Progress roadmap */
+        .roadmap { margin: 16px 0; }
+        .roadmap-step {
+            display: flex; gap: 16px; margin-bottom: 18px;
+            position: relative; padding-left: 4px;
+        }
+        .roadmap-step::before {
+            content: ''; position: absolute; left: 18px; top: 36px;
+            width: 2px; height: calc(100% + 2px);
+            background: rgba(226,183,20,0.15);
+        }
+        .roadmap-step:last-child::before { display: none; }
+        .rs-icon {
+            width: 36px; height: 36px; border-radius: 50%;
+            background: rgba(226,183,20,0.1);
+            border: 2px solid rgba(226,183,20,0.3);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 14px; flex-shrink: 0;
+        }
+        .rs-body {}
+        .rs-title { font-size: 13px; font-weight: 700; color: var(--gold); margin-bottom: 4px; }
+        .rs-desc { font-size: 13px; color: #aaa; line-height: 1.6; }
         /* Back link */
         .back-link {
             display: inline-block; margin-top: 32px;
@@ -144,7 +233,12 @@
             opacity: 0.7; transition: opacity .2s;
         }
         .back-link:hover { opacity: 1; }
-        /* FOOTER */
+        /* Ad slots */
+        .ad-slot {
+            text-align: center; margin: 32px 0;
+            min-height: 100px;
+        }
+        /* Footer */
         footer {
             position: fixed; bottom: 0; left: 0; right: 0;
             background: var(--bg2);
@@ -157,115 +251,354 @@
         }
         footer a { color: var(--gold); text-decoration: none; margin: 0 8px; }
         footer a:hover { opacity: 0.8; }
-        @media(max-width:600px) {
+        @media(max-width:700px) {
             .card { padding: 28px 20px; }
             .stat-row { grid-template-columns: 1fr 1fr; }
             .feature-grid { grid-template-columns: 1fr; }
+            .layout-compare { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
 
-    <nav class="site-nav">
-        <a href="/" class="logo"><img src="images/logo.png" alt="Rocket Typing"></a>
-        <div class="nav-links">
-            <a href="/">Home</a>
-            <a href="/game.html">Race</a>
-            <a href="/test.html">Championship</a>
-            <a href="/about.html" style="color:#e2b714;">About</a>
+<nav class="site-nav">
+    <a href="/" class="logo"><img src="images/logo.png" alt="Rocket Typing"></a>
+    <div class="nav-links">
+        <a href="/">Home</a>
+        <a href="/learn.html">Learn</a>
+        <a href="/game.html">Race</a>
+        <a href="/test.html">Championship</a>
+        <a href="/about.html" class="active">About</a>
+    </div>
+</nav>
+
+<div class="container">
+<div class="card">
+
+    <h1>🚀 About Rocket Typing</h1>
+    <p class="page-subtitle">Your complete guide to faster, more accurate typing — and everything behind the platform that helps thousands of typists improve every day.</p>
+
+    <!-- TOC -->
+    <div class="toc">
+        <div class="toc-title">📋 Table of Contents</div>
+        <ol>
+            <li><a href="#what-is">What Is Rocket Typing?</a></li>
+            <li><a href="#features">Platform Features</a></li>
+            <li><a href="#touch-typing">What Is Touch Typing — and Why It Changes Everything</a></li>
+            <li><a href="#finger-placement">Correct Finger Placement: The Foundation</a></li>
+            <li><a href="#keyboard-layouts">Keyboard Layouts Explained: QWERTY vs Dvorak vs Colemak</a></li>
+            <li><a href="#benchmarks">Typing Speed Benchmarks by Skill Level</a></li>
+            <li><a href="#how-to-improve">How to Improve Your WPM: A Step-by-Step Roadmap</a></li>
+            <li><a href="#common-mistakes">7 Common Typing Mistakes (and How to Fix Them)</a></li>
+            <li><a href="#ergonomics">Typing Ergonomics: Preventing Pain and Strain</a></li>
+            <li><a href="#keyboard-guide">Choosing the Right Keyboard</a></li>
+            <li><a href="#science">The Science Behind Muscle Memory in Typing</a></li>
+            <li><a href="#faq">Frequently Asked Questions</a></li>
+        </ol>
+    </div>
+
+    <!-- ─── 1. What Is Rocket Typing ─── -->
+    <h2 id="what-is">1. What Is Rocket Typing?</h2>
+    <p>Rocket Typing is a free, browser-based typing speed test and practice platform designed for typists at every skill level — from absolute beginners learning where to place their fingers, to competitive typists chasing 130+ WPM on the global leaderboard.</p>
+    <p>We built Rocket Typing because most typing test tools are either cluttered with ads, locked behind accounts, or provide no real feedback beyond a single WPM number. Our philosophy is simple: give you a fast, distraction-free environment with <strong>real-time performance data</strong>, competitive features, and structured learning — all for free, with no registration required to practice.</p>
+    <p>Whether you're a student trying to keep up with lecture notes, a developer typing code all day, a data entry professional, or simply someone who wants to be more productive at a keyboard — this platform is built for you.</p>
+
+    <div class="stat-row">
+        <div class="stat-card"><div class="num">3</div><div class="lbl">DIFFICULTY MODES</div></div>
+        <div class="stat-card"><div class="num">15</div><div class="lbl">GUIDED LESSONS</div></div>
+        <div class="stat-card"><div class="num">🌍</div><div class="lbl">GLOBAL LEADERBOARD</div></div>
+    </div>
+
+    <!-- ─── 2. Features ─── -->
+    <h2 id="features">2. Platform Features</h2>
+    <p>Here is everything Rocket Typing currently offers:</p>
+    <div class="feature-grid">
+        <div class="feature-item">⚡ <strong>Real-time WPM</strong> — live words-per-minute counter updates every keystroke</div>
+        <div class="feature-item">🎯 <strong>Accuracy & Consistency</strong> — two separate metrics beyond just WPM</div>
+        <div class="feature-item">🏆 <strong>Global Leaderboard</strong> — top 10 typists with country flags</div>
+        <div class="feature-item">🚀 <strong>Rocket Race</strong> — head-to-head typing game against AI racers</div>
+        <div class="feature-item">🥇 <strong>Sunday Championship</strong> — weekly competition with cash prizes</div>
+        <div class="feature-item">📚 <strong>Learn to Type</strong> — 15-lesson beginner course with keyboard visualization</div>
+        <div class="feature-item">📊 <strong>3 Difficulty Modes</strong> — Easy, Medium, Hard word sets</div>
+        <div class="feature-item">⏱️ <strong>4 Test Durations</strong> — 15, 30, 60, and 120 seconds</div>
+        <div class="feature-item">📱 <strong>Mobile-Friendly</strong> — works on tablets and phones</div>
+        <div class="feature-item">🔒 <strong>No Forced Registration</strong> — practice instantly, sign up only to save scores</div>
+    </div>
+
+    <!-- Ad slot mid-page -->
+    <div class="ad-slot">
+        <ins class="adsbygoogle"
+            style="display:block"
+            data-ad-client="ca-pub-8311353174841359"
+            data-ad-slot="auto"
+            data-ad-format="auto"
+            data-full-width-responsive="true"></ins>
+        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </div>
+
+    <!-- ─── 3. Touch Typing ─── -->
+    <h2 id="touch-typing">3. What Is Touch Typing — and Why It Changes Everything</h2>
+    <p>Touch typing is the technique of typing using all fingers without looking at the keyboard. The word "touch" refers to navigating by feel rather than by sight — your fingers learn the position of every key through muscle memory, so your eyes can stay on the screen.</p>
+    <p>This sounds simple but it fundamentally transforms your typing. Here is why touch typing matters:</p>
+    <ul>
+        <li><strong>Speed ceiling:</strong> Hunt-and-peck typists typically plateau around 30–50 WPM. Touch typists routinely reach 70–100+ WPM because the motion becomes automatic, like walking.</li>
+        <li><strong>Cognitive load:</strong> When you don't need to consciously think about where each key is, your brain can focus entirely on what you're writing. This dramatically improves writing quality and reduces mental fatigue.</li>
+        <li><strong>Accuracy:</strong> Proper touch typing technique leads to significantly fewer errors because each finger covers a consistent, limited zone of the keyboard.</li>
+        <li><strong>Fatigue:</strong> Typing with 10 fingers distributes the workload. Single-finger or two-finger typists put enormous repetitive stress on just a few fingers.</li>
+        <li><strong>Professionalism:</strong> In many industries — software development, content creation, legal, medical transcription — fast, accurate typing is a baseline professional skill.</li>
+    </ul>
+    <div class="info-box">
+        <strong>Research insight:</strong> A study published in the journal <em>Behaviour & Information Technology</em> found that trained touch typists were approximately 40–60% faster than self-taught typists who never learned proper technique, even after years of practice. The difference comes almost entirely from which fingers are used, not raw practice hours.
+    </div>
+
+    <!-- ─── 4. Finger Placement ─── -->
+    <h2 id="finger-placement">4. Correct Finger Placement: The Foundation</h2>
+    <p>The home row is the row of keys your fingers rest on when not actively typing. For a standard QWERTY keyboard, the home row is <strong>A S D F</strong> (left hand) and <strong>J K L ;</strong> (right hand). Your thumbs rest on the spacebar.</p>
+    <p>The <strong>F and J keys</strong> have a small tactile bump on most keyboards — this lets you find the home position without looking.</p>
+
+    <table class="finger-table">
+        <thead>
+            <tr>
+                <th>Finger</th>
+                <th class="left">Left Hand Keys</th>
+                <th class="right">Right Hand Keys</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>Pinky</td><td class="left">Q, A, Z, 1, Tab, Caps, Shift</td><td class="right">P, ;, /, 0, [, ], \, Enter, Shift</td></tr>
+            <tr><td>Ring finger</td><td class="left">W, S, X, 2</td><td class="right">O, L, ., 9</td></tr>
+            <tr><td>Middle finger</td><td class="left">E, D, C, 3</td><td class="right">I, K, ,, 8</td></tr>
+            <tr><td>Index finger</td><td class="left">R, F, V, T, G, B, 4, 5</td><td class="right">U, J, M, Y, H, N, 6, 7</td></tr>
+            <tr><td>Thumb</td><td class="left" colspan="2" style="text-align:center; color:#aaa;">Spacebar (both thumbs share — use whichever is most natural after a letter)</td></tr>
+        </tbody>
+    </table>
+
+    <p>The most important rule when learning: <strong>always return fingers to the home row</strong> between key presses. Beginners often leave their hands in a displaced position after pressing a far key, which causes errors and slows down the next keystroke. Train yourself to snap back to home row as a reflex.</p>
+    <h3>Home Row First: Why You Should Start There</h3>
+    <p>Our beginner course on the Learn page starts with only the 8 home row keys before introducing any other keys. This is deliberate. By drilling A S D F J K L ; until they become automatic, you build the spatial anchor for your entire keyboard map. Every other key's position is remembered relative to the home row keys.</p>
+
+    <!-- ─── 5. Keyboard Layouts ─── -->
+    <h2 id="keyboard-layouts">5. Keyboard Layouts Explained: QWERTY vs Dvorak vs Colemak</h2>
+    <p>Most of the world uses QWERTY, but there are alternative keyboard layouts designed to reduce finger travel and improve typing efficiency. Here is an honest comparison:</p>
+    <div class="layout-compare">
+        <div class="layout-card">
+            <div class="lc-name">QWERTY</div>
+            <div class="lc-keys">QWERTYUIOP</div>
+            <div class="lc-desc">Designed in the 1870s for mechanical typewriters. The layout was partially designed to separate commonly typed letter pairs to prevent key jams. Universally supported on all hardware and software worldwide.</div>
+            <span class="lc-tag tag-popular">Most Popular</span>
         </div>
-    </nav>
+        <div class="layout-card">
+            <div class="lc-name">Dvorak</div>
+            <div class="lc-keys">PYFGCRL/=</div>
+            <div class="lc-desc">Developed in 1936 to place the most common English letters on the home row. Claimed to reduce finger travel by up to 63%. Requires full relearning. Supported natively on Windows, Mac, and Linux.</div>
+            <span class="lc-tag tag-advanced">Advanced</span>
+        </div>
+        <div class="layout-card">
+            <div class="lc-name">Colemak</div>
+            <div class="lc-keys">QWFPGJLUY;</div>
+            <div class="lc-desc">Modern alternative (2006) keeping 10 QWERTY keys in place to ease the transition. Popular in typing speed communities. Many top WPM record holders use Colemak or its variants (Colemak-DH).</div>
+            <span class="lc-tag tag-advanced">Advanced</span>
+        </div>
+    </div>
+    <div class="warn-box">
+        <strong>Our recommendation:</strong> If you are learning to type for the first time, learn QWERTY. The productivity gain from alternative layouts (roughly 5–15% for most users) rarely outweighs the cost of months of relearning and reduced speed on every keyboard you don't own. Only switch if you type professionally for 6+ hours a day and have wrist pain — the ergonomic benefit is real for power users.
+    </div>
 
-    <div class="container">
-        <div class="card">
-            <h1>🚀 About Rocket Typing</h1>
+    <!-- ─── 6. Benchmarks ─── -->
+    <h2 id="benchmarks">6. Typing Speed Benchmarks by Skill Level</h2>
+    <p>Average office typing speed is around 40 WPM. Here is the full benchmark breakdown to help you set goals:</p>
+    <table class="bench-table">
+        <thead>
+            <tr><th>Level</th><th>WPM Range</th><th>Accuracy</th><th>Description</th><th>Typical Profile</th></tr>
+        </thead>
+        <tbody>
+            <tr><td>🐢 Beginner</td><td>10 – 30</td><td>80%+</td><td>Learning finger placement, still looking at keyboard</td><td>New typists, young students</td></tr>
+            <tr><td>📈 Developing</td><td>30 – 50</td><td>88%+</td><td>Building consistency, reducing lookdowns</td><td>Most casual computer users</td></tr>
+            <tr><td>⚡ Intermediate</td><td>50 – 70</td><td>93%+</td><td>Touch typing established, working on speed</td><td>Office workers, students</td></tr>
+            <tr><td>🚀 Proficient</td><td>70 – 90</td><td>96%+</td><td>Comfortable daily speed, competitive on leaderboards</td><td>Developers, writers, admins</td></tr>
+            <tr><td>👑 Advanced</td><td>90 – 120</td><td>98%+</td><td>Elite speed, top 5% of all typists</td><td>Stenographers, competitive typists</td></tr>
+            <tr><td>🌟 Expert</td><td>120+</td><td>99%+</td><td>World-class. Top leaderboard ranks globally</td><td>Competitive typists, TypeRacer/Monkeytype champions</td></tr>
+        </tbody>
+    </table>
+    <p>Note: These benchmarks use the standard gross WPM formula: every 5 characters (including spaces) = 1 word. The average professional typist sits at 55–65 WPM. Software developers average around 70–80 WPM due to daily high-volume keyboard use.</p>
 
-            <p>Welcome to <strong>Rocket Typing</strong> — your ultimate destination for improving <strong>typing speed</strong> and accuracy. Whether you're a student, professional, or typing enthusiast, Rocket Typing offers a free, fast, and minimal typing test experience used by thousands of typists every day.</p>
+    <!-- Ad slot mid-page -->
+    <div class="ad-slot">
+        <ins class="adsbygoogle"
+            style="display:block"
+            data-ad-client="ca-pub-8311353174841359"
+            data-ad-slot="auto"
+            data-ad-format="auto"
+            data-full-width-responsive="true"></ins>
+        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </div>
 
-            <p>Our platform provides real-time feedback on your performance, measuring words per minute (WPM), accuracy rate, and consistency. Choose from Easy, Medium, or Hard difficulty modes and compete on a global leaderboard with typists from every country.</p>
-
-            <!-- Quick stats -->
-            <div class="stat-row">
-                <div class="stat-card"><div class="num">3</div><div class="lbl">DIFFICULTY MODES</div></div>
-                <div class="stat-card"><div class="num">4</div><div class="lbl">TEST DURATIONS</div></div>
-                <div class="stat-card"><div class="num">🌍</div><div class="lbl">GLOBAL LEADERBOARD</div></div>
+    <!-- ─── 7. How to Improve ─── -->
+    <h2 id="how-to-improve">7. How to Improve Your WPM: A Step-by-Step Roadmap</h2>
+    <p>Typing speed improvement follows a very predictable path. Here is the exact progression we recommend for every typist:</p>
+    <div class="roadmap">
+        <div class="roadmap-step">
+            <div class="rs-icon">1</div>
+            <div class="rs-body">
+                <div class="rs-title">Learn proper finger placement (Week 1–2)</div>
+                <div class="rs-desc">Before worrying about speed at all, memorize the home row and finger zones for every key. Use our free Learn course. Go slowly — accuracy first. It will feel painful and slow. This is normal and temporary.</div>
             </div>
-
-            <h2>✨ Key Features</h2>
-            <div class="feature-grid">
-                <div class="feature-item">⚡ Real-time WPM tracking</div>
-                <div class="feature-item">🎯 Accuracy & consistency score</div>
-                <div class="feature-item">🏆 Global leaderboard (Top 10)</div>
-                <div class="feature-item">🌍 Country flags on leaderboard</div>
-                <div class="feature-item">🚀 Rocket Race typing game</div>
-                <div class="feature-item">🥇 Sunday Championship</div>
-                <div class="feature-item">📊 Easy / Medium / Hard modes</div>
-                <div class="feature-item">📱 Mobile-friendly design</div>
+        </div>
+        <div class="roadmap-step">
+            <div class="rs-icon">2</div>
+            <div class="rs-body">
+                <div class="rs-title">Stop looking at your hands (Week 2–4)</div>
+                <div class="rs-desc">This is the hardest mental hurdle. Put a sheet of paper or cloth over your hands if necessary. Every time you look down, you interrupt the neural pathway you're trying to build. Commit to no-look typing even when you make mistakes.</div>
             </div>
-
-            <h2>🎯 Why Practice Typing?</h2>
-            <p>Fast typing isn't just a skill — it's a superpower in today's digital world. Studies show that improving your WPM can increase productivity by up to 20%. At Rocket Typing, we focus on building muscle memory through repetitive, engaging practice. Our generated sentences use real-world vocabulary, helping you type naturally in emails, reports, or code.</p>
-
-            <h3>Pro Tips for Better Results</h3>
-            <ul>
-                <li><strong>Posture Matters:</strong> Sit straight, keep wrists neutral, and relax your shoulders to avoid strain.</li>
-                <li><strong>Accuracy Over Speed:</strong> Aim for 95%+ accuracy first — speed follows naturally.</li>
-                <li><strong>Daily Drills:</strong> Spend 10–15 minutes daily. Track your consistency score to measure evenness in your pace.</li>
-                <li><strong>Touch Typing:</strong> Learn to type without looking at the keyboard — it's the single biggest speed unlock.</li>
-                <li><strong>Keyboard Choice:</strong> Mechanical keys can boost comfort and feedback, but start with what you have.</li>
-            </ul>
-
-            <h2>📊 Typing Benchmarks</h2>
-            <p>Where do you stand? Use these benchmarks to set your next goal:</p>
-            <table class="bench-table">
-                <thead>
-                    <tr><th>Level</th><th>WPM Range</th><th>Accuracy</th><th>Description</th></tr>
-                </thead>
-                <tbody>
-                    <tr><td>🐢 Beginner</td><td>20 – 40</td><td>85%+</td><td>Just starting out, building basic finger placement</td></tr>
-                    <tr><td>📈 Developing</td><td>40 – 60</td><td>90%+</td><td>Growing confidence, working on consistency</td></tr>
-                    <tr><td>⚡ Intermediate</td><td>60 – 80</td><td>95%+</td><td>Comfortable touch-typer, solid daily speed</td></tr>
-                    <tr><td>🚀 Advanced</td><td>80 – 100</td><td>97%+</td><td>Above average, competes on leaderboards</td></tr>
-                    <tr><td>👑 Expert</td><td>100+</td><td>98%+</td><td>Elite typist, top of global rankings</td></tr>
-                </tbody>
-            </table>
-
-            <h2>❓ FAQ</h2>
-            <div class="faq-item">
-                <div class="faq-q">Q: How is WPM calculated?</div>
-                <div class="faq-a">We count every 5 correct characters (including spaces) as one word, divided by the number of minutes elapsed. This is the standard gross WPM formula.</div>
+        </div>
+        <div class="roadmap-step">
+            <div class="rs-icon">3</div>
+            <div class="rs-body">
+                <div class="rs-title">Drill accuracy to 95%+ before chasing speed (Month 1–2)</div>
+                <div class="rs-desc">Use the Easy mode on Rocket Typing and aim for sub-5% error rate consistently. Ingraining bad habits at high speed is worse than learning correctly at low speed. Think of it as learning to walk before running.</div>
             </div>
-            <div class="faq-item">
-                <div class="faq-q">Q: Do I need to sign up?</div>
-                <div class="faq-a">No! You can take the typing test instantly for free without any registration. Signing up is optional and only needed to save your score to the global leaderboard.</div>
+        </div>
+        <div class="roadmap-step">
+            <div class="rs-icon">4</div>
+            <div class="rs-body">
+                <div class="rs-title">Daily 15-minute practice sessions (Month 2–4)</div>
+                <div class="rs-desc">Consistency beats marathon sessions. 15 focused minutes daily will outperform an occasional 2-hour session. Use Rocket Typing's 60-second tests and track your trend over weeks. Expect gains of 5–10 WPM per month at this stage.</div>
             </div>
-            <div class="faq-item">
-                <div class="faq-q">Q: What is the Sunday Championship?</div>
-                <div class="faq-a">Every Sunday, a special 60-second championship opens. You get one attempt. The highest scorer wins a cash prize. Results are shown in your local currency.</div>
+        </div>
+        <div class="roadmap-step">
+            <div class="rs-icon">5</div>
+            <div class="rs-body">
+                <div class="rs-title">Target weak spots (Month 3+)</div>
+                <div class="rs-desc">Notice which words or letter combinations you consistently mistype. Common trouble areas include: numbers, punctuation, "the" and "and" at speed, words with consecutive same-hand letters (e.g., "swear", "eraser"). Practice these specifically.</div>
             </div>
-            <div class="faq-item">
-                <div class="faq-q">Q: Is this mobile-friendly?</div>
-                <div class="faq-a">Yes! Rocket Typing works on desktops, tablets, and phones — though a physical keyboard gives the best experience.</div>
+        </div>
+        <div class="roadmap-step">
+            <div class="rs-icon">6</div>
+            <div class="rs-body">
+                <div class="rs-title">Compete on the leaderboard (Month 4+)</div>
+                <div class="rs-desc">Once you're consistently above 50 WPM with 95%+ accuracy, register and start competing. The pressure of the leaderboard pushes many typists to their next speed plateau. The Sunday Championship is especially motivating.</div>
             </div>
-            <div class="faq-item">
-                <div class="faq-q">Q: Can I see my country's flag on the leaderboard?</div>
-                <div class="faq-a">Yes! When you register, select your country and your flag emoji will appear next to your name on all leaderboards.</div>
-            </div>
-
-            <a href="/" class="back-link">← Back to Typing Test</a>
         </div>
     </div>
 
-    <footer>
-        <p style="margin:0;">
-            <a href="/">Home</a> |
-            <a href="/about.html">About</a> |
-            <a href="/privacy.html">Privacy Policy</a> |
-            <a href="/terms.html">Terms of Service</a> |
-            <a href="/contact.html">Contact</a>
-        </p>
-        <p style="margin:5px 0 0;font-size:12px;color:#555;">&copy; 2026 <strong style="color:#e2b714;">Rocket Typing</strong>. All rights reserved.</p>
-    </footer>
+    <!-- ─── 8. Common Mistakes ─── -->
+    <h2 id="common-mistakes">8. Seven Common Typing Mistakes (and How to Fix Them)</h2>
+    <ol>
+        <li><strong>Using only 2–4 fingers.</strong> This is the biggest limiter of all. If you've been typing for years with the wrong technique, you need to commit to a full reset and relearn with all 10 fingers. It will take 4–8 weeks to regain your previous speed, then you'll blow past it.</li>
+        <li><strong>Ignoring accuracy in pursuit of speed.</strong> Backspacing constantly at high speed is actually slower than typing moderately fast with no errors. Train accuracy first — speed is a natural byproduct.</li>
+        <li><strong>Tensing your wrists.</strong> Tense wrists slow your finger movement and cause RSI over time. Keep wrists floating above the desk, not resting on it, while actively typing.</li>
+        <li><strong>Looking at the keyboard.</strong> Every time your eyes leave the screen, you break your reading flow and introduce a reaction delay. Force yourself to touch type even incorrectly — the errors will decrease as muscle memory builds.</li>
+        <li><strong>Skipping the spacebar thumb.</strong> Many typists use a finger instead of their thumb for the spacebar. Use your dominant thumb (or either thumb) consistently. The spacebar is the most frequently used key — inefficiency here costs real WPM.</li>
+        <li><strong>Practicing only easy words.</strong> Your typing tests should include common but awkward words. Rocket Typing's Hard mode includes less-common vocabulary and longer words that expose real weaknesses.</li>
+        <li><strong>Not practicing enough common bigrams.</strong> In English, letter pairs like "th", "he", "in", "er", "an" appear constantly. If these aren't automatic, every sentence will have micro-hesitations. Drilling common words rather than random letters is more effective for real-world speed.</li>
+    </ol>
+
+    <!-- ─── 9. Ergonomics ─── -->
+    <h2 id="ergonomics">9. Typing Ergonomics: Preventing Pain and Strain</h2>
+    <p>Repetitive strain injury (RSI), carpal tunnel syndrome, and tendinitis are real risks for heavy keyboard users. These are preventable with proper setup:</p>
+    <h3>Desk and Chair Setup</h3>
+    <ul>
+        <li><strong>Seat height:</strong> Your feet should be flat on the floor. Your thighs should be parallel to the ground or slightly angled downward.</li>
+        <li><strong>Monitor distance:</strong> 50–70 cm (20–28 inches) from your eyes. Top of screen at or slightly below eye level.</li>
+        <li><strong>Keyboard height:</strong> Elbows should be at roughly 90 degrees when typing. If your desk is too high, use a keyboard tray. Avoid wrist extension (bending wrists upward).</li>
+    </ul>
+    <h3>Hand Position While Typing</h3>
+    <ul>
+        <li><strong>Keep wrists neutral:</strong> Neither bent up (extension) nor down (flexion). Wrists should be roughly in line with your forearms.</li>
+        <li><strong>Float your wrists:</strong> Don't rest your wrists on the desk or a wrist pad while actively typing. Resting is fine during pauses — but typing with wrists pressed down compresses the carpal tunnel.</li>
+        <li><strong>Curved fingers:</strong> Your fingers should curve naturally, striking keys with the fingertip, not the flat of the finger.</li>
+    </ul>
+    <h3>Breaks and Exercise</h3>
+    <p>Follow the 20-20-20 rule: every 20 minutes, look at something 20 feet away for 20 seconds. Additionally, take a 5-minute break from the keyboard every hour. Simple stretches — wrist rotations, finger extensions, forearm stretches — take 60 seconds and make a significant difference over a career of typing.</p>
+    <div class="info-box">
+        <strong>Tip:</strong> If you experience tingling, numbness, or persistent aching in your wrists or fingers, stop and consult a doctor. Early-stage RSI is very treatable; ignored RSI can become a serious long-term injury.
+    </div>
+
+    <!-- ─── 10. Keyboard Guide ─── -->
+    <h2 id="keyboard-guide">10. Choosing the Right Keyboard</h2>
+    <p>You do not need an expensive keyboard to type fast. The world record holders have used a wide variety of hardware. That said, keyboard choice does affect comfort, accuracy, and how enjoyable typing practice feels.</p>
+    <h3>Keyboard Types</h3>
+    <ul>
+        <li><strong>Membrane keyboards</strong> (most laptops and budget desktops): Quiet, affordable, low key travel. Fine for learning. Won't hold you back. The main downside is mushy feedback that makes it harder to know when a key has registered without bottoming out, which increases fatigue.</li>
+        <li><strong>Mechanical keyboards:</strong> Individual switches under each key give tactile and/or audible feedback at the actuation point. Most competitive typists prefer these. Popular switches include Cherry MX Red (linear, quiet), Brown (tactile bump, no click), and Blue (tactile + clicky).</li>
+        <li><strong>Low-profile mechanical:</strong> Combines the travel and feedback of mechanical with a slim profile similar to laptops. Popular with people who type on the go.</li>
+    </ul>
+    <h3>Key Travel and Actuation Force</h3>
+    <p>Shorter key travel (1.5–2mm) tends to enable faster WPM but increases fatigue and misfire rate. Standard mechanical travel (4mm) offers better accuracy feedback. Actuation force (grams of pressure to register a keypress) matters for comfort — lighter switches (35–45g) are faster; heavier (60–80g) reduce accidental keypresses.</p>
+    <h3>Form Factor</h3>
+    <p>Tenkeyless (TKL) keyboards — without the number pad — allow you to keep the mouse closer, reducing shoulder strain. Full-size keyboards are preferred for data entry work where the numpad is frequently used.</p>
+
+    <!-- ─── 11. Science ─── -->
+    <h2 id="science">11. The Science Behind Muscle Memory in Typing</h2>
+    <p>Typing is a motor skill, and motor skills are stored and retrieved differently from declarative knowledge (like facts you memorize). When you learn to type, your brain builds connections in the <em>basal ganglia</em> and <em>cerebellum</em> — the same structures involved in walking, playing piano, or driving. This is why, after enough practice, you can type the word "the" without consciously thinking about the letters T, H, E.</p>
+    <p>This kind of procedural memory is extremely durable — it doesn't fade with time the way studying for an exam does. But it forms slowly and requires consistent, correct repetition. This is the scientific basis for the advice you'll see repeated throughout this guide: practice accuracy first, practice daily, and don't reinforce bad habits by drilling incorrect technique at high speed.</p>
+    <h3>The Role of Feedback Loops</h3>
+    <p>Motor learning research shows that immediate, specific feedback significantly accelerates skill acquisition. This is exactly why Rocket Typing highlights errors in real time and shows your WPM live as you type — not just at the end. The sooner you can connect a feeling (hitting the wrong key) to a result (red highlight, error), the faster your subconscious motor system learns to correct it.</p>
+    <h3>Why Slow Practice Builds Speed</h3>
+    <p>Counterintuitively, the fastest way to increase your typing speed is to practice slowly. When you slow down to the point where you can type every word correctly, you are encoding the correct motor pattern. Practicing at near-maximum speed reinforces both the correct keystrokes and the errors. The brain doesn't distinguish — it strengthens whatever movements were repeated. This is called <em>deliberate practice</em> and it is the key to expert performance in any motor skill.</p>
+
+    <!-- Ad slot bottom -->
+    <div class="ad-slot">
+        <ins class="adsbygoogle"
+            style="display:block"
+            data-ad-client="ca-pub-8311353174841359"
+            data-ad-slot="auto"
+            data-ad-format="auto"
+            data-full-width-responsive="true"></ins>
+        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </div>
+
+    <!-- ─── 12. FAQ ─── -->
+    <h2 id="faq">12. Frequently Asked Questions</h2>
+
+    <div class="faq-item">
+        <div class="faq-q">Q: How is WPM calculated on Rocket Typing?</div>
+        <div class="faq-a">We use the standard gross WPM formula: count every 5 correct characters (including spaces) as one word, then divide by the number of minutes elapsed. For example, if you type 250 correct characters in 60 seconds, your WPM = 250 ÷ 5 ÷ 1 = 50 WPM. We also show net WPM separately, which subtracts an error penalty.</div>
+    </div>
+    <div class="faq-item">
+        <div class="faq-q">Q: Do I need to create an account?</div>
+        <div class="faq-a">No — you can use the typing test, Race mode, and Learn course entirely without registration. An account is only needed to save scores to the global leaderboard or participate in the Sunday Championship.</div>
+    </div>
+    <div class="faq-item">
+        <div class="faq-q">Q: How long does it take to learn touch typing?</div>
+        <div class="faq-a">With 15–20 minutes of daily practice, most people establish basic touch typing technique within 3–4 weeks. Reaching your previous speed (if you're switching from hunt-and-peck) takes another 4–6 weeks. Reaching 70+ WPM with proper technique typically takes 3–6 months of regular practice.</div>
+    </div>
+    <div class="faq-item">
+        <div class="faq-q">Q: What is the Sunday Championship?</div>
+        <div class="faq-a">Every Sunday, a special 60-second championship test opens. Each registered user gets one attempt. The typist with the highest score (WPM × accuracy) wins a cash prize. Results are announced the same evening. See the Championship page for current prize amounts.</div>
+    </div>
+    <div class="faq-item">
+        <div class="faq-q">Q: What is the difference between Easy, Medium, and Hard mode?</div>
+        <div class="faq-a">Easy mode uses the 500 most common English words — short, familiar words that feel natural to type quickly. Medium includes the top 1500 words, including longer vocabulary. Hard mode introduces uncommon, longer, and sometimes technical words that challenge advanced typists. We recommend Easy for beginners and anyone improving accuracy, Medium for intermediate practice, and Hard for competitive preparation.</div>
+    </div>
+    <div class="faq-item">
+        <div class="faq-q">Q: Is 60 WPM a good typing speed?</div>
+        <div class="faq-a">Yes — 60 WPM is comfortably above average and qualifies as a professional typing speed for most office roles. Some jobs (legal secretary, court reporter, medical transcriptionist) require 80–100+ WPM. For most knowledge workers, 60 WPM with high accuracy is a strong and practical speed.</div>
+    </div>
+    <div class="faq-item">
+        <div class="faq-q">Q: Can I use Rocket Typing on a phone?</div>
+        <div class="faq-a">Yes — the site works on phones and tablets. However, for the Learn course and practice tests, a physical keyboard gives the best experience, as touch keyboard typing uses a completely different technique from desktop typing.</div>
+    </div>
+    <div class="faq-item">
+        <div class="faq-q">Q: My WPM is inconsistent — sometimes 70, sometimes 50. Why?</div>
+        <div class="faq-a">This is extremely common and reflects your consistency score. WPM varies based on which words appear in the test (hard words slow you down), your focus level, fatigue, and ambient stress. The "consistency" metric on Rocket Typing measures the evenness of your pace — high consistency means you type at a steady rhythm rather than bursting and stalling. Improving consistency is often more valuable than chasing a peak WPM.</div>
+    </div>
+
+    <a href="/" class="back-link">← Back to Typing Test</a>
+</div>
+</div>
+
+<footer>
+    <p style="margin:0;">
+        <a href="/">Home</a> |
+        <a href="/learn.html">Learn</a> |
+        <a href="/about.html">About</a> |
+        <a href="/privacy.html">Privacy Policy</a> |
+        <a href="/terms.html">Terms of Service</a> |
+        <a href="/contact.html">Contact</a>
+    </p>
+    <p style="margin:5px 0 0;font-size:12px;color:#555;">&copy; 2026 <strong style="color:#e2b714;">Rocket Typing</strong>. All rights reserved.</p>
+</footer>
 
 </body>
 </html>
