@@ -3436,8 +3436,11 @@ if (!testActive && e.key !== 'Tab') {
             const registeredName = window._currentUser?.name;
             window._lastConsistency = consistency; // store for profile stats
             // Always save to localStorage; Firestore leaderboard only for logged-in + time mode
+            // SECURITY: wpm/accuracy are NOT passed as params — saveScore recalculates
+            // them from closure variables (correctKeystrokes, startTime) that are `let`
+            // declarations and therefore inaccessible from the browser console.
             if (config.mode === 'time') {
-                saveScore(registeredName || 'guest', wpm, accuracy, config.time);
+                saveScore(registeredName || 'guest', config.time);
             }
 
             confetti({
@@ -3935,48 +3938,88 @@ function sanitizeStr(s) {
         .replace(/'/g, '&#x27;')
         .replace(/\//g, '&#x2F;');
 }
-        async function saveScore(name, wpm, accuracy, duration) {
+        // ═══════════════════════════════════════════════════════════════════
+        //  saveScore — SECURITY HARDENED (v4)
+        //
+        //  WPM and accuracy are NO LONGER parameters.  They are recalculated
+        //  here from the closure variables correctKeystrokes / totalKeystrokes /
+        //  startTime / missedChars, which are `let` declarations in this script
+        //  block and therefore NOT accessible from the browser console.
+        //
+        //  A console attacker calling  saveScore("me", 30)  gets wpm=0 and is
+        //  rejected before any Firestore write happens.
+        //
+        //  A console attacker calling  window.setDoc(window.doc(window.db,...))
+        //  directly is stopped by the Firestore Security Rules, which now
+        //  cross-validate correctKeystrokes / keystrokeCount / elapsedMs
+        //  against wpm and testDuration — fake values that aren't self-
+        //  consistent are rejected at the database level.
+        // ═══════════════════════════════════════════════════════════════════
+        async function saveScore(name, duration) {
             const authUser = auth.currentUser;
-            const uid = authUser ? authUser.uid : (window._currentUser?.uid || 'guest');
+            if (!authUser) return; // must be signed in — no guest writes
 
-            // ── Save every run to localStorage — used by profile stats, zero Firestore reads ──
-            if (wpm > 0) {
-                try {
-                    const KEY = 'rt_scores_' + uid;
-                    let scores = [];
-                    try { scores = JSON.parse(localStorage.getItem(KEY) || '[]'); } catch(_e) { scores = []; }
-                    scores.push({
-                        wpm:          wpm,
-                        accuracy:     accuracy,
-                        testDuration: duration,
-                        time:         Date.now(),
-                        consistency:  typeof window._lastConsistency === 'number' ? window._lastConsistency : null
-                    });
-                    if (scores.length > 200) scores = scores.slice(-200); // cap at 200 runs
-                    localStorage.setItem(KEY, JSON.stringify(scores));
-                } catch (lsErr) { console.warn('localStorage score save failed:', lsErr); }
-            }
+            // ── Anti-cheat: recalculate from closure state, not from params ──
+            // These `let` variables live in this script's lexical scope.
+            // They are NOT on window, so they cannot be set via DevTools console.
+            const _now         = Date.now();
+            const _elapsedMs   = startTime ? (_now - startTime) : 0;
+            const _elapsedMin  = _elapsedMs / 60000 || 0.001;
+            const _wpm         = Math.max(0, Math.round(correctKeystrokes / 5 / _elapsedMin));
+            const _rawWpm      = Math.max(0, Math.round(totalKeystrokes   / 5 / _elapsedMin));
+            const _typedErrors = Math.max(0, totalKeystrokes - correctKeystrokes);
+            const _totalErrors = _typedErrors + (missedChars || 0);
+            const _accuracy    = (correctKeystrokes + _totalErrors > 0)
+                ? Math.round((correctKeystrokes / (correctKeystrokes + _totalErrors)) * 100)
+                : 100;
+            const _ck          = correctKeystrokes; // correct keystrokes (anti-cheat field)
+            const _ksc         = totalKeystrokes;   // total  keystrokes  (anti-cheat field)
 
-            // ── Musk Score: accumulate total seconds typed ─────────────────────
-            if (wpm > 0) {
-                try {
-                    const MUSK_KEY = 'rt_musk_' + uid;
-                    const prevSecs = parseFloat(localStorage.getItem(MUSK_KEY) || '0');
-                    // duration = the test's chosen time (for time mode) or elapsed seconds
-                    const thisSecs = Math.round((Date.now() - (window._lastTestStartTime || Date.now())) / 1000);
-                    const addSecs  = Math.max(1, thisSecs);
-                    const newTotal = prevSecs + addSecs;
-                    localStorage.setItem(MUSK_KEY, newTotal.toString());
+            // ── Client-side sanity gates ─────────────────────────────────────
+            // Firestore rules enforce the same checks server-side; these are a
+            // fast-fail before we even attempt a network request.
+            if (_wpm    <= 0)                { console.warn('[RT] Score rejected: wpm=0');              return; }
+            if (_wpm    >= 220)              { console.warn('[RT] Score rejected: wpm unrealistic');     return; }
+            if (_accuracy < 50)              { console.warn('[RT] Score rejected: accuracy < 50');       return; }
+            if (_elapsedMs < duration * 900) { console.warn('[RT] Score rejected: test ended too fast'); return; }
+            if (_ksc < _wpm * 0.3)           { console.warn('[RT] Score rejected: too few keystrokes'); return; }
 
-                    // Fire milestone toast if a new whole Musk Score was just crossed
-                    const prevScore = Math.floor(prevSecs / 60);
-                    const newScore  = Math.floor(newTotal / 60);
-                    if (newScore > prevScore) {
-                        _showMuskToast(newScore, Math.round(newTotal));
-                    }
-                } catch(_me) {}
-            }
+            const uid = authUser.uid;
+
+            // ── Save every run to localStorage — profile stats, zero Firestore reads ──
             try {
+                const KEY = 'rt_scores_' + uid;
+                let scores = [];
+                try { scores = JSON.parse(localStorage.getItem(KEY) || '[]'); } catch(_e) { scores = []; }
+                scores.push({
+                    wpm:          _wpm,
+                    accuracy:     _accuracy,
+                    testDuration: duration,
+                    time:         _now,
+                    consistency:  typeof window._lastConsistency === 'number' ? window._lastConsistency : null
+                });
+                if (scores.length > 200) scores = scores.slice(-200);
+                localStorage.setItem(KEY, JSON.stringify(scores));
+            } catch (lsErr) { console.warn('localStorage score save failed:', lsErr); }
+
+            // ── Musk Score: accumulate total seconds typed ───────────────────
+            try {
+                const MUSK_KEY = 'rt_musk_' + uid;
+                const prevSecs = parseFloat(localStorage.getItem(MUSK_KEY) || '0');
+                const addSecs  = Math.max(1, Math.round(_elapsedMs / 1000));
+                const newTotal = prevSecs + addSecs;
+                localStorage.setItem(MUSK_KEY, newTotal.toString());
+                const prevScore = Math.floor(prevSecs / 60);
+                const newScore  = Math.floor(newTotal / 60);
+                if (newScore > prevScore) {
+                    _showMuskToast(newScore, Math.round(newTotal));
+                }
+            } catch(_me) {}
+
+            // ── Firestore write ──────────────────────────────────────────────
+            try {
+                // Always re-fetch username/country from Firestore — prevents
+                // a cheater from spoofing their display name via localStorage.
                 let verifiedName    = name;
                 let verifiedCountry = window._currentUser?.country || '';
                 try {
@@ -3992,17 +4035,21 @@ function sanitizeStr(s) {
                 const existing     = await getDoc(userRef);
                 const existingData = existing.data();
 
-                if (wpm > 300) { console.warn('Score rejected: WPM too high'); return; }
-                if (!existing.exists() || wpm > (existingData?.wpm || 0)) {
+                if (!existing.exists() || _wpm > (existingData?.wpm || 0)) {
                     await setDoc(userRef, {
-                        name:         verifiedName,
-                        wpm:          wpm,
-                        accuracy:     accuracy,
-                        testDuration: duration,
-                        country:      verifiedCountry,
-                        uid:          authUser.uid,
-                        time:         Date.now(),
-                        consistency:  typeof window._lastConsistency === 'number' ? window._lastConsistency : null
+                        name:              verifiedName,
+                        wpm:               _wpm,
+                        accuracy:          _accuracy,
+                        testDuration:      duration,
+                        country:           verifiedCountry,
+                        uid:               authUser.uid,
+                        time:              _now,
+                        // ── Anti-cheat fields — cross-validated by Firestore rules ──
+                        // A direct window.setDoc() call without consistent values
+                        // for these three fields is rejected by the security rules.
+                        correctKeystrokes: _ck,
+                        keystrokeCount:    _ksc,
+                        elapsedMs:         _elapsedMs
                     });
                 }
             } catch (e) {
