@@ -34,8 +34,8 @@
    LEARN PAGE — Rocket Typing
 ═══════════════════════════════════════════════════════════════ */
 body { overflow-y: auto !important; }
-/* Lesson view gets no-scroll treatment */
-body.lesson-active { overflow: hidden !important; }
+/* Lesson view scrollable */
+body.lesson-active { overflow-y: auto !important; }
 .lv { display: none !important; }
 .lv.lv-active { display: block !important; }
 #view-lesson.lv.lv-active { display: flex !important; }
@@ -150,14 +150,14 @@ body.lesson-active { overflow: hidden !important; }
 /* Stage chip (used in hands panel title) */
 .lv-stage-chip { display:inline-block; font-size:9px; letter-spacing:2px; text-transform:uppercase; color:#e2b714; background:rgba(226,183,20,0.1); border:1px solid rgba(226,183,20,0.25); padding:2px 10px; border-radius:50px; }
 
-/* ─── LESSON VIEW — no-scroll single page ─── */
+/* ─── LESSON VIEW ─── */
 #view-lesson {
-  padding:72px 16px 8px;
-  height:100vh;
+  padding:66px 16px 24px;
+  min-height:100vh;
   box-sizing:border-box;
   display:flex;
   flex-direction:column;
-  overflow:hidden;
+  overflow:visible;
 }
 .lv-topbar { display:flex; align-items:center; gap:14px; margin-bottom:10px; flex-shrink:0; }
 .lv-back {
@@ -173,82 +173,41 @@ body.lesson-active { overflow: hidden !important; }
 
 /* New lesson grid */
 .lv-lesson-grid {
-  display:grid;
-  grid-template-columns:260px 1fr;
-  gap:14px;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
   flex:1;
-  overflow:hidden;
-  min-height:0;
 }
-@media(max-width:860px){
-  .lv-lesson-grid{ grid-template-columns:1fr; overflow-y:auto; }
+/* Hands panel is gone — single-column layout */
+.lv-topbar-info {
+  display:flex; align-items:center; gap:8px; flex-shrink:0; overflow:hidden;
+}
+/* Keyboard scale wrapper */
+#kb-scale-wrap {
+  width:100%;
 }
 
-/* Left: Hands Panel */
-.lv-hands-panel {
-  display:flex; flex-direction:column; gap:8px;
-  background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.07);
-  border-radius:16px; padding:12px; overflow:hidden;
-}
-.lv-hands-title {
-  display:flex; flex-direction:column; gap:4px; flex-shrink:0;
-}
-.lv-hands-wrap {
-  flex:1; display:flex; align-items:center; justify-content:center; min-height:0;
-}
-#hands-svg { width:100%; max-height:200px; }
 
-/* Finger press animation */
-@keyframes fingerPress {
-  0%   { transform: translateY(0px); }
-  40%  { transform: translateY(7px); }
-  70%  { transform: translateY(7px); }
-  100% { transform: translateY(0px); }
-}
-@keyframes fingerPressThumb {
-  0%   { transform: rotate(-30deg) translateY(0px); }
-  40%  { transform: rotate(-30deg) translateY(6px); }
-  70%  { transform: rotate(-30deg) translateY(6px); }
-  100% { transform: rotate(-30deg) translateY(0px); }
-}
-@keyframes fingerPressThumbR {
-  0%   { transform: rotate(30deg) translateY(0px); }
-  40%  { transform: rotate(30deg) translateY(6px); }
-  70%  { transform: rotate(30deg) translateY(6px); }
-  100% { transform: rotate(30deg) translateY(0px); }
-}
-.finger-active {
-  animation: fingerPress 0.45s ease-in-out;
-}
-.finger-active-th-l rect {
-  animation: fingerPressThumb 0.45s ease-in-out !important;
-}
-.finger-active-th-r rect {
-  animation: fingerPressThumbR 0.45s ease-in-out !important;
-}
-/* Highlight active finger */
-.finger-glow rect, .finger-glow ellipse {
-  fill: #e2b714 !important;
-  filter: drop-shadow(0 0 8px rgba(226,183,20,0.9));
-}
-.finger-glow-teal rect, .finger-glow-teal ellipse {
-  fill: #00e6cc !important;
-  filter: drop-shadow(0 0 8px rgba(0,230,204,0.9));
-}
+/* Hand panel merged into keyboard overlay */
+.lv-hands-panel { display:none; }
+.lv-hands-wrap  { display:none; }
+#hands-svg      { display:none; }
+
+
 
 /* Right column */
 .lv-right-col {
-  display:flex; flex-direction:column; gap:10px; overflow:hidden; min-height:0;
+  display:flex; flex-direction:column; gap:10px; flex:1;
 }
 
 /* Keyboard Container */
 .lv-kb-container {
   background:rgba(0,0,0,0.35); border:1px solid rgba(255,255,255,0.07);
-  border-radius:14px; padding:10px 10px 8px;
+  border-radius:14px; padding:10px 10px 12px;
   display:flex; flex-direction:column; align-items:center;
-  overflow:hidden; flex-shrink:0;
+  overflow:visible; flex-shrink:0;
 }
-#learn-kb { display:flex; flex-direction:column; gap:3px; width:100%; }
+#learn-kb { display:flex; flex-direction:column; gap:3px; width:100%; position:relative; }
 .lk-row { display:flex; gap:3px; justify-content:center; }
 .lk-key {
   height:35px; background:rgba(30,30,70,0.8); border:1px solid rgba(255,255,255,0.1);
@@ -302,7 +261,11 @@ body.lesson-active { overflow: hidden !important; }
 #lv-exercise {
   background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.08);
   border-radius:14px; padding:14px;
-  flex:1; min-height:0; display:flex; flex-direction:column;
+  flex:1; display:flex; flex-direction:column;
+}
+.lv-action-row {
+  margin-top:auto;
+  padding-top:12px;
 }
 #lv-ex-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; flex-shrink:0; }
 #lv-ex-name { font-size:11px; font-weight:900; color:#e2b714; letter-spacing:2px; text-transform:uppercase; }
@@ -330,7 +293,7 @@ body.lesson-active { overflow: hidden !important; }
 .lv-stat-lbl { font-size:9px; color:rgba(255,255,255,0.35); text-transform:uppercase; letter-spacing:1.5px; }
 .lv-stat-val { font-size:18px; font-weight:900; color:#e2b714; }
 
-.lv-action-row { display:flex; gap:12px; margin-top:12px; flex-wrap:wrap; flex-shrink:0; }
+.lv-action-row { display:flex; gap:12px; flex-wrap:wrap; flex-shrink:0; }
 .btn-continue,.btn-retry { display:none; border:none; cursor:pointer; font-family:'Roboto Mono',monospace; font-weight:900; letter-spacing:1px; padding:12px 28px; border-radius:50px; transition:all 0.25s ease; font-size:14px; }
 .btn-continue { background:linear-gradient(135deg,#e2b714,#ff9900); color:#0a0a23; box-shadow:0 0 20px rgba(226,183,20,0.4); animation:glowPulse 2s infinite alternate; }
 .btn-continue:hover { transform:translateY(-3px) scale(1.05); box-shadow:0 0 35px rgba(255,153,0,0.7); }
@@ -387,14 +350,12 @@ body.lesson-active { overflow: hidden !important; }
 <div id="app">
 
 <!-- HEADER -->
-<header id="main-header" style="position:absolute;top:20px;left:20px;right:20px;display:flex;align-items:center;justify-content:space-between;z-index:10;">
-  <div style="display:flex;flex-direction:column;align-items:flex-start;cursor:pointer;" onclick="window.location.href='index.html'">
-    <img src="images/logo.png" alt="Rocket Typing" style="width:120px;margin-bottom:5px;" />
-    <div>
-      <button onclick="event.stopPropagation();window.location.href='index.html'" class="play-game-btn" style="font-size:13px;padding:10px 22px;">
-        <span>⌨️</span> TYPING TEST
-      </button>
-    </div>
+<header id="main-header" style="position:fixed;top:0;left:0;right:0;height:58px;display:flex;align-items:center;justify-content:space-between;z-index:9999;background:rgba(10,10,35,0.97);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid rgba(226,183,20,0.2);padding:0 24px;box-sizing:border-box;">
+  <div style="display:flex;align-items:center;gap:14px;cursor:pointer;" onclick="window.location.href='index.html'">
+    <img src="images/logo.png" alt="Rocket Typing" style="height:34px;width:auto;" />
+    <button onclick="event.stopPropagation();window.location.href='index.html'" class="play-game-btn" style="font-size:12px;padding:8px 18px;">
+      <span>⌨️</span> TYPING TEST
+    </button>
   </div>
   <div id="lp-xp-wrap">
     <span id="lp-level-badge">Lv. 1</span>
@@ -445,113 +406,35 @@ body.lesson-active { overflow: hidden !important; }
 <div id="view-lesson" class="lv">
   <div class="lv-topbar">
     <button class="lv-back" onclick="lp.showCurriculum()">← Lessons</button>
+    <div class="lv-topbar-info">
+      <span class="lv-stage-chip" id="lv-stage-chip">STAGE 1</span>
+      <span id="lv-lesson-title" style="font-size:12px;color:rgba(255,255,255,0.8);font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:175px;"></span>
+    </div>
     <div id="lv-prog-bar-wrap"><div id="lv-prog-fill"></div></div>
     <span id="lv-ex-indicator">1 / 1</span>
   </div>
 
-  <!-- Main lesson grid: hands anim + keyboard side by side, then typing below -->
+  <!-- Single-column: keyboard + exercise -->
   <div class="lv-lesson-grid">
-
-    <!-- LEFT: Animated Hands Panel -->
-    <div class="lv-hands-panel">
-      <div class="lv-hands-title">
-        <span class="lv-stage-chip" id="lv-stage-chip">STAGE 1</span>
-        <span id="lv-lesson-title" style="font-size:14px;color:#fff;font-weight:900;"></span>
-      </div>
-      <!-- SVG Hands Animation -->
-      <div class="lv-hands-wrap">
-        <svg id="hands-svg" viewBox="0 0 340 190" xmlns="http://www.w3.org/2000/svg">
-          <!-- LEFT HAND -->
-          <g id="lhand" transform="translate(10,10)">
-            <!-- Palm -->
-            <ellipse cx="75" cy="148" rx="52" ry="32" fill="#c8956c" stroke="#a0724a" stroke-width="1.5"/>
-            <!-- Fingers: pinky, ring, middle, index, thumb -->
-            <!-- Pinky (LP) -->
-            <g id="lf-LP">
-              <rect x="18" y="82" width="16" height="56" rx="8" fill="#c8956c" stroke="#a0724a" stroke-width="1.5"/>
-              <ellipse cx="26" cy="82" rx="8" ry="8" fill="#c8956c" stroke="#a0724a" stroke-width="1.5"/>
-            </g>
-            <!-- Ring (LR) -->
-            <g id="lf-LR">
-              <rect x="37" y="68" width="18" height="72" rx="9" fill="#c8956c" stroke="#a0724a" stroke-width="1.5"/>
-              <ellipse cx="46" cy="68" rx="9" ry="9" fill="#c8956c" stroke="#a0724a" stroke-width="1.5"/>
-            </g>
-            <!-- Middle (LM) -->
-            <g id="lf-LM">
-              <rect x="58" y="60" width="18" height="78" rx="9" fill="#c8956c" stroke="#a0724a" stroke-width="1.5"/>
-              <ellipse cx="67" cy="60" rx="9" ry="9" fill="#c8956c" stroke="#a0724a" stroke-width="1.5"/>
-            </g>
-            <!-- Index (LI) -->
-            <g id="lf-LI">
-              <rect x="79" y="66" width="18" height="72" rx="9" fill="#c8956c" stroke="#a0724a" stroke-width="1.5"/>
-              <ellipse cx="88" cy="66" rx="9" ry="9" fill="#c8956c" stroke="#a0724a" stroke-width="1.5"/>
-            </g>
-            <!-- Thumb (TH) -->
-            <g id="lf-TH">
-              <rect x="104" y="118" width="16" height="40" rx="8" transform="rotate(-30,112,138)" fill="#c8956c" stroke="#a0724a" stroke-width="1.5"/>
-            </g>
-            <!-- Fingernails -->
-            <rect x="20" y="84" width="12" height="8" rx="4" fill="#f5c9a3" opacity="0.7"/>
-            <rect x="39" y="70" width="14" height="9" rx="4" fill="#f5c9a3" opacity="0.7"/>
-            <rect x="60" y="62" width="14" height="9" rx="4" fill="#f5c9a3" opacity="0.7"/>
-            <rect x="81" y="68" width="14" height="9" rx="4" fill="#f5c9a3" opacity="0.7"/>
-          </g>
-
-          <!-- RIGHT HAND -->
-          <g id="rhand" transform="translate(182,10)">
-            <!-- Palm -->
-            <ellipse cx="75" cy="148" rx="52" ry="32" fill="#c8956c" stroke="#a0724a" stroke-width="1.5"/>
-            <!-- Index (RI) -->
-            <g id="rf-RI">
-              <rect x="37" y="66" width="18" height="72" rx="9" fill="#c8956c" stroke="#a0724a" stroke-width="1.5"/>
-              <ellipse cx="46" cy="66" rx="9" ry="9" fill="#c8956c" stroke="#a0724a" stroke-width="1.5"/>
-            </g>
-            <!-- Middle (RM) -->
-            <g id="rf-RM">
-              <rect x="58" y="60" width="18" height="78" rx="9" fill="#c8956c" stroke="#a0724a" stroke-width="1.5"/>
-              <ellipse cx="67" cy="60" rx="9" ry="9" fill="#c8956c" stroke="#a0724a" stroke-width="1.5"/>
-            </g>
-            <!-- Ring (RR) -->
-            <g id="rf-RR">
-              <rect x="79" y="68" width="18" height="72" rx="9" fill="#c8956c" stroke="#a0724a" stroke-width="1.5"/>
-              <ellipse cx="88" cy="68" rx="9" ry="9" fill="#c8956c" stroke="#a0724a" stroke-width="1.5"/>
-            </g>
-            <!-- Pinky (RP) -->
-            <g id="rf-RP">
-              <rect x="100" y="82" width="16" height="56" rx="8" fill="#c8956c" stroke="#a0724a" stroke-width="1.5"/>
-              <ellipse cx="108" cy="82" rx="8" ry="8" fill="#c8956c" stroke="#a0724a" stroke-width="1.5"/>
-            </g>
-            <!-- Thumb (TH right) -->
-            <g id="rf-TH">
-              <rect x="6" y="118" width="16" height="40" rx="8" transform="rotate(30,14,138)" fill="#c8956c" stroke="#a0724a" stroke-width="1.5"/>
-            </g>
-            <!-- Fingernails -->
-            <rect x="39" y="68" width="14" height="9" rx="4" fill="#f5c9a3" opacity="0.7"/>
-            <rect x="60" y="62" width="14" height="9" rx="4" fill="#f5c9a3" opacity="0.7"/>
-            <rect x="81" y="70" width="14" height="9" rx="4" fill="#f5c9a3" opacity="0.7"/>
-            <rect x="102" y="84" width="12" height="8" rx="4" fill="#f5c9a3" opacity="0.7"/>
-          </g>
-
-          <!-- Next key label -->
-          <text id="hands-key-label" x="170" y="185" text-anchor="middle" font-family="Roboto Mono,monospace" font-size="11" fill="rgba(255,255,255,0.5)">waiting…</text>
-        </svg>
-      </div>
-      <!-- Next key hint (compact, no instruction text) -->
-      <div id="lv-next-key-hint">
-        <div><div class="nkh-label">Next Key</div><div class="nkh-key" id="nkh-char">—</div></div>
-        <div class="nkh-finger"><div class="nkh-dot" id="nkh-dot"></div><span id="nkh-fname">—</span></div>
-      </div>
-    </div>
-
-    <!-- RIGHT: Keyboard + Exercise -->
     <div class="lv-right-col">
-      <!-- Keyboard -->
-      <div class="lv-kb-container">
-        <div id="learn-kb"></div>
-        <div id="lv-finger-legend"></div>
-      </div>
 
-      <!-- Exercise area -->
+      <!-- ── Keyboard + Exercise ── -->
+      <div class="lv-kb-container">
+        <div id="kb-scale-wrap">
+          <div id="learn-kb"></div>
+
+        </div><!-- #kb-scale-wrap -->
+
+        <!-- Next Key hint (below keyboard) -->
+        <div id="lv-next-key-hint" style="margin-top:10px;">
+          <div><div class="nkh-label">Next Key</div><div class="nkh-key" id="nkh-char">—</div></div>
+          <div class="nkh-finger"><div class="nkh-dot" id="nkh-dot"></div><span id="nkh-fname">—</span></div>
+        </div>
+
+        <div id="lv-finger-legend"></div>
+      </div><!-- .lv-kb-container -->
+
+      <!-- ── Exercise area ── -->
       <div id="lv-exercise">
         <div id="lv-ex-header">
           <span id="lv-ex-name">Exercise 1</span>
@@ -570,9 +453,9 @@ body.lesson-active { overflow: hidden !important; }
           <button class="btn-continue" id="btn-continue" onclick="lp.nextExercise()">Next Exercise →</button>
           <button class="btn-retry"    id="btn-retry"    onclick="lp.retryExercise()">↺ Try Again</button>
         </div>
-      </div>
-    </div>
+      </div><!-- #lv-exercise -->
 
+    </div><!-- .lv-right-col -->
   </div><!-- .lv-lesson-grid -->
 </div>
 
@@ -888,16 +771,22 @@ function buildLegend(){
   });
 }
 function scaleKB(){
-  var wrap=document.querySelector('.lv-kb-container');
+  var container=document.querySelector('.lv-kb-container');
+  var kbWrap=document.getElementById('kb-scale-wrap');
   var kb=document.getElementById('learn-kb');
-  if(!wrap||!kb)return;
-  var avail=wrap.clientWidth-28;
+  if(!container||!kbWrap||!kb)return;
+  /* Scale the whole wrapper (keyboard + transparent hand overlay) together */
+  var avail=container.clientWidth-28;
   var natural=14*(U+G)+2;
   if(avail<natural){
     var sc=avail/natural;
-    kb.style.transform='scale('+sc+')';kb.style.transformOrigin='top center';
-    kb.style.marginBottom=((sc-1)*kb.scrollHeight)+'px';
-  }else{kb.style.transform='';kb.style.marginBottom='';}
+    kbWrap.style.transform='scale('+sc+')';
+    kbWrap.style.transformOrigin='top center';
+    kbWrap.style.marginBottom=((sc-1)*kb.scrollHeight)+'px';
+  }else{
+    kbWrap.style.transform='';
+    kbWrap.style.marginBottom='';
+  }
 }
 
 function setTarget(ch){
@@ -1165,7 +1054,7 @@ window.lp={
     document.querySelectorAll('.lv').forEach(function(el){el.classList.remove('lv-active');});
     var el=document.getElementById('view-'+name);if(el)el.classList.add('lv-active');
     S.view=name;
-    if(name==='lesson'){document.body.classList.add('lesson-active');}
+    if(name==='lesson'){document.body.classList.add('lesson-active');window.scrollTo(0,0);}
     else{document.body.classList.remove('lesson-active');window.scrollTo(0,0);}
   },
   showCurriculum:function(){lp.showView('curriculum');buildCurriculum();updateXPBar();},
