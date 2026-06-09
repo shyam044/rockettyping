@@ -1419,8 +1419,20 @@ body.typing-active #km-fr {
     </div>
 
     <!-- Sunday Championship button — placed exactly below PLAY GAME -->
-    <div id="sunday-champ-nav"  ></div>
+    <div id="sunday-champ-nav"></div>
+
 </div>
+
+    <!-- Live WPM — absolutely positioned between logo and typing text, never shifts layout -->
+    <div id="live-wpm-display" style="display:none;">
+        <div class="live-wpm-circle">
+            <div class="live-wpm-ring"></div>
+            <div class="live-wpm-inner">
+                <span class="live-wpm-number" id="live-wpm-number">0</span>
+                <span class="live-wpm-label">WPM</span>
+            </div>
+        </div>
+    </div>
             <!-- Right-side header group: Login/Signup + Leaderboard side by side -->
 <div id="header-right-group" style="display:flex;align-items:center;gap:8px;z-index:35;position:relative;top:-13px;">
     <div id="header-auth-btn" style="display:flex;align-items:center;"></div>
@@ -1748,7 +1760,7 @@ body.typing-active #km-fr {
 
         <!-- CENTER: Buttons -->
         <div class="result-buttons">
-            <button id="restart">LAUNCH NEW MISSION</button>
+            <button id="restart">RETAKE TEST</button>
             <button onclick="shareScore()" class="share-button">
                 <i class="fa-brands fa-x-twitter"></i> SHARE ON X
             </button>
@@ -2862,10 +2874,12 @@ nouns: ["ability", "absence", "academy", "account", "achievement", "acid", "acti
             }
 
             if (config.mode === "words") {
-                // generate exactly the number of words requested
-                while (words.length < config.words) {
+                // Generate only an initial batch; more words are added lazily as the user types
+                // (same strategy as time mode). This prevents browser hang on huge word counts.
+                const initialBatch = Math.min(config.words, 100);
+                while (words.length < initialBatch) {
                     const chunk = generateSentence().split(" ");
-                    for (let i = 0; i < chunk.length && words.length < config.words; i++) {
+                    for (let i = 0; i < chunk.length && words.length < initialBatch; i++) {
                         words.push(chunk[i]);
                     }
                 }
@@ -3013,21 +3027,23 @@ nouns: ["ability", "absence", "academy", "account", "achievement", "acid", "acti
             const x = wordLeft + targetLeft + targetW;
             const y = wordTop  + targetTop;
 
-            // Row-based scrolling — O(1) Map lookup instead of O(n) findIndex
-            const snappedWordTop   = Math.round(wordTop / 5) * 5;
-            const currentRowIdx    = rowTopToIndex.has(snappedWordTop)
-                ? rowTopToIndex.get(snappedWordTop)
-                : cachedRows.findIndex(r => Math.abs(r - wordTop) < 8);
+            // ── Geometry-based scrolling ───────────────────────────────────────────
+            // The old approach looked up the active word's row index in cachedRows[].
+            // cachedRows is populated by scanning only the FIRST 60 word-spans, so any
+            // word beyond index ~60 had no cached row → currentRowIdx = -1 → scroll
+            // condition never fired → words past line 3 were never visible.
+            //
+            // New approach: use raw offsetTop geometry. No row cache needed for scrolling.
+            // Works correctly for 10 words or 10,000,000 words.
             const currentScrollTop = wordsDiv.scrollTop;
-            // Find the first visible row (O(n) but runs only when needed + list is short ~3-6 rows)
-            const visibleRowIdx    = cachedRows.findIndex(r => r >= currentScrollTop - 5);
-
-            if (currentRowIdx - visibleRowIdx >= 2 && visibleRowIdx >= 0) {
-                const nextRowTop = cachedRows[visibleRowIdx + 1];
-                if (nextRowTop !== undefined) {
-                    // Direct assignment — never triggers CSS scroll-behavior animation
-                    wordsDiv.scrollTop = nextRowTop;
-                }
+            const containerH = wordsDiv.clientHeight || 162;
+            // Estimate row height from first two cached rows (always valid from the initial render)
+            let rowH = 60; // safe fallback: 36px × 1.5 line-height + 6px flex gap
+            if (cachedRows.length >= 2) rowH = cachedRows[1] - cachedRows[0];
+            // Advance scrollTop when the active word's bottom edge would be hidden below the container.
+            // Scroll so the active word appears as the 2nd visible row (one row of context above it).
+            if (wordTop + rowH > currentScrollTop + containerH) {
+                wordsDiv.scrollTop = Math.max(0, wordTop - rowH);
             }
 
             caret.style.height    = `${targetH}px`;
@@ -3039,7 +3055,10 @@ nouns: ["ability", "absence", "academy", "account", "achievement", "acid", "acti
         }
 
         function handleKeydown(e) {
-if (!testActive && e.key !== 'Tab') {
+// Only start the test on printable single-character keys (a-z, 0-9, punctuation, space).
+// This intentionally excludes F1-F12, Escape, Tab, Arrow keys, Shift, Ctrl, etc.
+// e.key.length === 1 is true for every typeable character and false for all named keys.
+if (!testActive && e.key.length === 1) {
     testActive = true;
     startTimer();
     caret.classList.remove('blink');
@@ -3135,7 +3154,7 @@ if (!testActive && e.key !== 'Tab') {
                 }
                 currentLetterIndex++;
                 if (config.mode === "words" &&
-                    currentWordIndex === words.length - 1 &&
+                    currentWordIndex === config.words - 1 &&
                     currentLetterIndex === words[currentWordIndex].length) {
                     endTest();
                 }
@@ -3190,7 +3209,7 @@ if (!testActive && e.key !== 'Tab') {
             if (currentLetterIndex === words[currentWordIndex].length) {
                 // Word complete, wait for space
             }
-            if (config.mode === 'words' && currentWordIndex === words.length - 1 && currentLetterIndex === words[currentWordIndex].length) {
+            if (config.mode === 'words' && currentWordIndex === config.words - 1 && currentLetterIndex === words[currentWordIndex].length) {
                 timerDiv.textContent = 0;
                 endTest();
             }
@@ -3212,7 +3231,7 @@ if (!testActive && e.key !== 'Tab') {
                 }
 
                 if (config.mode === 'words') {
-                    timerDiv.textContent = words.length - currentWordIndex;
+                    timerDiv.textContent = config.words - currentWordIndex;
                 }
                 currentLetterIndex = 0;
                 extendWordsIfNeeded();
@@ -3225,21 +3244,27 @@ if (!testActive && e.key !== 'Tab') {
             }
         }
         function extendWordsIfNeeded() {
-            if (config.mode !== 'time') return;
-            // Trigger earlier (50-word buffer) so we never get close to the end,
-            // and do ALL DOM work inside setTimeout so it never blocks a keystroke.
+            if (config.mode !== 'time' && config.mode !== 'words') return;
+            // For words mode: stop extending once we have reached the total target count
+            if (config.mode === 'words' && words.length >= config.words) return;
+            // Trigger with a 50-word buffer so we never reach the end of available words
             if (currentWordIndex > words.length - 50) {
+                const remaining = (config.mode === 'words') ? (config.words - words.length) : 150;
+                const batchSize = Math.min(150, remaining);
+                if (batchSize <= 0) return;
                 const newWords = [];
-                while (newWords.length < 150) {
+                while (newWords.length < batchSize) {
                     const chunk = generateSentence().split(" ");
-                    for (let i = 0; i < chunk.length; i++) newWords.push(chunk[i]);
+                    for (let i = 0; i < chunk.length && newWords.length < batchSize; i++) {
+                        newWords.push(chunk[i]);
+                    }
                 }
                 // Extend the logical array immediately (needed for boundary checks)
                 words = words.concat(newWords);
-                // Defer DOM work to the next macrotask — never blocks a keystroke
-                setTimeout(function() {
+
+                function _buildWordNodes(wordList) {
                     const frag = document.createDocumentFragment();
-                    newWords.forEach(function(word) {
+                    wordList.forEach(function(word) {
                         const wordSpan = document.createElement('div');
                         wordSpan.classList.add('word');
                         word.split('').forEach(function(letter) {
@@ -3250,14 +3275,45 @@ if (!testActive && e.key !== 'Tab') {
                         });
                         frag.appendChild(wordSpan);
                     });
-                    wordsDiv.appendChild(frag);
+                    return frag;
+                }
+
+                if (config.mode === 'words') {
+                    // Words mode: add DOM elements SYNCHRONOUSLY — they must be available
+                    // immediately for the next word the user advances to (no setTimeout delay).
+                    wordsDiv.appendChild(_buildWordNodes(newWords));
                     rowsCacheInvalid = true;
-                }, 0);
+                } else {
+                    // Time mode: defer DOM work to the next macrotask — never blocks a keystroke
+                    setTimeout(function() {
+                        wordsDiv.appendChild(_buildWordNodes(newWords));
+                        rowsCacheInvalid = true;
+                    }, 0);
+                }
             }
         }
         function startTimer() {
             startTime = Date.now();
             window._lastTestStartTime = startTime; // Musk Score: track start
+            // ── Live WPM: show circle, hide Sunday Champ ──
+            var liveWpmEl   = document.getElementById('live-wpm-display');
+            var sundayChamp = document.getElementById('sunday-champ-nav');
+            if (sundayChamp) sundayChamp.style.display = 'none';
+            if (liveWpmEl)  { liveWpmEl.style.display = 'block'; liveWpmEl.classList.add('show'); }
+            // kick off live WPM updater
+            if (window._liveWpmInterval) clearInterval(window._liveWpmInterval);
+            window._liveWpmInterval = setInterval(function() {
+                if (!testActive || !startTime) return;
+                var elapsed = (Date.now() - startTime) / 60000;
+                if (elapsed < 0.01) return;
+                var wpm = Math.round(correctKeystrokes / 5 / elapsed);
+                var numEl = document.getElementById('live-wpm-number');
+                if (numEl) {
+                    numEl.textContent = wpm;
+                    numEl.className = 'live-wpm-number' + (wpm >= 70 ? ' fast' : wpm >= 40 ? ' great' : ' slow');
+                }
+            }, 300);
+
             if (config.mode === 'time') {
                 timerInterval = setInterval(updateTimer, 1000);
             } else if (config.mode === 'quotes') {
@@ -3295,6 +3351,7 @@ if (!testActive && e.key !== 'Tab') {
         }
         function endTest() {
             clearInterval(timerInterval);
+            if (window._liveWpmInterval) { clearInterval(window._liveWpmInterval); window._liveWpmInterval = null; }
             testActive = false;
             input.blur();
             const elapsedMinutes = (Date.now() - startTime) / 60000 || 0.001;
@@ -3835,6 +3892,15 @@ if (!testActive && e.key !== 'Tab') {
         }
 
         function resetTest() {
+            // ── Live WPM: stop updater, hide circle, restore Sunday Champ ──
+            if (window._liveWpmInterval) { clearInterval(window._liveWpmInterval); window._liveWpmInterval = null; }
+            var liveWpmEl   = document.getElementById('live-wpm-display');
+            var sundayChamp = document.getElementById('sunday-champ-nav');
+            if (liveWpmEl)  { liveWpmEl.style.display = 'none'; liveWpmEl.classList.remove('show'); }
+            if (sundayChamp) sundayChamp.style.display = 'block';
+            var numEl = document.getElementById('live-wpm-number');
+            if (numEl) { numEl.textContent = '0'; numEl.className = 'live-wpm-number'; }
+
             document.getElementById("intro-text").style.display = "block";
             document.body.classList.remove('typing-active'); // PERF: restore bg animations
             document.body.classList.remove('test-running');  // PERF: reveal all header elements
