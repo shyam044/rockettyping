@@ -135,7 +135,9 @@
     #typing-stage {
       position: relative; z-index: 3;
       margin: 4px 0 0;
-      overflow: hidden; 
+      overflow: hidden;
+      /* PERF: isolate repaint of letters to this box only */
+      contain: layout style paint;
     }
 
     /* Side gradient fades */
@@ -162,8 +164,11 @@
       height: 88px;
       overflow-x: visible;
       white-space: nowrap;
-  transition: transform 0.09s cubic-bezier(0.23, 1, 0.32, 1);
+      transition: transform 0.09s cubic-bezier(0.23, 1, 0.32, 1);
       letter-spacing: 0.02em;
+      /* GPU layer — prevents full-page repaint on every translateX update */
+      will-change: transform;
+      transform: translateZ(0);
     }
 
     /* Words */
@@ -198,31 +203,48 @@
     .letter.correct {
       color: rgba(255,255,255,0.92);
     }
-    /* Incorrectly typed */
+    /* Incorrectly typed — NO text-shadow/wavy (both trigger expensive repaints per keystroke) */
     .letter.incorrect {
       color: #ff5555;
-      text-shadow: 0 0 12px rgba(255,60,60,0.6);
       text-decoration: underline;
       text-decoration-color: rgba(255,60,60,0.5);
-      text-decoration-style: wavy;
     }
     /* Next letter to type — subtly highlighted */
     .letter.next {
       color: rgba(255,255,255,0.65);
     }
 
-/* Caret - EXACTLY like index.html (smooth + GPU accelerated) */
+/* PERF FIX: Pause all cosmetic animations while race is active.
+   flame-idle, helm-breathe, visor-glint, hud-dot-pulse all run
+   continuously and steal compositor budget from caret + word updates. */
+body.race-active .flame-idle,
+body.race-active .pilot-group,
+body.race-active .visor-glint,
+body.race-active #typing-hud-dot {
+  animation-play-state: paused !important;
+}
+
+/* Freeze letter transitions during typing for zero-latency feedback */
+body.race-active #words .letter {
+  transition: none !important;
+}
+
+/* Boost caret transition during active race — spring physics */
+body.race-active #caret {
+  transition: transform 0.1s cubic-bezier(0.34, 1.4, 0.64, 1) !important;
+}
 #caret {
     position: absolute;
-    background: #00e6cc;                    /* ← same beautiful cyan-blue as index.html */
-    transition: transform 0.08s cubic-bezier(0.23, 1, 0.32, 1), height 0.08s ease;
-    width: 4px;                             /* ← same width as index.html */
-    border-radius: 4px;                     /* ← same roundness */
-    will-change: transform, height;         /* ← GPU performance boost */
+    background: #00e6cc;
+    /* Spring-like cubic-bezier: fast start, overshoots slightly, settles — like Monkeytype */
+    transition: transform 0.06s cubic-bezier(0.34, 1.56, 0.64, 1), height 0.06s ease;
+    width: 3px;
+    border-radius: 3px;
+    will-change: transform;
     left: 0;
     top: 0;
-    box-shadow: 0 0 12px #00e6cc, 
-                0 0 24px rgba(0, 230, 204, 0.6);
+    box-shadow: 0 0 8px #00e6cc,
+                0 0 18px rgba(0, 230, 204, 0.5);
     z-index: 999;
     pointer-events: none;
 }
@@ -262,6 +284,24 @@
       background: #e2b714;
       transform: scale(1.5);
       box-shadow: 0 0 6px rgba(226,183,20,0.7);
+    }
+    /* PERF: during race remove all transitions from rhythm dots so each
+       keystroke paint is instant — no transition queue build-up */
+    body.race-active .rhythm-dot {
+      transition: none !important;
+      box-shadow: none !important;
+    }
+    body.race-active .rhythm-dot.active {
+      box-shadow: none !important;
+    }
+    /* PERF: kill progress bar glow during race — repaints on every correct char */
+    body.race-active #typing-prog-fill {
+      box-shadow: none !important;
+      transition: width 0.08s linear !important;
+    }
+    /* PERF: during race, words container scrolls with a subtle smooth — feels glassy */
+    body.race-active #words {
+      transition: transform 0.08s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
     }
     /* Scanline on typing zone */
     #typing-scanline {
@@ -542,7 +582,7 @@
     }
     /* Hide once info panel (View Results) is showing */
     #lo-overlay.phase-landed #lo-skip-hint { opacity: 0; pointer-events: none; }
-    #lo-overlay { cursor: default; }
+    #lo-overlay { cursor: pointer; }
     #lo-view-results { cursor: pointer !important; }
     @keyframes skip-appear {
       0%   { opacity: 0; transform: translateY(14px) scale(0.92); }
@@ -1794,7 +1834,7 @@
   </div>
 
   <!-- Tap to skip button — always visible during animation -->
-  <button id="lo-skip-hint" onclick="completeLanding(true)">SKIP</button>
+  <button id="lo-skip-hint" onclick="completeLanding(true)">CLICK ANYWHERE TO SKIP</button>
 </div>
 
 <footer style="position:fixed;bottom:0;left:0;right:0;background:#1a2333;padding:12px;text-align:center;font-size:13px;color:#777;"><a href="index.html" style="color:#e2b714;text-decoration:none;">← Back to Typing Test</a> | © 2026 Rocket Typing • Pure typing adrenaline</footer>
@@ -1846,10 +1886,56 @@ auth.onAuthStateChanged(async (user) => {
 });
 
 /* ============================================================ SOUNDS ============================================================ */
-const sounds={ambient:new Audio('sounds/space-ambient.mp3'),boost:new Audio('sounds/rocket-boost.mp3'),typeCorrect:new Audio('sounds/type-correct.mp3'),typeIncorrect:new Audio('sounds/type-incorrect.mp3'),countdown:new Audio('sounds/countdown-beep.mp3'),startIgnition:new Audio('sounds/race-start.mp3'),win:new Audio('sounds/win-fanfare.mp3'),lose:new Audio('sounds/lose-sound.mp3'),finish:new Audio('sounds/finish-whoosh.mp3')};
+const sounds={ambient:new Audio('sounds/space-ambient.mp3'),boost:new Audio('sounds/rocket-boost.mp3'),countdown:new Audio('sounds/countdown-beep.mp3'),startIgnition:new Audio('sounds/race-start.mp3'),win:new Audio('sounds/win-fanfare.mp3'),lose:new Audio('sounds/lose-sound.mp3'),finish:new Audio('sounds/finish-whoosh.mp3')};
 Object.values(sounds).forEach(s=>{s.preload='auto';s.volume=0.65;});
-sounds.ambient.loop=true;sounds.ambient.volume=0.25;sounds.boost.volume=0.85;sounds.win.volume=0.95;sounds.lose.volume=0.75;sounds.finish.volume=0.85;sounds.typeCorrect.volume=0.45;sounds.typeIncorrect.volume=0.55;
-function playSound(k){const a=sounds[k];if(!a)return;a.currentTime=0;a.play().catch(()=>{});}
+sounds.ambient.loop=true;sounds.ambient.volume=0.25;sounds.boost.volume=0.85;sounds.win.volume=0.95;sounds.lose.volume=0.75;sounds.finish.volume=0.85;
+
+/* ── Web Audio context for synthesized typing sounds ── */
+let _audioCtx = null;
+function _getAudioCtx(){
+  if(!_audioCtx) _audioCtx = new (window.AudioContext||window.webkitAudioContext)();
+  return _audioCtx;
+}
+
+/* Correct keystroke: short crisp high-pitched tick — satisfying click */
+function _playCorrectSound(){
+  try{
+    const ctx = _getAudioCtx();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain); gain.connect(ctx.destination);
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(1200, ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(900, ctx.currentTime + 0.04);
+    gain.gain.setValueAtTime(0.18, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.06);
+    osc.start(ctx.currentTime);
+    osc.stop(ctx.currentTime + 0.06);
+  }catch(e){}
+}
+
+/* Incorrect keystroke: low dull thud — distinct but not jarring */
+function _playIncorrectSound(){
+  try{
+    const ctx = _getAudioCtx();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain); gain.connect(ctx.destination);
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(160, ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(80, ctx.currentTime + 0.07);
+    gain.gain.setValueAtTime(0.14, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.09);
+    osc.start(ctx.currentTime);
+    osc.stop(ctx.currentTime + 0.09);
+  }catch(e){}
+}
+
+function playSound(k){
+  if(k==='typeCorrect'){_playCorrectSound();return;}
+  if(k==='typeIncorrect'){_playIncorrectSound();return;}
+  const a=sounds[k];if(!a)return;a.currentTime=0;a.play().catch(()=>{});
+}
 
 /* ============================================================ AI NAMES ============================================================ */
 const firstNames=["alex","aaron","adam","adrian","andrew","anthony","arthur","ashley","ben","benjamin","blake","brandon","brian","bruce","caleb","cameron","carl","charles","chris","christian","daniel","david","dennis","derek","dominic","dylan","edward","ethan","evan","felix","frank","gabriel","george","greg","harry","henry","hunter","ian","isaac","jack","jacob","james","jason","jay","jeff","jeremy","john","jonathan","jordan","joseph","josh","julian","justin","kevin","kyle","leo","leon","liam","logan","louis","lucas","luke","marcus","mark","martin","mason","matt","matthew","max","michael","nathan","nicolas","noah","oliver","oscar","owen","patrick","paul","peter","philip","ray","richard","robert","ryan","sam","samuel","scott","sean","seth","steven","theo","thomas","tim","timothy","tyler","victor","vincent","wayne","will","william","xavier","zach","zachary"];
@@ -2461,6 +2547,13 @@ function showLandingAnimation(rank,onComplete){
 
   /* Auto-complete (16.5s) */
   lt(()=>{ completeLanding(false); },16500);
+
+  /* Click anywhere on overlay to skip instantly */
+  window._landingSkipHandler = function(e){
+    if(e.target && e.target.id === 'lo-view-results') return;
+    completeLanding(true);
+  };
+  ov.addEventListener('click', window._landingSkipHandler);
 }
 
 function completeLanding(isSkip){
@@ -2539,9 +2632,11 @@ function flashRhythmDot(){
   const idx=rhythmIdx%RHYTHM_DOTS;
   const dot=_rhythmDots[idx];
   if(_lastRhythmDot&&_lastRhythmDot!==dot) _lastRhythmDot.classList.remove('active');
-  clearTimeout(_rhythmTimer);
+  // Cancel previous timer to prevent stale removal from racing with new keystrokes
+  if(_rhythmTimer) clearTimeout(_rhythmTimer);
   dot.classList.add('active');
-  _rhythmTimer=setTimeout(()=>{ dot.classList.remove('active'); },180);
+  // Use 200ms — one rAF frame past the transition so removal is never mid-paint
+  _rhythmTimer=setTimeout(()=>{ dot.classList.remove('active'); _rhythmTimer=0; },200);
   _lastRhythmDot=dot;
   rhythmIdx++;
 }
@@ -3024,9 +3119,8 @@ function typeLetter(key){
       correctKeystrokes++;
       playerProgress+=PROGRESS_PER_CHAR;
       _schedulePlayerPosition();
-      /* Throttle correct sound — max once per 60ms (avoids audio overlap at high WPM) */
-      const _now=Date.now();
-      if(!typeLetter._lastSnd||_now-typeLetter._lastSnd>60){playSound('typeCorrect');typeLetter._lastSnd=_now;}
+      /* Web Audio is instant — no overlap, no throttle needed */
+      if(ok) playSound('typeCorrect');
     } else {
       playSound('typeIncorrect');
     }
@@ -3070,8 +3164,8 @@ function handleBackspace(){
 
 function pruneTypedWords(){
   const typedEls=Array.from(wordsDiv.querySelectorAll('.word.typed'));
-  if(typedEls.length<12) return;
-  const toRemove=typedEls.slice(0,typedEls.length-3);
+  if(typedEls.length<20) return;
+  const toRemove=typedEls.slice(0,typedEls.length-10);
   if(!toRemove.length) return;
 
   // Read all widths in a single batch (before any DOM mutation)
@@ -3079,19 +3173,20 @@ function pruneTypedWords(){
   const margin=14;
   for(let i=0;i<toRemove.length;i++) removedWidth+=toRemove[i].getBoundingClientRect().width+margin;
 
-  const currentOffset=wordsOffset;
   const prevT=wordsDiv.style.transition;
   wordsDiv.style.transition='none';
 
   for(let i=0;i<toRemove.length;i++){toRemove[i].remove();wordDomStart++;}
 
-  void wordsDiv.offsetHeight;   // single forced layout to reflow after removal
+  // Compensate offset by the exact removed width — no reflow needed,
+  // since removedWidth was measured before mutation.
+  wordsOffset+=removedWidth;
+  wordsDiv.style.transform=`translateX(${wordsOffset}px)`;
+  void wordsDiv.offsetHeight;   // single forced layout to flush the transition:none before restoring
 
-  wordsOffset=currentOffset+removedWidth;
   const pos=getCaretPosition();
   caret.style.transform=`translate3d(${SCROLL_CENTER}px,${pos.y}px,0)`;
   caret.style.height=`${pos.height}px`;
-  wordsDiv.style.transform=`translateX(${wordsOffset}px)`;
 
   requestAnimationFrame(()=>{ wordsDiv.style.transition=prevT; });
 }
@@ -3105,8 +3200,8 @@ function moveToNextWord(){
   currentWordIndex++;
   currentLetterIndex=0;
 
-  // Prune old typed words to keep DOM lean
-  if(wordDomStart===0?currentWordIndex%12===0:true) pruneTypedWords();
+  // Prune old typed words to keep DOM lean — check every 12 words on a stable cycle
+  if(currentWordIndex%12===0) pruneTypedWords();
 
   // Refill vocabulary if running low
   if(currentWordIndex>words.length-40&&playerProgress<TRACK_WIDTH) appendNewWords(80);
@@ -3165,7 +3260,7 @@ function calculateStats(){const em=(Date.now()-startTime)/60000||0.001,wpm=Math.
 function endRace(){
   raceFinished=true;  // immediately block all keyboard input and sounds
   sounds.ambient.pause();sounds.ambient.currentTime=0;
-  testActive=false;clearInterval(elapsedInterval);clearInterval(opponentInterval);
+  testActive=false;clearInterval(elapsedInterval);clearInterval(opponentInterval);document.body.classList.remove('race-active');
   let rank=1;for(let i=0;i<opponentProgress.length;i++)if(opponentProgress[i]>playerProgress)rank++;
   const sfx=['ST','ND','RD','TH','TH'],emj=['🥇','🥈','🥉','4️⃣','5️⃣'],clr=['#ffd700','#c8c8c8','#cd7f32','#aaaaaa','#888888'],msg=['🚀 You launched past every rival!','⚡ Just off the top — insane speed!','🏅 Top 3 podium finish — great run!','💪 Solid race. Close to the podium!','🔥 Keep training, pilot — the stars await!'];
   if(rank===1)playSound('win');else if(rank<=3)playSound('finish');else playSound('lose');
@@ -3626,7 +3721,7 @@ function buildSpaceBackground(){
   document.getElementById('space-bg').dataset.built='1';
 }
 
-function resetRace(){raceStarted=false;raceFinished=false;const avg=getAverageWPM(),pp=w=>w*0.5;opponentSpeeds=[pp(avg+20),pp(avg+15),Math.max(5,pp(avg-20)),pp(avg-5)].sort(()=>Math.random()-0.5);clearInterval(elapsedInterval);clearInterval(opponentInterval);testActive=false;typedWords=[];missedChars=0;spaces=0;correctSpaces=0;playerProgress=0;opponentProgress=[0,0,0,0];currentWordIndex=0;currentLetterIndex=0;correctChars=0;rawChars=0;correctKeystrokes=0;totalKeystrokes=0;keystrokeTimestamps=[];playerRocket.style.left='0px';oppRockets.forEach(r=>{r.style.left='0px';r.parentElement.classList.remove('boost');});timerDiv.textContent='0:00';resultDiv.classList.remove('visible');resetLiveHud();
+function resetRace(){raceStarted=false;raceFinished=false;document.body.classList.remove('race-active');const avg=getAverageWPM(),pp=w=>w*0.5;opponentSpeeds=[pp(avg+20),pp(avg+15),Math.max(5,pp(avg-20)),pp(avg-5)].sort(()=>Math.random()-0.5);clearInterval(elapsedInterval);clearInterval(opponentInterval);testActive=false;typedWords=[];missedChars=0;spaces=0;correctSpaces=0;playerProgress=0;opponentProgress=[0,0,0,0];currentWordIndex=0;currentLetterIndex=0;correctChars=0;rawChars=0;correctKeystrokes=0;totalKeystrokes=0;keystrokeTimestamps=[];playerRocket.style.left='0px';oppRockets.forEach(r=>{r.style.left='0px';r.parentElement.classList.remove('boost');});timerDiv.textContent='0:00';resultDiv.classList.remove('visible');resetLiveHud();
 // Reset active word cache
 _setActiveWord(null);
 _rafPending=false;_caretDirty=false;_visualDirty=false;
@@ -3641,7 +3736,7 @@ const bw=document.getElementById('race-wpm-number');if(bw){bw.textContent='—';
 const ba=document.getElementById('race-wpm-acc');if(ba)ba.textContent='';
 if(!document.getElementById('space-bg').dataset.built){buildSpaceBackground();}
 worldOffset=0;updateAllVisuals();}
-function showRaceCountdown(cb){leaderboardBtn.style.display="none";const ov=document.getElementById("race-start-overlay"),tx=document.getElementById("race-start-text");ov.style.display="flex";tx.textContent="Finding pilots...";playSound('startIgnition');setTimeout(()=>{let count=3;const iv=setInterval(()=>{tx.textContent=count;playSound('countdown');count--;if(count===0){clearInterval(iv);setTimeout(()=>{tx.textContent="LET'S GO!";playSound('startIgnition');sounds.ambient.currentTime=0;sounds.ambient.play().catch(()=>{});},800);setTimeout(()=>{ov.style.display="none";raceStarted=true;testActive=true;startTime=Date.now();elapsedInterval=setInterval(updateElapsed,1000);opponentInterval=setInterval(updateOpponentProgress,50);caret.style.opacity='1';startLiveHud();cb();},1600);}},950);},800);}
+function showRaceCountdown(cb){leaderboardBtn.style.display="none";const ov=document.getElementById("race-start-overlay"),tx=document.getElementById("race-start-text");ov.style.display="flex";tx.textContent="Finding pilots...";playSound('startIgnition');setTimeout(()=>{let count=3;const iv=setInterval(()=>{tx.textContent=count;playSound('countdown');count--;if(count===0){clearInterval(iv);setTimeout(()=>{tx.textContent="LET'S GO!";playSound('startIgnition');sounds.ambient.currentTime=0;sounds.ambient.play().catch(()=>{});},800);setTimeout(()=>{ov.style.display="none";raceStarted=true;testActive=true;startTime=Date.now();elapsedInterval=setInterval(updateElapsed,1000);opponentInterval=setInterval(updateOpponentProgress,50);caret.style.opacity='1';document.body.classList.add('race-active');startLiveHud();cb();},1600);}},950);},800);}
 /* ── Page Visibility API — pause ALL intervals when tab is hidden ──
    Prevents stacked timers and wasted CPU when user switches tabs */
 document.addEventListener('visibilitychange',()=>{
