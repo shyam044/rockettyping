@@ -103,6 +103,7 @@
         crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="responsive.css">
     <!-- Quotes database — loaded before main script so QUOTES_ALL is available -->
     <script src="quotes.js"></script>
     <!-- PWA + SEO additions -->
@@ -3429,16 +3430,12 @@ if (!testActive && e.key.length === 1) {
                 // Draw all resting drops (permanent, full opacity)
                 ctx.save();
                 ctx.fillStyle   = '#ff2244';
-                ctx.shadowBlur  = 10;
-                ctx.shadowColor = '#ff0000';
                 restingDrops.forEach(d => drawSingleDrop(d.x, d.y));
                 ctx.restore();
 
                 // Draw falling live drops (full opacity, they haven't landed yet)
                 ctx.save();
                 ctx.fillStyle   = '#ff4466';
-                ctx.shadowBlur  = 12;
-                ctx.shadowColor = '#ff0033';
                 liveDrops.forEach(d => drawSingleDrop(d.x, d.y));
                 ctx.restore();
             }
@@ -3448,18 +3445,16 @@ if (!testActive && e.key.length === 1) {
 
             function spawnSmoke(key, x, y, color) {
                 const pool = smokePools[key];
-                for (let k = 0; k < 2; k++) {
-                    pool.push({
-                        x: x - 8 + Math.random() * 5,
-                        y: y + 3 + Math.random() * 5,
-                        r: 1.8 + Math.random() * 2,
-                        alpha: 0.45 + Math.random() * 0.2,
-                        vx: -0.7 - Math.random() * 0.5,
-                        vy:  0.2 + Math.random() * 0.35,
-                        color
-                    });
-                }
-                if (pool.length > 80) pool.splice(0, 12);
+                pool.push({
+                    x: x - 8 + Math.random() * 5,
+                    y: y + 3 + Math.random() * 5,
+                    r: 1.8 + Math.random() * 2,
+                    alpha: 0.45 + Math.random() * 0.2,
+                    vx: -0.7 - Math.random() * 0.5,
+                    vy:  0.2 + Math.random() * 0.35,
+                    color
+                });
+                if (pool.length > 35) pool.splice(0, 8);
             }
 
             function tickSmoke(key) {
@@ -3527,8 +3522,6 @@ if (!testActive && e.key.length === 1) {
                 ctx.save();
                 ctx.strokeStyle = color;
                 ctx.lineWidth   = 2.4;
-                ctx.shadowBlur  = 10;
-                ctx.shadowColor = color;
                 ctx.globalAlpha = 0.6;
                 ctx.lineJoin    = 'round';
                 ctx.lineCap     = 'round';
@@ -5228,12 +5221,15 @@ window.kmToggle = function(){
     keymapOn = !keymapOn;
     var scene = document.getElementById('km-scene');
     var pill  = document.getElementById('km-pill');
+    var app   = document.getElementById('app');
     if(keymapOn){
         if(scene){ scene.classList.remove('km-hidden'); }
         if(pill){ pill.textContent='ON'; pill.className='km-pill on'; }
+        if(app){ app.classList.remove('km-compact'); }
     } else {
         if(scene){ scene.classList.add('km-hidden'); }
         if(pill){ pill.textContent='OFF'; pill.className='km-pill off'; }
+        if(app){ app.classList.add('km-compact'); }
     }
     try{ localStorage.setItem('rt_keymap', keymapOn?'1':'0'); }catch(e){}
 };
@@ -5246,8 +5242,10 @@ function kmInit(){
             keymapOn = false;
             var sc = document.getElementById('km-scene');
             var pl = document.getElementById('km-pill');
+            var ap = document.getElementById('app');
             if(sc) sc.classList.add('km-hidden');
             if(pl){ pl.textContent='OFF'; pl.className='km-pill off'; }
+            if(ap) ap.classList.add('km-compact');
         }
     }catch(e){}
     try{
