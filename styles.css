@@ -24,11 +24,19 @@ body.test-running #header-auth-btn {
     display: none !important;
 }
 
-/* PERF: pause cosmetic animations while typing — frees GPU for caret/letter rendering */
+/* PERF FIX: pause cosmetic animations while typing — frees GPU for caret/letter rendering */
 body.typing-active {
     animation-play-state: paused;
 }
 body.typing-active::before {
+    animation-play-state: paused;
+}
+
+/* Also pause during game race */
+body.race-active {
+    animation-play-state: paused;
+}
+body.race-active::before {
     animation-play-state: paused;
 }
 
@@ -67,6 +75,14 @@ body::before {
     z-index: 2;
     min-height: calc(100vh - 40px);
     box-sizing: border-box;
+    transition: min-height 0.45s cubic-bezier(0.34,1.56,0.64,1),
+                padding-bottom 0.35s ease;
+}
+
+/* When keymap is hidden, shrink the outer border up to hug the content */
+#app.km-compact {
+    min-height: unset;
+    padding-bottom: 20px;
 }
 
 #test-config {
@@ -257,14 +273,15 @@ padding: 22px 25px 18px;           /* was 28px 30px 22px → tighter top */
     top: 50%;
     border-radius: 18px;
     border: 2px solid #00e6cc;
-    box-shadow: 0 0 80px rgba(0, 230, 204, 0.6);
+    box-shadow: 0 0 40px rgba(0, 230, 204, 0.5);
     text-align: left;
     max-width: 90vw;
     width: 90vw;
     max-height: 92vh;
     overflow-y: auto;
     opacity: 0;
-    transition: all 0.4s ease;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    will-change: transform, opacity;
     z-index: 2000;
     scrollbar-width: thin;
     scrollbar-color: #00e6cc #0f1b2e;
@@ -874,7 +891,7 @@ footer a:hover { color: #e2b714; }
     display: flex;
     flex-direction: row;
     align-items: center;
-    gap: 800px;
+    gap: 910px;
 }
 
 .play-game-btn {
@@ -907,7 +924,7 @@ footer a:hover { color: #e2b714; }
 }
 
 .learn-type-btn {
-    background: linear-gradient(135deg, #00c9a7, #00e6cc, #00c9a7);
+    background: linear-gradient(135deg, #ff9900, #ffd700, #ff9900);
     background-size: 200% 200%;
     color: #0a0a23;
     border: none;
@@ -920,26 +937,26 @@ footer a:hover { color: #e2b714; }
     text-transform: uppercase;
     cursor: pointer;
     position: relative;
-    top:10px;
     overflow: hidden;
-    box-shadow: 0 0 20px #00c9a7, 0 0 40px #00e6cc, 0 8px 25px rgba(0,0,0,0.5);
+    box-shadow: 0 0 20px #ff9900, 0 0 40px #ffd700, 0 8px 25px rgba(0,0,0,0.5);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     display: flex;
     align-items: center;
     gap: 10px;
     animation: glowPulseLearn 3s infinite alternate;
     white-space: nowrap;
+    top:10px;
 }
 
 .learn-type-btn:hover {
     transform: translateY(-4px) scale(1.08);
-    box-shadow: 0 0 35px #00c9a7, 0 0 70px #00e6cc, 0 15px 35px rgba(0, 230, 204, 0.6);
+    box-shadow: 0 0 35px #ff9900, 0 0 70px #ffd700, 0 15px 35px rgba(226, 183, 20, 0.6);
     background-position: 100% 100%;
 }
 
 @keyframes glowPulseLearn {
-    from { box-shadow: 0 0 15px #00c9a7; }
-    to   { box-shadow: 0 0 35px #00e6cc; }
+    from { box-shadow: 0 0 15px #ff9900; }
+    to   { box-shadow: 0 0 35px #ffd700; }
 }
 
 /* All Animations */
