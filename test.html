@@ -896,7 +896,7 @@ async function saveScoreAndUpdateLeaderboard(name, wpm, accuracy, score, sundayK
 }
 
 /* ── FIREBASE SAVE ── */
-async function saveToFirebase(name, wpm, accuracy, score) {
+async function saveToFirebase(name, wpm, accuracy, score, correctKeystrokes, keystrokeCount, elapsedMs) {
     const authUser = auth.currentUser;
     if (!authUser) { console.warn('saveToFirebase: no auth user'); return; }
     const uid = authUser.uid;
@@ -922,12 +922,13 @@ async function saveToFirebase(name, wpm, accuracy, score) {
             await setDoc(ref, {
                 name: verifiedName, wpm, accuracy, score,
                 sundayDate: sundayKey, country: verifiedCountry,
-                uid, timestamp: Date.now()
+                uid, timestamp: Date.now(),
+                correctKeystrokes, keystrokeCount, elapsedMs
             });
             console.log('✅ Individual score doc saved');
         }
     } catch (err) {
-        console.error('Individual score save error:', err);
+        console.error('Individual score save error:', err.code, err.message);
     }
     // Update the shared leaderboard top_ doc
     await saveScoreAndUpdateLeaderboard(verifiedName, wpm, accuracy, score, sundayKey, verifiedCountry);
@@ -1086,17 +1087,23 @@ async function _endTest() {
     const score = Math.round(wpm * (accuracy / 100));
     const name = window._champPlayerName || "Anonymous";
 
-    console.log('🏁 Test completed → WPM:', wpm, 'Accuracy:', accuracy, 'Score:', score);
+    // Anti-cheat fields required by Firestore rules v4
+    const correctKeystrokes = correct;
+    const keystrokeCount    = Math.max(typed.length, correct); // total chars typed
+    const elapsedMs         = Math.round(elapsedMin * 60000);  // wall-clock ms
 
-    // Sanity cap — 300 WPM is physically impossible; reject before saving
-    if (wpm > 300) {
+    console.log('🏁 Test completed → WPM:', wpm, 'Accuracy:', accuracy, 'Score:', score,
+                '| ck:', correctKeystrokes, 'ksc:', keystrokeCount, 'ms:', elapsedMs);
+
+    // Sanity cap — must match Firestore rule cap of 220 WPM
+    if (wpm >= 220) {
         console.warn('Score sanity check failed — WPM too high, not saving.');
-        _showResults(name, Math.min(wpm, 300), accuracy, score);
+        _showResults(name, Math.min(wpm, 219), accuracy, score);
         return;
     }
 
     saveAttemptLocally(name, wpm, accuracy, score);
-    await saveToFirebase(name, wpm, accuracy, score);
+    await saveToFirebase(name, wpm, accuracy, score, correctKeystrokes, keystrokeCount, elapsedMs);
     _showResults(name, wpm, accuracy, score);
 }
 
