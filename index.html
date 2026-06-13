@@ -1416,6 +1416,33 @@ function fmtDate(ts) {
                 </button>
             </div>
         </div>
+        <!-- Tab+Enter restart hint (MonkeyType-style) -->
+        <div id="tab-redo-hint" style="
+            display:none;
+            position:fixed;
+            left:50%;
+            bottom:38px;
+            transform:translateX(-50%);
+            background:rgba(30,30,40,0.92);
+            border:1px solid rgba(226,183,20,0.35);
+            border-radius:8px;
+            padding:9px 22px;
+            font-family:'Roboto Mono',monospace;
+            font-size:13px;
+            color:#aaa;
+            letter-spacing:0.5px;
+            pointer-events:none;
+            z-index:9999;
+            white-space:nowrap;
+            backdrop-filter:blur(6px);
+            transition:opacity 0.15s;
+        ">
+            <span style="color:#e2b714;font-weight:700;">tab</span>
+            <span style="margin:0 6px;opacity:0.5;">+</span>
+            <span style="color:#e2b714;font-weight:700;">enter</span>
+            <span style="margin-left:10px;">— restart test</span>
+        </div>
+
         <div id="words"></div>
         <!-- Quote attribution — only visible in Quotes mode -->
         <div id="quote-meta" style="display:none;text-align:right;padding:4px 24px 0;font-size:13px;color:#646669;font-style:italic;transition:opacity 0.3s;min-height:20px;">
@@ -2846,6 +2873,44 @@ nouns: ["ability", "absence", "academy", "account", "achievement", "acid", "acti
         }
 
         function handleKeydown(e) {
+// ── Block modifier combos (Alt+*, Ctrl+*, Meta+*) — never type these ──
+if (e.altKey || e.ctrlKey || e.metaKey) return;
+
+// ── Tab → show "tab + enter to restart" hint (MonkeyType-style) ──
+if (e.key === 'Tab') {
+    e.preventDefault();
+    var hint = document.getElementById('tab-redo-hint');
+    if (hint) {
+        hint.style.display = 'block';
+        // Auto-hide after 2 s if user doesn't press Enter
+        clearTimeout(window._tabHintTimer);
+        window._tabHintTimer = setTimeout(function() {
+            hint.style.display = 'none';
+            window._tabHeld = false;
+        }, 2000);
+    }
+    window._tabHeld = true;
+    return;
+}
+
+// ── Enter while Tab was recently held → restart ──
+if (e.key === 'Enter' && window._tabHeld) {
+    e.preventDefault();
+    var hint2 = document.getElementById('tab-redo-hint');
+    if (hint2) hint2.style.display = 'none';
+    clearTimeout(window._tabHintTimer);
+    window._tabHeld = false;
+    resetTest();
+    return;
+}
+
+// Any other key cancels the tab-held state
+if (e.key !== 'Tab') {
+    window._tabHeld = false;
+    var hint3 = document.getElementById('tab-redo-hint');
+    if (hint3 && e.key !== 'Enter') hint3.style.display = 'none';
+}
+
 // Only start the test on printable single-character keys (a-z, 0-9, punctuation, space).
 // This intentionally excludes F1-F12, Escape, Tab, Arrow keys, Shift, Ctrl, etc.
 // e.key.length === 1 is true for every typeable character and false for all named keys.
