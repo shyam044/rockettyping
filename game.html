@@ -3987,8 +3987,24 @@ document.getElementById('game-login-btn').addEventListener('click', async () => 
   if (!pw)    return gameShowErr('game-login-err', 'Please enter your password.');
   gameSetLoading('game-login-btn','game-login-btn-text', true, 'Signing in…');
   try {
-    await auth.signInWithEmailAndPassword(email, pw);
-    closeAuthModal();
+    const cred = await auth.signInWithEmailAndPassword(email, pw);
+
+    // ── Recovery path for previously "stuck" accounts ──
+    // An Auth account can exist with no matching /users/{uid} profile if an
+    // earlier signup attempt never finished saving the profile. Instead of
+    // leaving such an account stranded, let them finish registration with
+    // this same email right now.
+    const snap = await db.collection('users').doc(cred.user.uid).get();
+    if (!snap.exists) {
+      switchGameAuthTab('signup');
+      const ef = document.getElementById('game-signup-email');
+      if (ef) { ef.value = cred.user.email || ''; ef.disabled = true; }
+      window._gamePendingOAuth = cred.user;
+      const err = document.getElementById('game-signup-err');
+      if (err) { err.style.color = '#e2b714'; err.textContent = '✓ Signed in! Your earlier registration never finished — pick a username to complete it.'; }
+    } else {
+      closeAuthModal();
+    }
   } catch(e) {
     const msgs = {
       'auth/invalid-credential': 'Wrong email or password.',
@@ -4003,24 +4019,75 @@ document.getElementById('game-login-btn').addEventListener('click', async () => 
 });
 
 // ── Sign Up ───────────────────────────────────────────
+// Registration is atomic from the user's perspective — see index.html for
+// the full rationale. Summary:
+//  1. Validate everything possible (format + username availability) BEFORE
+//     touching Firebase Auth.
+//  2. auth.createUserWithEmailAndPassword immediately reserves the email —
+//     if anything after that fails, delete the Auth account we just created
+//     so the email is freed up again instead of being stuck "already in use"
+//     with no working profile.
+//  3. A separate "profile completion" mode (window._gamePendingOAuth) handles
+//     OAuth first-logins AND recovered email/password logins whose profile
+//     was never created — in that case the Auth account already exists, so
+//     we skip createUserWithEmailAndPassword entirely and just save the
+//     /users profile.
 document.getElementById('game-signup-btn').addEventListener('click', async () => {
   const username = document.getElementById('game-signup-username').value.trim().toLowerCase();
   const country  = document.getElementById('game-signup-country').value.trim();
-  const email    = document.getElementById('game-signup-email').value.trim();
-  const pw       = document.getElementById('game-signup-password').value;
   gameShowErr('game-signup-err', '');
   if (username.length < 3 || username.length > 15)
     return gameShowErr('game-signup-err', 'Username must be 3–15 characters.');
   if (!/^[a-z0-9_]+$/.test(username))
     return gameShowErr('game-signup-err', 'Only lowercase letters, numbers, and _ allowed.');
   if (!country) return gameShowErr('game-signup-err', 'Please select your country.');
+
+  // ── Profile-completion mode: Auth account already exists, just save the profile ──
+  if (window._gamePendingOAuth) {
+    gameSetLoading('game-signup-btn','game-signup-btn-text', true, 'Saving profile…');
+    try {
+      const snap = await db.collection('users').where('name', '==', username).get();
+      if (!snap.empty) return gameShowErr('game-signup-err', 'Username already taken. Choose another.');
+      const u = window._gamePendingOAuth;
+      await db.collection('users').doc(u.uid).set({
+        name: username, country, uid: u.uid, created: Date.now()
+      });
+      window._gamePendingOAuth = null;
+      closeAuthModal();
+    } catch(e) {
+      gameShowErr('game-signup-err', 'Failed to save profile. Please try again.');
+      console.error('Profile save error:', e);
+    } finally {
+      gameSetLoading('game-signup-btn','game-signup-btn-text', false, 'CREATE ACCOUNT →');
+    }
+    return;
+  }
+
+  const email = document.getElementById('game-signup-email').value.trim();
+  const pw    = document.getElementById('game-signup-password').value;
   if (!email)   return gameShowErr('game-signup-err', 'Please enter your email.');
   if (pw.length < 8) return gameShowErr('game-signup-err', 'Password must be at least 8 characters.');
-  gameSetLoading('game-signup-btn','game-signup-btn-text', true, 'Creating account…');
+
+  gameSetLoading('game-signup-btn','game-signup-btn-text', true, 'Checking username…');
+
+  // Tracks the Auth account created during this attempt, if any, so it can
+  // be rolled back if the rest of registration doesn't complete.
+  let cred = null;
   try {
-    const snap = await db.collection('users').where('name', '==', username).get();
+    // STEP 1 — Username availability, before the email is touched at all.
+    let snap = await db.collection('users').where('name', '==', username).get();
     if (!snap.empty) return gameShowErr('game-signup-err', 'Username already taken. Choose another.');
-    const cred = await auth.createUserWithEmailAndPassword(email, pw);
+
+    // STEP 2 — Create the Auth account. From here on the email is reserved —
+    // any failure below must roll this back.
+    gameSetLoading('game-signup-btn','game-signup-btn-text', true, 'Creating account…');
+    cred = await auth.createUserWithEmailAndPassword(email, pw);
+
+    // STEP 3 — Re-check username right before saving the profile (race-condition guard).
+    snap = await db.collection('users').where('name', '==', username).get();
+    if (!snap.empty) throw { code: 'profile/username-taken-race' };
+
+    // STEP 4 — Save the profile. Registration only counts as complete once this succeeds.
     await db.collection('users').doc(cred.user.uid).set({
       name: username, country, uid: cred.user.uid, created: Date.now()
     });
@@ -4028,14 +4095,20 @@ document.getElementById('game-signup-btn').addEventListener('click', async () =>
     cred.user.sendEmailVerification().catch(() => {});
     closeAuthModal();
   } catch(e) {
+    // Registration did not fully complete — free up the email again.
+    if (cred && cred.user) {
+      try { await cred.user.delete(); }
+      catch (delErr) { console.error('Rollback (delete) failed:', delErr); }
+    }
     const msgs = {
-      'auth/email-already-in-use': 'This email is already registered. Please log in.',
+      'auth/email-already-in-use': 'This email is already registered. Please log in — if registration never finished last time, logging in will let you complete it.',
       'auth/weak-password':         'Password must be at least 8 characters.',
       'auth/invalid-email':         'Please enter a valid email address.',
       'auth/too-many-requests':     'Too many attempts. Please try again later.',
+      'profile/username-taken-race': 'That username was just taken by someone else. Please choose another.',
     };
-    gameShowErr('game-signup-err', msgs[e.code] || 'Signup failed. Please try again.');
-    console.error('Signup error:', e.code);
+    gameShowErr('game-signup-err', msgs[e.code] || 'Signup failed. Please try again — your email has not been registered.');
+    console.error('Signup error:', e.code, e);
   } finally {
     gameSetLoading('game-signup-btn','game-signup-btn-text', false, 'CREATE ACCOUNT →');
   }
