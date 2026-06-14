@@ -559,6 +559,7 @@ import {
     getAuth, onAuthStateChanged,
     signInWithEmailAndPassword,
     createUserWithEmailAndPassword,
+    deleteUser,
     signOut,
     GoogleAuthProvider,
     GithubAuthProvider,
@@ -1385,8 +1386,24 @@ async function tDoLogin(){
     if(!pw)    return tShowErr('t-login-err','Please enter your password.');
     tSetLoading('t-login-btn','t-login-btn-text',true,'Signing in…');
     try{
-        await signInWithEmailAndPassword(auth,email,pw);
-        closeAuthModal();
+        const cred=await signInWithEmailAndPassword(auth,email,pw);
+
+        // ── Recovery path for previously "stuck" accounts ──
+        // An Auth account can exist with no matching /users/{uid} profile if
+        // an earlier signup attempt never finished saving the profile. Instead
+        // of leaving such an account stranded, let them finish registration
+        // with this same email right now.
+        const userSnap=await getDoc(doc(db,'users',cred.user.uid));
+        if(!userSnap.exists()){
+            window.switchTab('signup');
+            const ef=document.getElementById('t-signup-email');
+            if(ef){ef.value=cred.user.email||'';ef.disabled=true;}
+            window._tPendingOAuth=cred.user;
+            const err=document.getElementById('t-signup-err');
+            if(err){err.style.color='#e2b714';err.textContent='✓ Signed in! Your earlier registration never finished — pick a username to complete it.';}
+        } else {
+            closeAuthModal();
+        }
     } catch(e){
         const msgs={'auth/invalid-credential':'Wrong email or password.',
           'auth/user-not-found':'No account with this email.',
@@ -1400,32 +1417,87 @@ async function tDoLogin(){
 document.getElementById('t-login-btn').addEventListener('click', tDoLogin);
 
 // ── Sign Up ───────────────────────────────────────────
+// Registration is atomic from the user's perspective — see index.html for
+// the full rationale. Summary:
+//  1. Validate everything possible (format + username availability) BEFORE
+//     touching Firebase Auth.
+//  2. createUserWithEmailAndPassword immediately reserves the email — if
+//     anything after that fails, delete the Auth account we just created so
+//     the email is freed up again instead of being stuck "already in use"
+//     with no working profile.
+//  3. A separate "profile completion" mode (window._tPendingOAuth) handles
+//     OAuth first-logins AND recovered email/password logins whose profile
+//     was never created — in that case the Auth account already exists, so
+//     we skip createUserWithEmailAndPassword entirely and just save the
+//     /users profile.
 async function tDoSignup(){
     const username=document.getElementById('t-signup-username').value.trim().toLowerCase();
     const country=document.getElementById('t-signup-country').value.trim();
-    const email=document.getElementById('t-signup-email').value.trim();
-    const pw=document.getElementById('t-signup-password').value;
     tShowErr('t-signup-err','');
     if(username.length<3||username.length>15) return tShowErr('t-signup-err','Username must be 3–15 characters.');
     if(!/^[a-z0-9_]+$/.test(username)) return tShowErr('t-signup-err','Only lowercase letters, numbers, and _ allowed.');
     if(!country) return tShowErr('t-signup-err','Please select your country.');
+
+    // ── Profile-completion mode: Auth account already exists, just save the profile ──
+    if(window._tPendingOAuth){
+        tSetLoading('t-signup-btn','t-signup-btn-text',true,'Saving profile…');
+        try{
+            const snap=await getDocs(query(collection(db,'users'),where('name','==',username)));
+            if(!snap.empty) return tShowErr('t-signup-err','Username already taken. Choose another.');
+            const u=window._tPendingOAuth;
+            await setDoc(doc(db,'users',u.uid),{name:username,country,uid:u.uid,created:Date.now()});
+            window._tPendingOAuth=null;
+            closeAuthModal();
+        } catch(e){
+            tShowErr('t-signup-err','Failed to save profile. Please try again.');
+            console.error('Profile save error:',e);
+        } finally {
+            tSetLoading('t-signup-btn','t-signup-btn-text',false,'CREATE ACCOUNT →');
+        }
+        return;
+    }
+
+    const email=document.getElementById('t-signup-email').value.trim();
+    const pw=document.getElementById('t-signup-password').value;
     if(!email)   return tShowErr('t-signup-err','Please enter your email.');
     if(pw.length<8) return tShowErr('t-signup-err','Password must be at least 8 characters.');
-    tSetLoading('t-signup-btn','t-signup-btn-text',true,'Creating account…');
+
+    tSetLoading('t-signup-btn','t-signup-btn-text',true,'Checking username…');
+
+    // Tracks the Auth account created during this attempt, if any, so it can
+    // be rolled back if the rest of registration doesn't complete.
+    let cred=null;
     try{
-        const snap=await getDocs(query(collection(db,'users'),where('name','==',username)));
+        // STEP 1 — Username availability, before the email is touched at all.
+        let snap=await getDocs(query(collection(db,'users'),where('name','==',username)));
         if(!snap.empty) return tShowErr('t-signup-err','Username already taken. Choose another.');
-        const cred=await createUserWithEmailAndPassword(auth,email,pw);
+
+        // STEP 2 — Create the Auth account. From here on the email is
+        // reserved — any failure below must roll this back.
+        tSetLoading('t-signup-btn','t-signup-btn-text',true,'Creating account…');
+        cred=await createUserWithEmailAndPassword(auth,email,pw);
+
+        // STEP 3 — Re-check username right before saving the profile (race-condition guard).
+        snap=await getDocs(query(collection(db,'users'),where('name','==',username)));
+        if(!snap.empty) throw {code:'profile/username-taken-race'};
+
+        // STEP 4 — Save the profile. Registration only counts as complete once this succeeds.
         await setDoc(doc(db,'users',cred.user.uid),{name:username,country,uid:cred.user.uid,created:Date.now()});
         sendEmailVerification(cred.user).catch(()=>{});
         closeAuthModal();
     } catch(e){
-        const msgs={'auth/email-already-in-use':'This email is already registered. Please log in.',
+        // Registration did not fully complete — free up the email again.
+        if(cred && cred.user){
+            try{ await deleteUser(cred.user); }
+            catch(delErr){ console.error('Rollback (deleteUser) failed:', delErr); }
+        }
+        const msgs={'auth/email-already-in-use':'This email is already registered. Please log in — if registration never finished last time, logging in will let you complete it.',
           'auth/weak-password':'Password must be at least 8 characters.',
           'auth/invalid-email':'Please enter a valid email address.',
-          'auth/too-many-requests':'Too many attempts. Please try again later.'};
-        tShowErr('t-signup-err', msgs[e.code]||'Signup failed. Please try again.');
-        console.error('Signup error:',e.code);
+          'auth/too-many-requests':'Too many attempts. Please try again later.',
+          'profile/username-taken-race':'That username was just taken by someone else. Please choose another.'};
+        tShowErr('t-signup-err', msgs[e.code]||'Signup failed. Please try again — your email has not been registered.');
+        console.error('Signup error:',e.code,e);
     } finally {
         tSetLoading('t-signup-btn','t-signup-btn-text',false,'CREATE ACCOUNT →');
     }
