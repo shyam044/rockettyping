@@ -2,9 +2,25 @@
   "redirects": [
     {
       "source": "/(.*)",
-      "has": [{ "type": "host", "value": "rockettyping-zeta.vercel.app" }],
+      "has": [
+        {
+          "type": "host",
+          "value": "rockettyping-zeta.vercel.app"
+        }
+      ],
       "destination": "https://www.rockettyping.com/$1",
       "permanent": true
+    },
+    {
+      "source": "/test.html",
+      "destination": "/test",
+      "permanent": true
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/test",
+      "destination": "/test.html"
     }
   ]
 }
