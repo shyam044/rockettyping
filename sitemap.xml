@@ -19,7 +19,7 @@
 
   <!-- Rocket Race – Typing Game -->
   <url>
-    <loc>https://www.rockettyping.com/game.html</loc>
+    <loc>https://www.rockettyping.com/game</loc>
     <lastmod>2026-06-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
@@ -27,7 +27,7 @@
 
   <!-- Sunday Championship -->
   <url>
-    <loc>https://www.rockettyping.com/test.html</loc>
+    <loc>https://www.rockettyping.com/test</loc>
     <lastmod>2026-06-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
@@ -35,7 +35,7 @@
 
   <!-- About – Typing Guide & Benchmarks -->
   <url>
-    <loc>https://www.rockettyping.com/about.html</loc>
+    <loc>https://www.rockettyping.com/about</loc>
     <lastmod>2026-06-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
@@ -43,7 +43,7 @@
 
   <!-- Contact -->
   <url>
-    <loc>https://www.rockettyping.com/contact.html</loc>
+    <loc>https://www.rockettyping.com/contact</loc>
     <lastmod>2026-06-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
@@ -51,7 +51,7 @@
 
   <!-- Privacy Policy -->
   <url>
-    <loc>https://www.rockettyping.com/privacy.html</loc>
+    <loc>https://www.rockettyping.com/privacy</loc>
     <lastmod>2026-06-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.4</priority>
@@ -59,7 +59,7 @@
 
   <!-- Terms of Service -->
   <url>
-    <loc>https://www.rockettyping.com/terms.html</loc>
+    <loc>https://www.rockettyping.com/terms</loc>
     <lastmod>2026-06-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.4</priority>
