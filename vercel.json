@@ -11,6 +11,13 @@
       "destination": "https://www.rockettyping.com/$1",
       "permanent": true
     },
+
+    {
+      "source": "/blog/:slug.html",
+      "destination": "/blog/:slug",
+      "permanent": true
+    },
+
     {
       "source": "/test.html",
       "destination": "/test",
@@ -46,13 +53,19 @@
       "destination": "/contact",
       "permanent": true
     },
-        {
+    {
       "source": "/learn.html",
       "destination": "/learn",
       "permanent": true
     }
   ],
+
   "rewrites": [
+    {
+      "source": "/blog/:slug",
+      "destination": "/blog/:slug.html"
+    },
+
     {
       "source": "/test",
       "destination": "/test.html"
@@ -81,7 +94,7 @@
       "source": "/contact",
       "destination": "/contact.html"
     },
-        {
+    {
       "source": "/learn",
       "destination": "/learn.html"
     }
