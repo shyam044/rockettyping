@@ -76,6 +76,10 @@
     <link rel="apple-touch-icon" href="/images/logo-192.png">
     <link rel="manifest" href="/site.webmanifest">
     <meta name="theme-color" content="#323437">
+    <!-- Security: restrict framing and MIME sniffing -->
+    <meta http-equiv="Content-Security-Policy" content="frame-ancestors 'none'; object-src 'none';">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
     <meta property="og:locale" content="en_US">
     <meta name="category" content="Education">
     <meta http-equiv="expires" content="604800">
@@ -2040,14 +2044,15 @@ window.sendEmailVerification = sendEmailVerification;
             if (prompt) prompt.style.display = 'none';
             // Get saved avatar
             const savedAvatar = localStorage.getItem('rt_avatar_' + (window._currentUser?.uid || ''));
+            const _safeInitial = sanitizeStr((username||'?')[0].toUpperCase());
             const avatarHtml = savedAvatar
                 ? `<img src="${savedAvatar}" style="width:30px;height:30px;border-radius:50%;object-fit:cover;border:2px solid #e2b714;margin-right:6px;vertical-align:middle;">`
-                : `<span style="display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,#e2b714,#ff9900);color:#0a0a23;font-size:13px;font-weight:900;margin-right:6px;vertical-align:middle;">${(username||'?')[0].toUpperCase()}</span>`;
+                : `<span style="display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,#e2b714,#ff9900);color:#0a0a23;font-size:13px;font-weight:900;margin-right:6px;vertical-align:middle;">${_safeInitial}</span>`;
             if (headerAuthBtn) headerAuthBtn.innerHTML =
                 `<span onclick="openProfileModal()" style="cursor:pointer;display:inline-flex;align-items:center;gap:4px;color:#e2b714;font-size:13px;padding:4px 8px;border-radius:20px;border:1px solid rgba(226,183,20,0.3);transition:all .2s;"
                   onmouseover="this.style.background='rgba(226,183,20,0.1)'"
                   onmouseout="this.style.background='none'"
-                  title="View Profile">${avatarHtml}${username}</span>
+                  title="View Profile">${avatarHtml}${sanitizeStr(username)}</span>
                  <button onclick="doSignOut()" style="margin-left:4px;background:none;border:1px solid #646669;color:#646669;border-radius:4px;padding:4px 8px;cursor:pointer;font-size:11px;font-family:'Roboto Mono',monospace;transition:all .2s;"
                   onmouseover="this.style.borderColor='#e2b714';this.style.color='#e2b714'"
                   onmouseout="this.style.borderColor='#646669';this.style.color='#646669'">LOGOUT</button>`;
@@ -4299,8 +4304,8 @@ function sanitizeStr(s) {
         } catch (e) {
             const msg = {
                 'auth/invalid-credential':  'Wrong email or password.',
-                'auth/user-not-found':       'No account with this email.',
-                'auth/wrong-password':       'Wrong password.',
+                'auth/user-not-found':       'Wrong email or password.',
+                'auth/wrong-password':       'Wrong email or password.',
                 'auth/too-many-requests':    'Too many attempts. Try again later or reset your password.',
                 'auth/user-disabled':        'This account has been disabled.',
             }[e.code] || 'Login failed. Please try again.';
@@ -4842,10 +4847,11 @@ window.openProfileModal = async function() {
         document.getElementById('pm-username-display').textContent = user.name || '—';
 
         // Country row
+        const _safeCountry = sanitizeStr(country);
         const flagHtml = country
             ? (COUNTRY_FLAGS[country]
-                ? `<img src="${COUNTRY_FLAGS[country]}" alt="${country}" style="width:22px;height:16px;object-fit:contain;"> ${country}`
-                : `🌍 ${country}`)
+                ? `<img src="${COUNTRY_FLAGS[country]}" alt="${_safeCountry}" style="width:22px;height:16px;object-fit:contain;"> ${_safeCountry}`
+                : `🌍 ${_safeCountry}`)
             : '<span style="color:#444">No country set</span>';
         document.getElementById('pm-country-row').innerHTML = flagHtml;
 
@@ -4922,7 +4928,7 @@ function _renderProfileAvatar(uid, name) {
         ring.innerHTML = `<img src="${saved}" alt="Profile photo">`;
         if (label) label.textContent = '✎ CHANGE PHOTO';
     } else {
-        const initial = (name || '?')[0].toUpperCase();
+        const initial = sanitizeStr((name || '?')[0].toUpperCase());
         ring.innerHTML = `<div class="pm-avatar-initial">${initial}</div>`;
         if (label) label.textContent = '+ ADD PHOTO';
     }
