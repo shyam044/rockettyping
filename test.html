@@ -1281,6 +1281,45 @@ function closeAuthModal(){
     ['t-login-err','t-signup-err','t-forgot-msg'].forEach(id=>{
         const el=document.getElementById(id); if(el) el.textContent='';
     });
+    // Re-run screen routing immediately after login/signup so the lobby
+    // updates without requiring a page reload.
+    // We wait a short tick to let onAuthStateChanged finish setting
+    // window._currentUser before we re-evaluate the screen state.
+    setTimeout(async () => {
+        if (!isSunday()) return; // closed-screen doesn't need refresh
+        const user = auth.currentUser;
+        if (!user) return;
+        // Re-fetch user doc in case it wasn't loaded yet
+        if (!window._currentUser) {
+            try {
+                const userDoc = await getDoc(doc(db, 'users', user.uid));
+                if (userDoc.exists()) {
+                    const udata = userDoc.data();
+                    window._currentUser = { uid: user.uid, email: user.email, name: udata.name, country: udata.country || '' };
+                    window._userCurrency = getCurrencyForCountry(udata.country || '');
+                    updatePrizeStrings();
+                    localStorage.setItem('rt_registered_name', udata.name);
+                    updateTopnavUI();
+                }
+            } catch (e) { console.warn('closeAuthModal user re-fetch:', e); }
+        }
+        if (!window._currentUser) return;
+        // Check if already played this Sunday
+        const sundayKey = getLocalSundayKey();
+        const docId = `${window._currentUser.uid}_${sundayKey}`;
+        try {
+            const existing = await getDoc(doc(db, 'sunday_championship', docId));
+            if (existing.exists()) {
+                const d = existing.data();
+                saveAttemptLocally(d.name, d.wpm, d.accuracy, d.score);
+                initPlayedScreen();
+                return;
+            }
+        } catch (e) {
+            if (hasPlayedThisSunday()) { initPlayedScreen(); return; }
+        }
+        initLobbyScreen();
+    }, 300);
 }
 
 // ── Tab switcher ──────────────────────────────────────
