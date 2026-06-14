@@ -427,6 +427,12 @@
             <p class="sub" style="color:var(--muted);font-size:13px;margin-bottom:22px;">Only 1 attempt per Sunday. Come back next Sunday for another shot at <span class="prize-amount-dynamic">₹500</span>!</p>
             <div class="played-stats" id="played-stats-box"></div>
             <p class="next-sunday-note" id="next-sunday-msg"></p>
+            <!-- Daily Practice Promo -->
+            <div style="margin-top:24px;background:linear-gradient(135deg,rgba(0,230,204,0.07),rgba(226,183,20,0.07));border:2px solid rgba(226,183,20,0.3);border-radius:14px;padding:20px;text-align:center;">
+                <div style="font-size:14px;font-weight:900;color:var(--gold);letter-spacing:2px;margin-bottom:8px;">🏋️ DON'T WAIT TILL NEXT SUNDAY</div>
+                <div style="font-size:12px;color:var(--muted);line-height:1.7;margin-bottom:14px;">Practice every day on Rocket Typing and come back faster, stronger, and ready to win!</div>
+                <button onclick="window.location.href='index.html'" style="padding:12px 28px;background:linear-gradient(135deg,#e2b714,#ff9900);color:#0a0a23;border:none;border-radius:9px;font-family:'Roboto Mono',monospace;font-size:13px;font-weight:900;letter-spacing:2px;cursor:pointer;box-shadow:0 0 20px rgba(226,183,20,0.35);transition:all .2s;" onmouseover="this.style.boxShadow='0 0 40px rgba(226,183,20,0.6)'" onmouseout="this.style.boxShadow='0 0 20px rgba(226,183,20,0.35)'">⚡ PRACTICE NOW → FREE</button>
+            </div>
         </div>
         <p class="past-lb-title">🏆 This Sunday's Champion</p>
         <div class="card" style="padding:20px;">
@@ -478,7 +484,7 @@
                 </div>
             </div>
             <div id="champ-words"></div>
-            <input id="champ-input" type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Click here and start typing…">
+            <input id="champ-input" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Click here and start typing…">
             <p class="anticheat-note">🚫 Paste disabled &nbsp;·&nbsp; Type carefully — 1 attempt only</p>
         </div>
     </div>
@@ -498,8 +504,26 @@
                 <div id="results-lb-body"><div class="lb-loading">Loading…</div></div>
             </div>
             <div class="result-actions">
-                <button class="btn-back" onclick="window.location.href='/'">← BACK TO PRACTICE</button>
+                <button class="btn-back" onclick="window.location.href='index.html'">← BACK TO PRACTICE</button>
                 <button class="btn-share" id="share-btn"><i class="fa-brands fa-x-twitter"></i> SHARE RESULT</button>
+            </div>
+            <!-- Daily Practice Promo Banner -->
+            <div class="daily-promo-banner" style="margin-top:28px;background:linear-gradient(135deg,rgba(0,230,204,0.08),rgba(226,183,20,0.08));border:2px solid rgba(0,230,204,0.35);border-radius:16px;padding:24px 20px;text-align:center;">
+                <div style="font-size:36px;margin-bottom:10px;">🚀</div>
+                <div style="font-size:16px;font-weight:900;color:var(--cyan);letter-spacing:2px;margin-bottom:8px;">WANT TO WIN NEXT SUNDAY?</div>
+                <div style="font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:18px;">
+                    Champions don't wait for Sunday — they practice <span style="color:var(--gold);font-weight:700;">every single day</span>.<br>
+                    Free unlimited practice, real-time WPM tracking, no sign-up needed.
+                </div>
+                <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:14px;">
+                    <div style="background:rgba(255,215,0,0.07);border:1px solid rgba(255,215,0,0.2);border-radius:10px;padding:10px 16px;font-size:12px;color:var(--text);">⚡ Boost your WPM daily</div>
+                    <div style="background:rgba(255,215,0,0.07);border:1px solid rgba(255,215,0,0.2);border-radius:10px;padding:10px 16px;font-size:12px;color:var(--text);">🎯 Track your accuracy</div>
+                    <div style="background:rgba(255,215,0,0.07);border:1px solid rgba(255,215,0,0.2);border-radius:10px;padding:10px 16px;font-size:12px;color:var(--text);">🏆 Dominate next Sunday</div>
+                </div>
+                <button onclick="window.location.href='index.html'" style="padding:14px 36px;background:linear-gradient(135deg,#00e6cc,#e2b714);color:#0a0a23;border:none;border-radius:10px;font-family:'Roboto Mono',monospace;font-size:15px;font-weight:900;letter-spacing:2px;cursor:pointer;transition:all .25s;box-shadow:0 0 30px rgba(0,230,204,0.3);" onmouseover="this.style.boxShadow='0 0 50px rgba(0,230,204,0.6)';this.style.transform='translateY(-2px)'" onmouseout="this.style.boxShadow='0 0 30px rgba(0,230,204,0.3)';this.style.transform='none'">
+                    🏋️ PRACTICE NOW
+                </button>
+                <p style="font-size:11px;color:var(--muted);margin-top:12px;letter-spacing:1px;">FREE · UNLIMITED · rockettyping.vercel.app</p>
             </div>
         </div>
     </div>
@@ -568,6 +592,21 @@ const TEXT_POOL = [
     "Every champion was once a beginner who refused to give up. Small improvements each day add up to extraordinary results over time. Consistency and focus are the real secrets to mastery.",
     "The art of typing well is not about rushing but about flowing. When your fingers know the keyboard by heart, the words appear on screen as naturally as speaking out loud to a friend.",
 ];
+
+/* ── SECURITY MODEL ──────────────────────────────────────────────────────
+   This file is a type="module" script. All variables (let/const) are
+   module-scoped and NOT accessible via window.* from the browser console
+   unless explicitly exported. Key defences:
+     1. _startTime, _paragraph, _endTest etc. are module-private.
+     2. _inputHandler checks for value delta > 5 (injection detection).
+     3. _timingCheckpoints validates gradual typing progression.
+     4. _actualKeystrokes counts real keydown events; mismatch → abort.
+     5. visibilitychange handler taints the test if tab is hidden.
+     6. No score values are logged to the console.
+     7. Firestore security rules enforce all cross-validations server-side.
+   The Firestore rules are the authoritative guard. Client checks are a
+   first-pass filter to reduce noise and make attacks harder to script.
+──────────────────────────────────────────────────────────────────────── */
 
 /* ── DATE UTILS ── */
 function isSunday() { return new Date().getDay() === 0; }
@@ -851,18 +890,19 @@ async function saveScoreAndUpdateLeaderboard(name, wpm, accuracy, score, sundayK
                 // Full players list
                 players: [playerEntry]
             });
-            console.log('✅ Top doc CREATED, first player:', name);
+            // score saved
         } else {
             const existing = snap.data();
             const existingPlayers = existing.players || [];
 
             // Check if this player already has an entry (prevent duplicates on reload)
-            const alreadyIn = existingPlayers.some(p => p.name === name);
+            // Deduplicate by uid (uid is verified server-side by Firestore rules)
+            const alreadyIn = existingPlayers.some(p => p.uid && p.uid === (auth.currentUser?.uid || ''));
 
             if (score > (existing.score || 0)) {
                 // New champion — update root fields AND append to players (if not duplicate)
                 const updatedPlayers = alreadyIn
-                    ? existingPlayers.map(p => p.name === name ? playerEntry : p)
+                    ? existingPlayers.map(p => (p.uid && p.uid === (auth.currentUser?.uid || '')) ? playerEntry : p)
                     : [...existingPlayers, playerEntry];
                 await setDoc(topRef, {
                     name, wpm, accuracy, score,
@@ -871,14 +911,14 @@ async function saveScoreAndUpdateLeaderboard(name, wpm, accuracy, score, sundayK
                     timestamp: playerEntry.timestamp,
                     players: updatedPlayers
                 });
-                console.log('✅ New champion:', name, score);
+                // score saved
             } else {
                 // Not champion — just add to players array if not already there
                 if (!alreadyIn) {
                     await updateDoc(topRef, { players: arrayUnion(playerEntry) });
-                    console.log('✅ Player added to leaderboard:', name, score);
+                    // score saved
                 } else {
-                    console.log('ℹ️ Player already in leaderboard:', name);
+                    // already saved
                 }
             }
         }
@@ -886,7 +926,7 @@ async function saveScoreAndUpdateLeaderboard(name, wpm, accuracy, score, sundayK
         if (err.code === 'permission-denied' && (saveScoreAndUpdateLeaderboard._retries || 0) < 1) {
             // SECURITY FIX: track retry count to prevent infinite loop
             saveScoreAndUpdateLeaderboard._retries = (saveScoreAndUpdateLeaderboard._retries || 0) + 1;
-            console.log('ℹ️ Permission denied — concurrent write, retrying once...');
+            
             setTimeout(() => saveScoreAndUpdateLeaderboard(name, wpm, accuracy, score, sundayKey, country), 1000);
         } else {
             saveScoreAndUpdateLeaderboard._retries = 0;
@@ -925,7 +965,7 @@ async function saveToFirebase(name, wpm, accuracy, score, correctKeystrokes, key
                 uid, timestamp: Date.now(),
                 correctKeystrokes, keystrokeCount, elapsedMs
             });
-            console.log('✅ Individual score doc saved');
+            // score saved
         }
     } catch (err) {
         console.error('Individual score save error:', err.code, err.message);
@@ -1009,16 +1049,21 @@ function initLobbyScreen() {
 function onStartClicked() {
     if(!window._currentUser){window.openAuthModal('login');return;}
     if(_lbUnsubs['lobby-lb-body']){_lbUnsubs['lobby-lb-body']();delete _lbUnsubs['lobby-lb-body'];}
-    window._champPlayerName=window._currentUser.name;
+    _champPlayerName=window._currentUser.name;
     initTestScreen();
 }
 
 /* ── TEST SCREEN ── */
+// 25002500 Module-scoped game state (NOT accessible via window.*) 25002500
 let _testActive=false,_startTime=null,_timerInterval=null,_timeLeft=60,_paragraph='',_endedOnce=false;
+let _champPlayerName='';
+let _actualKeystrokes=0,_lastInputLen=0,_shadowInput='',_timingCheckpoints=[],_tainted=false;
 
 function initTestScreen() {
     showScreen('screen-test');
+    // Reset all game state + anti-cheat counters
     _testActive=false;_startTime=null;_timeLeft=60;_endedOnce=false;
+    _actualKeystrokes=0;_lastInputLen=0;_shadowInput='';_timingCheckpoints=[];_tainted=false;
     _paragraph=TEXT_POOL[Math.floor(Math.random()*TEXT_POOL.length)];
     const wordsDiv=document.getElementById('champ-words');
     wordsDiv.innerHTML=_paragraph.split('').map((ch,i)=>`<span class="ch" id="ch-${i}">${ch===' '?'&nbsp;':escHtml(ch)}</span>`).join('');
@@ -1035,26 +1080,73 @@ function initTestScreen() {
     input.addEventListener('paste',e=>e.preventDefault());
     input.addEventListener('copy',e=>e.preventDefault());
     input.addEventListener('cut',e=>e.preventDefault());
+    // Anti-cheat: drag-and-drop text injection
+    input.addEventListener('drop',e=>e.preventDefault());
     document.addEventListener('contextmenu',e=>e.preventDefault());
+    // Anti-cheat: mark test tainted if user hides the tab mid-test
+    document.addEventListener('visibilitychange', _visibilityHandler);
     wordsDiv.addEventListener('click',()=>input.focus());
     input.focus();
 }
 
-function _keydownHandler(e){if(_testActive)return;if(e.key.length===1&&!e.ctrlKey&&!e.metaKey&&!e.altKey)_startTimer();}
-function _inputHandler(){
-    if(!_testActive||_endedOnce)return;
-    const input=document.getElementById('champ-input'),typed=input.value,target=_paragraph;
-    if(typed.length>target.length){input.value=typed.slice(0,target.length);return;}
-    _updateCharDisplay(typed,target);_updateLiveWpm(typed);
-    if(typed.length>=target.length){clearInterval(_timerInterval);_endTest();}
+function _visibilityHandler() {
+    if (_testActive && document.hidden) {
+        _tainted = true;
+    }
 }
-function _startTimer(){
-    _testActive=true;_startTime=Date.now();
-    _timerInterval=setInterval(()=>{
+
+function _keydownHandler(e) {
+    // Count ACTUAL keystrokes (not injected value changes)
+    if (_testActive) {
+        if (e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey) {
+            _actualKeystrokes++;
+            _shadowInput += e.key;
+        } else if (e.key === 'Backspace') {
+            _actualKeystrokes++;
+            _shadowInput = _shadowInput.slice(0, -1);
+        }
+        return;
+    }
+    // Start timer on first printable key
+    if (e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey) _startTimer();
+}
+
+function _inputHandler() {
+    if (!_testActive || _endedOnce) return;
+    const input = document.getElementById('champ-input');
+    const typed  = input.value;
+    const target = _paragraph;
+
+    // ── Anti-cheat: detect programmatic value injection ──────────
+    // Normal typing: input.value changes by ≤ 1 character per event.
+    // A bot setting input.value = fullText produces a jump of ~200 chars.
+    const delta = typed.length - _lastInputLen;
+    if (delta > 5) {
+        // Large jump → abort silently (show no error to avoid info leakage)
+        _tainted = true;
+        input.value = '';
+        _lastInputLen = 0;
+        _shadowInput  = '';
+        return;
+    }
+    _lastInputLen = typed.length;
+
+    if (typed.length > target.length) { input.value = typed.slice(0, target.length); return; }
+    _updateCharDisplay(typed, target);
+    _updateLiveWpm(typed);
+    if (typed.length >= target.length) { clearInterval(_timerInterval); _endTest(); }
+}
+
+function _startTimer() {
+    _testActive = true; _startTime = Date.now();
+    _timerInterval = setInterval(() => {
         _timeLeft--;
-        const el=document.getElementById('champ-timer');el.textContent=_timeLeft;
-        if(_timeLeft<=10)el.classList.add('warning');
-        if(_timeLeft<=0){clearInterval(_timerInterval);_endTest();}
+        // Anti-cheat: record a timing checkpoint each second
+        const inp = document.getElementById('champ-input');
+        _timingCheckpoints.push({ t: Date.now() - _startTime, len: inp ? inp.value.length : 0 });
+        const el = document.getElementById('champ-timer'); el.textContent = _timeLeft;
+        if (_timeLeft <= 10) el.classList.add('warning');
+        if (_timeLeft <= 0) { clearInterval(_timerInterval); _endTest(); }
     },1000);
 }
 function _updateCharDisplay(typed,target){
@@ -1073,34 +1165,86 @@ function _updateLiveWpm(typed){
 async function _endTest() {
     if (_endedOnce) return;
     _endedOnce = true; _testActive = false;
-    
+    // Stop listening for tab-hide events
+    document.removeEventListener('visibilitychange', _visibilityHandler);
+
     const input = document.getElementById('champ-input');
     input.disabled = true;
-    
-    const typed = input.value;
-    const target = _paragraph;
-    const elapsedMin = Math.max((Date.now() - (_startTime || Date.now())) / 60000, 1/60);
-    const correct = [...typed].filter((ch, i) => ch === target[i]).length;
-    
-    const wpm = Math.max(0, Math.round((correct / 5) / elapsedMin));
+
+    const typed     = input.value;
+    const target    = _paragraph;
+    const elapsedMs = Math.round(Date.now() - (_startTime || Date.now()));
+    const elapsedMin= Math.max(elapsedMs / 60000, 1/60);
+    const correct   = [...typed].filter((ch, i) => ch === target[i]).length;
+
+    const wpm      = Math.max(0, Math.round((correct / 5) / elapsedMin));
     const accuracy = typed.length > 0 ? Math.round((correct / typed.length) * 100) : 0;
-    const score = Math.round(wpm * (accuracy / 100));
-    const name = window._champPlayerName || "Anonymous";
+    const score    = Math.round(wpm * (accuracy / 100));
+    const name     = _champPlayerName || window._currentUser?.name || "Anonymous";
 
     // Anti-cheat fields required by Firestore rules v4
+    // keystrokeCount = actual keydown events, not just final string length
     const correctKeystrokes = correct;
-    const keystrokeCount    = Math.max(typed.length, correct); // total chars typed
-    const elapsedMs         = Math.round(elapsedMin * 60000);  // wall-clock ms
+    const keystrokeCount    = Math.max(_actualKeystrokes, typed.length);
 
-    console.log('🏁 Test completed → WPM:', wpm, 'Accuracy:', accuracy, 'Score:', score,
-                '| ck:', correctKeystrokes, 'ksc:', keystrokeCount, 'ms:', elapsedMs);
+    // ── CLIENT-SIDE ANTI-CHEAT GATE ─────────────────────────────────────────
+    // These checks mirror the Firestore rules so obviously tainted sessions are
+    // dropped before any network call, leaking no diagnostic info to the console.
 
-    // Sanity cap — must match Firestore rule cap of 220 WPM
-    if (wpm >= 220) {
-        console.warn('Score sanity check failed — WPM too high, not saving.');
-        _showResults(name, Math.min(wpm, 219), accuracy, score);
+    // 1. Test was tainted (tab hidden or injection detected)
+    if (_tainted) {
+        _showResults(name, 0, 0, 0);
         return;
     }
+
+    // 2. Minimum realistic elapsed time (< 3 s = auto-complete or injected)
+    if (elapsedMs < 3000) {
+        _showResults(name, 0, 0, 0);
+        return;
+    }
+
+    // 3. WPM cap (mirrors Firestore rule of 220)
+    if (wpm >= 220) {
+        _showResults(name, 0, 0, 0);
+        return;
+    }
+
+    // 4. Minimum accuracy gate (mirrors Firestore meetsAccuracyGate)
+    if (accuracy < 50) {
+        saveAttemptLocally(name, wpm, accuracy, score);
+        _showResults(name, wpm, accuracy, score);
+        return; // still show results but don't submit to leaderboard
+    }
+
+    // 5. Timing checkpoint consistency:
+    //    If _startTime was backdated, early checkpoints will show non-zero
+    //    elapsed with zero typed length — impossible in real play.
+    for (const cp of _timingCheckpoints) {
+        if (cp.t > 6000 && cp.len === 0 && typed.length > 0) {
+            // >6 s elapsed at checkpoint but nothing typed yet — backdated start
+            _tainted = true;
+            _showResults(name, 0, 0, 0);
+            return;
+        }
+        // No checkpoint should imply a WPM above 300 (generous physical cap)
+        if (cp.t > 500) {
+            const cpWpm = (cp.len / 5) / (cp.t / 60000);
+            if (cpWpm > 300) {
+                _tainted = true;
+                _showResults(name, 0, 0, 0);
+                return;
+            }
+        }
+    }
+
+    // 6. Actual keystroke count must be plausible relative to typed length
+    //    (catches scripts that set input.value without firing keydown events)
+    if (typed.length > 0 && _actualKeystrokes < typed.length * 0.5) {
+        _tainted = true;
+        _showResults(name, 0, 0, 0);
+        return;
+    }
+    // ────────────────────────────────────────────────────────────────────────
 
     saveAttemptLocally(name, wpm, accuracy, score);
     await saveToFirebase(name, wpm, accuracy, score, correctKeystrokes, keystrokeCount, elapsedMs);
