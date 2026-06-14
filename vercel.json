@@ -45,6 +45,11 @@
       "source": "/contact.html",
       "destination": "/contact",
       "permanent": true
+    },
+        {
+      "source": "/learn.html",
+      "destination": "/learn",
+      "permanent": true
     }
   ],
   "rewrites": [
@@ -75,6 +80,10 @@
     {
       "source": "/contact",
       "destination": "/contact.html"
+    },
+        {
+      "source": "/learn",
+      "destination": "/learn.html"
     }
   ]
 }
