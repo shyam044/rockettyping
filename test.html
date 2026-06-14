@@ -680,18 +680,25 @@ function _renderChampionCard(container, d, highlightName, isPast) {
 }
 
 function _getTopDocPlayers(data) {
+    // v5: players[] always has exactly 1 entry (the champion).
+    // Always build the champion object from root-level fields (which are verified by Firestore rules)
+    // and merge with players[0] if present, so uid is always available for "is-you" highlighting.
+    if (data.name) {
+        const rootChampion = {
+            name:      data.name,
+            wpm:       data.wpm,
+            accuracy:  data.accuracy,
+            score:     data.score,
+            country:   data.country || '',
+            timestamp: data.timestamp,
+            // uid may be in players[0] (written by JS) but not required at root level by rules
+            uid: (Array.isArray(data.players) && data.players[0]?.uid) ? data.players[0].uid : (data.uid || '')
+        };
+        return [rootChampion];
+    }
+    // Fallback: old doc format without root-level name
     if (Array.isArray(data.players) && data.players.length) {
         return data.players;
-    }
-    if (data.name) {
-        return [{
-            name: data.name,
-            wpm: data.wpm,
-            accuracy: data.accuracy,
-            score: data.score,
-            country: data.country || '',
-            timestamp: data.timestamp
-        }];
     }
     return [];
 }
@@ -702,10 +709,9 @@ function _renderTopLeaderboard(container, data, highlightName, isPast) {
         container.innerHTML = `<div class="lb-empty">${isPast ? '🏁 No entries last Sunday.' : '🚀 No players yet — be the first!'}</div>`;
         return null;
     }
-    if (!Array.isArray(data.players) || data.players.length <= 1) {
-        return _renderChampionCard(container, players[0], highlightName, isPast);
-    }
-    return _renderFullLeaderboard(container, players, highlightName, isPast);
+    // v5: top_ docs always store exactly 1 player (the current champion).
+    // Always render the champion card — no multi-player list needed.
+    return _renderChampionCard(container, players[0], highlightName, isPast);
 }
 
 function getSundayKeyVariants(keyOrDate) {
@@ -881,47 +887,32 @@ async function saveScoreAndUpdateLeaderboard(name, wpm, accuracy, score, sundayK
         const snap = await getDoc(topRef);
 
         if (!snap.exists()) {
-            // First player ever this Sunday — create the document
+            // First player ever this Sunday — they become the champion automatically.
+            // v5 rules: players must contain exactly 1 entry.
             await setDoc(topRef, {
-                // Champion fields (required by Firestore rules for top_ docs)
                 name, wpm, accuracy, score,
                 sundayDate: sundayKey,
                 country: country || '',
                 timestamp: playerEntry.timestamp,
-                // Full players list
-                players: [playerEntry]
+                players: [playerEntry]   // exactly 1 player — required by Firestore v5 rules
             });
-            // score saved
         } else {
             const existing = snap.data();
-            const existingPlayers = existing.players || [];
-
-            // Check if this player already has an entry (prevent duplicates on reload)
-            // Deduplicate by uid (uid is verified server-side by Firestore rules)
-            const alreadyIn = existingPlayers.some(p => p.uid && p.uid === (auth.currentUser?.uid || ''));
 
             if (score > (existing.score || 0)) {
-                // New champion — update root fields AND append to players (if not duplicate)
-                const updatedPlayers = alreadyIn
-                    ? existingPlayers.map(p => (p.uid && p.uid === (auth.currentUser?.uid || '')) ? playerEntry : p)
-                    : [...existingPlayers, playerEntry];
+                // New champion — replace the top_ doc with a single-player list.
+                // v5 rules only allow this update path (score must strictly beat current champion).
                 await setDoc(topRef, {
                     name, wpm, accuracy, score,
                     sundayDate: sundayKey,
                     country: country || '',
                     timestamp: playerEntry.timestamp,
-                    players: updatedPlayers
+                    players: [playerEntry]   // exactly 1 player — required by Firestore v5 rules
                 });
-                // score saved
-            } else {
-                // Not champion — just add to players array if not already there
-                if (!alreadyIn) {
-                    await updateDoc(topRef, { players: arrayUnion(playerEntry) });
-                    // score saved
-                } else {
-                    // already saved
-                }
             }
+            // If not champion: do NOT write to top_ doc at all.
+            // v5 rules removed the "append to players[]" update path — any such write
+            // would be rejected with permission-denied, causing the blinking/disappearing leaderboard.
         }
     } catch (err) {
         if (err.code === 'permission-denied' && (saveScoreAndUpdateLeaderboard._retries || 0) < 1) {
