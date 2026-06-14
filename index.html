@@ -1985,7 +1985,7 @@ function fmtDate(ts) {
    <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import { getFirestore, collection, addDoc, query, orderBy, limit, getDocs, doc, getDoc, setDoc, where } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, GoogleAuthProvider, GithubAuthProvider, signInWithPopup, sendPasswordResetEmail, sendEmailVerification, updateProfile } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, GoogleAuthProvider, GithubAuthProvider, signInWithPopup, sendPasswordResetEmail, sendEmailVerification, updateProfile, deleteUser } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyDFlSFyLG8RtOshIRI3XJ-d2Ws4R6bCqjE",
@@ -2015,6 +2015,7 @@ window.GithubAuthProvider = GithubAuthProvider;
 window.signInWithPopup = signInWithPopup;
 window.sendPasswordResetEmail = sendPasswordResetEmail;
 window.sendEmailVerification = sendEmailVerification;
+window.deleteUser = deleteUser;
 
     // Auth state listener — runs on every page load
     onAuthStateChanged(auth, async (user) => {
@@ -4299,8 +4300,29 @@ function sanitizeStr(s) {
         if (!password) return showError('auth-login-error', 'Please enter your password.');
         setAuthLoading('btn-login','btn-login-text', true, 'Signing in…');
         try {
-            await signInWithEmailAndPassword(auth, email, password);
-            closeAuthModal();
+            const cred = await signInWithEmailAndPassword(auth, email, password);
+
+            // ── Recovery path for previously "stuck" accounts ──
+            // Old versions of signup could leave an email registered in
+            // Firebase Auth with no matching /users/{uid} profile (e.g. the
+            // profile save failed and the email got left behind). Instead of
+            // leaving such accounts stranded, detect that here and let the
+            // person finish registration with this same email right now.
+            const userSnap = await getDoc(doc(db, 'users', cred.user.uid));
+            if (!userSnap.exists()) {
+                switchAuthTab('signup');
+                const emailField = document.getElementById('auth-signup-email');
+                if (emailField) { emailField.value = cred.user.email || ''; emailField.disabled = true; }
+                window._pendingOAuthUser = cred.user;
+                window._oauthSignupMode  = true;
+                const sErrEl = document.getElementById('auth-signup-error');
+                if (sErrEl) {
+                    sErrEl.style.color = '#e2b714';
+                    sErrEl.textContent = '✓ Signed in! Your earlier registration never finished — pick a username to complete it.';
+                }
+            } else {
+                closeAuthModal();
+            }
         } catch (e) {
             const msg = {
                 'auth/invalid-credential':  'Wrong email or password.',
@@ -4316,6 +4338,17 @@ function sanitizeStr(s) {
     }
 
     // ── Email/Password Signup ─────────────────────────────────────
+    // Registration is atomic from the user's perspective:
+    //  1. Every check we CAN do before touching Firebase Auth happens first
+    //     (field validation + username availability).
+    //  2. createUserWithEmailAndPassword immediately reserves the email in
+    //     Firebase Auth — there's no "dry run". So if ANYTHING after that
+    //     point fails (username race condition, profile write failure,
+    //     network error, etc.), we delete the Auth account we just created.
+    //     That frees the email again so it doesn't get stuck as
+    //     "already in use" with no working profile behind it.
+    //  3. The email is only considered "activated" once the /users profile
+    //     document has been written successfully.
     async function doSignup() {
         const username = document.getElementById('auth-signup-username').value.trim().toLowerCase();
         const country  = document.getElementById('auth-signup-country').value.trim();
@@ -4337,33 +4370,59 @@ function sanitizeStr(s) {
         if (password.length < 8)
             return showError('auth-signup-error', 'Password must be at least 8 characters.');
 
-        setAuthLoading('btn-signup','btn-signup-text', true, 'Creating account…');
+        setAuthLoading('btn-signup','btn-signup-text', true, 'Checking username…');
+
+        // Tracks the Auth account created during this attempt, if any, so it
+        // can be rolled back if the rest of registration doesn't complete.
+        let cred = null;
+
         try {
-            // Check username uniqueness
-            const snap = await getDocs(query(collection(db, 'users'), where('name','==',username)));
+            // STEP 1 — Username availability, checked BEFORE the email is
+            // touched at all.
+            let snap = await getDocs(query(collection(db, 'users'), where('name','==',username)));
             if (!snap.empty) return showError('auth-signup-error', 'Username taken. Please choose another.');
 
-            // Create Firebase Auth account (Firebase hashes the password with scrypt)
-            const cred = await createUserWithEmailAndPassword(auth, email, password);
+            // STEP 2 — Create the Firebase Auth account. From this point on
+            // the email is reserved — any failure below must roll this back.
+            setAuthLoading('btn-signup','btn-signup-text', true, 'Creating account…');
+            cred = await createUserWithEmailAndPassword(auth, email, password);
 
-            // Save public profile to Firestore (no password stored here)
+            // STEP 3 — Re-check username right before saving the profile, to
+            // guard against the rare race where someone else grabbed it in
+            // the moment between step 1 and now.
+            snap = await getDocs(query(collection(db, 'users'), where('name','==',username)));
+            if (!snap.empty) throw { code: 'profile/username-taken-race' };
+
+            // STEP 4 — Save the public profile to Firestore (no password
+            // stored here). Registration only counts as complete once this
+            // succeeds.
             await setDoc(doc(db, 'users', cred.user.uid), {
                 name: username, country, uid: cred.user.uid, created: Date.now()
             });
 
+            // Everything succeeded — the email is now fully activated.
             // Send email verification (non-blocking)
             sendEmailVerification(cred.user).catch(() => {});
 
             closeAuthModal();
         } catch (e) {
+            // Registration did not fully complete. If we created an Auth
+            // account in this attempt, delete it so the email is freed up
+            // again instead of being stuck "already in use" with no profile.
+            if (cred && cred.user) {
+                try { await deleteUser(cred.user); }
+                catch (delErr) { console.error('Rollback (deleteUser) failed:', delErr); }
+            }
+
             const msg = {
-                'auth/email-already-in-use': 'This email is already registered. Please log in.',
+                'auth/email-already-in-use': 'This email is already registered. Please log in — if registration never finished last time, logging in will let you complete it.',
                 'auth/weak-password':         'Password must be at least 8 characters.',
                 'auth/invalid-email':         'Please enter a valid email address.',
                 'auth/too-many-requests':     'Too many attempts. Please try again later.',
-            }[e.code] || 'Signup failed. Please try again.';
+                'profile/username-taken-race': 'That username was just taken by someone else. Please choose another.',
+            }[e.code] || 'Signup failed. Please try again — your email has not been registered.';
             showError('auth-signup-error', msg);
-            console.error('Signup error:', e.code);
+            console.error('Signup error:', e.code, e);
         } finally {
             setAuthLoading('btn-signup','btn-signup-text', false, 'CREATE ACCOUNT →');
         }
