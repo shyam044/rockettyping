@@ -19,6 +19,10 @@
   <meta name="twitter:image" content="https://www.rockettyping.com/images/og-banner.png">
   <link rel="icon" type="image/png" href="/images/logo.png">
   <meta name="theme-color" content="#323437">
+  <!-- Security: restrict what can be embedded or framed -->
+  <meta http-equiv="Content-Security-Policy" content="frame-ancestors 'none'; object-src 'none';">
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-136SVFZRDF"></script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-136SVFZRDF');</script>
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8311353174841359" crossorigin="anonymous"></script>
@@ -1861,7 +1865,7 @@ auth.onAuthStateChanged(async (user) => {
                 window._gameUser    = { uid: user.uid, name, country };
                 window._currentUser = { uid: user.uid, name, country };
                 if (topnav) {
-                    topnav.innerHTML = '<span id="game-topnav-username">👤 ' + name + '</span>' +
+                    topnav.innerHTML = '<span id="game-topnav-username">👤 ' + sanitizeStr(name) + '</span>' +
                         '<button class="game-topnav-logout" id="game-topnav-logout">LOGOUT</button>';
                     document.getElementById('game-topnav-logout').addEventListener('click', () => auth.signOut());
                 }
@@ -3988,8 +3992,8 @@ document.getElementById('game-login-btn').addEventListener('click', async () => 
   } catch(e) {
     const msgs = {
       'auth/invalid-credential': 'Wrong email or password.',
-      'auth/user-not-found':     'No account with this email.',
-      'auth/wrong-password':     'Wrong password.',
+      'auth/user-not-found':     'Wrong email or password.',
+      'auth/wrong-password':     'Wrong email or password.',
       'auth/too-many-requests':  'Too many attempts. Try again later or reset your password.',
     };
     gameShowErr('game-login-err', msgs[e.code] || 'Login failed. Try again.');
