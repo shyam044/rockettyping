@@ -1097,6 +1097,199 @@ function fmtDate(ts) {
      KEYMAP SCENE STYLES — Animated Typing Character
 ═══════════════════════════════════════════════════════════════ -->
 <style>
+/* ══════════════════════════════════════════════
+   OUTER ROW — Score Badges + Keymap side by side
+══════════════════════════════════════════════ */
+#km-outer-row {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: flex-end;
+    width: 100%;
+}
+
+/* ══════════════════════════════════════════════
+   KEYMAP SCORE BADGES — Musk & Elon Score
+══════════════════════════════════════════════ */
+#km-scores-panel {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-end;
+    justify-content: flex-start;
+    gap: 18px;
+    padding-bottom: 8px;
+    padding-left: 20px;
+    flex-shrink: 0;
+    justify-self: start;
+    transition: opacity 0.35s ease, transform 0.35s ease;
+}
+
+#km-scores-panel.km-scores-hidden {
+    opacity: 0;
+    pointer-events: none;
+    transform: translateX(-12px);
+}
+
+.km-score-badge {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Rotating ring wrapper — bigger size */
+.km-score-ring {
+    position: relative;
+    width: 148px;
+    height: 148px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+/* Spinning gradient border via pseudo element */
+.km-score-ring::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    padding: 4px;
+    -webkit-mask:
+        linear-gradient(#fff 0 0) content-box,
+        linear-gradient(#fff 0 0);
+    -webkit-mask-composite: destination-out;
+    mask-composite: exclude;
+    animation: km-ring-spin 2.4s linear infinite;
+}
+
+/* Musk ring: gold/orange conic gradient */
+.km-musk-ring::before {
+    background: conic-gradient(
+        #e2b714 0deg,
+        #ff9900 90deg,
+        #ff6600 150deg,
+        rgba(226,183,20,0.15) 200deg,
+        #e2b714 360deg
+    );
+}
+
+/* Elon ring: cyan/purple conic gradient — different speed + direction */
+.km-elon-ring::before {
+    background: conic-gradient(
+        #00e6cc 0deg,
+        #9b72cf 100deg,
+        #ff4fd8 180deg,
+        rgba(0,230,204,0.12) 230deg,
+        #00e6cc 360deg
+    );
+    animation-duration: 1.8s;
+    animation-direction: reverse;
+}
+
+@keyframes km-ring-spin {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+}
+
+/* Inner circle */
+.km-score-inner {
+    position: relative;
+    z-index: 1;
+    width: 138px;
+    height: 138px;
+    border-radius: 50%;
+    background: #0c0c22;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+}
+
+.km-score-emoji {
+    font-size: 26px;
+    line-height: 1;
+}
+
+.km-score-num {
+    font-size: 44px;
+    font-weight: 900;
+    line-height: 1;
+    font-family: 'Roboto Mono', monospace;
+    letter-spacing: -1px;
+    transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1);
+}
+
+.km-musk-ring .km-score-num { color: #e2b714; }
+.km-elon-ring .km-score-num { color: #00e6cc; }
+
+.km-score-lbl {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    font-family: 'Roboto Mono', monospace;
+    opacity: 0.55;
+    text-transform: uppercase;
+}
+
+.km-musk-ring .km-score-lbl { color: #e2b714; }
+.km-elon-ring .km-score-lbl { color: #00e6cc; }
+
+/* Badge subtitle label below the ring */
+.km-score-tag {
+    font-size: 10px;
+    font-family: 'Roboto Mono', monospace;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    opacity: 0.35;
+    color: #fff;
+}
+
+/* pop animation on score update */
+@keyframes km-score-pop {
+    0%   { transform: scale(1); }
+    40%  { transform: scale(1.35); }
+    70%  { transform: scale(0.92); }
+    100% { transform: scale(1); }
+}
+.km-score-num.km-pop {
+    animation: km-score-pop 0.5s cubic-bezier(0.34,1.56,0.64,1);
+}
+
+/* ── Musk Score Gain Chip (+N animation) ─────────────────────── */
+.musk-gain-chip {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 20;
+    /* pill style */
+    background: linear-gradient(135deg, #e2b714 0%, #ff9900 100%);
+    color: #0c0c22;
+    font-family: 'Roboto Mono', monospace;
+    font-size: 28px;
+    font-weight: 900;
+    letter-spacing: -0.5px;
+    padding: 6px 18px;
+    border-radius: 999px;
+    box-shadow: 0 0 24px rgba(226,183,20,0.65), 0 4px 16px rgba(0,0,0,0.45);
+    white-space: nowrap;
+    pointer-events: none;
+    opacity: 1;
+    transition: none;
+}
+/* fly-up keyframe */
+@keyframes musk-gain-fly {
+    0%   { opacity: 0;   transform: translate(-50%, 20px)  scale(0.6); }
+    18%  { opacity: 1;   transform: translate(-50%, -10px) scale(1.15); }
+    55%  { opacity: 1;   transform: translate(-50%, -48px) scale(1); }
+    100% { opacity: 0;   transform: translate(-50%, -80px) scale(0.8); }
+}
+.musk-gain-chip--fly {
+    animation: musk-gain-fly 1.32s cubic-bezier(0.22,1,0.36,1) forwards;
+}
+
 /* ── Toggle Row ── */
 #km-toggle-row {
     display: flex;
@@ -1458,7 +1651,38 @@ function fmtDate(ts) {
      KEYMAP SCENE — Animated Boy Character + Keyboard + Mouse
      Shows real-time key highlighting with arm animations
 ═══════════════════════════════════════════════════════════════ -->
-<div id="km-wrap">
+
+<!-- Outer row: [Score Badges] [Keymap Box] -->
+<div id="km-outer-row">
+
+    <!-- ── LEFT: Musk Score + Elon Score Badges (OUTSIDE keymap box) ── -->
+    <div id="km-scores-panel">
+        <!-- Musk Score Badge -->
+        <div class="km-score-badge" id="km-musk-badge" title="Musk Score: every 60s typed = 1 point">
+            <div class="km-score-ring km-musk-ring">
+                <div class="km-score-inner">
+                    <span class="km-score-emoji">🚀</span>
+                    <span class="km-score-num" id="km-musk-num">0</span>
+                    <span class="km-score-lbl">MUSK</span>
+                </div>
+            </div>
+            <span class="km-score-tag">score</span>
+        </div>
+        <!-- Elon Score Badge -->
+        <div class="km-score-badge" id="km-elon-badge" title="Elon Score: every 100 Musk points = 1 Elon point">
+            <div class="km-score-ring km-elon-ring">
+                <div class="km-score-inner">
+                    <span class="km-score-emoji">⚡</span>
+                    <span class="km-score-num" id="km-elon-num">0</span>
+                    <span class="km-score-lbl">ELON</span>
+                </div>
+            </div>
+            <span class="km-score-tag">score</span>
+        </div>
+    </div>
+
+    <!-- ── RIGHT: Keymap box ── -->
+    <div id="km-wrap">
     <!-- Toggle Button -->
     <div id="km-toggle-row">
         <button id="km-toggle-btn" onclick="kmToggle()" title="Toggle keymap visualization">
@@ -1471,9 +1695,7 @@ function fmtDate(ts) {
     <!-- Scene: Character + Keyboard + Mouse -->
     <div id="km-scene">
 
-
-
-        <!-- ── RIGHT: Keyboard + Mouse ── -->
+        <!-- ── Keyboard + Mouse ── -->
         <div id="km-kb-outer">
             <button id="km-sound-btn" onclick="kmSoundToggle()" title="Toggle keyboard sound">
                 <span id="km-sound-icon">🔊</span>
@@ -1518,6 +1740,7 @@ function fmtDate(ts) {
     </div><!-- #km-scene -->
 </div><!-- #km-wrap -->
 
+</div><!-- #km-outer-row -->
 
 <div id="result" style="display: none;">
     <!-- MAIN ROW: stats LEFT + chart RIGHT -->
@@ -2142,6 +2365,7 @@ window.deleteUser = deleteUser;
         let startTime = null;
         let timerInterval = null;
         let testActive = false;
+        let testEnded  = false;   // true once endTest() fires; cleared by resetTest() only
         let correctChars = 0;
         let rawChars = 0;
         let correctKeystrokes = 0;
@@ -2920,7 +3144,7 @@ if (e.key !== 'Tab') {
 // Only start the test on printable single-character keys (a-z, 0-9, punctuation, space).
 // This intentionally excludes F1-F12, Escape, Tab, Arrow keys, Shift, Ctrl, etc.
 // e.key.length === 1 is true for every typeable character and false for all named keys.
-if (!testActive && e.key.length === 1) {
+if (!testActive && !testEnded && e.key.length === 1) {
     testActive = true;
     startTimer();
     caret.classList.remove('blink');
@@ -2938,6 +3162,10 @@ if (!testActive && e.key.length === 1) {
         // Hide keymap toggle button during typing
         var kmToggleRow = document.getElementById('km-toggle-row');
         if (kmToggleRow) kmToggleRow.classList.add('km-toggle-hidden');
+
+        // Hide Musk & Elon score badges during typing
+        var kmScoresPanel = document.getElementById('km-scores-panel');
+        if (kmScoresPanel) kmScoresPanel.classList.add('km-scores-hidden');
 
         // Keep timer visible
         document.getElementById("test-config").style.display = "none";
@@ -3086,10 +3314,13 @@ if (!testActive && e.key.length === 1) {
                 // PERF: update cached active word reference
                 if (activeWordEl) activeWordEl.classList.remove('active');
                 currentWordIndex++;
-                activeWordEl = wordsDiv.children[currentWordIndex];
+                // BUGFIX: wordsDiv.children includes the caret div appended by _updateCaretNow,
+                // so .children[N] is wrong once the caret has been inserted — it returns the
+                // caret element instead of the Nth word div. Use only .word elements.
+                const wordEls = wordsDiv.querySelectorAll('.word');
+                activeWordEl = wordEls[currentWordIndex] || null;
                 if (activeWordEl) {
                     activeWordEl.classList.add('active');
-                    // PERF: use direct children — faster than querySelectorAll
                     activeLetterSpansArr = Array.from(activeWordEl.children);
                 }
 
@@ -3192,31 +3423,23 @@ if (!testActive && e.key.length === 1) {
             const remaining = config.time - elapsed;
             timerDiv.textContent = formatTime(remaining);
 
-            // ── Musk Score: real-time milestone check (fires while user is still typing) ──
-            try {
-                const _u = window._currentUser;
-                if (_u) {
-                    const _mk = 'rt_musk_' + (_u.uid || 'guest');
-                    const _prevBase = parseFloat(localStorage.getItem(_mk) || '0');
-                    const _nowTotal = _prevBase + elapsed;
-                    const _prevScore = Math.floor(_prevBase / 60);
-                    const _nowScore  = Math.floor(_nowTotal / 60);
-                    if (_nowScore > _prevScore && (!window._muskLastToastScore || window._muskLastToastScore < _nowScore)) {
-                        window._muskLastToastScore = _nowScore;
-                        _showMuskToast(_nowScore, Math.round(_nowTotal));
-                    }
-                }
-            } catch(_e) {}
+            // Musk Score milestone toast is shown ONLY after the test ends (not during typing)
 
             if (remaining <= 0) {
                 endTest();
             }
         }
         function endTest() {
+            if (!testActive) return;   // ← guard: prevents double-call from typeLetter + timer + moveToNextWord
             clearInterval(timerInterval);
             if (window._liveWpmInterval) { clearInterval(window._liveWpmInterval); window._liveWpmInterval = null; }
             testActive = false;
+            testEnded  = true;   // ← lock out the "start on keypress" path until resetTest() clears this
             input.blur();
+
+            // Show Musk & Elon score badges again when test ends
+            var kmScoresPanelEnd = document.getElementById('km-scores-panel');
+            if (kmScoresPanelEnd) kmScoresPanelEnd.classList.remove('km-scores-hidden');
             const elapsedMinutes = (Date.now() - startTime) / 60000 || 0.001;
 
             // WPM & Raw - use the counters you already maintain (much cleaner + accurate)
@@ -3793,8 +4016,20 @@ if (!testActive && e.key.length === 1) {
             // Show keymap toggle button again after test
             var kmToggleRow = document.getElementById('km-toggle-row');
             if (kmToggleRow) kmToggleRow.classList.remove('km-toggle-hidden');
+
+            // Show Musk & Elon score badges again after test — with gain animation
+            var kmScoresPanel = document.getElementById('km-scores-panel');
+            if (kmScoresPanel) {
+                kmScoresPanel.classList.remove('km-scores-hidden');
+                // Animate the musk score gain if there was a delta this session
+                if (typeof window._muskScoreDelta === 'number' && window._muskScoreDelta > 0) {
+                    _animateMuskGain(window._muskScorePrev, window._muskScoreDelta, window._muskScoreNew);
+                    window._muskScoreDelta = 0;
+                }
+            }
             clearInterval(timerInterval);
             testActive = false;
+            testEnded  = false;   // ← allow new test to start on next keypress
             caret.classList.add('blink');
             window._muskLastToastScore = null; // reset per-test milestone tracker
             currentWordIndex = 0;
@@ -3950,9 +4185,12 @@ function sanitizeStr(s) {
                 localStorage.setItem(MUSK_KEY, newTotal.toString());
                 const prevScore = Math.floor(prevSecs / 60);
                 const newScore  = Math.floor(newTotal / 60);
-                if (newScore > prevScore) {
-                    _showMuskToast(newScore, Math.round(newTotal));
-                }
+                // Store the gain so resetTest() can animate it when returning to the test page
+                window._muskScorePrev  = prevScore;
+                window._muskScoreNew   = newScore;
+                window._muskScoreDelta = newScore - prevScore;
+                // Update keymap score badges live (will be revealed on resetTest with animation)
+                if (typeof updateKmScoreBadges === 'function') updateKmScoreBadges();
             } catch(_me) {}
 
             // ── Firestore write ──────────────────────────────────────────────
@@ -5024,6 +5262,52 @@ function _showMuskToast(score, totalSecs) {
     }, 4000);
 }
 
+/* ─────────────────────────────────────────────────────────────
+   MUSK SCORE GAIN ANIMATION
+   Called when the user returns to the test page after a session.
+   Shows the old score → floating "+N" → new score with pop.
+───────────────────────────────────────────────────────────── */
+function _animateMuskGain(prevScore, delta, newScore) {
+    var numEl  = document.getElementById('km-musk-num');
+    var badge  = document.getElementById('km-musk-badge');
+    if (!numEl || !badge) return;
+
+    // Step 1: briefly show OLD score
+    numEl.textContent = prevScore;
+
+    // Step 2: after a short pause, create the floating "+N" chip
+    setTimeout(function() {
+        // Build the +N overlay
+        var chip = document.createElement('div');
+        chip.className = 'musk-gain-chip';
+        chip.textContent = '+' + delta;
+        badge.style.position = 'relative';
+        badge.appendChild(chip);
+
+        // Trigger the float-up animation on next frame
+        requestAnimationFrame(function() {
+            requestAnimationFrame(function() {
+                chip.classList.add('musk-gain-chip--fly');
+            });
+        });
+
+        // Step 3: after chip is midway, update the number with a pop
+        setTimeout(function() {
+            numEl.textContent = newScore;
+            numEl.classList.remove('km-pop');
+            void numEl.offsetWidth;
+            numEl.classList.add('km-pop');
+            setTimeout(function() { numEl.classList.remove('km-pop'); }, 600);
+
+            // Step 4: remove chip after it finishes floating
+            setTimeout(function() {
+                if (chip.parentNode) chip.parentNode.removeChild(chip);
+            }, 900);
+        }, 420);
+
+    }, 350);
+}
+
 /* Render Musk Score card inside profile modal */
 function _renderMuskScore(uid) {
     const card = document.getElementById('pm-musk-card');
@@ -5074,6 +5358,46 @@ function _renderMuskScore(uid) {
         `;
     }
 }
+
+/* ══════════════════════════════════════════════
+   UPDATE KEYMAP SCORE BADGES (Musk + Elon)
+══════════════════════════════════════════════ */
+function updateKmScoreBadges() {
+    var uid = (window._currentUser && window._currentUser.uid) ? window._currentUser.uid : 'guest';
+    var MUSK_KEY = 'rt_musk_' + uid;
+    var totalSecs = parseFloat(localStorage.getItem(MUSK_KEY) || '0');
+    var muskScore = Math.floor(totalSecs / 60);
+    var elonScore = Math.floor(muskScore / 100);
+
+    var muskEl = document.getElementById('km-musk-num');
+    var elonEl = document.getElementById('km-elon-num');
+
+    function setAndPop(el, val) {
+        if (!el) return;
+        var prev = parseInt(el.textContent) || 0;
+        el.textContent = val;
+        if (val !== prev) {
+            el.classList.remove('km-pop');
+            void el.offsetWidth; // reflow to restart animation
+            el.classList.add('km-pop');
+            setTimeout(function() { el.classList.remove('km-pop'); }, 550);
+        }
+    }
+
+    setAndPop(muskEl, muskScore);
+    setAndPop(elonEl, elonScore);
+}
+
+// Update badges when Firebase auth is ready
+window.addEventListener('firebase-ready', function() {
+    updateKmScoreBadges();
+}, { once: true });
+
+// Also update immediately in case already loaded
+setTimeout(updateKmScoreBadges, 800);
+
+// Expose so it can be called after each test completes
+window.updateKmScoreBadges = updateKmScoreBadges;
 
 window.closeProfileModal = function() {
     const modal = document.getElementById('profileModal');
