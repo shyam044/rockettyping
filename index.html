@@ -2416,6 +2416,38 @@ window.deleteUser = deleteUser;
         });
         input.addEventListener('keydown', handleKeydown);
         restartBtn.addEventListener('click', resetTest);
+
+        // Tab + Enter from result page → go back to test (works even when input is blurred)
+        document.addEventListener('keydown', function(e) {
+            // Only act when the result screen is visible
+            var resDiv = document.getElementById('result');
+            if (!resDiv || resDiv.style.display === 'none' || !resDiv.classList.contains('visible')) return;
+            if (e.key === 'Tab') {
+                e.preventDefault();
+                window._resultTabHeld = true;
+                var hint = document.getElementById('tab-redo-hint');
+                if (hint) hint.style.display = 'block';
+                clearTimeout(window._resultTabTimer);
+                window._resultTabTimer = setTimeout(function() {
+                    window._resultTabHeld = false;
+                    var h = document.getElementById('tab-redo-hint');
+                    if (h) h.style.display = 'none';
+                }, 2000);
+                return;
+            }
+            if (e.key === 'Enter' && window._resultTabHeld) {
+                e.preventDefault();
+                window._resultTabHeld = false;
+                clearTimeout(window._resultTabTimer);
+                var hint2 = document.getElementById('tab-redo-hint');
+                if (hint2) hint2.style.display = 'none';
+                resetTest();
+                return;
+            }
+            if (e.key !== 'Tab' && e.key !== 'Enter') {
+                window._resultTabHeld = false;
+            }
+        });
         timerDiv.addEventListener('click', () => {
             if (testActive) return;
             if (config.mode === 'quotes') return;
@@ -3442,6 +3474,24 @@ if (!testActive && !testEnded && e.key.length === 1) {
             if (kmScoresPanelEnd) kmScoresPanelEnd.classList.remove('km-scores-hidden');
             const elapsedMinutes = (Date.now() - startTime) / 60000 || 0.001;
 
+            // === Musk Score: track for ALL modes (time, words, quotes) ===
+            // 60 seconds of typing = 1 Musk Score point, regardless of mode
+            try {
+                var _muskUid = (window._currentUser && window._currentUser.uid) ? window._currentUser.uid : 'guest';
+                var _muskKey = 'rt_musk_' + _muskUid;
+                var _elapsedMsMusk = Math.round(elapsedMinutes * 60000);
+                var _addSecsMusk   = Math.max(1, Math.round(_elapsedMsMusk / 1000));
+                var _prevSecsMusk  = parseFloat(localStorage.getItem(_muskKey) || '0');
+                var _newTotalMusk  = _prevSecsMusk + _addSecsMusk;
+                localStorage.setItem(_muskKey, _newTotalMusk.toString());
+                var _prevMuskScore = Math.floor(_prevSecsMusk / 60);
+                var _newMuskScore  = Math.floor(_newTotalMusk / 60);
+                window._muskScorePrev  = _prevMuskScore;
+                window._muskScoreNew   = _newMuskScore;
+                window._muskScoreDelta = _newMuskScore - _prevMuskScore;
+                if (typeof updateKmScoreBadges === 'function') updateKmScoreBadges();
+            } catch(_me) {}
+
             // WPM & Raw - use the counters you already maintain (much cleaner + accurate)
             const wpm = Math.round(correctKeystrokes / 5 / elapsedMinutes);
             const rawWpm = Math.round(totalKeystrokes / 5 / elapsedMinutes);
@@ -4175,23 +4225,6 @@ function sanitizeStr(s) {
                 if (scores.length > 200) scores = scores.slice(-200);
                 localStorage.setItem(KEY, JSON.stringify(scores));
             } catch (lsErr) { console.warn('localStorage score save failed:', lsErr); }
-
-            // ── Musk Score: accumulate total seconds typed ───────────────────
-            try {
-                const MUSK_KEY = 'rt_musk_' + uid;
-                const prevSecs = parseFloat(localStorage.getItem(MUSK_KEY) || '0');
-                const addSecs  = Math.max(1, Math.round(_elapsedMs / 1000));
-                const newTotal = prevSecs + addSecs;
-                localStorage.setItem(MUSK_KEY, newTotal.toString());
-                const prevScore = Math.floor(prevSecs / 60);
-                const newScore  = Math.floor(newTotal / 60);
-                // Store the gain so resetTest() can animate it when returning to the test page
-                window._muskScorePrev  = prevScore;
-                window._muskScoreNew   = newScore;
-                window._muskScoreDelta = newScore - prevScore;
-                // Update keymap score badges live (will be revealed on resetTest with animation)
-                if (typeof updateKmScoreBadges === 'function') updateKmScoreBadges();
-            } catch(_me) {}
 
             // ── Firestore write ──────────────────────────────────────────────
             try {
