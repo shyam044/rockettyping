@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
-  <!-- Home – Typing Test -->
+  <!-- Main Pages -->
   <url>
     <loc>https://www.rockettyping.com/</loc>
     <lastmod>2026-06-05</lastmod>
@@ -9,7 +9,6 @@
     <priority>1.0</priority>
   </url>
 
-  <!-- Learn to Type – Beginner Course -->
   <url>
     <loc>https://www.rockettyping.com/learn</loc>
     <lastmod>2026-06-05</lastmod>
@@ -17,7 +16,6 @@
     <priority>0.95</priority>
   </url>
 
-  <!-- Rocket Race – Typing Game -->
   <url>
     <loc>https://www.rockettyping.com/game</loc>
     <lastmod>2026-06-05</lastmod>
@@ -25,7 +23,6 @@
     <priority>0.9</priority>
   </url>
 
-  <!-- Sunday Championship -->
   <url>
     <loc>https://www.rockettyping.com/test</loc>
     <lastmod>2026-06-05</lastmod>
@@ -33,7 +30,13 @@
     <priority>0.9</priority>
   </url>
 
-  <!-- About – Typing Guide & Benchmarks -->
+  <url>
+    <loc>https://www.rockettyping.com/blog</loc>
+    <lastmod>2026-06-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+
   <url>
     <loc>https://www.rockettyping.com/about</loc>
     <lastmod>2026-06-05</lastmod>
@@ -41,7 +44,6 @@
     <priority>0.8</priority>
   </url>
 
-  <!-- Contact -->
   <url>
     <loc>https://www.rockettyping.com/contact</loc>
     <lastmod>2026-06-05</lastmod>
@@ -49,7 +51,6 @@
     <priority>0.5</priority>
   </url>
 
-  <!-- Privacy Policy -->
   <url>
     <loc>https://www.rockettyping.com/privacy</loc>
     <lastmod>2026-06-05</lastmod>
@@ -57,7 +58,6 @@
     <priority>0.4</priority>
   </url>
 
-  <!-- Terms of Service -->
   <url>
     <loc>https://www.rockettyping.com/terms</loc>
     <lastmod>2026-06-05</lastmod>
@@ -65,4 +65,58 @@
     <priority>0.4</priority>
   </url>
 
+  <!-- Blog Articles -->
+
+  <url><loc>https://www.rockettyping.com/blog/advanced-touch-typing-techniques</loc><changefreq>monthly</changefreq><priority>0.80</priority></url>
+  <url><loc>https://www.rockettyping.com/blog/best-keyboards-for-programmers</loc><changefreq>monthly</changefreq><priority>0.80</priority></url>
+  <url><loc>https://www.rockettyping.com/blog/best-keyboards-for-typing</loc><changefreq>monthly</changefreq><priority>0.80</priority></url>
+  <url><loc>https://www.rockettyping.com/blog/best-quiet-keyboards-for-typing</loc><changefreq>monthly</changefreq><priority>0.80</priority></url>
+  <url><loc>https://www.rockettyping.com/blog/best-typing-apps-and-tools</loc><changefreq>monthly</changefreq><priority>0.80</priority></url>
+  <url><loc>https://www.rockettyping.com/blog/best-typing-drills-for-accuracy</loc><changefreq>monthly</changefreq><priority>0.80</priority></url>
+  <url><loc>https://www.rockettyping.com/blog/best-wpm-for-jobs</loc><changefreq>monthly</changefreq><priority>0.80</priority></url>
+  <url><loc>https://www.rockettyping.com/blog/breaking-bad-typing-habits</loc><changefreq>monthly</changefreq><priority>0.80</priority></url>
+  <url><loc>https://www.rockettyping.com/blog/building-a-typing-routine-for-kids</loc><changefreq>monthly</changefreq><priority>0.80</priority></url>
+  <url><loc>https://www.rockettyping.com/blog/common-typing-mistakes</loc><changefreq>monthly</changefreq><priority>0.80</priority></url>
+  <url><loc>https://www.rockettyping.com/blog/consistency-in-typing</loc><changefreq>monthly</changefreq><priority>0.80</priority></url>
+  <url><loc>https://www.rockettyping.com/blog/daily-typing-practice-routine</loc><changefreq>monthly</changefreq><priority>0.80</priority></url>
+  <url><loc>https://www.rockettyping.com/blog/dvorak-vs-colemak-vs-qwerty</loc><changefreq>monthly</changefreq><priority>0.80</priority></url>
+  <url><loc>https://www.rockettyping.com/blog/ergonomic-keyboard-buying-guide</loc><changefreq>monthly</changefreq><priority>0.80</priority></url>
+  <url><loc>https://www.rockettyping.com/blog/fastest-typists-in-history</loc><changefreq>monthly</changefreq><priority>0.80</priority></url>
+  <url><loc>https://www.rockettyping.com/blog/finger-strength-exercises-for-typists</loc><changefreq>monthly</changefreq><priority>0.80</priority></url>
+  <url><loc>https://www.rockettyping.com/blog/home-typing-test-setup</loc><changefreq>monthly</changefreq><priority>0.80</priority></url>
+  <url><loc>https://www.rockettyping.com/blog/how-to-improve-typing-accuracy</loc><changefreq>monthly</changefreq><priority>0.80</priority></url>
+  <url><loc>https://www.rockettyping.com/blog/how-to-increase-typing-speed</loc><changefreq>monthly</changefreq><priority>0.80</priority></url>
+  <url><loc>https://www.rockettyping.com/blog/how-to-maintain-typing-progress-after-reaching-goals</loc><changefreq>monthly</changefreq><priority>0.80</priority></url>
+  <url><loc>https://www.rockettyping.com/blog/how-to-recover-from-typing-ruts</loc><changefreq>monthly</changefreq><priority>0.80</priority></url>
+  <url><loc>https://www.rockettyping.com/blog/how-to-stop-looking-at-keyboard</loc><changefreq>monthly</changefreq><priority>0.80</priority></url>
+  <url><loc>https://www.rockettyping.com/blog/how-to-use-typing-data-to-improve</loc><changefreq>monthly</changefreq><priority>0.80</priority></url>
+  <url><loc>https://www.rockettyping.com/blog/keyboard-layout-history-and-evolution</loc><changefreq>monthly</changefreq><priority>0.80</priority></url>
+  <url><loc>https://www.rockettyping.com/blog/keyboard-maintenance-for-typing-performance</loc><changefreq>monthly</changefreq><priority>0.80</priority></url>
+  <url><loc>https://www.rockettyping.com/blog/keyboard-shortcuts-mac-windows-linux</loc><changefreq>monthly</changefreq><priority>0.80</priority></url>
+  <url><loc>https://www.rockettyping.com/blog/laptop-typing-best-practices</loc><changefreq>monthly</changefreq><priority>0.80</priority></url>
+  <url><loc>https://www.rockettyping.com/blog/setting-typing-goals-and-tracking-progress</loc><changefreq>monthly</changefreq><priority>0.80</priority></url>
+  <url><loc>https://www.rockettyping.com/blog/split-keyboard-typing-beginners-guide</loc><changefreq>monthly</changefreq><priority>0.80</priority></url>
+  <url><loc>https://www.rockettyping.com/blog/touch-typing-guide</loc><changefreq>monthly</changefreq><priority>0.80</priority></url>
+  <url><loc>https://www.rockettyping.com/blog/typing-competitions-and-communities</loc><changefreq>monthly</changefreq><priority>0.80</priority></url>
+  <url><loc>https://www.rockettyping.com/blog/typing-drills-for-programming-symbols</loc><changefreq>monthly</changefreq><priority>0.80</priority></url>
+  <url><loc>https://www.rockettyping.com/blog/typing-ergonomics-and-rsi-prevention</loc><changefreq>monthly</changefreq><priority>0.80</priority></url>
+  <url><loc>https://www.rockettyping.com/blog/typing-for-coders-best-practices</loc><changefreq>monthly</changefreq><priority>0.80</priority></url>
+  <url><loc>https://www.rockettyping.com/blog/typing-for-gamers</loc><changefreq>monthly</changefreq><priority>0.80</priority></url>
+  <url><loc>https://www.rockettyping.com/blog/typing-for-students</loc><changefreq>monthly</changefreq><priority>0.80</priority></url>
+  <url><loc>https://www.rockettyping.com/blog/typing-for-writers</loc><changefreq>monthly</changefreq><priority>0.80</priority></url>
+  <url><loc>https://www.rockettyping.com/blog/typing-games-for-skill-building</loc><changefreq>monthly</changefreq><priority>0.80</priority></url>
+  <url><loc>https://www.rockettyping.com/blog/typing-in-job-applications-and-interviews</loc><changefreq>monthly</changefreq><priority>0.80</priority></url>
+  <url><loc>https://www.rockettyping.com/blog/typing-in-multiple-languages</loc><changefreq>monthly</changefreq><priority>0.80</priority></url>
+  <url><loc>https://www.rockettyping.com/blog/typing-mindset-for-consistent-practice</loc><changefreq>monthly</changefreq><priority>0.80</priority></url>
+  <url><loc>https://www.rockettyping.com/blog/typing-on-mobile-and-tablets</loc><changefreq>monthly</changefreq><priority>0.80</priority></url>
+  <url><loc>https://www.rockettyping.com/blog/typing-posture-desk-setup</loc><changefreq>monthly</changefreq><priority>0.80</priority></url>
+  <url><loc>https://www.rockettyping.com/blog/typing-skill-levels</loc><changefreq>monthly</changefreq><priority>0.80</priority></url>
+  <url><loc>https://www.rockettyping.com/blog/typing-speed-accuracy-balance</loc><changefreq>monthly</changefreq><priority>0.80</priority></url>
+  <url><loc>https://www.rockettyping.com/blog/typing-speed-for-programmers</loc><changefreq>monthly</changefreq><priority>0.80</priority></url>
+  <url><loc>https://www.rockettyping.com/blog/typing-test-prep-for-standardized-exams</loc><changefreq>monthly</changefreq><priority>0.80</priority></url>
+  <url><loc>https://www.rockettyping.com/blog/typing-test-strategies-for-high-scores</loc><changefreq>monthly</changefreq><priority>0.80</priority></url>
+  <url><loc>https://www.rockettyping.com/blog/typing-test-vs-practice</loc><changefreq>monthly</changefreq><priority>0.80</priority></url>
+  <url><loc>https://www.rockettyping.com/blog/typing-websites-vs-other-platforms</loc><changefreq>monthly</changefreq><priority>0.80</priority></url>
+
 </urlset>
+
