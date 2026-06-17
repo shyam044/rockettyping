@@ -882,6 +882,119 @@ function fmtDate(ts) {
 .pm-musk-tooltip .tt-ex { color: #666; font-size: 10px; }
 
 /* ── Milestone Toast ── */
+
+/* ══════════════════════════════════════════════
+   ELON SCORE CARD (profile modal)
+══════════════════════════════════════════════ */
+.pm-elon-card {
+    position: relative;
+    border-radius: 16px;
+    padding: 18px 20px 14px;
+    text-align: center;
+    background: linear-gradient(135deg, rgba(0,180,255,0.07), rgba(0,90,180,0.05));
+    border: 1px solid rgba(0,180,255,0.25);
+    margin: 8px 0 4px;
+    overflow: hidden;
+    cursor: default;
+    transition: transform .2s, box-shadow .2s;
+}
+.pm-elon-card::before {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    border-radius: 18px;
+    background: conic-gradient(
+        rgba(0,180,255,0) 0deg,
+        rgba(0,180,255,0.5) 90deg,
+        rgba(0,220,255,0) 180deg,
+        rgba(0,180,255,0.5) 270deg,
+        rgba(0,180,255,0) 360deg
+    );
+    animation: elon-border-spin 5s linear infinite;
+    z-index: 0;
+    pointer-events: none;
+}
+@keyframes elon-border-spin {
+    0%   { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+.pm-elon-card:hover { transform: translateY(-2px); box-shadow: 0 12px 40px rgba(0,180,255,0.2); }
+.pm-elon-rocket {
+    font-size: 28px;
+    display: block;
+    margin-bottom: 2px;
+    animation: elon-pulse 2.5s ease-in-out infinite;
+}
+@keyframes elon-pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50%       { opacity: 0.7; transform: scale(1.1); }
+}
+.pm-elon-label {
+    display: block;
+    font-size: 10px;
+    letter-spacing: 2.5px;
+    color: #00b4ff;
+    font-weight: 900;
+    text-transform: uppercase;
+    margin-bottom: 2px;
+}
+.pm-elon-number {
+    display: block;
+    font-size: 52px;
+    font-weight: 900;
+    color: #00d4ff;
+    line-height: 1;
+    letter-spacing: -1px;
+    text-shadow: 0 0 30px rgba(0,212,255,0.5);
+    margin: 4px 0;
+}
+.pm-elon-number.pop {
+    animation: musk-pop .5s cubic-bezier(0.34,1.56,0.64,1);
+}
+.pm-elon-sub {
+    display: block;
+    font-size: 11px;
+    color: #555;
+    letter-spacing: 0.5px;
+    margin-bottom: 10px;
+}
+.pm-elon-fill {
+    background: linear-gradient(90deg, #007bbf, #00d4ff) !important;
+    box-shadow: 0 0 10px rgba(0,212,255,0.4) !important;
+}
+.pm-elon-tooltip {
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: #111;
+    border: 1px solid rgba(0,180,255,0.3);
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 11px;
+    color: #aaa;
+    line-height: 1.6;
+    width: 230px;
+    text-align: left;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .2s;
+    z-index: 10;
+    white-space: normal;
+}
+.pm-elon-tooltip::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 6px solid transparent;
+    border-top-color: rgba(0,180,255,0.3);
+}
+.pm-elon-card:hover .pm-elon-tooltip { opacity: 1; }
+.pm-elon-tooltip strong { color: #00d4ff; }
+.pm-elon-tooltip .tt-ex { color: #666; font-size: 10px; }
+
 #musk-milestone-toast {
     position: fixed;
     bottom: 30px; left: 50%;
@@ -972,6 +1085,31 @@ function fmtDate(ts) {
             </div>
             <div class="pm-musk-progress-track">
               <div class="pm-musk-progress-fill" id="pm-musk-bar" style="width:0%"></div>
+            </div>
+          </div>
+        </div>
+
+
+        <!-- ✦ ELON SCORE ✦ -->
+        <div class="pm-elon-card" id="pm-elon-card" style="display:none;">
+          <div class="pm-elon-tooltip" id="pm-elon-tooltip">
+            <strong>⚡ How Elon Score works</strong><br>
+            Every 100 Musk Score points earns you 1 Elon Score.<br>
+            <strong>100 Musk = 1 Elon Score point.</strong><br><br>
+            <span class="tt-ex">Measures your total typing dedication<br>
+            across thousands of minutes of practice.</span>
+          </div>
+          <span class="pm-elon-rocket">⚡</span>
+          <span class="pm-elon-label">Elon Score</span>
+          <span class="pm-elon-number" id="pm-elon-number">0</span>
+          <span class="pm-elon-sub" id="pm-elon-sub">0 / 100 Musk points</span>
+          <div class="pm-musk-progress-wrap">
+            <div class="pm-musk-progress-label">
+              <span id="pm-elon-prog-left">0 Musk pts</span>
+              <span id="pm-elon-prog-right">next at 100 pts</span>
+            </div>
+            <div class="pm-musk-progress-track">
+              <div class="pm-musk-progress-fill pm-elon-fill" id="pm-elon-bar" style="width:0%"></div>
             </div>
           </div>
         </div>
@@ -4212,7 +4350,27 @@ function sanitizeStr(s) {
 
             // ── Save every run to localStorage — profile stats, zero Firestore reads ──
             try {
-                const KEY = 'rt_scores_' + uid;
+                const KEY        = 'rt_scores_' + uid;
+                const AGG_KEY    = 'rt_agg_'    + uid;   // all-time aggregate (never capped)
+
+                // ── 1. Update the running aggregate (all-time stats) ──────────
+                let agg = {};
+                try { agg = JSON.parse(localStorage.getItem(AGG_KEY) || '{}'); } catch(_e) { agg = {}; }
+
+                const _cons = typeof window._lastConsistency === 'number' ? window._lastConsistency : null;
+
+                agg.count      = (agg.count      || 0) + 1;
+                agg.wpmSum     = (agg.wpmSum      || 0) + _wpm;
+                agg.accSum     = (agg.accSum      || 0) + _accuracy;
+                agg.bestWpm    = Math.max(agg.bestWpm    || 0, _wpm);
+                agg.lowestWpm  = agg.count === 1 ? _wpm : Math.min(agg.lowestWpm || _wpm, _wpm);
+                if (_cons !== null) {
+                    agg.consSum   = (agg.consSum  || 0) + _cons;
+                    agg.consCount = (agg.consCount || 0) + 1;
+                }
+                localStorage.setItem(AGG_KEY, JSON.stringify(agg));
+
+                // ── 2. Keep only the 200 most recent entries for the dashboard ─
                 let scores = [];
                 try { scores = JSON.parse(localStorage.getItem(KEY) || '[]'); } catch(_e) { scores = []; }
                 scores.push({
@@ -4220,7 +4378,7 @@ function sanitizeStr(s) {
                     accuracy:     _accuracy,
                     testDuration: duration,
                     time:         _now,
-                    consistency:  typeof window._lastConsistency === 'number' ? window._lastConsistency : null
+                    consistency:  _cons
                 });
                 if (scores.length > 200) scores = scores.slice(-200);
                 localStorage.setItem(KEY, JSON.stringify(scores));
@@ -5126,32 +5284,49 @@ window.openProfileModal = async function() {
 
     // Load stats from localStorage — zero Firestore reads for profile stats
     try {
-        // Read all stored test runs
+        // ── All-time stats from the lightweight aggregate key ──────────────
+        const AGG_KEY = 'rt_agg_' + user.uid;
+        let agg = {};
+        try { agg = JSON.parse(localStorage.getItem(AGG_KEY) || '{}'); } catch(_e) { agg = {}; }
+
+        // ── Recent list (capped at 200) for the dashboard table ───────────
         const LS_KEY = 'rt_scores_' + user.uid;
-        let allScores = [];
-        try { allScores = JSON.parse(localStorage.getItem(LS_KEY) || '[]'); } catch(_e) { allScores = []; }
+        let recentList = [];
+        try { recentList = JSON.parse(localStorage.getItem(LS_KEY) || '[]'); } catch(_e) { recentList = []; }
 
-        // Compute stats
-        const wpmValues = allScores.map(s => s.wpm).filter(Boolean);
-        const accValues = allScores.map(s => s.accuracy).filter(Boolean);
+        // ── Back-fill aggregate from legacy recent list if aggregate is empty ──
+        // (first open after update — migrate existing data once)
+        if (!agg.count && recentList.length > 0) {
+            agg.count     = recentList.length;
+            agg.wpmSum    = recentList.reduce((s, r) => s + (r.wpm      || 0), 0);
+            agg.accSum    = recentList.reduce((s, r) => s + (r.accuracy || 0), 0);
+            agg.bestWpm   = Math.max(...recentList.map(r => r.wpm || 0));
+            agg.lowestWpm = Math.min(...recentList.map(r => r.wpm || Infinity));
+            const consRaw = recentList.filter(r => r.consistency != null && r.consistency > 0);
+            if (consRaw.length > 0) {
+                agg.consSum   = consRaw.reduce((s, r) => s + r.consistency, 0);
+                agg.consCount = consRaw.length;
+            }
+            try { localStorage.setItem(AGG_KEY, JSON.stringify(agg)); } catch(_e) {}
+        }
 
-        const avgWpm = wpmValues.length > 0
-            ? Math.round(wpmValues.reduce((a,b)=>a+b,0) / wpmValues.length) : 0;
-        const bestWpm = wpmValues.length > 0 ? Math.max(...wpmValues) : 0;
-        const lowWpm  = wpmValues.length > 0 ? Math.min(...wpmValues) : 0;
-        const avgAcc  = accValues.length > 0
-            ? Math.round(accValues.reduce((a,b)=>a+b,0) / accValues.length) : 0;
-        const totalTests = allScores.length;
+        // ── Derive display values from aggregate ──────────────────────────
+        const totalTests = agg.count  || 0;
+        const bestWpm    = agg.bestWpm || 0;
+        const lowWpm     = agg.lowestWpm || 0;
+        const avgWpm     = totalTests > 0 ? Math.round(agg.wpmSum / totalTests) : 0;
+        const avgAcc     = totalTests > 0 ? Math.round(agg.accSum / totalTests) : 0;
+        const avgCons    = (agg.consCount > 0)
+            ? Math.round(agg.consSum / agg.consCount) : null;
 
-        const consValues = allScores.map(s => s.consistency).filter(v => v != null && v > 0);
-        const avgCons = consValues.length > 0
-            ? Math.round(consValues.reduce((a,b)=>a+b,0) / consValues.length) : null;
+        // wpmValues kept minimal — only used for speed-bar "more than 1 test" gate
+        const wpmValues = totalTests > 0 ? [lowWpm, avgWpm, bestWpm] : [];
 
         // Member since — stored locally on first test
         const JOIN_KEY = 'rt_joined_' + user.uid;
-        if (!localStorage.getItem(JOIN_KEY) && allScores.length > 0) {
+        if (!localStorage.getItem(JOIN_KEY) && recentList.length > 0) {
             // Backfill from earliest score if available
-            const earliest = Math.min(...allScores.map(s => s.time || Date.now()));
+            const earliest = Math.min(...recentList.map(s => s.time || Date.now()));
             localStorage.setItem(JOIN_KEY, earliest.toString());
         } else if (!localStorage.getItem(JOIN_KEY)) {
             localStorage.setItem(JOIN_KEY, Date.now().toString());
@@ -5165,8 +5340,8 @@ window.openProfileModal = async function() {
         // Rank badge based on best WPM
         const rank = _getRankBadge(bestWpm);
 
-        // Recent scores sorted by date — show all (up to 200 cap from localStorage)
-        const recentScores = allScores
+        // Recent scores sorted by date — show up to 200 (from recent list)
+        const recentScores = recentList
             .slice()
             .sort((a,b) => (b.time||0) - (a.time||0));
 
@@ -5346,39 +5521,35 @@ function _renderMuskScore(uid) {
     const card = document.getElementById('pm-musk-card');
     if (!card) return;
 
-    const MUSK_KEY = 'rt_musk_' + uid;
+    const MUSK_KEY  = 'rt_musk_' + uid;
     const totalSecs = parseFloat(localStorage.getItem(MUSK_KEY) || '0');
-    const score     = Math.floor(totalSecs / 60);
+    const muskScore = Math.floor(totalSecs / 60);
     const remainder = totalSecs % 60;
-    const pct       = Math.round((remainder / 60) * 100);
+    const muskPct   = Math.round((remainder / 60) * 100);
 
-    // Show card
+    // ── Musk Score card ──────────────────────────────────────────
     card.style.display = 'block';
 
-    const numEl = document.getElementById('pm-musk-number');
-    const subEl = document.getElementById('pm-musk-sub');
-    const barEl = document.getElementById('pm-musk-bar');
+    const numEl   = document.getElementById('pm-musk-number');
+    const subEl   = document.getElementById('pm-musk-sub');
+    const barEl   = document.getElementById('pm-musk-bar');
     const leftEl  = document.getElementById('pm-musk-prog-left');
     const rightEl = document.getElementById('pm-musk-prog-right');
 
     if (numEl) {
-        numEl.textContent = score;
-        // animate the number
+        numEl.textContent = muskScore;
         setTimeout(function() { numEl.classList.add('pop'); }, 100);
         setTimeout(function() { numEl.classList.remove('pop'); }, 700);
     }
-    if (subEl) {
-        subEl.textContent = Math.round(totalSecs) + ' total seconds typed';
-    }
+    if (subEl)   subEl.textContent   = Math.round(totalSecs) + ' total seconds typed';
     if (leftEl)  leftEl.textContent  = Math.round(remainder) + 's this round';
     if (rightEl) rightEl.textContent = 'next point at ' + (60 - Math.round(remainder)) + 's';
     if (barEl) {
         setTimeout(function() {
-            barEl.style.width = Math.max(2, Math.min(100, pct)) + '%';
+            barEl.style.width = Math.max(2, Math.min(100, muskPct)) + '%';
         }, 200);
     }
 
-    // Update tooltip dynamically
     const tt = document.getElementById('pm-musk-tooltip');
     if (tt) {
         tt.innerHTML = `
@@ -5386,9 +5557,50 @@ function _renderMuskScore(uid) {
             Every second you type adds up across all sessions.<br>
             <strong>60 seconds typed = 1 Musk Score point.</strong><br><br>
             <span class="tt-ex">Your total: ${Math.round(totalSecs)}s typed<br>
-            ${score} × 60s = ${score} point${score !== 1 ? 's' : ''}<br>
+            ${muskScore} × 60s = ${muskScore} point${muskScore !== 1 ? 's' : ''}<br>
             ${Math.round(remainder)}s toward your next point</span>
         `;
+    }
+
+    // ── Elon Score card ──────────────────────────────────────────
+    const elonCard = document.getElementById('pm-elon-card');
+    if (elonCard) {
+        const elonScore    = Math.floor(muskScore / 100);
+        const elonRem      = muskScore % 100;
+        const elonPct      = Math.round((elonRem / 100) * 100);
+
+        elonCard.style.display = 'block';
+
+        const elonNumEl   = document.getElementById('pm-elon-number');
+        const elonSubEl   = document.getElementById('pm-elon-sub');
+        const elonBarEl   = document.getElementById('pm-elon-bar');
+        const elonLeftEl  = document.getElementById('pm-elon-prog-left');
+        const elonRightEl = document.getElementById('pm-elon-prog-right');
+
+        if (elonNumEl) {
+            elonNumEl.textContent = elonScore;
+            setTimeout(function() { elonNumEl.classList.add('pop'); }, 200);
+            setTimeout(function() { elonNumEl.classList.remove('pop'); }, 800);
+        }
+        if (elonSubEl)   elonSubEl.textContent   = elonRem + ' / 100 Musk points';
+        if (elonLeftEl)  elonLeftEl.textContent  = elonRem + ' Musk pts';
+        if (elonRightEl) elonRightEl.textContent = 'next at ' + (100 - elonRem) + ' pts';
+        if (elonBarEl) {
+            setTimeout(function() {
+                elonBarEl.style.width = Math.max(2, Math.min(100, elonPct)) + '%';
+            }, 300);
+        }
+
+        const elonTT = document.getElementById('pm-elon-tooltip');
+        if (elonTT) {
+            elonTT.innerHTML = `
+                <strong>⚡ How Elon Score works</strong><br>
+                Every 100 Musk Score points = 1 Elon Score.<br>
+                <strong>Your Musk Score: ${muskScore}</strong><br><br>
+                <span class="tt-ex">${elonScore} Elon × 100 = ${elonScore * 100} Musk<br>
+                ${elonRem} more Musk pts for next Elon</span>
+            `;
+        }
     }
 }
 
