@@ -344,6 +344,83 @@ body.lesson-active { overflow-y: auto !important; }
   .hero-feat{min-width:130px;}
   .vc-stat-val{font-size:22px;}
 }
+
+/* ─── LESSON GUIDE PANEL ─── */
+#lv-guide {
+  margin-top: 14px;
+  background: rgba(0,0,0,0.30);
+  border: 1px solid rgba(226,183,20,0.18);
+  border-radius: 14px;
+  padding: 18px 20px 20px;
+  font-family: 'Roboto Mono', monospace;
+}
+.lg-title {
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #e2b714;
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+.lg-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.lg-step {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+.lg-step-num {
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: linear-gradient(135deg,#e2b714,#ff9900);
+  color: #0a0a23;
+  font-size: 11px;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.lg-step-text {
+  font-size: 12px;
+  color: rgba(255,255,255,0.75);
+  line-height: 1.6;
+}
+.lg-step-text b { color: #ffd700; }
+.lg-keys {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 10px 0 4px;
+}
+.lg-key {
+  background: rgba(226,183,20,0.13);
+  border: 1.5px solid rgba(226,183,20,0.45);
+  color: #ffd700;
+  font-size: 12px;
+  font-weight: 900;
+  padding: 3px 10px;
+  border-radius: 6px;
+  letter-spacing: 1px;
+}
+.lg-tip {
+  margin-top: 12px;
+  background: rgba(0,230,204,0.07);
+  border-left: 3px solid #00e6cc;
+  border-radius: 0 8px 8px 0;
+  padding: 8px 12px;
+  font-size: 11px;
+  color: rgba(255,255,255,0.65);
+  line-height: 1.6;
+}
+.lg-tip b { color: #00e6cc; }
 </style>
 </head>
 <body>
@@ -454,6 +531,12 @@ body.lesson-active { overflow-y: auto !important; }
           <button class="btn-retry"    id="btn-retry"    onclick="lp.retryExercise()">↺ Try Again</button>
         </div>
       </div><!-- #lv-exercise -->
+
+      <!-- ── Lesson Guide ── -->
+      <div id="lv-guide">
+        <div class="lg-title">📖 How to Type This Lesson</div>
+        <div id="lg-body"></div>
+      </div>
 
     </div><!-- .lv-right-col -->
   </div><!-- .lv-lesson-grid -->
@@ -1074,6 +1157,7 @@ window.lp={
     var ti=document.getElementById('lv-lesson-title');if(ti)ti.textContent=lesson.emoji+' '+lesson.title;
     var hl=document.getElementById('hands-key-label');if(hl)hl.textContent='';
     lp.showView('lesson');loadExercise(0);setTimeout(scaleKB,100);
+    renderGuide(lesson.id);
   },
   nextExercise:function(){var l=S.lesson;if(S.exIdx>=l.exercises.length-1){finishLesson();}else{loadExercise(S.exIdx+1);}},
   retryExercise:function(){loadExercise(S.exIdx);},
@@ -1081,6 +1165,195 @@ window.lp={
   redoLesson:function(){lp.startLesson(S.lesson.id);},
   focusInput:focusInput
 };
+
+/* ══════════════════════════
+   LESSON GUIDE DATA
+══════════════════════════ */
+var LESSON_GUIDE={
+  1:{
+    keys:['A','S','D','F'],
+    steps:[
+      'Sit straight and place your left hand on the keyboard. Curve your fingers naturally, like resting them on a table.',
+      'Place your <b>Left Pinky → A</b>, <b>Left Ring → S</b>, <b>Left Middle → D</b>, <b>Left Index → F</b>. These four keys are your home position.',
+      'Feel the small raised bump on the <b>F</b> key. This bump lets you find your position without looking down — use it every time.',
+      'Press each key using only the correct finger. After every keystroke, immediately return that finger back to its home key.',
+      'Start with single letters slowly. Type each character shown on screen — the keyboard above highlights the next key for you.'
+    ],
+    tip:'<b>Never look at your fingers.</b> Keep your eyes on the text on screen. The F-key bump guides your left hand home every time.'
+  },
+  2:{
+    keys:['J','K','L',';'],
+    steps:[
+      'Place your right hand on the keyboard. Curve your fingers the same relaxed way as your left hand.',
+      'Place your <b>Right Index → J</b>, <b>Right Middle → K</b>, <b>Right Ring → L</b>, <b>Right Pinky → ;</b>. This is the right-hand home row.',
+      'Feel the raised bump on the <b>J</b> key — this mirrors the F bump on the left. It anchors your right hand without looking.',
+      'Press each key using only the correct finger shown. Return every finger back to its home position after each press.',
+      'Combine J, K, L, and ; in the exercises. Watch the highlighted key on the keyboard above and press the matching key.'
+    ],
+    tip:'The <b>J bump</b> and the <b>F bump</b> are the two most important keys on the entire keyboard. Always locate them first before you start typing.'
+  },
+  3:{
+    keys:['A','S','D','F','G','H','J','K','L',';'],
+    steps:[
+      'Place both hands together now: left on ASDF, right on JKL;. This is the complete home row — the foundation of all touch typing.',
+      'For the <b>G</b> key: your left index finger (on F) stretches slightly to the right to reach G. Press it, then return to F.',
+      'For the <b>H</b> key: your right index finger (on J) stretches slightly to the left to reach H. Press it, then return to J.',
+      'Practice switching between left-hand keys and right-hand keys. Each hand is fully independent — they never cross over.',
+      'Follow the highlighted keys on the keyboard above. For each character on screen, find the lit-up key and press it with the correct finger.'
+    ],
+    tip:'After pressing G or H, <b>always snap your finger back</b> to its home key (F or J). Fingers that stray from home cause slow, error-prone typing.'
+  },
+  4:{
+    keys:['Q','W','E','R','T'],
+    steps:[
+      'Keep your left hand on the home row (ASDF). The top row is reached by <b>stretching upward</b> — do not lift your whole hand.',
+      '<b>Left Pinky</b> stretches up-left to <b>Q</b>. <b>Left Ring</b> stretches up to <b>W</b>. <b>Left Middle</b> stretches up to <b>E</b>.',
+      '<b>Left Index</b> (on F) reaches up to <b>R</b>. The same index finger stretches further to reach <b>T</b>.',
+      'After pressing any top-row key, immediately pull your finger back down to its home key. Do not let your hand drift upward.',
+      'Watch the highlighted key on the keyboard diagram. The correct finger is shown — stretch up, press, return down to home.'
+    ],
+    tip:'Think of an elastic band attached to your fingertip and home key. Stretch up to reach the key, then <b>spring straight back</b>. Speed comes from this snap-back reflex.'
+  },
+  5:{
+    keys:['Y','U','I','O','P'],
+    steps:[
+      'Keep your right hand on JKL;. Stretch upward to reach the top row — same technique as your left hand.',
+      '<b>Right Index</b> (on J) stretches up to <b>Y</b> and also to <b>U</b>. Two keys, one finger — reach and return each time.',
+      '<b>Right Middle</b> reaches up to <b>I</b>. <b>Right Ring</b> reaches up to <b>O</b>. <b>Right Pinky</b> stretches up to <b>P</b>.',
+      'After every single keystroke, pull your finger back down to its home key before pressing the next character.',
+      'The keyboard above lights up the next key in yellow. Match that key with the correct finger shown in the hint bar below the keyboard.'
+    ],
+    tip:'Your right index finger covers both <b>Y and U</b> — the most common two-key stretch in English. Practice this pair extra because words like "you", "your", and "buy" use it constantly.'
+  },
+  6:{
+    keys:['Q','W','E','R','T','Y','U','I','O','P'],
+    steps:[
+      'Both hands are now on home row. When you see a top-row letter, decide instantly: is it left-hand (QWERT) or right-hand (YUIOP)?',
+      'Left hand covers <b>Q W E R T</b> — stretch up with the matching left finger, return to ASDF after each press.',
+      'Right hand covers <b>Y U I O P</b> — stretch up with the matching right finger, return to JKL; after each press.',
+      'Your hands should move independently and simultaneously. While one finger is stretching up, the other hand stays on its home keys.',
+      'Focus on <b>smooth transitions</b>: home row → top row → home row. Watch the keyboard highlight guide to confirm you\'re using the right finger.'
+    ],
+    tip:'<b>Accuracy beats speed.</b> Type each character correctly even if it means going slowly. Muscle memory builds from correct repetition — not fast, wrong repetition.'
+  },
+  7:{
+    keys:['Z','X','C','V','B'],
+    steps:[
+      'Keep your left hand on ASDF. The bottom row is reached by <b>curling your fingers downward</b> — a slight, relaxed curl, not a full hand drop.',
+      '<b>Left Pinky</b> curls down-left to <b>Z</b>. <b>Left Ring</b> curls down to <b>X</b>. <b>Left Middle</b> curls down to <b>C</b>.',
+      '<b>Left Index</b> (on F) curls down to <b>V</b>. The same index finger stretches further down-right to reach <b>B</b>.',
+      'Keep your wrists relaxed and slightly elevated — do not press your wrists against the desk. Tension causes strain and errors.',
+      'After each bottom-row keystroke, uncurl your finger and return it to the home key. Follow the yellow key highlight on the keyboard above.'
+    ],
+    tip:'Keep your <b>wrists relaxed</b> throughout this lesson. The bottom row is the most awkward reach for many learners — slow down, stay accurate, and let the curl feel natural.'
+  },
+  8:{
+    keys:['N','M',',','.','/'],
+    steps:[
+      'Keep your right hand on JKL;. Curl your fingers downward to reach the bottom row — a gentle, natural curl.',
+      '<b>Right Index</b> (on J) curls down to <b>N</b> and also stretches to <b>M</b>. Return to J after each press.',
+      '<b>Right Middle</b> curls down to <b>,</b> (comma). <b>Right Ring</b> curls down to <b>.</b> (period). <b>Right Pinky</b> reaches down to <b>/</b>.',
+      'Comma and period end words and sentences. Practice until pressing them with the right finger feels completely automatic.',
+      'When you see a period or comma on screen, do not pause — curl the correct finger down immediately and return to home row.'
+    ],
+    tip:'<b>Comma and period</b> are among the most-used characters in real typing. Mastering them now makes sentence typing in later lessons feel effortless.'
+  },
+  9:{
+    keys:[],
+    steps:[
+      'All 26 letter keys are now available to you across three rows: home row (ASDFGHJKL;), top row (QWERTYUIOP), and bottom row (ZXCVBNM,.).',
+      'For each character, quickly decide: which row is it on? Which hand types it? Which specific finger is responsible?',
+      'Type the pangram <b>"the quick brown fox"</b> — it contains every letter of the alphabet. Use it to check that every finger works correctly.',
+      'Keep both hands on their home positions at all times. Only the active finger moves; every other finger stays lightly on its home key.',
+      'When you make an error, press Backspace and retype the correct key. Do not skip over mistakes — correcting them trains your fingers properly.'
+    ],
+    tip:'If any particular letter feels uncertain, look it up on the keyboard diagram above. Finding the key visually once is far better than guessing and building a wrong habit.'
+  },
+  10:{
+    keys:['⇧L','⇧R'],
+    steps:[
+      'To type a capital letter, you must hold <b>Shift with the opposite hand</b> from the key being pressed. Never use the same hand for both.',
+      'For a <b>right-hand letter</b> (J K L Y U I O P etc.): hold <b>Left Shift</b> with your left pinky, then press the letter with your right hand.',
+      'For a <b>left-hand letter</b> (A S D F Q W E R T etc.): hold <b>Right Shift</b> with your right pinky, then press the letter with your left hand.',
+      'Hold Shift down before the letter key, press the letter, then release Shift completely. Do not hold Shift any longer than needed.',
+      'Practice the example exercises until the opposite-hand Shift rule feels automatic. Look at the Shift hint highlight on the keyboard above — it always shows you which Shift key to use.'
+    ],
+    tip:'Using the <b>wrong Shift hand</b> is the single most common bad habit in typing. Fix it now — it becomes very hard to correct later at high speed.'
+  },
+  11:{
+    keys:['1','2','3','4','5'],
+    steps:[
+      'Keep your left hand on ASDF. Number keys are directly above the top row — you reach them with a longer upward stretch.',
+      '<b>Left Pinky</b> stretches up to <b>1</b>. <b>Left Ring</b> stretches up to <b>2</b>. <b>Left Middle</b> stretches up to <b>3</b>.',
+      '<b>Left Index</b> (on F) stretches up to <b>4</b>. The same index finger stretches slightly further to reach <b>5</b>.',
+      'This is the longest reach on the keyboard. Do not move your whole hand upward — stretch only the finger, then return it to home.',
+      'After each number, snap your finger back to its letter home key before typing the next character. Watch the keyboard highlight guide above.'
+    ],
+    tip:'Number keys require the <b>longest finger stretch</b> on the keyboard. Go slowly and deliberately. Accuracy on numbers matters more than speed — one wrong digit in a document or address can cause real problems.'
+  },
+  12:{
+    keys:['6','7','8','9','0'],
+    steps:[
+      'Keep your right hand on JKL;. Stretch your right fingers upward to reach the right-side number keys.',
+      '<b>Right Index</b> (on J) stretches up to <b>6</b> and also reaches further for <b>7</b>. Return to J after each press.',
+      '<b>Right Middle</b> stretches up to <b>8</b>. <b>Right Ring</b> stretches up to <b>9</b>. <b>Right Pinky</b> stretches up to <b>0</b>.',
+      'Your left hand types 1–5, your right hand types 6–0. They work as a perfect mirror pair across the number row.',
+      'Practice counting sequences (67890, 98760) until the right finger fires automatically for each digit. Use the keyboard guide above to confirm.'
+    ],
+    tip:'Together with Lesson 11, you now have the full number row covered. Try typing phone numbers, dates, and addresses — real-world data entry is great practice for number-row speed.'
+  },
+  13:{
+    keys:[],
+    steps:[
+      'These are the 50 most common English words — words like "the", "and", "that", "have", "with". Together they form over 50% of everyday text.',
+      'You already know every key these words use. This lesson is purely about <b>speed and flow</b> — making common words feel automatic.',
+      'Do not type letter by letter. Try to feel each short word as a single fluid motion. Your fingers should begin moving to the next letter before the current one finishes.',
+      'If you stumble on a word, that word is a weak point in your muscle memory. Make a mental note and give it extra practice after the lesson.',
+      'Keep your eyes on the text display — never glance down at the keyboard. If you feel lost, use the keyboard diagram above, not the physical keys.'
+    ],
+    tip:'When common words feel automatic, your brain is freed to focus on <b>what you are writing</b>, not how to type it. This is the real goal of touch typing.'
+  },
+  14:{
+    keys:[],
+    steps:[
+      'Real sentences have capital letters, spaces, commas, and periods. Every rule from every previous lesson applies here at the same time.',
+      'At the start of each sentence, remember: use the <b>opposite Shift hand</b> for the capital first letter. Then release Shift before typing the rest.',
+      'When you reach a <b>comma</b> or <b>period</b>, curl your right middle or ring finger down naturally — do not pause your rhythm.',
+      'Keep a smooth, even rhythm throughout the whole sentence. An even 35 WPM with perfect accuracy is more impressive — and more useful — than 55 WPM with frequent errors.',
+      'After finishing a sentence, take a short breath-moment. Then set your fingers back on home row and start the next one fresh.'
+    ],
+    tip:'In real life, most of your typing will be full sentences — emails, messages, documents. <b>This lesson is real-world typing.</b> Every minute of practice here directly transfers to your daily work.'
+  },
+  15:{
+    keys:[],
+    steps:[
+      'This is your final challenge. Every skill from all 14 previous lessons comes together here — home row, top row, bottom row, numbers, Shift, punctuation.',
+      'Before you start each passage, take a breath and place both hands firmly on their home positions: left on ASDF, right on JKL;.',
+      'Type at the fastest speed where you can still maintain accuracy. Rushing past your accurate speed only builds bad habits.',
+      'When you hit a difficult word, do not tense up. Relax your hands, slow down for that word, then resume your normal rhythm.',
+      'Celebrate every exercise you complete. Look at your WPM and accuracy scores — compare them to where you started in Lesson 1.'
+    ],
+    tip:'<b>You have learned everything.</b> Consistent daily practice — even 10 minutes a day — will carry you from 35 WPM today to 80+ WPM within weeks. Keep going.'
+  }
+};
+
+function renderGuide(lessonId){
+  var body=document.getElementById('lg-body');if(!body)return;
+  var g=LESSON_GUIDE[lessonId];if(!g){body.innerHTML='';return;}
+  var html='';
+  if(g.keys&&g.keys.length>0){
+    html+='<div class="lg-keys">';
+    g.keys.forEach(function(k){html+='<span class="lg-key">'+k+'</span>';});
+    html+='</div>';
+  }
+  html+='<div class="lg-steps">';
+  g.steps.forEach(function(s,i){
+    html+='<div class="lg-step"><div class="lg-step-num">'+(i+1)+'</div><div class="lg-step-text">'+s+'</div></div>';
+  });
+  html+='</div>';
+  if(g.tip){html+='<div class="lg-tip">💡 <b>Pro Tip:</b> '+g.tip+'</div>';}
+  body.innerHTML=html;
+}
 
 /* ══════════════════════════
    INIT
