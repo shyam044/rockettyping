@@ -2056,6 +2056,9 @@ function _flushVisuals(){
   if(_elFinishText) _elFinishText.style.left = `${fx+14}px`;
   if(_elSpaceDeep)  _elSpaceDeep.style.transform = `translateX(-${worldOffset*0.08}px)`;
   if(_elSpaceMid)   _elSpaceMid.style.transform  = `translateX(-${worldOffset*0.4}px)`;
+  // Background position and space-bg — batched here to keep keydown path clear
+  if(_elRaceTrack) _elRaceTrack.style.backgroundPosition=`-${worldOffset}px 0px`;
+  if(_elSpaceBg)   _elSpaceBg.style.transform=`translateX(-${worldOffset}px)`;
 }
 
 /* ============================================================ PILOT BUILDER ============================================================ */
@@ -3168,31 +3171,28 @@ function handleBackspace(){
 
 function pruneTypedWords(){
   const typedEls=Array.from(wordsDiv.querySelectorAll('.word.typed'));
-  if(typedEls.length<20) return;
-  const toRemove=typedEls.slice(0,typedEls.length-10);
+  // Raised threshold: only prune when 30+ typed words pile up (was 20)
+  if(typedEls.length<30) return;
+  // Keep last 15 typed words visible; remove the rest (was keep 10)
+  const toRemove=typedEls.slice(0,typedEls.length-15);
   if(!toRemove.length) return;
 
-  // Read all widths in a single batch (before any DOM mutation)
+  // Read all widths in a single batch BEFORE any DOM mutation
   let removedWidth=0;
   const margin=14;
   for(let i=0;i<toRemove.length;i++) removedWidth+=toRemove[i].getBoundingClientRect().width+margin;
 
-  const prevT=wordsDiv.style.transition;
+  // Disable transition, remove nodes, shift offset in one pass — no forced reflow
   wordsDiv.style.transition='none';
-
   for(let i=0;i<toRemove.length;i++){toRemove[i].remove();wordDomStart++;}
-
-  // Compensate offset by the exact removed width — no reflow needed,
-  // since removedWidth was measured before mutation.
   wordsOffset+=removedWidth;
   wordsDiv.style.transform=`translateX(${wordsOffset}px)`;
-  void wordsDiv.offsetHeight;   // single forced layout to flush the transition:none before restoring
-
-  const pos=getCaretPosition();
-  caret.style.transform=`translate3d(${SCROLL_CENTER}px,${pos.y}px,0)`;
-  caret.style.height=`${pos.height}px`;
-
-  requestAnimationFrame(()=>{ wordsDiv.style.transition=prevT; });
+  // Re-enable transition and re-sync caret in the NEXT frame — never blocks keydown
+  requestAnimationFrame(()=>{
+    wordsDiv.style.transition='';
+    _caretDirty=true;
+    _scheduleRender();
+  });
 }
 
 function moveToNextWord(){
@@ -3204,8 +3204,8 @@ function moveToNextWord(){
   currentWordIndex++;
   currentLetterIndex=0;
 
-  // Prune old typed words to keep DOM lean — check every 12 words on a stable cycle
-  if(currentWordIndex%12===0) pruneTypedWords();
+  // Prune old typed words in the NEXT frame — never blocks the current keydown
+  if(currentWordIndex%12===0) requestAnimationFrame(pruneTypedWords);
 
   // Refill vocabulary if running low
   if(currentWordIndex>words.length-40&&playerProgress<TRACK_WIDTH) appendNewWords(80);
@@ -3228,9 +3228,9 @@ function moveToNextWord(){
 let _playerPositionRafPending=false;
 function _schedulePlayerPosition(){
   worldOffset=Math.max(0,playerProgress-CENTER);
+  // Rocket left is cheap — one transform write, keep it instant
   playerRocket.style.left=`${Math.min(playerProgress,CENTER)}px`;
-  if(_elRaceTrack) _elRaceTrack.style.backgroundPosition=`-${worldOffset}px 0px`;
-  if(_elSpaceBg)   _elSpaceBg.style.transform=`translateX(-${worldOffset}px)`;
+  // Background position writes are batched into the next rAF via dirty flag
   _visualDirty=true;
   _scheduleRender();
   if(playerProgress>=TRACK_WIDTH){playSound('finish');endRace();}
