@@ -3791,6 +3791,51 @@ if (!testActive && !testEnded && e.key.length === 1) {
                 saveScore(registeredName || 'guest', config.time);
             }
 
+            // ── Save words / quotes results to localStorage for logged-in users ──
+            // (time mode is already saved inside saveScore above)
+            if (config.mode === 'words' || config.mode === 'quotes') {
+                try {
+                    const _lsAuthUser = auth.currentUser;
+                    if (_lsAuthUser) {
+                        const _lsUid    = _lsAuthUser.uid;
+                        const LS_KEY2   = 'rt_scores_' + _lsUid;
+                        const AGG_KEY2  = 'rt_agg_'    + _lsUid;
+                        const _lsNow    = Date.now();
+                        const _lsCons   = typeof window._lastConsistency === 'number' ? window._lastConsistency : null;
+
+                        // Update running aggregate
+                        let agg2 = {};
+                        try { agg2 = JSON.parse(localStorage.getItem(AGG_KEY2) || '{}'); } catch(_e) { agg2 = {}; }
+                        agg2.count     = (agg2.count    || 0) + 1;
+                        agg2.wpmSum    = (agg2.wpmSum   || 0) + wpm;
+                        agg2.accSum    = (agg2.accSum   || 0) + accuracy;
+                        agg2.bestWpm   = Math.max(agg2.bestWpm  || 0, wpm);
+                        agg2.lowestWpm = agg2.count === 1 ? wpm : Math.min(agg2.lowestWpm || wpm, wpm);
+                        if (_lsCons !== null) {
+                            agg2.consSum   = (agg2.consSum   || 0) + _lsCons;
+                            agg2.consCount = (agg2.consCount || 0) + 1;
+                        }
+                        localStorage.setItem(AGG_KEY2, JSON.stringify(agg2));
+
+                        // Append entry to recent list (capped at 200)
+                        let scores2 = [];
+                        try { scores2 = JSON.parse(localStorage.getItem(LS_KEY2) || '[]'); } catch(_e) { scores2 = []; }
+                        const _lsEntry = {
+                            wpm:         wpm,
+                            accuracy:    accuracy,
+                            mode:        config.mode,
+                            time:        _lsNow,
+                            consistency: _lsCons,
+                            elapsedSecs: elapsedSecs
+                        };
+                        if (config.mode === 'words') _lsEntry.wordCount = config.words;
+                        scores2.push(_lsEntry);
+                        if (scores2.length > 200) scores2 = scores2.slice(-200);
+                        localStorage.setItem(LS_KEY2, JSON.stringify(scores2));
+                    }
+                } catch(_lsErr) { console.warn('localStorage words/quotes save failed:', _lsErr); }
+            }
+
             confetti({
                 particleCount: 80,
                 spread: 65,
@@ -5403,9 +5448,30 @@ window.openProfileModal = async function() {
             const list = document.getElementById('pm-recent-list');
             list.innerHTML = '';
             recentScores.forEach(s => {
+                // -- Per-mode minimum thresholds --
+                if (s.testDuration) {
+                    // time mode: skip tests shorter than 10 seconds
+                    if (s.testDuration < 10) return;
+                } else if (s.mode === 'words') {
+                    // words mode: skip tests with fewer than 10 words
+                    if ((s.wordCount || 0) < 10) return;
+                }
+                // quotes mode: no minimum -- always display
+
+                // -- Mode label formatting --
+                let modeLabel;
+                if (s.testDuration) {
+                    modeLabel = 'time ' + s.testDuration + 's';
+                } else if (s.mode === 'words') {
+                    modeLabel = 'words ' + (s.wordCount || '');
+                } else if (s.mode === 'quotes') {
+                    modeLabel = 'quote (' + (s.elapsedSecs || '?') + 's)';
+                } else {
+                    modeLabel = s.mode || '—';
+                }
+
                 const row = document.createElement('div');
                 row.className = 'pm-recent-row';
-                const modeLabel = s.testDuration ? ('time ' + s.testDuration + 's') : (s.mode || '—');
                 row.innerHTML = `
                     <span style="color:#646669;">${sanitizeStr(modeLabel)}</span>
                     <span>${sanitizeStr(s.wpm)} <span style="font-size:9px;color:#888">wpm</span></span>
