@@ -85,12 +85,6 @@ body::before {
     padding-bottom: 20px;
 }
 
-/* When result is shown inline, collapse min-height so result is at top */
-#app.result-mode {
-    min-height: unset;
-    padding-top: 20px;
-}
-
 #test-config {
     position: absolute;
     top: 60px;
@@ -271,30 +265,31 @@ body.typing-active #caret {
 
 /* ==================== RESULT PANEL (NEW LAYOUT) ==================== */
 #result {
-    position: relative;
-    left: auto;
-    top: auto;
-    transform: scale(0.97);
+    position: fixed;
+    left: 50%;
+    transform: translateX(-50%) translateY(-50%) scale(0.95);
     background: linear-gradient(145deg, #0f1b2e, #1a2a44);
-    padding: 22px 25px 18px;
+padding: 22px 25px 18px;           /* was 28px 30px 22px → tighter top */
+    top: 50%;
     border-radius: 18px;
     border: 2px solid #00e6cc;
     box-shadow: 0 0 40px rgba(0, 230, 204, 0.5);
     text-align: left;
-    max-width: 100%;
-    width: 100%;
-    max-height: none;
-    overflow-y: visible;
+    max-width: 90vw;
+    width: 90vw;
+    max-height: 92vh;
+    overflow-y: auto;
     opacity: 0;
     transition: opacity 0.3s ease, transform 0.3s ease;
     will-change: transform, opacity;
-    z-index: 10;
-    box-sizing: border-box;
+    z-index: 2000;
+    scrollbar-width: thin;
+    scrollbar-color: #00e6cc #0f1b2e;
 }
 
 #result.visible {
     opacity: 1;
-    transform: scale(1);
+    transform: translateX(-50%) translateY(-50%) scale(1);
 }
 
 .result-layout {
