@@ -76,8 +76,8 @@
     <link rel="apple-touch-icon" href="/images/logo-192.png">
     <link rel="manifest" href="/site.webmanifest">
     <meta name="theme-color" content="#323437">
-    <!-- Security: restrict framing and MIME sniffing -->
-    <meta http-equiv="Content-Security-Policy" content="frame-ancestors 'none'; object-src 'none';">
+    <!-- Security headers (server should also set: X-Frame-Options, HSTS, COOP, Trusted-Types) -->
+    <meta http-equiv="Content-Security-Policy" content="object-src 'none'; base-uri 'self'; form-action 'self' https://www.rockettyping.com;">
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
     <meta name="referrer" content="strict-origin-when-cross-origin">
     <meta property="og:locale" content="en_US">
@@ -85,33 +85,40 @@
     <meta http-equiv="expires" content="604800">
     <meta name="language" content="English">
     <meta name="revisit-after" content="7 days">
+    <!-- Preconnect / DNS-prefetch for external origins -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <!-- PERF: pre-connect to Firebase so socket is ready before JS fires -->
     <link rel="preconnect" href="https://firestore.googleapis.com">
     <link rel="preconnect" href="https://www.gstatic.com">
     <link rel="dns-prefetch" href="https://firebase.googleapis.com">
     <link rel="dns-prefetch" href="https://identitytoolkit.googleapis.com">
+    <!-- Preload critical assets: logo image + main stylesheet -->
     <link rel="preload" as="image" href="/images/logo.png">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <link rel="preload" href="styles.css" as="style">
+    <!-- Critical CSS: render-blocking (small, needed for LCP) -->
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="responsive.css">
+    <!-- Font Awesome: non-critical, loaded async to eliminate render-blocking -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+          media="print" onload="this.media='all'">
+    <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"></noscript>
+    <!-- Google Fonts: display=swap already in URL for font-display -->
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Analytics: async so never blocks rendering -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-136SVFZRDF"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
         function gtag() { dataLayer.push(arguments); }
         gtag('js', new Date());
-
         gtag('config', 'G-136SVFZRDF');
     </script>
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8311353174841359"
         crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
-    <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="responsive.css">
+    <!-- Confetti: deferred so it never blocks the main thread on load -->
+    <script defer src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
     <!-- Quotes database — loaded before main script so QUOTES_ALL is available -->
     <script src="quotes.js"></script>
     <!-- PWA + SEO additions -->
-    <link rel="preload" href="styles.css" as="style">
     <link rel="alternate" hreflang="en" href="https://www.rockettyping.com/" />
     <link rel="alternate" hreflang="x-default" href="https://www.rockettyping.com/" />
    <script type="application/ld+json">
@@ -410,6 +417,17 @@ function fmtDate(ts) {
      PROFILE MODAL STYLES
 ═══════════════════════════════════════════════════════════════ -->
 <style>
+/* ── Visually hidden (screen-reader only) ── */
+.sr-only {
+    position: absolute;
+    width: 1px; height: 1px;
+    padding: 0; margin: -1px;
+    overflow: hidden;
+    clip: rect(0,0,0,0);
+    white-space: nowrap;
+    border: 0;
+}
+
 /* ── Profile Modal Overlay ── */
 #profileModal {
     position: fixed; top: 0; left: 0; right: 0; bottom: 0;
@@ -774,16 +792,15 @@ function fmtDate(ts) {
     position: absolute; inset: 0;
     border-radius: 18px;
     padding: 2px;
-    background: linear-gradient(135deg, #e2b714, #ff6600, #9b72cf, #e2b714);
+    background: conic-gradient(from 0deg, #e2b714, #ff6600, #9b72cf, #e2b714);
     -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
     -webkit-mask-composite: xor; mask-composite: exclude;
     animation: musk-border-spin 4s linear infinite;
-    background-size: 300% 300%;
+    transform-origin: center;
 }
 @keyframes musk-border-spin {
-    0%   { background-position: 0% 50%; }
-    50%  { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
 }
 .pm-musk-card:hover { transform: translateY(-2px); box-shadow: 0 12px 40px rgba(226,183,20,0.3); }
 
@@ -1681,7 +1698,7 @@ function fmtDate(ts) {
 </style>
 </head>
 <body>
-    <div id="app">
+    <div id="app" role="main" aria-label="Rocket Typing speed test application">
   <h1 id="page-title" style="text-align:center; color:#e2b714; font-family:'Roboto Mono',monospace; font-size:15px; letter-spacing:1px; margin: 0 0 8px 0; opacity:0.7;">🚀 Free Typing Speed Test — Improve Your WPM</h1>
 
         <header id="main-header"
@@ -1689,7 +1706,7 @@ function fmtDate(ts) {
   <div onclick="resetTest()" 
      style="cursor:pointer; display:flex; flex-direction:column; align-items:flex-start;">
 
-    <img src="images/logo.png" alt="Rocket Typing" style="width:120px; margin-bottom:5px;" />
+    <img src="images/logo.png" alt="Rocket Typing" width="120" height="120" style="width:120px; margin-bottom:5px;" />
     
     <div id="play-game">
         <button onclick="window.location.href='game.html'" class="play-game-btn">
@@ -1783,7 +1800,7 @@ function fmtDate(ts) {
         <div id="quote-meta" style="display:none;text-align:right;padding:4px 24px 0;font-size:13px;color:#646669;font-style:italic;transition:opacity 0.3s;min-height:20px;">
             <span id="quote-author-label"></span>
         </div>
-        <input id="input" type="text" autofocus>
+        <input id="input" type="text" autofocus aria-label="Type here to start the typing speed test">
 
 <!-- ═══════════════════════════════════════════════════════════════
      KEYMAP SCENE — Animated Boy Character + Keyboard + Mouse
@@ -2050,6 +2067,7 @@ function fmtDate(ts) {
         <div id="form-login">
           <!-- Email -->
           <div style="position:relative;margin-bottom:12px;">
+            <label for="auth-login-email" class="sr-only">Email address</label>
             <input id="auth-login-email" type="email" placeholder="Email address"
                    autocomplete="email" autocapitalize="off"
                    style="width:100%;padding:13px 15px;font-size:14px;
@@ -2062,6 +2080,7 @@ function fmtDate(ts) {
 
           <!-- Password with show/hide -->
           <div style="position:relative;margin-bottom:8px;">
+            <label for="auth-login-password" class="sr-only">Password</label>
             <input id="auth-login-password" type="password" placeholder="Password"
                    autocomplete="current-password"
                    style="width:100%;padding:13px 44px 13px 15px;font-size:14px;
@@ -2118,6 +2137,7 @@ function fmtDate(ts) {
         <div id="form-signup" style="display:none;">
           <!-- Username -->
           <div style="position:relative;margin-bottom:4px;">
+            <label for="auth-signup-username" class="sr-only">Username (3–15 characters, letters, numbers, underscore)</label>
             <input id="auth-signup-username" type="text" maxlength="15"
                    placeholder="Username (3–15 chars, letters/numbers/_)"
                    autocomplete="username" autocapitalize="off" autocorrect="off"
@@ -2154,6 +2174,7 @@ function fmtDate(ts) {
                         border:1.5px solid rgba(226,183,20,0.4);border-radius:10px;
                         overflow:hidden;box-shadow:0 12px 40px rgba(0,0,0,0.8);">
               <div style="padding:8px;border-bottom:1px solid rgba(255,255,255,0.08);">
+                <label for="idx-country-search" class="sr-only">Search country</label>
                 <input id="idx-country-search" placeholder="Search country…"
                        oninput="filterCountries('idx')"
                        style="width:100%;padding:8px 10px;font-size:13px;
@@ -2169,6 +2190,7 @@ function fmtDate(ts) {
 
           <!-- Email -->
           <div style="position:relative;margin-bottom:12px;">
+            <label for="auth-signup-email" class="sr-only">Email address</label>
             <input id="auth-signup-email" type="email" placeholder="Email address"
                    autocomplete="email" autocapitalize="off"
                    style="width:100%;padding:13px 15px;font-size:14px;
@@ -2181,6 +2203,7 @@ function fmtDate(ts) {
 
           <!-- Password with strength meter -->
           <div style="position:relative;margin-bottom:6px;">
+            <label for="auth-signup-password" class="sr-only">Password (minimum 8 characters)</label>
             <input id="auth-signup-password" type="password"
                    placeholder="Password (min 8 characters)"
                    autocomplete="new-password"
@@ -2252,6 +2275,7 @@ function fmtDate(ts) {
               Enter your email and we'll send a reset link
             </p>
           </div>
+          <label for="auth-forgot-email" class="sr-only">Your email address for password reset</label>
           <input id="auth-forgot-email" type="email" placeholder="Your email address"
                  autocomplete="email"
                  style="width:100%;padding:13px 15px;font-size:14px;
