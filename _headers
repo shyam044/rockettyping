@@ -1,21 +1,44 @@
+# ═══════════════════════════════════════════════════════════════
+#  Netlify _headers — Rocket Typing
+#  Deploy this file at the repo root (same level as index.html).
+# ═══════════════════════════════════════════════════════════════
+
+# ── HTML pages: short browser cache + CDN edge cache ──────────
+# max-age=0 forces the browser to revalidate every navigation,
+# but stale-while-revalidate=86400 lets the CDN edge serve a
+# stale copy for up to 24 h while it revalidates in the background
+# → repeat visitors get near-instant responses instead of 0.9 s TTFB.
+/
+  Cache-Control: public, max-age=0, must-revalidate, stale-while-revalidate=86400
+
+/*.html
+  Cache-Control: public, max-age=0, must-revalidate, stale-while-revalidate=86400
+
+# ── CSS & JS: 1-week cache ────────────────────────────────────
+# Files without content hashes need a shorter TTL so updates
+# reach users within a week. Netlify invalidates CDN edges on
+# each deploy automatically, so repeat visitors still get fresh
+# files after each deploy.
+/*.css
+  Cache-Control: public, max-age=604800, stale-while-revalidate=86400
+
+/*.js
+  Cache-Control: public, max-age=604800, stale-while-revalidate=86400
+
+# ── Images: 30-day cache (they rarely change) ─────────────────
+/images/*
+  Cache-Control: public, max-age=2592000, stale-while-revalidate=86400
+
+# ── Security headers (all paths) ──────────────────────────────
 /*
-  # HSTS - tells browsers to always use HTTPS (Lighthouse: "Use a strong HSTS policy")
+  # HSTS - always use HTTPS
   Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
 
-  # COOP - prevents cross-origin window access (Lighthouse: "Ensure proper origin isolation with COOP")
+  # COOP - prevents cross-origin window access
   Cross-Origin-Opener-Policy: same-origin
 
-  # X-Frame-Options - prevents clickjacking (Lighthouse: "Mitigate clickjacking with XFO or CSP")
+  # X-Frame-Options - prevents clickjacking
   X-Frame-Options: SAMEORIGIN
-
-  # Trusted Types - prevents DOM XSS (Lighthouse: "Mitigate DOM-based XSS with Trusted Types")
-  Content-Security-Policy: require-trusted-types-for 'script'; trusted-types default; object-src 'none'; base-uri 'self'; frame-ancestors 'self'; upgrade-insecure-requests;
-
-  # COEP - required alongside COOP for full isolation
-  Cross-Origin-Embedder-Policy: unsafe-none
-
-  # CORP
-  Cross-Origin-Resource-Policy: same-origin
 
   # Prevent MIME sniffing
   X-Content-Type-Options: nosniff
