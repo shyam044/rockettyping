@@ -1,0 +1,27 @@
+/*
+  # HSTS - tells browsers to always use HTTPS (Lighthouse: "Use a strong HSTS policy")
+  Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
+
+  # COOP - prevents cross-origin window access (Lighthouse: "Ensure proper origin isolation with COOP")
+  Cross-Origin-Opener-Policy: same-origin
+
+  # X-Frame-Options - prevents clickjacking (Lighthouse: "Mitigate clickjacking with XFO or CSP")
+  X-Frame-Options: SAMEORIGIN
+
+  # Trusted Types - prevents DOM XSS (Lighthouse: "Mitigate DOM-based XSS with Trusted Types")
+  Content-Security-Policy: require-trusted-types-for 'script'; trusted-types default; object-src 'none'; base-uri 'self'; frame-ancestors 'self'; upgrade-insecure-requests;
+
+  # COEP - required alongside COOP for full isolation
+  Cross-Origin-Embedder-Policy: unsafe-none
+
+  # CORP
+  Cross-Origin-Resource-Policy: same-origin
+
+  # Prevent MIME sniffing
+  X-Content-Type-Options: nosniff
+
+  # Referrer policy
+  Referrer-Policy: strict-origin-when-cross-origin
+
+  # Permissions policy
+  Permissions-Policy: camera=(), microphone=(), geolocation=()
