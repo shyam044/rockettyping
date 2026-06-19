@@ -1,7 +1,17 @@
+/* ── Font fallback: size-adjust minimises CLS when Roboto Mono swaps in ── */
+@font-face {
+    font-family: 'Roboto Mono Fallback';
+    src: local('Courier New'), local('Courier');
+    size-adjust: 95%;
+    ascent-override: 88%;
+    descent-override: 22%;
+    line-gap-override: 0%;
+}
+
 body {
     background: #0a0a23;
     color: #ffd700;
-    font-family: 'Roboto Mono', monospace;
+    font-family: 'Roboto Mono', 'Roboto Mono Fallback', monospace;
     margin: 0;
     overflow: hidden;
     overflow-y: auto;
@@ -14,6 +24,8 @@ body {
     padding-bottom: 0;
     /* Hint compositor to keep body on its own layer */
     will-change: opacity;
+    /* Prevent font-swap CLS: match fallback metrics to Roboto Mono */
+    font-size-adjust: 0.5;
 }
 
 /* PERF FIX: "test-running" hides all distraction elements in ONE CSS rule.
@@ -82,6 +94,7 @@ body::before {
     box-sizing: border-box;
     transition: min-height 0.45s cubic-bezier(0.34,1.56,0.64,1),
                 padding-bottom 0.35s ease;
+    contain: layout style;
 }
 
 /* When keymap is hidden, shrink the outer border up to hug the content */
@@ -550,6 +563,8 @@ padding: 11px 24px;
     margin-top: 16px;
     padding-bottom: 15px;
     border-top: 1px solid rgba(0,230,204,0.15);
+    min-height: 90px;
+    contain: layout;
 }
 
 @media (max-width: 600px) {
@@ -1171,4 +1186,33 @@ footer a:hover { color: #e2b714; }
 }
 #km-elon-badge {
     transform: translateX(50px);
+}
+/* ══════════════════════════════════════════════════════
+   CLS PREVENTION — stable dimensions for dynamic elements
+   Prevents layout shift when Firebase auth loads or ads appear
+   ══════════════════════════════════════════════════════ */
+
+/* Stable auth button area — prevents shift when Firebase populates it */
+#header-auth-btn {
+    min-width: 120px;
+    min-height: 36px;
+    display: flex;
+    align-items: center;
+}
+
+/* Stable header-right group height */
+#header-right-group {
+    min-height: 40px;
+}
+
+/* Reserve space for live WPM display to prevent layout shift on show */
+#live-wpm-display {
+    min-width: 90px;
+    min-height: 90px;
+}
+
+/* Prevent AdSense slot from causing CLS — reserve minimum height */
+.adsbygoogle {
+    display: block;
+    min-height: 90px;
 }
