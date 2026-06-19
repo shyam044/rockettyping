@@ -618,6 +618,8 @@ padding: 11px 24px;
     z-index: 1000;
     /* PERF: isolate modal paint from main page */
     contain: strict;
+    /* INP FIX: skip rendering off-screen modal content until needed */
+    content-visibility: auto;
 }
 
 #leaderboardModal.active { display: flex; contain: layout style; }
