@@ -3840,16 +3840,21 @@ if (!testActive && !testEnded && e.key.length === 1) {
                         const _lsCons   = typeof window._lastConsistency === 'number' ? window._lastConsistency : null;
 
                         // Update running aggregate
+                        // Profile stats gate: only count tests where time >= 10s AND words >= 10
+                        const _wordsCount2 = config.mode === 'words' ? config.words : words.length;
+                        const _qualifies2  = elapsedSecs >= 10 && _wordsCount2 >= 10;
                         let agg2 = {};
                         try { agg2 = JSON.parse(localStorage.getItem(AGG_KEY2) || '{}'); } catch(_e) { agg2 = {}; }
-                        agg2.count     = (agg2.count    || 0) + 1;
-                        agg2.wpmSum    = (agg2.wpmSum   || 0) + wpm;
-                        agg2.accSum    = (agg2.accSum   || 0) + accuracy;
-                        agg2.bestWpm   = Math.max(agg2.bestWpm  || 0, wpm);
-                        agg2.lowestWpm = agg2.count === 1 ? wpm : Math.min(agg2.lowestWpm || wpm, wpm);
-                        if (_lsCons !== null) {
-                            agg2.consSum   = (agg2.consSum   || 0) + _lsCons;
-                            agg2.consCount = (agg2.consCount || 0) + 1;
+                        if (_qualifies2) {
+                            agg2.count     = (agg2.count    || 0) + 1;
+                            agg2.wpmSum    = (agg2.wpmSum   || 0) + wpm;
+                            agg2.accSum    = (agg2.accSum   || 0) + accuracy;
+                            agg2.bestWpm   = Math.max(agg2.bestWpm  || 0, wpm);
+                            agg2.lowestWpm = agg2.count === 1 ? wpm : Math.min(agg2.lowestWpm || wpm, wpm);
+                            if (_lsCons !== null) {
+                                agg2.consSum   = (agg2.consSum   || 0) + _lsCons;
+                                agg2.consCount = (agg2.consCount || 0) + 1;
+                            }
                         }
                         localStorage.setItem(AGG_KEY2, JSON.stringify(agg2));
 
@@ -3865,6 +3870,7 @@ if (!testActive && !testEnded && e.key.length === 1) {
                             elapsedSecs: elapsedSecs
                         };
                         if (config.mode === 'words') _lsEntry.wordCount = config.words;
+                        if (config.mode === 'quotes') _lsEntry.wordCount = words.length;
                         scores2.push(_lsEntry);
                         if (scores2.length > 200) scores2 = scores2.slice(-200);
                         localStorage.setItem(LS_KEY2, JSON.stringify(scores2));
@@ -4440,14 +4446,17 @@ function sanitizeStr(s) {
 
                 const _cons = typeof window._lastConsistency === 'number' ? window._lastConsistency : null;
 
-                agg.count      = (agg.count      || 0) + 1;
-                agg.wpmSum     = (agg.wpmSum      || 0) + _wpm;
-                agg.accSum     = (agg.accSum      || 0) + _accuracy;
-                agg.bestWpm    = Math.max(agg.bestWpm    || 0, _wpm);
-                agg.lowestWpm  = agg.count === 1 ? _wpm : Math.min(agg.lowestWpm || _wpm, _wpm);
-                if (_cons !== null) {
-                    agg.consSum   = (agg.consSum  || 0) + _cons;
-                    agg.consCount = (agg.consCount || 0) + 1;
+                // Profile stats gate: only count tests with duration >= 10 seconds
+                if (duration >= 10) {
+                    agg.count      = (agg.count      || 0) + 1;
+                    agg.wpmSum     = (agg.wpmSum      || 0) + _wpm;
+                    agg.accSum     = (agg.accSum      || 0) + _accuracy;
+                    agg.bestWpm    = Math.max(agg.bestWpm    || 0, _wpm);
+                    agg.lowestWpm  = agg.count === 1 ? _wpm : Math.min(agg.lowestWpm || _wpm, _wpm);
+                    if (_cons !== null) {
+                        agg.consSum   = (agg.consSum  || 0) + _cons;
+                        agg.consCount = (agg.consCount || 0) + 1;
+                    }
                 }
                 localStorage.setItem(AGG_KEY, JSON.stringify(agg));
 
@@ -5378,15 +5387,30 @@ window.openProfileModal = async function() {
         // ── Back-fill aggregate from legacy recent list if aggregate is empty ──
         // (first open after update — migrate existing data once)
         if (!agg.count && recentList.length > 0) {
-            agg.count     = recentList.length;
-            agg.wpmSum    = recentList.reduce((s, r) => s + (r.wpm      || 0), 0);
-            agg.accSum    = recentList.reduce((s, r) => s + (r.accuracy || 0), 0);
-            agg.bestWpm   = Math.max(...recentList.map(r => r.wpm || 0));
-            agg.lowestWpm = Math.min(...recentList.map(r => r.wpm || Infinity));
-            const consRaw = recentList.filter(r => r.consistency != null && r.consistency > 0);
-            if (consRaw.length > 0) {
-                agg.consSum   = consRaw.reduce((s, r) => s + r.consistency, 0);
-                agg.consCount = consRaw.length;
+            // Only count tests that meet the qualification criteria:
+            // time mode: duration >= 10s | words mode: wordCount >= 10 AND elapsedSecs >= 10 | quotes: elapsedSecs >= 10 AND words >= 10
+            const qualifiedList = recentList.filter(r => {
+                if (r.testDuration != null) {
+                    // time mode
+                    return r.testDuration >= 10;
+                } else if (r.mode === 'words') {
+                    return (r.wordCount || 0) >= 10 && (r.elapsedSecs || 0) >= 10;
+                } else if (r.mode === 'quotes') {
+                    return (r.elapsedSecs || 0) >= 10 && (r.wordCount == null || r.wordCount >= 10);
+                }
+                return (r.elapsedSecs || 0) >= 10;
+            });
+            if (qualifiedList.length > 0) {
+                agg.count     = qualifiedList.length;
+                agg.wpmSum    = qualifiedList.reduce((s, r) => s + (r.wpm      || 0), 0);
+                agg.accSum    = qualifiedList.reduce((s, r) => s + (r.accuracy || 0), 0);
+                agg.bestWpm   = Math.max(...qualifiedList.map(r => r.wpm || 0));
+                agg.lowestWpm = Math.min(...qualifiedList.map(r => r.wpm || Infinity));
+                const consRaw = qualifiedList.filter(r => r.consistency != null && r.consistency > 0);
+                if (consRaw.length > 0) {
+                    agg.consSum   = consRaw.reduce((s, r) => s + r.consistency, 0);
+                    agg.consCount = consRaw.length;
+                }
             }
             try { localStorage.setItem(AGG_KEY, JSON.stringify(agg)); } catch(_e) {}
         }
@@ -5484,15 +5508,19 @@ window.openProfileModal = async function() {
             const list = document.getElementById('pm-recent-list');
             list.innerHTML = '';
             recentScores.forEach(s => {
-                // -- Per-mode minimum thresholds --
-                if (s.testDuration) {
+                // -- Per-mode minimum thresholds (time >= 10s AND words >= 10) --
+                if (s.testDuration != null) {
                     // time mode: skip tests shorter than 10 seconds
                     if (s.testDuration < 10) return;
                 } else if (s.mode === 'words') {
-                    // words mode: skip tests with fewer than 10 words
+                    // words mode: skip tests with fewer than 10 words OR under 10 seconds
                     if ((s.wordCount || 0) < 10) return;
+                    if ((s.elapsedSecs || 0) < 10) return;
+                } else if (s.mode === 'quotes') {
+                    // quotes mode: skip tests under 10 seconds OR fewer than 10 words
+                    if ((s.elapsedSecs || 0) < 10) return;
+                    if (s.wordCount != null && s.wordCount < 10) return;
                 }
-                // quotes mode: no minimum -- always display
 
                 // -- Mode label formatting --
                 let modeLabel;
@@ -6001,11 +6029,11 @@ function playKeyClick(){
     var bufSize = ctx.sampleRate * 0.035;
     var buf = ctx.createBuffer(1, bufSize, ctx.sampleRate);
     var data = buf.getChannelData(0);
-    for(var i=0;i<bufSize;i++) data[i]=(Math.random()*2-1)*Math.pow(1-i/bufSize,4)*0.55;
+    for(var i=0;i<bufSize;i++) data[i]=(Math.random()*2-1)*Math.pow(1-i/bufSize,4)*0.9;
     var src=ctx.createBufferSource(); src.buffer=buf;
     var hp=ctx.createBiquadFilter(); hp.type='highpass'; hp.frequency.value=900;
     var bp=ctx.createBiquadFilter(); bp.type='bandpass'; bp.frequency.value=2800; bp.Q.value=0.7;
-    var g=ctx.createGain(); g.gain.setValueAtTime(0.45,ctx.currentTime); g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+0.04);
+    var g=ctx.createGain(); g.gain.setValueAtTime(0.8,ctx.currentTime); g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+0.04);
     src.connect(hp); hp.connect(bp); bp.connect(g); g.connect(ctx.destination);
     src.start(); src.stop(ctx.currentTime+0.04);
 }
