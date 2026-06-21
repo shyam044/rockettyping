@@ -680,6 +680,8 @@ function _renderChampionCard(container, d, highlightName, isPast) {
 }
 
 function _getTopDocPlayers(data) {
+    // v6: support admin-written documents (admin: true flag).
+    // Admin docs may omit players[] and keystroke fields — still render them.
     // v5: players[] always has exactly 1 entry (the champion).
     // Always build the champion object from root-level fields (which are verified by Firestore rules)
     // and merge with players[0] if present, so uid is always available for "is-you" highlighting.
@@ -688,7 +690,7 @@ function _getTopDocPlayers(data) {
             name:      data.name,
             wpm:       data.wpm,
             accuracy:  data.accuracy,
-            score:     data.score,
+            score:     data.score !== undefined ? data.score : Math.round(data.wpm * ((data.accuracy || 100) / 100)),
             country:   data.country || '',
             timestamp: data.timestamp,
             // uid may be in players[0] (written by JS) but not required at root level by rules
