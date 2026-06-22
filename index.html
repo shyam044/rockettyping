@@ -9,7 +9,7 @@
     <meta name="description"
         content="Take a free typing speed test online and improve your WPM instantly. Rocket Typing offers typing practice, touch typing lessons, typing games, beginner to advanced tests, and a global leaderboard. No signup required.">
     <meta name="keywords"
-        content="typing test, online typing test, free typing test, typing practice, learn typing, touch typing, typing speed test, typing lessons, typing tutor, keyboard typing, WPM test, words per minute test, typing accuracy, typing speed, fast typing, improve typing speed, typing skills, typing proficiency, typing challenge, speed typing test, typing for beginners, learn touch typing, beginner typing lessons, keyboard practice, typing exercises, typing drills, home row practice, finger placement, keyboarding lessons, basic typing course, advanced typing test, professional typing test, typing certification, typing assessment, data entry typing test, transcription typing test, competitive typing, high WPM training, typing benchmark, expert typing practice, typing games, typing classes, typing course, typing school, typing training, typing curriculum, student typing practice, typing for kids, keyboarding skills, how to improve typing speed, best free typing test online, learn touch typing fast, typing practice for beginners, increase typing accuracy, 1 minute typing test, 5 minute typing test, 10 minute typing test, free online typing lessons, typing certification online, rocket typing, typing speed checker, WPM test online free, free typing test no login, typing game online">
+        content="typing test, typing speed test, WPM test, free typing test, online typing test, typing practice, touch typing, typing lessons, typing accuracy, words per minute, improve typing speed, typing for beginners, keyboard practice, typing tutor, rocket typing">
     <meta name="author" content="Rocket Typing">
     <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
     <link rel="canonical" href="https://www.rockettyping.com/">
@@ -70,12 +70,6 @@
         "@type": "Organization",
         "name": "Rocket Typing",
         "url": "https://www.rockettyping.com/"
-      },
-      "aggregateRating": {
-        "@type": "AggregateRating",
-        "ratingValue": "4.8",
-        "ratingCount": "1240",
-        "bestRating": "5"
       }
     }
     </script>
@@ -85,15 +79,7 @@
   "@type": "WebSite",
   "name": "Rocket Typing",
   "alternateName": "Rocket Typing - Free Typing Test",
-  "url": "https://www.rockettyping.com/",
-  "potentialAction": {
-    "@type": "SearchAction",
-    "target": {
-      "@type": "EntryPoint",
-      "urlTemplate": "https://www.rockettyping.com/?q={search_term_string}"
-    },
-    "query-input": "required name=search_term_string"
-  }
+  "url": "https://www.rockettyping.com/"
 }
 </script>
 <script type="application/ld+json">
@@ -184,7 +170,7 @@
     <link rel="manifest" href="/site.webmanifest">
     <meta name="theme-color" content="#323437">
     <!-- Security headers via _headers / .htaccess: X-Frame-Options, HSTS, COOP, Trusted-Types -->
-    <meta http-equiv="Content-Security-Policy" content="object-src 'none'; base-uri 'self'; form-action 'self' https://www.rockettyping.com; frame-ancestors 'self'; upgrade-insecure-requests;">
+    <meta http-equiv="Content-Security-Policy" content="object-src 'none'; base-uri 'self'; form-action 'self' https://www.rockettyping.com https://*.google.com https://googleads.g.doubleclick.net https://*.googlesyndication.com; frame-ancestors 'self'; upgrade-insecure-requests;">
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
     <meta name="referrer" content="strict-origin-when-cross-origin">
     <meta property="og:locale" content="en_US">
@@ -316,8 +302,6 @@
          appear ~300-500 ms after first paint — invisible to users at normal reading
          speed, and completely invisible when already cached.
          ──────────────────────────────────────────────────────────────────────────── -->
-    <link rel="preload" href="styles.css" as="style">
-    <link rel="preload" href="responsive.css" as="style">
     <link rel="stylesheet" href="styles.css"     media="print" onload="this.onload=null;this.media='all'">
     <link rel="stylesheet" href="responsive.css" media="print" onload="this.onload=null;this.media='all'">
     <noscript>
@@ -872,6 +856,7 @@
     padding: 2px;
     background: conic-gradient(from 0deg, #e2b714, #ff6600, #9b72cf, #e2b714);
     -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
     -webkit-mask-composite: xor; mask-composite: exclude;
     animation: musk-border-spin 4s linear infinite;
     transform-origin: center;
@@ -1389,6 +1374,9 @@
     border-radius: 50%;
     padding: 4px;
     -webkit-mask:
+        linear-gradient(#fff 0 0) content-box,
+        linear-gradient(#fff 0 0);
+    mask:
         linear-gradient(#fff 0 0) content-box,
         linear-gradient(#fff 0 0);
     -webkit-mask-composite: destination-out;
@@ -3676,7 +3664,6 @@ if (!testActive && !testEnded && e.key.length === 1) {
         document.getElementById("test-config").style.display = "none";
         document.getElementById("difficulty-container").style.display = "none";
         document.getElementById("leaderboard-btn").style.display = "none";
-        document.getElementById('footer').style.display = 'none';
         document.getElementById("play-game").style.display = "none";
     }, 0);
 }
@@ -4577,7 +4564,6 @@ if (!testActive && !testEnded && e.key.length === 1) {
             document.getElementById("difficulty-container").style.display = "flex";
             document.getElementById("timer").style.display = "block";
             document.getElementById("leaderboard-btn").style.display = "block";
-            document.getElementById('footer').style.display = 'block';
             document.getElementById('main-header').style.display = 'flex';
             document.getElementById("result-ad").innerHTML = "";
             document.getElementById("play-game").style.display = "flex";
