@@ -7,14 +7,16 @@
     # HSTS — "Use a strong HSTS policy"
     Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
 
-    # COOP — "Ensure proper origin isolation with COOP"
-    Header always set Cross-Origin-Opener-Policy "same-origin"
+    # COOP — allow popups to post messages back (required for Firebase OAuth + AdSense)
+    Header always set Cross-Origin-Opener-Policy "same-origin-allow-popups"
 
     # Clickjacking protection — "Mitigate clickjacking with XFO or CSP"
     Header always set X-Frame-Options "SAMEORIGIN"
 
-    # Trusted Types — "Mitigate DOM-based XSS with Trusted Types"
-    Header always set Content-Security-Policy "require-trusted-types-for 'script'; trusted-types default; object-src 'none'; base-uri 'self'; frame-ancestors 'self'; upgrade-insecure-requests;"
+    # CSP — blocks clickjacking, data: URIs as scripts, and mixed content.
+    # Trusted Types intentionally removed: it blocks innerHTML (used throughout the
+    # app), the Firebase SDK, and Google AdSense dynamic ad injection.
+    Header always set Content-Security-Policy "object-src 'none'; base-uri 'self'; frame-ancestors 'self'; upgrade-insecure-requests;"
 
     # Cross-Origin Resource Policy
     Header always set Cross-Origin-Resource-Policy "same-origin"
