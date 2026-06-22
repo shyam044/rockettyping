@@ -94,7 +94,10 @@ body::before {
     box-sizing: border-box;
     transition: min-height 0.45s cubic-bezier(0.34,1.56,0.64,1),
                 padding-bottom 0.35s ease;
-    contain: layout style;
+    /* NOTE: 'layout' removed from contain — it was making #app a containing
+       block for position:fixed children (e.g. #result), which broke the
+       centred result modal whenever km-compact shrank #app's height. */
+    contain: style;
 }
 
 /* When keymap is hidden, shrink the outer border up to hug the content */
