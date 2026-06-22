@@ -34,8 +34,10 @@
   # HSTS - always use HTTPS
   Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
 
-  # COOP - prevents cross-origin window access
-  Cross-Origin-Opener-Policy: same-origin
+  # COOP - allows OAuth/AdSense popups to communicate back to the opener window.
+  # same-origin-allow-popups is required for Firebase signInWithPopup (Google/GitHub login)
+  # and for certain AdSense ad formats. "same-origin" breaks both.
+  Cross-Origin-Opener-Policy: same-origin-allow-popups
 
   # X-Frame-Options - prevents clickjacking
   X-Frame-Options: SAMEORIGIN
