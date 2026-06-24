@@ -563,6 +563,70 @@ body.race-active #caret {
     #restart-btn:hover { transform:scale(1.06) !important; }
     button{background:#e2b714;color:#0b0e17;border:none;padding:14px 32px;font-size:20px;font-weight:bold;border-radius:8px;cursor:pointer;transition:all 0.2s;}
     button:hover{transform:scale(1.08);background:#ffd700;}
+
+    /* ── Start Race Overlay ── */
+    #start-race-overlay {
+      position:absolute;top:0;left:0;width:100%;height:100%;
+      display:none;align-items:center;justify-content:center;
+      flex-direction:column;z-index:60;
+      background:rgba(1,3,8,0.82);backdrop-filter:blur(3px);
+    }
+    #start-race-overlay.visible { display:flex; }
+    #start-race-btn {
+      background:linear-gradient(135deg,#e2b714,#ff9900);
+      color:#0b0e17;border:none;padding:18px 52px;
+      font-size:26px;font-weight:900;border-radius:10px;
+      cursor:pointer;letter-spacing:3px;font-family:'Roboto Mono',monospace;
+      box-shadow:0 0 40px rgba(226,183,20,0.55);
+      transition:transform 0.18s ease, box-shadow 0.18s ease;
+    }
+    #start-race-btn:hover { transform:scale(1.07); box-shadow:0 0 60px rgba(226,183,20,0.8); }
+    #start-race-hint {
+      margin-top:14px;font-size:12px;letter-spacing:3px;
+      color:rgba(255,255,255,0.35);font-family:'JetBrains Mono',monospace;
+    }
+
+    /* ── Pause Modal ── */
+    #pause-modal {
+      position:fixed;inset:0;z-index:9000;
+      display:none;align-items:center;justify-content:center;
+      background:rgba(0,0,0,0.75);backdrop-filter:blur(6px);
+    }
+    #pause-modal.visible { display:flex; }
+    #pause-modal-box {
+      background:linear-gradient(145deg,#0f1220,#1a1e2e);
+      border:1px solid rgba(226,183,20,0.35);border-radius:18px;
+      padding:40px 48px;text-align:center;
+      box-shadow:0 0 80px rgba(226,183,20,0.15), 0 24px 60px rgba(0,0,0,0.7);
+      min-width:320px;
+    }
+    #pause-modal-title {
+      font-size:13px;letter-spacing:5px;color:rgba(226,183,20,0.6);
+      text-transform:uppercase;margin-bottom:6px;
+      font-family:'JetBrains Mono',monospace;
+    }
+    #pause-modal-icon { font-size:54px;margin-bottom:14px; }
+    #pause-modal-msg {
+      font-size:20px;font-weight:bold;color:#e2b714;
+      letter-spacing:2px;margin-bottom:28px;
+    }
+    .pause-btn {
+      display:block;width:100%;padding:14px;font-size:15px;font-weight:900;
+      font-family:'Roboto Mono',monospace;letter-spacing:2px;
+      border-radius:8px;cursor:pointer;margin-bottom:12px;
+      border:none;transition:transform 0.15s ease, filter 0.15s ease;
+    }
+    .pause-btn:hover { transform:scale(1.04); filter:brightness(1.12); }
+    .pause-btn:last-child { margin-bottom:0; }
+    #pause-new-race-btn {
+      background:linear-gradient(135deg,#e2b714,#ff9900);
+      color:#0b0e17;
+    }
+    #pause-close-btn {
+      background:rgba(255,255,255,0.07);
+      color:#ccc;border:1px solid rgba(255,255,255,0.15)!important;
+    }
+    #pause-close-btn:hover { background:rgba(255,60,60,0.15); color:#ff6b6b; border-color:rgba(255,60,60,0.4)!important; }
     /* caret handled above in typing zone */
     /* #space-bg duplicate rule removed — defined above with correct 3200px width */
     @keyframes leaderboardPop{0%{transform:translate(-50%,-60%) scale(0.9);opacity:0;}100%{transform:translate(-50%,-50%) scale(1);opacity:1;}}
@@ -1613,6 +1677,10 @@ body.race-active #caret {
       <div id="race-start-bg"><span>🚀</span><span>🚀</span><span>🚀</span><span>🚀</span><span>🚀</span></div>
       <div id="race-start-text">Finding pilots...</div>
     </div>
+    <div id="start-race-overlay">
+      <button id="start-race-btn" onclick="beginRace()">🚀 START RACE</button>
+      <div id="start-race-hint">PRESS ENTER OR CLICK TO BEGIN</div>
+    </div>
     <div id="space-deep"></div>
     <div id="space-mid"></div>
     <div id="space-bg"></div>
@@ -1916,16 +1984,27 @@ body.race-active #caret {
   </div>
 </section>
 
+<!-- ══ PAUSE MODAL ══ -->
+<div id="pause-modal">
+  <div id="pause-modal-box">
+    <div id="pause-modal-title">MISSION CONTROL</div>
+    <div id="pause-modal-icon">⏸️</div>
+    <div id="pause-modal-msg">RACE PAUSED</div>
+    <button class="pause-btn" id="pause-new-race-btn" onclick="pauseModalNewRace()">🚀 NEW RACE</button>
+    <button class="pause-btn" id="pause-close-btn" onclick="pauseModalClose()">← BACK TO HOME</button>
+  </div>
+</div>
+
 <footer style="position:fixed;bottom:0;left:0;right:0;background:#1a2333;padding:10px 16px;text-align:center;font-size:12px;color:#777;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:6px 14px;z-index:9999;">
-  <a href="index.html" style="color:#e2b714;text-decoration:none;">← Typing Test</a>
+  <a href="index.html" tabindex="-1" style="color:#e2b714;text-decoration:none;">← Typing Test</a>
   <span style="color:#444;">|</span>
-  <a href="/privacy.html" style="color:#aaa;text-decoration:none;">Privacy Policy</a>
+  <a href="/privacy.html" tabindex="-1" style="color:#aaa;text-decoration:none;">Privacy Policy</a>
   <span style="color:#444;">|</span>
-  <a href="/terms.html" style="color:#aaa;text-decoration:none;">Terms of Use</a>
+  <a href="/terms.html" tabindex="-1" style="color:#aaa;text-decoration:none;">Terms of Use</a>
   <span style="color:#444;">|</span>
-  <a href="/about.html" style="color:#aaa;text-decoration:none;">About</a>
+  <a href="/about.html" tabindex="-1" style="color:#aaa;text-decoration:none;">About</a>
   <span style="color:#444;">|</span>
-  <a href="mailto:contact@rockettyping.com" style="color:#aaa;text-decoration:none;">Contact</a>
+  <a href="mailto:contact@rockettyping.com" tabindex="-1" style="color:#aaa;text-decoration:none;">Contact</a>
   <span style="color:#444;">|</span>
   <span>© 2026 Rocket Typing</span>
 </footer>
@@ -1957,10 +2036,10 @@ auth.onAuthStateChanged(async (user) => {
                     document.getElementById('game-topnav-logout').addEventListener('click', () => auth.signOut());
                 }
                 if (lbPrompt) lbPrompt.style.display = 'none';
-                // Logged in — hide the whole auth screen and start race
+                // Logged in — hide the whole auth screen and show Start Race overlay
                 usernameScreen.style.display = "none";
                 startGameWithName(name);
-                setTimeout(() => { showRaceCountdown(() => {}); }, 50);
+                setTimeout(() => { showStartRaceOverlay(); }, 50);
                 return;
             }
         } catch(e) {
@@ -2041,11 +2120,11 @@ const usernameError  = document.getElementById("username-error");
 // Login/Signup button → open inline auth modal (no redirect)
 usernameBtn.onclick = () => { openAuthModal('login'); };
 
-// Guest play → hide screen and start as "Guest"
+// Guest play → hide screen and show Start Race overlay
 guestBtn.onclick = () => {
     usernameScreen.style.display = "none";
     startGameWithName("Guest");
-    setTimeout(() => { showRaceCountdown(() => {}); }, 50);
+    setTimeout(() => { showStartRaceOverlay(); }, 50);
 };
 function startGameWithName(name){document.querySelector("#player-lane .name").textContent=name.toUpperCase();resetRace();}
 
@@ -3351,7 +3430,7 @@ function calculateStats(){const em=(Date.now()-startTime)/60000||0.001,wpm=Math.
 function endRace(){
   raceFinished=true;  // immediately block all keyboard input and sounds
   sounds.ambient.pause();sounds.ambient.currentTime=0;
-  testActive=false;clearInterval(elapsedInterval);clearInterval(opponentInterval);document.body.classList.remove('race-active');
+  testActive=false;clearInterval(elapsedInterval);elapsedInterval=null;clearInterval(opponentInterval);opponentInterval=null;clearInterval(liveWpmInterval);liveWpmInterval=null;document.body.classList.remove('race-active');
   let rank=1;for(let i=0;i<opponentProgress.length;i++)if(opponentProgress[i]>playerProgress)rank++;
   const sfx=['ST','ND','RD','TH','TH'],emj=['🥇','🥈','🥉','4️⃣','5️⃣'],clr=['#ffd700','#c8c8c8','#cd7f32','#aaaaaa','#888888'],msg=['🚀 You launched past every rival!','⚡ Just off the top — insane speed!','🏅 Top 3 podium finish — great run!','💪 Solid race. Close to the podium!','🔥 Keep training, pilot — the stars await!'];
   if(rank===1)playSound('win');else if(rank<=3)playSound('finish');else playSound('lose');
@@ -3812,7 +3891,7 @@ function buildSpaceBackground(){
   document.getElementById('space-bg').dataset.built='1';
 }
 
-function resetRace(){raceStarted=false;raceFinished=false;document.body.classList.remove('race-active');const avg=getAverageWPM(),pp=w=>w*0.5;opponentSpeeds=[pp(avg+20),pp(avg+15),Math.max(5,pp(avg-20)),pp(avg-5)].sort(()=>Math.random()-0.5);clearInterval(elapsedInterval);clearInterval(opponentInterval);testActive=false;typedWords=[];missedChars=0;spaces=0;correctSpaces=0;playerProgress=0;opponentProgress=[0,0,0,0];currentWordIndex=0;currentLetterIndex=0;correctChars=0;rawChars=0;correctKeystrokes=0;totalKeystrokes=0;keystrokeTimestamps=[];playerRocket.style.left='0px';oppRockets.forEach(r=>{r.style.left='0px';r.parentElement.classList.remove('boost');});timerDiv.textContent='0:00';resultDiv.classList.remove('visible');resetLiveHud();
+function resetRace(){raceStarted=false;raceFinished=false;document.body.classList.remove('race-active');const avg=getAverageWPM(),pp=w=>w*0.5;opponentSpeeds=[pp(avg+20),pp(avg+15),Math.max(5,pp(avg-20)),pp(avg-5)].sort(()=>Math.random()-0.5);if(_countdownIv){clearInterval(_countdownIv);_countdownIv=null;}_countdownActive=false;clearInterval(elapsedInterval);elapsedInterval=null;clearInterval(opponentInterval);opponentInterval=null;clearInterval(liveWpmInterval);liveWpmInterval=null;testActive=false;typedWords=[];missedChars=0;spaces=0;correctSpaces=0;playerProgress=0;opponentProgress=[0,0,0,0];currentWordIndex=0;currentLetterIndex=0;correctChars=0;rawChars=0;correctKeystrokes=0;totalKeystrokes=0;keystrokeTimestamps=[];playerRocket.style.left='0px';oppRockets.forEach(r=>{r.style.left='0px';r.parentElement.classList.remove('boost');});timerDiv.textContent='0:00';resultDiv.classList.remove('visible');resetLiveHud();
 // Reset active word cache
 _setActiveWord(null);
 _rafPending=false;_caretDirty=false;_visualDirty=false;
@@ -3827,7 +3906,13 @@ const bw=document.getElementById('race-wpm-number');if(bw){bw.textContent='—';
 const ba=document.getElementById('race-wpm-acc');if(ba)ba.textContent='';
 if(!document.getElementById('space-bg').dataset.built){buildSpaceBackground();}
 worldOffset=0;updateAllVisuals();}
-function showRaceCountdown(cb){leaderboardBtn.style.display="none";const ov=document.getElementById("race-start-overlay"),tx=document.getElementById("race-start-text");ov.style.display="flex";tx.textContent="Finding pilots...";playSound('startIgnition');setTimeout(()=>{let count=3;const iv=setInterval(()=>{tx.textContent=count;playSound('countdown');count--;if(count===0){clearInterval(iv);setTimeout(()=>{tx.textContent="LET'S GO!";playSound('startIgnition');sounds.ambient.currentTime=0;sounds.ambient.play().catch(()=>{});},800);setTimeout(()=>{ov.style.display="none";raceStarted=true;testActive=true;startTime=Date.now();elapsedInterval=setInterval(updateElapsed,1000);opponentInterval=setInterval(updateOpponentProgress,50);caret.style.opacity='1';document.body.classList.add('race-active');startLiveHud();cb();},1600);}},950);},800);}
+let _countdownIv = null;
+let _countdownActive = false;
+function showRaceCountdown(cb){
+  if(_countdownActive) return; // prevent double-start
+  _countdownActive = true;
+  leaderboardBtn.style.display="none";const ov=document.getElementById("race-start-overlay"),tx=document.getElementById("race-start-text");ov.style.display="flex";tx.textContent="Finding pilots...";playSound('startIgnition');setTimeout(()=>{let count=3;_countdownIv=setInterval(()=>{tx.textContent=count;playSound('countdown');count--;if(count===0){clearInterval(_countdownIv);_countdownIv=null;setTimeout(()=>{tx.textContent="LET'S GO!";playSound('startIgnition');sounds.ambient.currentTime=0;sounds.ambient.play().catch(()=>{});},800);setTimeout(()=>{_countdownActive=false;ov.style.display="none";raceStarted=true;testActive=true;startTime=Date.now();elapsedInterval=setInterval(updateElapsed,1000);opponentInterval=setInterval(updateOpponentProgress,50);caret.style.opacity='1';document.body.classList.add('race-active');startLiveHud();cb();},1600);}},950);},800);
+}
 /* ── Page Visibility API — pause ALL intervals when tab is hidden ──
    Prevents stacked timers and wasted CPU when user switches tabs */
 document.addEventListener('visibilitychange',()=>{
@@ -3843,7 +3928,136 @@ document.addEventListener('visibilitychange',()=>{
     sounds.ambient.play().catch(()=>{});
   }
 });
-restartBtn.addEventListener('click',()=>{leaderboardBtn.style.display="none";resultDiv.classList.remove('visible');resetRace();showRaceCountdown(()=>{});});
+restartBtn.addEventListener('click',()=>{leaderboardBtn.style.display="none";resultDiv.classList.remove('visible');resetRace();showStartRaceOverlay();});
+
+/* ============================================================
+   START RACE OVERLAY — shown instead of auto-starting
+============================================================ */
+function showStartRaceOverlay(){
+  const overlay = document.getElementById('start-race-overlay');
+  if(overlay) overlay.classList.add('visible');
+}
+function hideStartRaceOverlay(){
+  const overlay = document.getElementById('start-race-overlay');
+  if(overlay) overlay.classList.remove('visible');
+}
+function beginRace(){
+  hideStartRaceOverlay();
+  showRaceCountdown(()=>{});
+}
+
+/* ============================================================
+   PAUSE MODAL — logo click and Tab+Enter trigger this
+============================================================ */
+let _pauseModalOpen = false;
+function showPauseModal(){
+  // Don't show if result screen is already visible
+  if(resultDiv && resultDiv.classList.contains('visible')) return;
+
+  _pauseModalOpen = true;
+
+  // Cancel any active countdown
+  if(_countdownIv){clearInterval(_countdownIv);_countdownIv=null;}
+  _countdownActive = false;
+  // Hide the race-start overlays (both the 3,2,1 and the START RACE button)
+  const raceOv = document.getElementById('race-start-overlay');
+  if(raceOv) raceOv.style.display = 'none';
+  const startOv = document.getElementById('start-race-overlay');
+  if(startOv) startOv.classList.remove('visible');
+
+  // Pause all race intervals
+  testActive = false;
+  if(opponentInterval){clearInterval(opponentInterval);opponentInterval=null;}
+  if(elapsedInterval){clearInterval(elapsedInterval);elapsedInterval=null;}
+  if(liveWpmInterval){clearInterval(liveWpmInterval);liveWpmInterval=null;}
+  sounds.ambient.pause();
+  document.body.classList.remove('race-active');
+
+  const modal = document.getElementById('pause-modal');
+  if(modal){
+    modal.classList.add('visible');
+    setTimeout(()=>{
+      const newRaceBtn = document.getElementById('pause-new-race-btn');
+      if(newRaceBtn) newRaceBtn.focus();
+    }, 50);
+  }
+}
+
+/* ── Trap Tab focus inside pause modal ── */
+document.addEventListener('keydown', function(e){
+  const modal = document.getElementById('pause-modal');
+  if(!modal || !modal.classList.contains('visible')) return;
+  if(e.key !== 'Tab') return;
+  e.preventDefault();
+  _lastKeyWasTab = false;
+  const newRaceBtn = document.getElementById('pause-new-race-btn');
+  const closeBtn   = document.getElementById('pause-close-btn');
+  if(document.activeElement === newRaceBtn){
+    closeBtn.focus();
+  } else {
+    newRaceBtn.focus();
+  }
+}, true);
+function hidePauseModal(){
+  _pauseModalOpen = false;
+  const modal = document.getElementById('pause-modal');
+  if(modal) modal.classList.remove('visible');
+}
+function pauseModalNewRace(){
+  hidePauseModal();
+  leaderboardBtn.style.display="none";
+  resultDiv.classList.remove('visible');
+  resetRace();
+  showStartRaceOverlay();
+}
+function pauseModalClose(){
+  hidePauseModal();
+  window.location.href = 'index.html';
+}
+
+/* ── Logo click → pause modal ── */
+document.getElementById('logo').addEventListener('click', function(e){
+  e.preventDefault();
+  showPauseModal();
+});
+
+/* ── Tab always focuses logout button; Enter on it always shows pause modal ──
+   This is simpler and bulletproof: no flag needed, works every time.         */
+document.addEventListener('keydown', function(e){
+  // If pause modal is open, Tab is handled by the focus-trap listener below
+  const modal = document.getElementById('pause-modal');
+  if(modal && modal.classList.contains('visible')) return;
+
+  if(e.key === 'Tab'){
+    const logoutBtn = document.getElementById('game-topnav-logout');
+    if(logoutBtn){
+      e.preventDefault();
+      logoutBtn.focus();
+    }
+    return;
+  }
+
+  if(e.key === 'Enter'){
+    const focused = document.activeElement;
+    if(focused && (focused.classList.contains('game-topnav-logout') || focused.id === 'game-topnav-logout')){
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      showPauseModal();
+      return;
+    }
+  }
+}, true);
+
+/* ── Enter key on start overlay fires beginRace ── */
+document.addEventListener('keydown', function(e){
+  if(e.key === 'Enter'){
+    const startOverlay = document.getElementById('start-race-overlay');
+    if(startOverlay && startOverlay.classList.contains('visible')){
+      e.preventDefault();
+      beginRace();
+    }
+  }
+});
 
 
 
