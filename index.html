@@ -459,19 +459,134 @@
 }
 </script>
 <style>
-/* ── Leaderboard country+date columns ── */
-.leaderboard-header-grid,
-.leaderboard-row { 
-    grid-template-columns: 64px 1fr 88px 78px 78px 110px !important; 
+/* ── Leaderboard modal — wider ── */
+.leaderboard-modal {
+    max-width: 1000px !important;
+    width: 95% !important;
+    padding: 34px 32px !important;
 }
 
-/* Make flag cell a bit wider and centered */
+/* ── Leaderboard grid columns — scaled up ── */
+.leaderboard-header-grid,
+.leaderboard-row { 
+    grid-template-columns: 80px 1fr 120px 100px 100px 140px !important;
+    padding: 14px 26px !important;
+    font-size: 16px !important;
+}
+
+/* Header label text */
+.leaderboard-header-grid {
+    font-size: 15px !important;
+}
+
+/* Row rank number / medal */
+.leaderboard-row .rank {
+    font-size: 26px !important;
+}
+
+/* Player name */
+.lb-player-name {
+    font-size: 17px !important;
+}
+
+/* WPM / ACC values in rows */
+.leaderboard-row span[style*="color:#ffd700"],
+.leaderboard-row span[style*="color: #ffd700"] {
+    font-size: 18px !important;
+}
+
+/* Date cell */
+.lb-date-cell {
+    font-size: 14px !important;
+}
+
+/* Flag cell — bigger emoji + wider column */
 .lb-flag-cell { 
-    font-size: 22px; 
-    width: 68px; 
+    font-size: 28px !important; 
+    width: 90px !important;
     display: flex; 
     align-items: center; 
     justify-content: center; 
+}
+
+/* Header title */
+.header-title {
+    font-size: 34px !important;
+}
+
+/* Leaderboard body — taller to fit more rows comfortably */
+.leaderboard-body {
+    max-height: 520px !important;
+}
+
+/* ── Responsive overrides for wider leaderboard ── */
+@media (max-width: 600px) {
+    .leaderboard-modal { padding: 18px 14px !important; }
+    .leaderboard-header-grid,
+    .leaderboard-row {
+        grid-template-columns: 50px 1fr 72px 68px 68px 82px !important;
+        padding: 10px 10px !important;
+        font-size: 13px !important;
+    }
+    .lb-flag-cell { font-size: 20px !important; width: 56px !important; }
+    .header-title { font-size: 22px !important; }
+    .lb-player-name { font-size: 13px !important; }
+    .leaderboard-row .rank { font-size: 20px !important; }
+}
+
+@media (max-width: 480px) {
+    .leaderboard-header-grid,
+    .leaderboard-row {
+        grid-template-columns: 40px 1fr 58px 56px !important;
+        font-size: 12px !important;
+        padding: 8px 8px !important;
+    }
+    .lb-flag-cell { font-size: 18px !important; width: 46px !important; }
+    .header-title { font-size: 18px !important; }
+    .leaderboard-row .rank { font-size: 18px !important; }
+    /* hide date + country columns on phone */
+    .leaderboard-header-grid > *:nth-child(5),
+    .leaderboard-header-grid > *:nth-child(6),
+    .leaderboard-row > *:nth-child(5),
+    .leaderboard-row > *:nth-child(6) { display: none; }
+}
+
+@media (max-width: 360px) {
+    .leaderboard-header-grid,
+    .leaderboard-row {
+        grid-template-columns: 34px 1fr 50px 50px !important;
+        font-size: 10px !important;
+        padding: 7px 6px !important;
+    }
+    .header-title { font-size: 15px !important; }
+}
+.leaderboard-mode-tabs {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    margin: 10px 0 4px;
+}
+.lb-mode-tab {
+    background: transparent;
+    border: 2px solid rgba(255,215,0,0.3);
+    color: #aaa;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    padding: 7px 22px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background 0.18s, color 0.18s, border-color 0.18s;
+}
+.lb-mode-tab.active {
+    background: rgba(255,215,0,0.15);
+    border-color: #ffd700;
+    color: #ffd700;
+}
+.lb-mode-tab:hover:not(.active) {
+    border-color: rgba(255,215,0,0.6);
+    color: #ccc;
 }
 
 </style>
@@ -1174,19 +1289,20 @@
         <div class="pm-elon-card" id="pm-elon-card" style="display:none;">
           <div class="pm-elon-tooltip" id="pm-elon-tooltip">
             <strong>⚡ How Elon Score works</strong><br>
-            Every 100 Musk Score points earns you 1 Elon Score.<br>
-            <strong>100 Musk = 1 Elon Score point.</strong><br><br>
-            <span class="tt-ex">Measures your total typing dedication<br>
-            across thousands of minutes of practice.</span>
+            Calculated once per completed 60-minute session.<br>
+            <strong>Score = Prev + (avg WPM + avg Acc) ÷ 100 + Improvement</strong><br>
+            Improvement = max(0, SessionScore − PrevScore)<br><br>
+            <span class="tt-ex">Score is frozen during a session and only<br>
+            updates when the full 60 minutes completes.</span>
           </div>
           <span class="pm-elon-rocket">⚡</span>
           <span class="pm-elon-label">Elon Score</span>
           <span class="pm-elon-number" id="pm-elon-number">0</span>
-          <span class="pm-elon-sub" id="pm-elon-sub">0 / 100 Musk points</span>
+          <span class="pm-elon-sub" id="pm-elon-sub">session avg: — WPM / —% acc</span>
           <div class="pm-musk-progress-wrap">
             <div class="pm-musk-progress-label">
-              <span id="pm-elon-prog-left">0 Musk pts</span>
-              <span id="pm-elon-prog-right">next at 100 pts</span>
+              <span id="pm-elon-prog-left">0 tests this session</span>
+              <span id="pm-elon-prog-right">score updates in 60 min</span>
             </div>
             <div class="pm-musk-progress-track">
               <div class="pm-musk-progress-fill pm-elon-fill" id="pm-elon-bar" style="width:0%"></div>
@@ -1898,7 +2014,7 @@
             <span class="km-score-tag">score</span>
         </div>
         <!-- Elon Score Badge -->
-        <div class="km-score-badge" id="km-elon-badge" title="Elon Score: every 100 Musk points = 1 Elon point">
+        <div class="km-score-badge" id="km-elon-badge" title="Elon Score: session-based — (avg WPM + avg Accuracy) ÷ 100 per 60-min session">
             <div class="km-score-ring km-elon-ring">
                 <div class="km-score-inner">
                     <span class="km-score-emoji">⚡</span>
@@ -2403,11 +2519,20 @@
                     REGISTER NOW →
                 </button>
             </div>
-            <div class="leaderboard-time-tabs">
-                <button class="time-tab" data-duration="10">10s</button>
-                <button class="time-tab active" data-duration="15">15s</button>
-                <button class="time-tab" data-duration="30">30s</button>
-                <button class="time-tab" data-duration="60">60s</button>
+            <div class="leaderboard-mode-tabs">
+                <button class="lb-mode-tab active" data-lbmode="time">TIME</button>
+                <button class="lb-mode-tab" data-lbmode="words">WORDS</button>
+                <button class="lb-mode-tab" data-lbmode="elon">⚡ ELON</button>
+            </div>
+            <div class="leaderboard-time-tabs" id="lb-duration-tabs">
+                <button class="time-tab active" data-duration="10" data-lbfor="time">10s</button>
+                <button class="time-tab" data-duration="15" data-lbfor="time">15s</button>
+                <button class="time-tab" data-duration="30" data-lbfor="time">30s</button>
+                <button class="time-tab" data-duration="60" data-lbfor="time">60s</button>
+                <button class="time-tab" data-duration="10" data-lbfor="words" style="display:none">10w</button>
+                <button class="time-tab" data-duration="25" data-lbfor="words" style="display:none">25w</button>
+                <button class="time-tab" data-duration="50" data-lbfor="words" style="display:none">50w</button>
+                <button class="time-tab" data-duration="100" data-lbfor="words" style="display:none">100w</button>
             </div>
             <div class="leaderboard-wrapper">
                 <!-- HEADER MOVED TO TOP (this fixes the "downside" problem) -->
@@ -2703,6 +2828,30 @@ window.deleteUser = deleteUser;
                 localStorage.setItem('rt_user_country', uCountry);
                 localStorage.setItem('rt_registered_name', username); // keep for leaderboard compat
                 updateAuthUI(true, username);
+
+                // ── Restore Musk & Elon scores from Firestore (cross-device sync) ──
+                try {
+                    const scoresDoc = await getDoc(doc(db, 'user_scores', user.uid));
+                    if (scoresDoc.exists()) {
+                        const sd = scoresDoc.data();
+                        const MUSK_LS = 'rt_musk_' + user.uid;
+                        const ELON_LS = 'rt_elon_'  + user.uid;
+                        const localMusk = parseFloat(localStorage.getItem(MUSK_LS) || '0');
+                        // Only overwrite if Firestore has MORE seconds (device with more progress wins)
+                        if ((sd.muskSecs || 0) > localMusk) {
+                            localStorage.setItem(MUSK_LS, sd.muskSecs.toString());
+                        }
+                        // Restore elon state if Firestore elonScore is higher than local
+                        if (sd.elonState) {
+                            let localElonState = {};
+                            try { localElonState = JSON.parse(localStorage.getItem(ELON_LS) || '{}'); } catch(_e) {}
+                            const localElonScore = localElonState.elonScore || 0;
+                            if ((sd.elonState.elonScore || 0) > localElonScore) {
+                                localStorage.setItem(ELON_LS, JSON.stringify(sd.elonState));
+                            }
+                        }
+                    }
+                } catch (_syncErr) { console.warn('Score restore from Firestore failed:', _syncErr); }
             }
         } else {
             window._currentUser = null;
@@ -2743,21 +2892,37 @@ window.deleteUser = deleteUser;
         function openLeaderboardModal() {
             document.getElementById('leaderboardModal').classList.add('active');
 
-            // NEW: automatically switch to the tab that matches your last test duration
-            let targetDuration = 15; // fallback
-            if ([10, 15, 30, 60].includes(config.time)) {
-                targetDuration = config.time;
+            // Auto-switch to the tab matching the last test
+            if (config.mode === 'words' && [10, 25, 50, 100].includes(config.words)) {
+                // Switch to WORDS mode
+                document.querySelectorAll('.lb-mode-tab').forEach(t => t.classList.remove('active'));
+                document.querySelector('.lb-mode-tab[data-lbmode="words"]').classList.add('active');
+                currentLbMode = 'words';
+                document.querySelectorAll('.time-tab[data-lbfor="time"]').forEach(t => t.style.display = 'none');
+                document.querySelectorAll('.time-tab[data-lbfor="words"]').forEach(t => t.style.display = '');
+                document.querySelectorAll('.time-tab').forEach(t => t.classList.remove('active'));
+                const wTab = document.querySelector(`.time-tab[data-lbfor="words"][data-duration="${config.words}"]`);
+                if (wTab) wTab.classList.add('active');
+                loadWordLeaderboard(config.words);
+            } else {
+                // Switch to TIME mode
+                document.querySelectorAll('.lb-mode-tab').forEach(t => t.classList.remove('active'));
+                document.querySelector('.lb-mode-tab[data-lbmode="time"]').classList.add('active');
+                currentLbMode = 'time';
+                document.querySelectorAll('.time-tab[data-lbfor="time"]').forEach(t => t.style.display = '');
+                document.querySelectorAll('.time-tab[data-lbfor="words"]').forEach(t => t.style.display = 'none');
+
+                let targetDuration = 15;
+                if ([10, 15, 30, 60].includes(config.time)) targetDuration = config.time;
+
+                document.querySelectorAll('.time-tab').forEach(tab => {
+                    tab.classList.remove('active');
+                    if (tab.dataset.lbfor === 'time' && parseInt(tab.dataset.duration) === targetDuration) {
+                        tab.classList.add('active');
+                    }
+                });
+                loadLeaderboard(targetDuration);
             }
-
-            // Activate the correct tab visually
-            document.querySelectorAll('.time-tab').forEach(tab => {
-                tab.classList.remove('active');
-                if (parseInt(tab.dataset.duration) === targetDuration) {
-                    tab.classList.add('active');
-                }
-            });
-
-            loadLeaderboard(targetDuration);
         }
         function closeLeaderboardModal() {
             document.getElementById('leaderboardModal').classList.remove('active');
@@ -3950,6 +4115,35 @@ if (!testActive && !testEnded && e.key.length === 1) {
                 window._muskScoreNew   = _newMuskScore;
                 window._muskScoreDelta = _newMuskScore - _prevMuskScore;
                 if (typeof updateKmScoreBadges === 'function') updateKmScoreBadges();
+
+                // ── Firestore sync: only when Musk score hits a new multiple of 60 ──
+                // e.g. muskScore = 60, 120, 180 … triggers a save; 59→61 saves at 60.
+                // Stores muskSecs floored to the completed multiple of 60 × 60 seconds.
+                if (_muskUid !== 'guest' && window._currentUser && window._currentUser.uid) {
+                    var _storedMultiple = window._lastMuskSyncMultiple || 0;
+                    var _currentMultipleOf60 = Math.floor(_newMuskScore / 60); // how many 60-Musk milestones passed
+                    if (_currentMultipleOf60 > _storedMultiple) {
+                        window._lastMuskSyncMultiple = _currentMultipleOf60;
+                        // Store musk seconds floored to the last completed 60-point boundary
+                        var _syncMuskSecs = _currentMultipleOf60 * 60 * 60; // each 60 musk = 3600 secs
+                        // Grab latest elon state at time of save
+                        var _syncElonState = {};
+                        try { _syncElonState = JSON.parse(localStorage.getItem('rt_elon_' + _muskUid) || '{}'); } catch(_ee) {}
+                        var _syncElonScore  = _syncElonState.elonScore || 0;
+                        if (window.db && window.doc && window.setDoc) {
+                            window.setDoc(
+                                window.doc(window.db, 'user_scores', _muskUid),
+                                {
+                                    muskSecs  : _syncMuskSecs,
+                                    elonScore : _syncElonScore,
+                                    elonState : _syncElonState,
+                                    updatedAt : Date.now()
+                                },
+                                { merge: true }
+                            ).catch(function(_fsErr) { console.warn('Musk/Elon Firestore save failed:', _fsErr); });
+                        }
+                    }
+                }
             } catch(_me) {}
 
             // WPM & Raw - use the counters you already maintain (much cleaner + accurate)
@@ -4102,6 +4296,18 @@ if (!testActive && !testEnded && e.key.length === 1) {
             // Rocket chart animation — starts after a short delay so result is laid out
             setTimeout(() => drawRocketChart(), 400);
 
+            // === Elon Score: update session data with this test's wpm & accuracy ===
+            try {
+                var _elonUid = (window._currentUser && window._currentUser.uid) ? window._currentUser.uid : 'guest';
+                if (typeof updateElonScoreAfterTest === 'function' && wpm > 0) {
+                    // Read the CURRENT total Musk seconds AFTER the Musk update above
+                    var _elonMuskKey  = 'rt_musk_' + _elonUid;
+                    var _elonMuskSecs = parseFloat(localStorage.getItem(_elonMuskKey) || '0');
+                    updateElonScoreAfterTest(_elonUid, wpm, accuracy, _elonMuskSecs);
+                    if (typeof updateKmScoreBadges === 'function') updateKmScoreBadges();
+                }
+            } catch(_elonErr) {}
+
             // Save score to leaderboard (only registered users, time mode)
             const registeredName = window._currentUser?.name;
             window._lastConsistency = consistency; // store for profile stats
@@ -4111,6 +4317,11 @@ if (!testActive && !testEnded && e.key.length === 1) {
             // declarations and therefore inaccessible from the browser console.
             if (config.mode === 'time') {
                 saveScore(registeredName || 'guest', config.time);
+            }
+
+            // Save words-mode scores to word leaderboard (only for 10/25/50/100 word counts)
+            if (config.mode === 'words' && [10, 25, 50, 100].includes(config.words)) {
+                saveWordScore(registeredName || 'guest', config.words);
             }
 
             // ── Save words / quotes results to localStorage for logged-in users ──
@@ -4145,6 +4356,13 @@ if (!testActive && !testEnded && e.key.length === 1) {
                         localStorage.setItem(AGG_KEY2, JSON.stringify(agg2));
 
                         // Append entry to recent list (capped at 200)
+                        // Gate: words mode requires wordCount >= 10; quotes requires wordCount >= 10
+                        const _recentQualifies = config.mode === 'words'
+                            ? _wordsCount2 >= 10
+                            : config.mode === 'quotes'
+                                ? _wordsCount2 >= 10
+                                : true; // future modes: save by default
+                        if (_recentQualifies) {
                         let scores2 = [];
                         try { scores2 = JSON.parse(localStorage.getItem(LS_KEY2) || '[]'); } catch(_e) { scores2 = []; }
                         const _lsEntry = {
@@ -4160,6 +4378,7 @@ if (!testActive && !testEnded && e.key.length === 1) {
                         scores2.push(_lsEntry);
                         if (scores2.length > 200) scores2 = scores2.slice(-200);
                         localStorage.setItem(LS_KEY2, JSON.stringify(scores2));
+                        } // end _recentQualifies
                     }
                 } catch(_lsErr) { console.warn('localStorage words/quotes save failed:', _lsErr); }
             }
@@ -4924,6 +5143,259 @@ function sanitizeStr(s) {
             }
 
             // ← REMOVED the old updateLeaderboardPrompt() from here (now at top)
+        }
+
+        // ── Words-mode leaderboard ───────────────────────────────────────
+        let currentWordLeaderboardCount = 10;
+        async function loadWordLeaderboard(wordCount = currentWordLeaderboardCount) {
+            updateLeaderboardPrompt();
+            currentWordLeaderboardCount = wordCount;
+
+            const body = document.getElementById("leaderboard-body");
+            const skeleton = document.getElementById("lb-skeleton");
+
+            // 30-second cache keyed by "w"+wordCount
+            if (!window._lbCache) window._lbCache = {};
+            const cacheKey = 'w' + wordCount;
+            const cached = window._lbCache[cacheKey];
+            if (cached && (Date.now() - cached.ts) < 30000) {
+                skeleton.innerHTML = '';
+                body.style.display = 'block';
+                _renderLeaderboardRows(body, cached.entries);
+                return;
+            }
+
+            skeleton.innerHTML = Array(10).fill(`<div class="skeleton-row"></div>`).join('');
+            body.style.display = "none";
+
+            // Use only where() with no orderBy to avoid needing a composite index.
+            // We sort and slice client-side — the collection is small so this is fast.
+            const q = query(
+                collection(db, "typing_word_scores"),
+                where("wordCount", "==", wordCount)
+            );
+
+            let snapshot;
+            try {
+                snapshot = await getDocs(q);
+            } catch(qErr) {
+                console.warn("Word leaderboard query failed:", qErr);
+                skeleton.innerHTML = '';
+                body.innerHTML = '<div style="text-align:center;color:#aaa;padding:20px">Could not load scores. Try again later.</div>';
+                body.style.display = 'block';
+                return;
+            }
+
+            const allEntries = [];
+            snapshot.forEach(docSnap => allEntries.push(docSnap.data()));
+            // Sort by wpm desc, take top 10
+            allEntries.sort((a, b) => (b.wpm || 0) - (a.wpm || 0));
+            const entries = allEntries.slice(0, 10);
+
+            const namesToLookup = [];
+            const registeredName = localStorage.getItem('rt_registered_name');
+
+            entries.forEach(data => {
+                if (!data.country) namesToLookup.push(data.name);
+            });
+
+            const countryMap = {};
+            if (namesToLookup.length > 0) {
+                const lookups = namesToLookup.map(n =>
+                    getDocs(query(collection(db, 'users'), where('name', '==', n), limit(1)))
+                );
+                const results = await Promise.all(lookups);
+                results.forEach(snap => {
+                    snap.forEach(udoc => {
+                        const ud = udoc.data();
+                        if (ud.name && ud.country) countryMap[ud.name] = ud.country;
+                    });
+                });
+            }
+
+            body.innerHTML = "";
+            let rank = 1;
+            entries.forEach(data => {
+                const isYou = window._currentUser && data.uid && data.uid === window._currentUser.uid;
+                const row = document.createElement('div');
+                row.className = `leaderboard-row ${rank === 1 ? 'top1' : rank === 2 ? 'top2' : rank === 3 ? 'top3' : ''} ${isYou ? 'you' : ''}`;
+                const _country = data.country || countryMap[data.name] || (isYou ? (window._currentUser?.country || '') : '');
+                const _flag = getFlag(_country);
+                const _date = fmtDate(data.time);
+                let rankDisplay = rank;
+                if (rank === 1) rankDisplay = "🥇";
+                else if (rank === 2) rankDisplay = "🥈";
+                else if (rank === 3) rankDisplay = "🥉";
+                row.innerHTML = `
+                    <span class="rank">${rankDisplay}</span>
+                    <span class="player"><span class="lb-player-name">${sanitizeStr(data.name)}</span></span>
+                    <span class="lb-flag-cell" title="${sanitizeStr(_country)}">${_flag}</span>
+                    <span style="font-weight:900;color:#ffd700">${sanitizeStr(data.wpm)}</span>
+                    <span>${sanitizeStr(data.accuracy)}%</span>
+                    <span class="lb-date-cell">${sanitizeStr(_date)}</span>
+                `;
+                body.appendChild(row);
+                rank++;
+            });
+
+            skeleton.innerHTML = '';
+            body.style.display = "block";
+            window._lbCache[cacheKey] = { ts: Date.now(), entries };
+
+            if (registeredName && [...body.children].some(r => r.classList.contains('you'))) {
+                confetti({ particleCount: 80, spread: 60, origin: { y: 0.6 } });
+            }
+        }
+
+        // ── Elon-mode leaderboard ─────────────────────────────────────────
+        async function loadElonLeaderboard() {
+            updateLeaderboardPrompt();
+
+            const body = document.getElementById("leaderboard-body");
+            const skeleton = document.getElementById("lb-skeleton");
+
+            // 30-second cache
+            if (!window._lbCache) window._lbCache = {};
+            const cacheKey = 'elon';
+            const cached = window._lbCache[cacheKey];
+            if (cached && (Date.now() - cached.ts) < 30000) {
+                skeleton.innerHTML = '';
+                body.style.display = 'block';
+                _renderElonLeaderboardRows(body, cached.entries);
+                return;
+            }
+
+            skeleton.innerHTML = Array(10).fill(`<div class="skeleton-row"></div>`).join('');
+            body.style.display = "none";
+
+            // Query top 10 by elonScore — single-field index, free tier friendly
+            const q = query(
+                collection(db, "elon_scores"),
+                orderBy("elonScore", "desc"),
+                limit(10)
+            );
+
+            let snapshot;
+            try {
+                snapshot = await getDocs(q);
+            } catch(qErr) {
+                console.warn("Elon leaderboard query failed:", qErr);
+                skeleton.innerHTML = '';
+                body.innerHTML = '<div style="text-align:center;color:#aaa;padding:20px">Could not load Elon scores. Try again later.</div>';
+                body.style.display = 'block';
+                return;
+            }
+
+            const entries = [];
+            snapshot.forEach(docSnap => entries.push(docSnap.data()));
+
+            // Secondary country lookup for entries missing country
+            const namesToLookup = entries.filter(d => !d.country).map(d => d.name);
+            const countryMap = {};
+            if (namesToLookup.length > 0) {
+                try {
+                    const lookups = namesToLookup.map(n =>
+                        getDocs(query(collection(db, 'users'), where('name', '==', n), limit(1)))
+                    );
+                    const results = await Promise.all(lookups);
+                    results.forEach(snap => {
+                        snap.forEach(udoc => {
+                            const ud = udoc.data();
+                            if (ud.name && ud.country) countryMap[ud.name] = ud.country;
+                        });
+                    });
+                } catch(_e) {}
+            }
+
+            // Attach resolved countries
+            entries.forEach(d => { if (!d.country && countryMap[d.name]) d.country = countryMap[d.name]; });
+
+            skeleton.innerHTML = '';
+            body.style.display = 'block';
+            _renderElonLeaderboardRows(body, entries);
+
+            window._lbCache[cacheKey] = { ts: Date.now(), entries };
+        }
+
+        function _renderElonLeaderboardRows(body, entries) {
+            body.innerHTML = '';
+            let rank = 1;
+            entries.forEach(data => {
+                const isYou = window._currentUser && data.uid && data.uid === window._currentUser.uid;
+                const row = document.createElement('div');
+                row.className = `leaderboard-row ${rank === 1 ? 'top1' : rank === 2 ? 'top2' : rank === 3 ? 'top3' : ''} ${isYou ? 'you' : ''}`;
+                const _country = data.country || (isYou ? (window._currentUser?.country || '') : '');
+                const _flag = getFlag(_country);
+                const _date = fmtDate(data.updatedAt || data.time);
+                let rankDisplay = rank;
+                if (rank === 1) rankDisplay = "🥇";
+                else if (rank === 2) rankDisplay = "🥈";
+                else if (rank === 3) rankDisplay = "🥉";
+                const _score = parseFloat(data.elonScore || 0).toFixed(2);
+                row.innerHTML = `
+                    <span class="rank">${rankDisplay}</span>
+                    <span class="player"><span class="lb-player-name">${sanitizeStr(data.name)}</span></span>
+                    <span class="lb-flag-cell" title="${sanitizeStr(_country)}">${_flag}</span>
+                    <span style="font-weight:900;color:#00e6cc">${_score}</span>
+                    <span style="color:#aaa;font-size:11px">⚡score</span>
+                    <span class="lb-date-cell">${_date}</span>
+                `;
+                body.appendChild(row);
+                rank++;
+            });
+        }
+
+        // Save word-mode score to Firestore (typing_word_scores collection)
+        async function saveWordScore(name, wordCount) {
+            const authUser = auth.currentUser;
+            if (!authUser) return;
+            if (![10, 25, 50, 100].includes(wordCount)) return;
+
+            const _now        = Date.now();
+            const _elapsedMs  = startTime ? (_now - startTime) : 0;
+            const _elapsedMin = _elapsedMs / 60000 || 0.001;
+            const _wpm        = Math.max(0, Math.round(correctKeystrokes / 5 / _elapsedMin));
+            const _typedErrors= Math.max(0, totalKeystrokes - correctKeystrokes);
+            const _totalErrors= _typedErrors + (missedChars || 0);
+            const _accuracy   = (correctKeystrokes + _totalErrors > 0)
+                ? Math.round((correctKeystrokes / (correctKeystrokes + _totalErrors)) * 100) : 100;
+            const _ck  = correctKeystrokes;
+            const _ksc = totalKeystrokes;
+
+            if (_wpm <= 0 || _wpm >= 220 || _accuracy < 50 || _elapsedMs < 2000) return;
+
+            try {
+                let verifiedName    = name;
+                let verifiedCountry = window._currentUser?.country || '';
+                try {
+                    const userSnap = await getDoc(doc(db, 'users', authUser.uid));
+                    if (userSnap.exists()) {
+                        verifiedName    = userSnap.data().name    || name;
+                        verifiedCountry = userSnap.data().country || '';
+                    }
+                } catch(_e) {}
+
+                const docId  = `${authUser.uid}_${wordCount}`;
+                const ref    = doc(db, "typing_word_scores", docId);
+                const existing = await getDoc(ref);
+
+                if (!existing.exists() || _wpm > (existing.data()?.wpm || 0)) {
+                    await setDoc(ref, {
+                        name:              verifiedName,
+                        wpm:               _wpm,
+                        accuracy:          _accuracy,
+                        wordCount:         wordCount,
+                        country:           verifiedCountry,
+                        uid:               authUser.uid,
+                        time:              _now,
+                        correctKeystrokes: _ck,
+                        keystrokeCount:    _ksc,
+                        elapsedMs:         _elapsedMs
+                    });
+                }
+            } catch(e) {
+                console.warn("Word leaderboard save failed:", e);
+            }
         }
 
         // PERF: Helper to render cached leaderboard entries without re-querying Firestore
@@ -5693,11 +6165,11 @@ window.openProfileModal = async function() {
                     // time mode
                     return r.testDuration >= 10;
                 } else if (r.mode === 'words') {
-                    return (r.wordCount || 0) >= 10 && (r.elapsedSecs || 0) >= 10;
+                    return (r.wordCount || 0) >= 10; // no time gate for words
                 } else if (r.mode === 'quotes') {
-                    return (r.elapsedSecs || 0) >= 10 && (r.wordCount == null || r.wordCount >= 10);
+                    return (r.wordCount == null || r.wordCount >= 10); // no time gate for quotes
                 }
-                return (r.elapsedSecs || 0) >= 10;
+                return true;
             });
             if (qualifiedList.length > 0) {
                 agg.count     = qualifiedList.length;
@@ -5745,7 +6217,13 @@ window.openProfileModal = async function() {
         const rank = _getRankBadge(bestWpm);
 
         // Recent scores sorted by date — show up to 200 (from recent list)
+        // Filter: words/quotes mode requires wordCount >= 10 only (no time gate)
         const recentScores = recentList
+            .filter(r => {
+                if (r.mode === 'words')  return (r.wordCount || 0) >= 10;
+                if (r.mode === 'quotes') return (r.wordCount == null || r.wordCount >= 10);
+                return true; // time mode: show all
+            })
             .slice()
             .sort((a,b) => (b.time||0) - (a.time||0));
 
@@ -5812,12 +6290,10 @@ window.openProfileModal = async function() {
                     // time mode: skip tests shorter than 10 seconds
                     if (s.testDuration < 10) return;
                 } else if (s.mode === 'words') {
-                    // words mode: skip tests with fewer than 10 words OR under 10 seconds
+                    // words mode: only gate is wordCount >= 10 (no time minimum)
                     if ((s.wordCount || 0) < 10) return;
-                    if ((s.elapsedSecs || 0) < 10) return;
                 } else if (s.mode === 'quotes') {
-                    // quotes mode: skip tests under 10 seconds OR fewer than 10 words
-                    if ((s.elapsedSecs || 0) < 10) return;
+                    // quotes mode: only gate is wordCount >= 10 (no time minimum)
                     if (s.wordCount != null && s.wordCount < 10) return;
                 }
 
@@ -5945,6 +6421,151 @@ function _animateMuskGain(prevScore, delta, newScore) {
     }, 350);
 }
 
+/* ══════════════════════════════════════════════
+   ELON SCORE v4 — Musk-based session formula
+   ──────────────────────────────────────────────
+   Session boundary = every 60 Musk (3600 seconds of typing time).
+   Musk is stored in localStorage as total seconds typed (rt_musk_<uid>).
+
+   Elon Score is ONLY recalculated when the user's total Musk crosses
+   a new multiple of 3600s (i.e. Musk = 60, 120, 180, …).
+   It stays frozen between those boundaries.
+
+   Formula (per completed 60-Musk session):
+     Current Session Score = (avgWPM + avgAcc) / 100
+     Previous Session Score = (prevSession avgWPM + prevSession avgAcc) / 100
+     Improvement           = max(0, CurrentSessionScore − PreviousSessionScore)
+     Final Elon Score      = PreviousElonScore + CurrentSessionScore + Improvement
+
+   NOTE: Improvement compares the two session scores, NOT the session score
+   vs the cumulative Elon Score.
+
+   State stored per user in localStorage (rt_elon_<uid>):
+     {
+       elonScore       : number,  // locked Elon Score after last completed session
+       prevSessScore   : number,  // (avgWPM + avgAcc)/100 of the PREVIOUS session
+       session : {
+         muskAtStart : number,    // total Musk seconds when this session began
+         wpmSum      : number,
+         accSum      : number,
+         count       : number
+       }
+     }
+══════════════════════════════════════════════ */
+var ELON_SESSION_SECS = 3600; // 60 Musk = 3600 seconds of typing time
+
+function _getElonState(uid) {
+    try { return JSON.parse(localStorage.getItem('rt_elon_' + uid) || '{}'); }
+    catch(e) { return {}; }
+}
+
+function _saveElonState(uid, state) {
+    try { localStorage.setItem('rt_elon_' + uid, JSON.stringify(state)); } catch(e) {}
+    // Persist to Firestore elon_scores for leaderboard (only when score increased)
+    var newScore = state.elonScore || 0;
+    if (newScore > 0 && window.db && window.doc && window.setDoc) {
+        try {
+            var _uname   = (window._currentUser && window._currentUser.displayName) || localStorage.getItem('rt_registered_name') || '';
+            var _country = (window._currentUser && window._currentUser.country) || localStorage.getItem('rt_user_country') || '';
+            window.setDoc(
+                window.doc(window.db, 'elon_scores', uid),
+                {
+                    uid:        uid,
+                    name:       _uname,
+                    country:    _country,
+                    elonScore:  parseFloat(newScore.toFixed(4)),
+                    updatedAt:  Date.now()
+                },
+                { merge: true }
+            ).catch(function(_fe) { console.warn('Elon leaderboard save failed:', _fe); });
+        } catch(_se) {}
+    }
+}
+
+/**
+ * Returns the current locked Elon Score.
+ * Score is frozen mid-session; only updates at 60-Musk boundaries.
+ */
+function _computeElonScore(state) {
+    return state.elonScore || 0;
+}
+
+/**
+ * Called after every completed typing test.
+ *
+ * totalMuskSecs — the user's CURRENT total Musk seconds (from rt_musk_<uid>)
+ *                 AFTER the just-completed test has already been added.
+ *
+ * Session boundary logic:
+ *   - Each session spans exactly 3600 Musk-seconds.
+ *   - session.muskAtStart marks where the current session began.
+ *   - If (totalMuskSecs - muskAtStart) >= 3600, the session is complete:
+ *       1. Finalise Elon Score using this session's data.
+ *       2. Save prevSessScore for the next session's improvement calc.
+ *       3. Open a new session starting at the exact 3600-second boundary.
+ *          Any seconds beyond the boundary belong to the NEW session.
+ *   - Otherwise just accumulate WPM/accuracy; score stays frozen.
+ *
+ * Returns the current locked Elon Score.
+ */
+function updateElonScoreAfterTest(uid, wpm, accuracy, totalMuskSecs) {
+    var state   = _getElonState(uid);
+    var session = state.session;
+
+    // Initialise session on very first call
+    if (!session) {
+        state.session = {
+            muskAtStart : 0,
+            wpmSum      : wpm,
+            accSum      : accuracy,
+            count       : 1
+        };
+        _saveElonState(uid, state);
+        return state.elonScore || 0;
+    }
+
+    var elapsed = totalMuskSecs - session.muskAtStart;
+
+    if (elapsed >= ELON_SESSION_SECS) {
+        // ── Session complete: finalise Elon Score ──────────────────────
+
+        // Include this test's data in the completing session
+        session.wpmSum += wpm;
+        session.accSum += accuracy;
+        session.count  += 1;
+
+        var avgWpm             = session.wpmSum / session.count;
+        var avgAcc             = session.accSum / session.count;
+        var currentSessScore   = (avgWpm + avgAcc) / 100;
+        var prevSessScore      = state.prevSessScore || 0;        // previous session's score
+        var improvement        = Math.max(0, currentSessScore - prevSessScore);
+        var prevElonScore      = state.elonScore || 0;
+
+        state.elonScore      = prevElonScore + currentSessScore + improvement;
+        state.prevSessScore  = currentSessScore;  // becomes "previous" for next session
+
+        // New session starts at the exact boundary, not at the current moment.
+        // Seconds beyond the boundary carry over into the new session.
+        var newSessionStart   = session.muskAtStart + ELON_SESSION_SECS;
+        state.session = {
+            muskAtStart : newSessionStart,
+            wpmSum      : 0,
+            accSum      : 0,
+            count       : 0
+        };
+
+    } else {
+        // ── Mid-session: accumulate only, score stays frozen ──────────
+        session.wpmSum += wpm;
+        session.accSum += accuracy;
+        session.count  += 1;
+        state.session   = session;
+    }
+
+    _saveElonState(uid, state);
+    return state.elonScore || 0;
+}
+
 /* Render Musk Score card inside profile modal */
 function _renderMuskScore(uid) {
     const card = document.getElementById('pm-musk-card');
@@ -5991,12 +6612,23 @@ function _renderMuskScore(uid) {
         `;
     }
 
-    // ── Elon Score card ──────────────────────────────────────────
+    // ── Elon Score card (v4 — Musk-based session formula) ────────
     const elonCard = document.getElementById('pm-elon-card');
     if (elonCard) {
-        const elonScore    = Math.floor(muskScore / 100);
-        const elonRem      = muskScore % 100;
-        const elonPct      = Math.round((elonRem / 100) * 100);
+        const elonState    = _getElonState(uid);
+        const elonScore    = elonState.elonScore || 0;   // locked, frozen mid-session
+        const prevSessScoreStored = elonState.prevSessScore || 0;
+        const session      = elonState.session;
+        const sessCount    = session ? session.count : 0;
+        const sessAvgWpm   = sessCount > 0 ? session.wpmSum / sessCount : 0;
+        const sessAvgAcc   = sessCount > 0 ? session.accSum / sessCount : 0;
+
+        // Progress within the current session, measured in Musk-seconds
+        const muskAtStart  = session ? (session.muskAtStart || 0) : 0;
+        const sessElapsed  = Math.max(0, totalSecs - muskAtStart);  // seconds into this session
+        const sessSecsLeft = Math.max(0, ELON_SESSION_SECS - sessElapsed);
+        const minsLeft     = Math.ceil(sessSecsLeft / 60);
+        const sessionPct   = Math.min(100, Math.round((sessElapsed / ELON_SESSION_SECS) * 100));
 
         elonCard.style.display = 'block';
 
@@ -6007,27 +6639,41 @@ function _renderMuskScore(uid) {
         const elonRightEl = document.getElementById('pm-elon-prog-right');
 
         if (elonNumEl) {
-            elonNumEl.textContent = elonScore;
+            elonNumEl.textContent = elonScore.toFixed(2);
             setTimeout(function() { elonNumEl.classList.add('pop'); }, 200);
             setTimeout(function() { elonNumEl.classList.remove('pop'); }, 800);
         }
-        if (elonSubEl)   elonSubEl.textContent   = elonRem + ' / 100 Musk points';
-        if (elonLeftEl)  elonLeftEl.textContent  = elonRem + ' Musk pts';
-        if (elonRightEl) elonRightEl.textContent = 'next at ' + (100 - elonRem) + ' pts';
+        if (elonSubEl) {
+            elonSubEl.textContent = sessCount > 0
+                ? 'session avg: ' + Math.round(sessAvgWpm) + ' WPM / ' + Math.round(sessAvgAcc) + '% acc'
+                : 'no tests in current session yet';
+        }
+        if (elonLeftEl)  elonLeftEl.textContent  = sessCount + ' test' + (sessCount !== 1 ? 's' : '') + ' this session';
+        if (elonRightEl) elonRightEl.textContent = 'score updates in ~' + minsLeft + ' Musk min';
         if (elonBarEl) {
             setTimeout(function() {
-                elonBarEl.style.width = Math.max(2, Math.min(100, elonPct)) + '%';
+                elonBarEl.style.width = Math.max(2, Math.min(100, sessionPct)) + '%';
             }, 300);
         }
 
         const elonTT = document.getElementById('pm-elon-tooltip');
         if (elonTT) {
+            // Preview: what the score WILL be if the session ended right now (tooltip only)
+            const previewSessScore = sessCount > 0 ? (sessAvgWpm + sessAvgAcc) / 100 : 0;
+            const previewImprov    = sessCount > 0 ? Math.max(0, previewSessScore - prevSessScoreStored) : 0;
+            const previewFinal     = sessCount > 0 ? elonScore + previewSessScore + previewImprov : elonScore;
             elonTT.innerHTML = `
                 <strong>⚡ How Elon Score works</strong><br>
-                Every 100 Musk Score points = 1 Elon Score.<br>
-                <strong>Your Musk Score: ${muskScore}</strong><br><br>
-                <span class="tt-ex">${elonScore} Elon × 100 = ${elonScore * 100} Musk<br>
-                ${elonRem} more Musk pts for next Elon</span>
+                Updates once per 60 Musk (60 min of typing time).<br>
+                <strong>Score = Prev + (avg WPM + avg Acc) ÷ 100 + Improvement</strong><br>
+                Improvement = max(0, This session score − Last session score)<br><br>
+                <span class="tt-ex">
+                  Locked score: <strong>${elonScore.toFixed(2)}</strong><br>
+                  Session tests: ${sessCount} | avg ${Math.round(sessAvgWpm)} WPM / ${Math.round(sessAvgAcc)}% acc<br>
+                  Last session score: ${prevSessScoreStored.toFixed(2)}<br>
+                  Preview (if session ended now): ${previewFinal.toFixed(2)}<br>
+                  Musk into session: ${Math.round(sessElapsed / 60)} / 60 min
+                </span>
             `;
         }
     }
@@ -6041,7 +6687,10 @@ function updateKmScoreBadges() {
     var MUSK_KEY = 'rt_musk_' + uid;
     var totalSecs = parseFloat(localStorage.getItem(MUSK_KEY) || '0');
     var muskScore = Math.floor(totalSecs / 60);
-    var elonScore = Math.floor(muskScore / 100);
+
+    // Elon Score v3: locked score — only updates at 60-min session boundary
+    var elonRaw   = _computeElonScore(_getElonState(uid)); // returns locked decimal score
+    var elonScore = parseFloat(elonRaw.toFixed(2));
 
     var muskEl = document.getElementById('km-musk-num');
     var elonEl = document.getElementById('km-elon-num');
@@ -6094,14 +6743,42 @@ function updateLeaderboardPrompt() {
 }
 // Update leaderboard register button to open auth modal
 function openRegisterModal() { openAuthModal('signup'); }
-        // Leaderboard time tabs handler
+        // Leaderboard mode toggle (TIME / WORDS / ELON)
+        let currentLbMode = 'time';
+        document.querySelectorAll('.lb-mode-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.lb-mode-tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                currentLbMode = tab.dataset.lbmode;
+
+                // Show/hide duration buttons (hidden for elon mode)
+                document.querySelectorAll('.time-tab[data-lbfor="time"]').forEach(t => t.style.display = currentLbMode === 'time' ? '' : 'none');
+                document.querySelectorAll('.time-tab[data-lbfor="words"]').forEach(t => t.style.display = currentLbMode === 'words' ? '' : 'none');
+
+                if (currentLbMode === 'elon') {
+                    loadElonLeaderboard();
+                    return;
+                }
+
+                // Activate first tab of new mode and load
+                const firstTab = document.querySelector(`.time-tab[data-lbfor="${currentLbMode}"]`);
+                document.querySelectorAll('.time-tab').forEach(t => t.classList.remove('active'));
+                if (firstTab) {
+                    firstTab.classList.add('active');
+                    if (currentLbMode === 'time') loadLeaderboard(parseInt(firstTab.dataset.duration));
+                    else loadWordLeaderboard(parseInt(firstTab.dataset.duration));
+                }
+            });
+        });
+
+        // Leaderboard duration tabs handler
         document.querySelectorAll('.time-tab').forEach(tab => {
             tab.addEventListener('click', () => {
                 document.querySelectorAll('.time-tab').forEach(t => t.classList.remove('active'));
                 tab.classList.add('active');
-
                 const dur = parseInt(tab.dataset.duration);
-                loadLeaderboard(dur);
+                if (currentLbMode === 'time') loadLeaderboard(dur);
+                else loadWordLeaderboard(dur);
             });
         });
         function shareScore() {
