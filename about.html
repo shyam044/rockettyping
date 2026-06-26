@@ -222,7 +222,6 @@
             display: flex; align-items: center; justify-content: center;
             font-size: 14px; flex-shrink: 0;
         }
-        .rs-body {}
         .rs-title { font-size: 13px; font-weight: 700; color: var(--gold); margin-bottom: 4px; }
         .rs-desc { font-size: 13px; color: #aaa; line-height: 1.6; }
         /* Back link */
@@ -284,16 +283,17 @@
         <ol>
             <li><a href="#what-is">What Is Rocket Typing?</a></li>
             <li><a href="#features">Platform Features</a></li>
-            <li><a href="#touch-typing">What Is Touch Typing — and Why It Changes Everything</a></li>
-            <li><a href="#finger-placement">Correct Finger Placement: The Foundation</a></li>
-            <li><a href="#keyboard-layouts">Keyboard Layouts Explained: QWERTY vs Dvorak vs Colemak</a></li>
-            <li><a href="#benchmarks">Typing Speed Benchmarks by Skill Level</a></li>
-            <li><a href="#how-to-improve">How to Improve Your WPM: A Step-by-Step Roadmap</a></li>
-            <li><a href="#common-mistakes">7 Common Typing Mistakes (and How to Fix Them)</a></li>
-            <li><a href="#ergonomics">Typing Ergonomics: Preventing Pain and Strain</a></li>
-            <li><a href="#keyboard-guide">Choosing the Right Keyboard</a></li>
-            <li><a href="#science">The Science Behind Muscle Memory in Typing</a></li>
-            <li><a href="#faq">Frequently Asked Questions</a></li>
+            <li><a href="#scores">Musk Score &amp; Elon Score — Your Dedication Metrics</a></li>
+            <li><a href="#touch-typing">4. What Is Touch Typing — and Why It Changes Everything</a></li>
+            <li><a href="#finger-placement">5. Correct Finger Placement: The Foundation</a></li>
+            <li><a href="#keyboard-layouts">6. Keyboard Layouts Explained: QWERTY vs Dvorak vs Colemak</a></li>
+            <li><a href="#benchmarks">7. Typing Speed Benchmarks by Skill Level</a></li>
+            <li><a href="#how-to-improve">8. How to Improve Your WPM: A Step-by-Step Roadmap</a></li>
+            <li><a href="#common-mistakes">9. 7 Common Typing Mistakes (and How to Fix Them)</a></li>
+            <li><a href="#ergonomics">10. Typing Ergonomics: Preventing Pain and Strain</a></li>
+            <li><a href="#keyboard-guide">11. Choosing the Right Keyboard</a></li>
+            <li><a href="#science">12. The Science Behind Muscle Memory in Typing</a></li>
+            <li><a href="#faq">13. Frequently Asked Questions</a></li>
         </ol>
     </div>
 
@@ -304,8 +304,8 @@
     <p>Whether you're a student trying to keep up with lecture notes, a developer typing code all day, a data entry professional, or simply someone who wants to be more productive at a keyboard — this platform is built for you.</p>
 
     <div class="stat-row">
-        <div class="stat-card"><div class="num">3</div><div class="lbl">DIFFICULTY MODES</div></div>
-        <div class="stat-card"><div class="num">15</div><div class="lbl">GUIDED LESSONS</div></div>
+        <div class="stat-card"><div class="num">3</div><div class="lbl">TEST MODES</div></div>
+        <div class="stat-card"><div class="num">3</div><div class="lbl">DIFFICULTY LEVELS</div></div>
         <div class="stat-card"><div class="num">🌍</div><div class="lbl">GLOBAL LEADERBOARD</div></div>
     </div>
 
@@ -314,15 +314,19 @@
     <p>Here is everything Rocket Typing currently offers:</p>
     <div class="feature-grid">
         <div class="feature-item">⚡ <strong>Real-time WPM</strong> — live words-per-minute counter updates every keystroke</div>
-        <div class="feature-item">🎯 <strong>Accuracy & Consistency</strong> — two separate metrics beyond just WPM</div>
-        <div class="feature-item">🏆 <strong>Global Leaderboard</strong> — top 10 typists with country flags</div>
+        <div class="feature-item">🎯 <strong>Accuracy &amp; Consistency</strong> — two separate metrics beyond just WPM</div>
+        <div class="feature-item">🏆 <strong>Global Leaderboard</strong> — top scores for Time, Words, and Elon mode with country flags</div>
         <div class="feature-item">🚀 <strong>Rocket Race</strong> — head-to-head typing game against AI racers</div>
         <div class="feature-item">🥇 <strong>Sunday Championship</strong> — weekly competition with cash prizes</div>
-        <div class="feature-item">📚 <strong>Learn to Type</strong> — 15-lesson beginner course with keyboard visualization</div>
-        <div class="feature-item">📊 <strong>3 Difficulty Modes</strong> — Easy, Medium, Hard word sets</div>
-        <div class="feature-item">⏱️ <strong>4 Test Durations</strong> — 15, 30, 60, and 120 seconds</div>
+        <div class="feature-item">📚 <strong>Learn to Type</strong> — beginner course with interactive keyboard visualization</div>
+        <div class="feature-item">🕐 <strong>3 Test Modes</strong> — Time (10s/15s/30s/60s), Words (10/25/50/100), and Quotes</div>
+        <div class="feature-item">☄️ <strong>3 Difficulty Levels</strong> — Easy, Medium, Hard word sets</div>
+        <div class="feature-item">🚀 <strong>Musk Score</strong> — cumulative dedication score: 60 seconds of typing = 1 point</div>
+        <div class="feature-item">⚡ <strong>Elon Score</strong> — skill-based composite score updated every 60-minute session</div>
+        <div class="feature-item">⌨️ <strong>Live Keymap</strong> — on-screen keyboard highlights keys and shows Musk &amp; Elon badges</div>
         <div class="feature-item">📱 <strong>Mobile-Friendly</strong> — works on tablets and phones</div>
         <div class="feature-item">🔒 <strong>No Forced Registration</strong> — practice instantly, sign up only to save scores</div>
+        <div class="feature-item">💬 <strong>Quotes Mode</strong> — type real quotes with author attribution</div>
     </div>
 
     <!-- Ad slot mid-page -->
@@ -336,8 +340,36 @@
         <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
     </div>
 
-    <!-- ─── 3. Touch Typing ─── -->
-    <h2 id="touch-typing">3. What Is Touch Typing — and Why It Changes Everything</h2>
+    <!-- ─── 3. Musk Score & Elon Score ─── -->
+    <h2 id="scores">3. Musk Score &amp; Elon Score — Your Dedication Metrics</h2>
+    <p>Rocket Typing tracks two unique personal scores that go beyond a single WPM number. These scores are visible in your profile and on the interactive keymap badges — and your Elon Score even has its own leaderboard tab.</p>
+
+    <h3>🚀 Musk Score — Pure Dedication</h3>
+    <p>Musk Score is the simplest of the two: it measures how much time you have spent actively typing across all your sessions, ever. Every 60 seconds of typing time earns you exactly 1 Musk Score point.</p>
+    <div class="info-box">
+        <strong>Formula:</strong> Total seconds typed ÷ 60 = Musk Score (whole points, no decimals).<br>
+        Example: 10s + 30s + 20s = 60s → Musk Score +1. Another 120s → +2 more. The counter never resets.
+    </div>
+    <p>There is no WPM gate — even a beginner earns Musk Score just by practicing. It is a pure measure of persistence and time invested. A progress bar in your profile shows how many seconds remain until your next point. You also see a floating chip animation on the keymap whenever you earn a new point mid-session.</p>
+
+    <h3>⚡ Elon Score — Skill Over Time</h3>
+    <p>Elon Score is more sophisticated. It rewards both your typing quality and your improvement over time. Unlike Musk Score, it does not update after every test — instead it recalculates once per completed 60-minute session of typing.</p>
+    <div class="info-box">
+        <strong>Formula:</strong> New Score = Previous Score + (Session Avg WPM + Session Avg Accuracy) ÷ 100 + Improvement Bonus.<br>
+        Improvement Bonus = max(0, SessionScore − PreviousScore) — you only gain bonus points when you actually improve.<br>
+        <strong>During a session the score is frozen</strong> — it updates only when the full 60 minutes of typing time is complete.
+    </div>
+    <p>The Elon Score rewards consistent high-quality typing over many sessions. A typist averaging 80 WPM at 97% accuracy will accumulate Elon Score faster than someone spiking 100 WPM with 85% accuracy in a single session. Your Elon Score is stored in the cloud (requires login) and appears on the dedicated <strong>⚡ ELON</strong> tab of the global leaderboard — top 10 players worldwide.</p>
+
+    <h3>Where to See Your Scores</h3>
+    <ul>
+        <li><strong>Profile modal</strong> — open your profile after logging in to see both Musk Score and Elon Score cards with progress bars.</li>
+        <li><strong>Keymap badges</strong> — the 🚀 and ⚡ badges beside the interactive keyboard update live as you type.</li>
+        <li><strong>Leaderboard → ⚡ ELON tab</strong> — see the top 10 Elon Scores globally.</li>
+    </ul>
+
+    <!-- ─── 4. Touch Typing ─── -->
+    <h2 id="touch-typing">4. What Is Touch Typing — and Why It Changes Everything</h2>
     <p>Touch typing is the technique of typing using all fingers without looking at the keyboard. The word "touch" refers to navigating by feel rather than by sight — your fingers learn the position of every key through muscle memory, so your eyes can stay on the screen.</p>
     <p>This sounds simple but it fundamentally transforms your typing. Here is why touch typing matters:</p>
     <ul>
@@ -352,7 +384,7 @@
     </div>
 
     <!-- ─── 4. Finger Placement ─── -->
-    <h2 id="finger-placement">4. Correct Finger Placement: The Foundation</h2>
+    <h2 id="finger-placement">5. Correct Finger Placement: The Foundation</h2>
     <p>The home row is the row of keys your fingers rest on when not actively typing. For a standard QWERTY keyboard, the home row is <strong>A S D F</strong> (left hand) and <strong>J K L ;</strong> (right hand). Your thumbs rest on the spacebar.</p>
     <p>The <strong>F and J keys</strong> have a small tactile bump on most keyboards — this lets you find the home position without looking.</p>
 
@@ -378,7 +410,7 @@
     <p>Our beginner course on the Learn page starts with only the 8 home row keys before introducing any other keys. This is deliberate. By drilling A S D F J K L ; until they become automatic, you build the spatial anchor for your entire keyboard map. Every other key's position is remembered relative to the home row keys.</p>
 
     <!-- ─── 5. Keyboard Layouts ─── -->
-    <h2 id="keyboard-layouts">5. Keyboard Layouts Explained: QWERTY vs Dvorak vs Colemak</h2>
+    <h2 id="keyboard-layouts">6. Keyboard Layouts Explained: QWERTY vs Dvorak vs Colemak</h2>
     <p>Most of the world uses QWERTY, but there are alternative keyboard layouts designed to reduce finger travel and improve typing efficiency. Here is an honest comparison:</p>
     <div class="layout-compare">
         <div class="layout-card">
@@ -405,7 +437,7 @@
     </div>
 
     <!-- ─── 6. Benchmarks ─── -->
-    <h2 id="benchmarks">6. Typing Speed Benchmarks by Skill Level</h2>
+    <h2 id="benchmarks">7. Typing Speed Benchmarks by Skill Level</h2>
     <p>Average office typing speed is around 40 WPM. Here is the full benchmark breakdown to help you set goals:</p>
     <table class="bench-table">
         <thead>
@@ -434,7 +466,7 @@
     </div>
 
     <!-- ─── 7. How to Improve ─── -->
-    <h2 id="how-to-improve">7. How to Improve Your WPM: A Step-by-Step Roadmap</h2>
+    <h2 id="how-to-improve">8. How to Improve Your WPM: A Step-by-Step Roadmap</h2>
     <p>Typing speed improvement follows a very predictable path. Here is the exact progression we recommend for every typist:</p>
     <div class="roadmap">
         <div class="roadmap-step">
@@ -482,7 +514,7 @@
     </div>
 
     <!-- ─── 8. Common Mistakes ─── -->
-    <h2 id="common-mistakes">8. Seven Common Typing Mistakes (and How to Fix Them)</h2>
+    <h2 id="common-mistakes">9. Seven Common Typing Mistakes (and How to Fix Them)</h2>
     <ol>
         <li><strong>Using only 2–4 fingers.</strong> This is the biggest limiter of all. If you've been typing for years with the wrong technique, you need to commit to a full reset and relearn with all 10 fingers. It will take 4–8 weeks to regain your previous speed, then you'll blow past it.</li>
         <li><strong>Ignoring accuracy in pursuit of speed.</strong> Backspacing constantly at high speed is actually slower than typing moderately fast with no errors. Train accuracy first — speed is a natural byproduct.</li>
@@ -494,7 +526,7 @@
     </ol>
 
     <!-- ─── 9. Ergonomics ─── -->
-    <h2 id="ergonomics">9. Typing Ergonomics: Preventing Pain and Strain</h2>
+    <h2 id="ergonomics">10. Typing Ergonomics: Preventing Pain and Strain</h2>
     <p>Repetitive strain injury (RSI), carpal tunnel syndrome, and tendinitis are real risks for heavy keyboard users. These are preventable with proper setup:</p>
     <h3>Desk and Chair Setup</h3>
     <ul>
@@ -515,7 +547,7 @@
     </div>
 
     <!-- ─── 10. Keyboard Guide ─── -->
-    <h2 id="keyboard-guide">10. Choosing the Right Keyboard</h2>
+    <h2 id="keyboard-guide">11. Choosing the Right Keyboard</h2>
     <p>You do not need an expensive keyboard to type fast. The world record holders have used a wide variety of hardware. That said, keyboard choice does affect comfort, accuracy, and how enjoyable typing practice feels.</p>
     <h3>Keyboard Types</h3>
     <ul>
@@ -529,7 +561,7 @@
     <p>Tenkeyless (TKL) keyboards — without the number pad — allow you to keep the mouse closer, reducing shoulder strain. Full-size keyboards are preferred for data entry work where the numpad is frequently used.</p>
 
     <!-- ─── 11. Science ─── -->
-    <h2 id="science">11. The Science Behind Muscle Memory in Typing</h2>
+    <h2 id="science">12. The Science Behind Muscle Memory in Typing</h2>
     <p>Typing is a motor skill, and motor skills are stored and retrieved differently from declarative knowledge (like facts you memorize). When you learn to type, your brain builds connections in the <em>basal ganglia</em> and <em>cerebellum</em> — the same structures involved in walking, playing piano, or driving. This is why, after enough practice, you can type the word "the" without consciously thinking about the letters T, H, E.</p>
     <p>This kind of procedural memory is extremely durable — it doesn't fade with time the way studying for an exam does. But it forms slowly and requires consistent, correct repetition. This is the scientific basis for the advice you'll see repeated throughout this guide: practice accuracy first, practice daily, and don't reinforce bad habits by drilling incorrect technique at high speed.</p>
     <h3>The Role of Feedback Loops</h3>
@@ -549,7 +581,7 @@
     </div>
 
     <!-- ─── 12. FAQ ─── -->
-    <h2 id="faq">12. Frequently Asked Questions</h2>
+    <h2 id="faq">13. Frequently Asked Questions</h2>
 
     <div class="faq-item">
         <div class="faq-q">Q: How is WPM calculated on Rocket Typing?</div>
@@ -582,6 +614,23 @@
     <div class="faq-item">
         <div class="faq-q">Q: My WPM is inconsistent — sometimes 70, sometimes 50. Why?</div>
         <div class="faq-a">This is extremely common and reflects your consistency score. WPM varies based on which words appear in the test (hard words slow you down), your focus level, fatigue, and ambient stress. The "consistency" metric on Rocket Typing measures the evenness of your pace — high consistency means you type at a steady rhythm rather than bursting and stalling. Improving consistency is often more valuable than chasing a peak WPM.</div>
+    </div>
+
+    <div class="faq-item">
+        <div class="faq-q">Q: What are the test modes on Rocket Typing?</div>
+        <div class="faq-a">There are three modes. <strong>Time mode</strong> gives you a countdown (10s, 15s, 30s, or 60s) and you type as many words as possible before it hits zero. <strong>Words mode</strong> gives you a fixed word count (10, 25, 50, or 100 words) and measures how fast you complete them. <strong>Quotes mode</strong> presents a real quote — with author attribution displayed — and ends when you finish it. You can also click the timer/counter display to type in any custom duration.</div>
+    </div>
+    <div class="faq-item">
+        <div class="faq-q">Q: What is Musk Score?</div>
+        <div class="faq-a">Musk Score is a cumulative dedication counter. Every 60 seconds you spend actively typing on Rocket Typing earns you exactly 1 Musk Score point. It never resets and requires no account — it is stored on your device (and synced to the cloud if you are logged in). A progress bar in your profile shows how close you are to the next point. It is purely a measure of time invested, not skill.</div>
+    </div>
+    <div class="faq-item">
+        <div class="faq-q">Q: What is Elon Score and how is it different from Musk Score?</div>
+        <div class="faq-a">Elon Score measures your skill over time, not just time spent. It is calculated once at the end of every completed 60-minute typing session using your session average WPM and accuracy, plus an improvement bonus if you beat your previous score. The score is frozen during a session and only updates when the full session completes. Top 10 Elon Scores worldwide are visible on the <strong>⚡ ELON</strong> tab of the leaderboard (requires login to save). Musk Score rewards persistence; Elon Score rewards quality.</div>
+    </div>
+    <div class="faq-item">
+        <div class="faq-q">Q: What leaderboard tabs are available?</div>
+        <div class="faq-a">The leaderboard has three tabs: <strong>TIME</strong> (top scores for 10s, 15s, 30s, and 60s timed tests), <strong>WORDS</strong> (top scores for 10, 25, 50, and 100 word tests), and <strong>⚡ ELON</strong> (top 10 Elon Scores globally). Each tab ranks players by their best score with country flag and date.</div>
     </div>
 
     <a href="/" class="back-link">← Back to Typing Test</a>
