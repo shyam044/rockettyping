@@ -6538,7 +6538,7 @@ function updateElonScoreAfterTest(uid, wpm, accuracy, totalMuskSecs) {
         var avgAcc             = session.accSum / session.count;
         var currentSessScore   = (avgWpm + avgAcc) / 100;
         var prevSessScore      = state.prevSessScore || 0;        // previous session's score
-        var improvement        = Math.max(0, currentSessScore - prevSessScore);
+        var improvement        = (prevSessScore === 0) ? 0 : Math.max(0, currentSessScore - prevSessScore);
         var prevElonScore      = state.elonScore || 0;
 
         state.elonScore      = prevElonScore + currentSessScore + improvement;
@@ -6660,7 +6660,7 @@ function _renderMuskScore(uid) {
         if (elonTT) {
             // Preview: what the score WILL be if the session ended right now (tooltip only)
             const previewSessScore = sessCount > 0 ? (sessAvgWpm + sessAvgAcc) / 100 : 0;
-            const previewImprov    = sessCount > 0 ? Math.max(0, previewSessScore - prevSessScoreStored) : 0;
+            const previewImprov    = (sessCount > 0 && prevSessScoreStored > 0) ? Math.max(0, previewSessScore - prevSessScoreStored) : 0;
             const previewFinal     = sessCount > 0 ? elonScore + previewSessScore + previewImprov : elonScore;
             elonTT.innerHTML = `
                 <strong>⚡ How Elon Score works</strong><br>
