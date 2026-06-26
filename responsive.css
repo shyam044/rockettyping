@@ -1,25 +1,21 @@
 /* ════════════════════════════════════════════════════════════════
-   ROCKET TYPING — RESPONSIVE LAYER
-   Mobile / tablet / laptop / desktop / large-desktop fixes.
-   This file overrides absolute-positioned desktop layout so the
-   page reflows naturally on smaller screens (incl. !important to
-   beat inline styles in index.html).
-   Breakpoints:
-     >1400px  : extra-large desktop  (handled mostly by defaults)
-     1025-1400: large / laptop
-     901-1024 : small laptop / large tablet
-     601-900  : tablet
-     481-600  : large phone
-     361-480  : phone
-     <=360    : extra-small phone
+   ROCKET TYPING — COMPREHENSIVE RESPONSIVE LAYER  (v2)
+   Covers every element across all viewport sizes.
+
+   Breakpoints (min-width anchors used for range queries):
+     >1400px   : extra-large desktop  (handled by defaults)
+     901-1400px: large desktop / laptop  ← NEW fixes
+     901-1024px: small laptop / large tablet
+     601-900px : tablet               ← NEW intermediate fixes
+     481-600px : large phone
+     361-480px : phone
+     ≤360px    : extra-small phone
    ════════════════════════════════════════════════════════════════ */
 
 /* ───────────────────────── Global base ───────────────────────── */
 html { -webkit-text-size-adjust: 100%; }
 
-body {
-    overflow-x: hidden;
-}
+body { overflow-x: hidden; }
 
 #app {
     width: 100%;
@@ -29,38 +25,52 @@ body {
 img { max-width: 100%; }
 
 /* ════════════════════════════════════════════════════════════════
-   LARGE DESKTOP / WIDE SCREENS  (>1400px)
-   Give the test area a touch more breathing room, cap line length
+   EXTRA-LARGE DESKTOP  (>1400px)
    ════════════════════════════════════════════════════════════════ */
 @media (min-width: 1401px) {
-    #app { max-width: 1500px; }
+    #app  { max-width: 1500px; }
     #words { font-size: 38px; }
 }
 
 /* ════════════════════════════════════════════════════════════════
-   LAPTOP / SMALL DESKTOP (≤1024px)
+   LARGE DESKTOP / LAPTOP (901px – 1400px)
+   BUG FIX: #play-game uses gap:910px in styles.css which only fits
+   at the 1400px max-width of #app. At any smaller viewport the
+   LEARN TO TYPE button overflows off-screen.  We scale the gap
+   using CSS clamp() so both buttons are always visible.
    ════════════════════════════════════════════════════════════════ */
-@media (max-width: 1024px) {
-    #app { max-width: 96%; padding: 16px; }
-    #words { font-size: 32px; }
-    #difficulty-container { right: 10px; }
-    .diff-btn { padding: 9px 16px; font-size: 12.5px; }
+@media (min-width: 901px) and (max-width: 1400px) {
+    #play-game {
+        /* clamp(min, preferred, max)
+           Preferred = viewport width minus the space taken by the logo
+           offset (130px), both button widths (~350px combined), and the
+           header-right-group (~230px). Anything left is the gap.        */
+        gap: clamp(12px, calc(100vw - 710px), 880px) !important;
+    }
 }
 
 /* ════════════════════════════════════════════════════════════════
-   TABLET (≤900px)
-   Stack the header, free up vertical space for #words
+   SMALL LAPTOP / LARGE TABLET  (≤1024px)
+   ════════════════════════════════════════════════════════════════ */
+@media (max-width: 1024px) {
+    #app               { max-width: 96%; padding: 16px; }
+    #words             { font-size: 32px; }
+    #difficulty-container { right: 10px; }
+    .diff-btn          { padding: 9px 16px; font-size: 12.5px; }
+}
+
+/* ════════════════════════════════════════════════════════════════
+   TABLET  (≤900px)
+   Stack the header; pull absolutely-positioned controls into flow.
    ════════════════════════════════════════════════════════════════ */
 @media (max-width: 900px) {
 
     #app { padding: 14px; border-radius: 14px; }
 
-    /* Header becomes a normal stacked flow block instead of absolute */
+    /* ── Header: normal stacked flow ── */
     #main-header {
         position: relative !important;
-        top: 0 !important;
-        left: 0 !important;
-        right: 0 !important;
+        top: 0 !important; left: 0 !important; right: 0 !important;
         flex-direction: column !important;
         align-items: center !important;
         gap: 14px;
@@ -68,7 +78,6 @@ img { max-width: 100%; }
         text-align: center;
     }
 
-    /* Logo + play/learn buttons block */
     #main-header > div:first-child {
         align-items: center !important;
         width: 100%;
@@ -80,7 +89,7 @@ img { max-width: 100%; }
         margin: 0 auto 8px !important;
     }
 
-    /* Play game / learn-to-type buttons row */
+    /* Play / Learn buttons row */
     #play-game {
         position: static !important;
         gap: 12px !important;
@@ -97,7 +106,7 @@ img { max-width: 100%; }
         font-size: 13px;
     }
 
-    /* Live WPM circle: move into normal flow, smaller */
+    /* Live WPM */
     #live-wpm-display {
         position: static !important;
         display: flex !important;
@@ -107,7 +116,7 @@ img { max-width: 100%; }
     .live-wpm-circle { width: 78px; height: 78px; }
     .live-wpm-number { font-size: 22px; }
 
-    /* Login/Leaderboard group */
+    /* Login / Leaderboard group */
     #header-right-group {
         position: static !important;
         top: 0 !important;
@@ -123,11 +132,10 @@ img { max-width: 100%; }
         right: auto !important;
     }
 
-    /* Intro / config / timer / difficulty: pull out of absolute flow */
+    /* Controls: pull out of absolute flow */
     #intro-text {
         position: relative !important;
-        top: 0 !important;
-        left: 0 !important;
+        top: 0 !important; left: 0 !important;
         transform: none !important;
         max-width: 100% !important;
         margin: 6px auto;
@@ -136,8 +144,7 @@ img { max-width: 100%; }
 
     #test-config {
         position: relative !important;
-        top: 0 !important;
-        left: 0 !important;
+        top: 0 !important; left: 0 !important;
         transform: none !important;
         justify-content: center;
         flex-wrap: wrap;
@@ -146,8 +153,7 @@ img { max-width: 100%; }
 
     #timer {
         position: relative !important;
-        top: 0 !important;
-        left: 0 !important;
+        top: 0 !important; left: 0 !important;
         transform: none !important;
         text-align: center;
         margin: 6px auto 10px;
@@ -156,8 +162,7 @@ img { max-width: 100%; }
 
     #difficulty-container {
         position: relative !important;
-        top: 0 !important;
-        right: 0 !important;
+        top: 0 !important; right: 0 !important;
         justify-content: center;
         flex-wrap: wrap;
         margin: 0 auto 10px;
@@ -165,7 +170,7 @@ img { max-width: 100%; }
     }
 
     .difficulty-group { flex-wrap: wrap; justify-content: center; }
-    .diff-btn { padding: 8px 14px; font-size: 12px; }
+    .diff-btn         { padding: 8px 14px; font-size: 12px; }
 
     /* Typing area */
     #words {
@@ -176,21 +181,70 @@ img { max-width: 100%; }
         padding: 0 10px;
     }
 
-    /* Keymap scene: allow horizontal scroll instead of overflow/clip */
+    /* Keymap scene: allow horizontal scroll */
     #km-scene {
         max-width: 100%;
         overflow-x: auto;
         justify-content: flex-start;
-        /* Override the 220px desktop reserve — on mobile the keyboard is
-           narrower and the scene should size naturally. Also ensures that
-           km-hidden (max-height:0) actually collapses the scene on mobile
-           (min-height:220px would win over max-height:0 without this). */
         min-height: 0 !important;
+    }
+
+    /* ── Result panel — intermediate tablet fixes ── */
+    /* Reset the negative margins/left-padding that are designed for
+       the desktop overlap effect — they cause overflow on narrow modals */
+    .result-bottom-row {
+        margin-top: -40px !important;
+        padding-left: 140px !important;
+        padding-right: 6px !important;
+    }
+
+    .chart-with-legend {
+        margin-top: -20px !important;
+    }
+
+    .result-chart-panel {
+        margin-left: 16px !important;
+    }
+
+    /* ── Score badges: scale down to 110px rings ── */
+    #km-elon-badge { transform: translateX(16px) !important; }
+
+    .km-score-ring  { width: 110px; height: 110px; }
+    .km-score-inner { width: 100px; height: 100px; }
+    .km-score-num   { font-size: 34px; }
+    .km-score-emoji { font-size: 20px; }
+    .km-score-lbl   { font-size: 10px; letter-spacing: 1.5px; }
+    .km-score-tag   { font-size: 9px; }
+
+    #km-scores-panel { gap: 10px; padding-left: 6px; }
+
+    /* ── Musk gain chip ── */
+    .musk-gain-chip { font-size: 22px; padding: 5px 14px; }
+}
+
+/* ════════════════════════════════════════════════════════════════
+   TABLET  (≤768px)  — tighten result panel further
+   ════════════════════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+    .result-bottom-row {
+        margin-top: -10px !important;
+        padding-left: 120px !important;
+    }
+
+    .chart-with-legend { margin-top: -10px !important; }
+
+    .chart-with-legend canvas { height: 260px; }
+
+    .rocket-legend-vertical { margin-right: 10px; }
+
+    .tip-box {
+        width: 80% !important;
+        margin-left: 10% !important;
     }
 }
 
 /* ════════════════════════════════════════════════════════════════
-   LARGE PHONE (≤600px)
+   LARGE PHONE  (≤600px)
    ════════════════════════════════════════════════════════════════ */
 @media (max-width: 600px) {
 
@@ -208,13 +262,34 @@ img { max-width: 100%; }
 
     .live-wpm-circle { width: 68px; height: 68px; }
     .live-wpm-number { font-size: 18px; }
-    .live-wpm-label { font-size: 8px; }
+    .live-wpm-label  { font-size: 8px; }
 
-    /* Result modal */
+    /* ── Result modal ── */
     #result {
         width: 94vw;
         max-width: 94vw;
         padding: 18px 16px 14px;
+    }
+
+    /* Reset overlap styles completely for column layout */
+    .result-bottom-row {
+        flex-direction: column !important;
+        align-items: center !important;
+        margin-top: 12px !important;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+        gap: 10px !important;
+    }
+
+    .chart-with-legend {
+        margin-top: 0 !important;
+    }
+
+    .result-chart-panel { margin-left: 0 !important; }
+
+    .tip-box {
+        width: 90% !important;
+        margin-left: 5% !important;
     }
 
     .result-stats-panel .main-stat {
@@ -225,25 +300,95 @@ img { max-width: 100%; }
 
     .chart-with-legend canvas { height: 220px; }
 
-    /* Leaderboard: shrink columns & font so it fits */
+    .result-meta-box {
+        flex-direction: row;
+        gap: 12px;
+        min-width: unset;
+        width: 100%;
+        justify-content: flex-start;
+        padding: 8px 14px;
+    }
+    .result-meta-box .rmb-value { font-size: 18px; }
+
+    /* Leaderboard */
     .leaderboard-header-grid,
     .leaderboard-row {
         grid-template-columns: 44px 1fr 60px 60px 60px 70px !important;
         padding: 10px 8px;
         font-size: 12px;
     }
-    .lb-flag-cell { width: 36px; font-size: 16px; }
-    .header-title { font-size: 20px; }
+    .lb-flag-cell  { width: 36px; font-size: 16px; }
+    .header-title  { font-size: 20px; }
     .leaderboard-modal { padding: 18px 12px; }
     .leaderboard-time-tabs { flex-wrap: wrap; }
     .time-tab { padding: 8px 16px; font-size: 12px; }
 
     /* Footer */
     footer { font-size: 11px; padding: 14px 10px 8px; }
+
+    /* ── Score badges: collapse to centred row above keyboard ── */
+    #km-outer-row {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center;
+        gap: 12px;
+    }
+
+    #km-scores-panel {
+        flex-direction: row !important;
+        justify-content: center !important;
+        padding-left: 0 !important;
+        padding-bottom: 0 !important;
+        align-self: center;
+        width: 100%;
+        gap: 16px;
+    }
+
+    /* Kill desktop translate — badges centred by flexbox */
+    #km-elon-badge { transform: none !important; }
+
+    .km-score-ring  { width: 90px; height: 90px; }
+    .km-score-inner { width: 80px; height: 80px; }
+    .km-score-num   { font-size: 26px; }
+    .km-score-emoji { font-size: 16px; }
+    .km-score-lbl   { font-size: 9px; letter-spacing: 1px; }
+    .km-score-tag   { font-size: 8px; }
+
+    /* Toggle button */
+    #km-toggle-btn { font-size: 11px; padding: 6px 14px; gap: 6px; }
+    .km-pill       { font-size: 9px; padding: 2px 8px; }
+
+    /* Musk gain chip */
+    .musk-gain-chip {
+        font-size: 18px;
+        padding: 4px 12px;
+        box-shadow: 0 0 16px rgba(226,183,20,0.55), 0 3px 10px rgba(0,0,0,0.4);
+    }
+
+    /* Milestone toast: fill width instead of float centre */
+    #musk-milestone-toast {
+        left: 10px !important;
+        right: 10px !important;
+        width: auto !important;
+        min-width: unset !important;
+        transform: translateX(0) translateY(120px) !important;
+        padding: 12px 16px !important;
+    }
+    #musk-milestone-toast.show {
+        transform: translateX(0) translateY(0) !important;
+    }
+
+    /* Profile modal score cards */
+    .pm-musk-card,
+    .pm-elon-card   { padding: 16px 14px !important; }
+    .pm-musk-number { font-size: 38px !important; }
+    .pm-elon-number { font-size: 38px !important; }
+    .pm-musk-label,
+    .pm-elon-label  { font-size: 10px !important; }
 }
 
 /* ════════════════════════════════════════════════════════════════
-   PHONE (≤480px)
+   PHONE  (≤480px)
    ════════════════════════════════════════════════════════════════ */
 @media (max-width: 480px) {
 
@@ -276,31 +421,29 @@ img { max-width: 100%; }
         min-height: 100px;
     }
 
-    /* Hide the live WPM circle on very small screens to save space */
+    /* Hide live WPM circle on very small screens */
     #live-wpm-display { display: none !important; }
 
-    /* Result panel goes fully vertical */
+    /* ── Result panel ── */
     .result-layout { gap: 12px; }
     .result-stats-panel .stat { margin-left: 0; }
-    .result-chart-panel { margin-left: 0; }
-    .tip-box { width: 100%; margin-left: 0; }
-    .rocket-legend-vertical { margin-right: 0; gap: 10px; }
+    .result-chart-panel       { margin-left: 0 !important; }
+    .tip-box                  { width: 100% !important; margin-left: 0 !important; }
+    .rocket-legend-vertical   { margin-right: 0; gap: 10px; }
     .rocket-legend-vertical .rcl-item { font-size: 12px; padding: 6px 12px; }
 
-    /* Leaderboard further compaction */
+    /* Leaderboard: compacted */
     .leaderboard-header-grid,
     .leaderboard-row {
         grid-template-columns: 36px 1fr 50px 50px !important;
         font-size: 11px;
         padding: 8px 6px;
     }
-    /* Hide the two least-important columns (date / extra stat) on tiny screens */
+    /* Hide date + country columns on tiny screens */
     .leaderboard-header-grid > *:nth-child(5),
     .leaderboard-header-grid > *:nth-child(6),
     .leaderboard-row > *:nth-child(5),
-    .leaderboard-row > *:nth-child(6) {
-        display: none;
-    }
+    .leaderboard-row > *:nth-child(6) { display: none; }
 
     .register-prompt-banner {
         flex-direction: column;
@@ -309,16 +452,48 @@ img { max-width: 100%; }
     }
     .register-banner-left { flex-direction: column; }
 
-    /* Modal content paddings */
+    /* Modal paddings */
     .modal-content { padding: 22px 16px; }
     #profileModalBox .pm-body { padding: 10px 12px 0; }
     .pm-stats-grid, .pm-stats-grid-2 { gap: 8px; }
-    .pm-stat-card { padding: 10px 6px; }
-    .pm-stat-val { font-size: 16px !important; }
+    .pm-stat-card  { padding: 10px 6px; }
+    .pm-stat-val   { font-size: 16px !important; }
+
+    /* Profile stats grid: 3-col → 2-col */
+    .pm-stats-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+    }
+
+    /* ── Score badges: compact further ── */
+    .km-score-ring  { width: 76px; height: 76px; }
+    .km-score-inner { width: 66px; height: 66px; }
+    .km-score-num   { font-size: 22px; letter-spacing: -0.5px; }
+    .km-score-emoji { font-size: 14px; }
+    .km-score-lbl   { font-size: 8px; letter-spacing: 0.8px; }
+
+    #km-scores-panel { gap: 10px; }
+
+    /* Musk gain chip */
+    .musk-gain-chip { font-size: 15px; padding: 4px 10px; }
+
+    /* Musk / Elon profile number */
+    .pm-musk-number { font-size: 30px !important; }
+    .pm-elon-number { font-size: 30px !important; }
+
+    /* Tooltips: constrain width on phones */
+    .pm-musk-tooltip,
+    .pm-elon-tooltip {
+        white-space: normal !important;
+        max-width: calc(100vw - 40px) !important;
+        font-size: 11px !important;
+        left: 0 !important;
+        transform: none !important;
+        right: 0 !important;
+    }
 }
 
 /* ════════════════════════════════════════════════════════════════
-   EXTRA-SMALL PHONE (≤360px)
+   EXTRA-SMALL PHONE  (≤360px)
    ════════════════════════════════════════════════════════════════ */
 @media (max-width: 360px) {
 
@@ -335,6 +510,7 @@ img { max-width: 100%; }
     .result-stats-panel .main-stat .stat-value { font-size: 30px !important; }
     .result-stats-panel .stat .stat-value { font-size: 18px; }
 
+    /* Leaderboard */
     .leaderboard-header-grid,
     .leaderboard-row {
         grid-template-columns: 32px 1fr 46px 46px !important;
@@ -342,54 +518,39 @@ img { max-width: 100%; }
         padding: 7px 4px;
     }
 
+    /* Score badges: minimal — emoji + number only */
+    .km-score-ring  { width: 62px; height: 62px; }
+    .km-score-inner { width: 54px; height: 54px; }
+    .km-score-num   { font-size: 18px; }
+    .km-score-emoji { font-size: 12px; }
+    .km-score-lbl   { display: none; }
+    .km-score-tag   { display: none; }
+
+    #km-scores-panel { gap: 8px; }
+
+    /* Musk chip */
+    .musk-gain-chip { font-size: 13px; padding: 3px 8px; }
+
+    /* km-key is already handled in HTML inline styles, back it up */
     .km-key { height: 16px; min-width: 16px; font-size: 6px; }
+
+    /* Toggle btn */
+    #km-toggle-btn { font-size: 10px; padding: 5px 10px; }
 }
 
 /* ════════════════════════════════════════════════════════════════
-   SHORT VIEWPORTS (landscape phones) — keep keymap from pushing
-   the page too tall
+   LANDSCAPE PHONES  (short + narrow: max-height 480px, max-width 900px)
+   Keep keymap and score badges from dominating vertical space.
    ════════════════════════════════════════════════════════════════ */
 @media (max-height: 480px) and (max-width: 900px) {
-    #km-scene { max-height: 130px; }
-    .km-key { height: 18px; min-width: 18px; font-size: 7px; }
-    #words { min-height: 80px; }
-}
+    #km-scene    { max-height: 130px; }
+    .km-key      { height: 18px; min-width: 18px; font-size: 7px; }
+    #words       { min-height: 80px; }
 
-/* ════════════════════════════════════════════════════════════════
-   MUSK SCORE GAIN CHIP — responsive sizing
-   The chip scales down on smaller viewports while always staying
-   legible and centred over the badge circle.
-   ════════════════════════════════════════════════════════════════ */
-
-/* Tablet (≤900px) */
-@media (max-width: 900px) {
-    .musk-gain-chip {
-        font-size: 22px;
-        padding: 5px 14px;
-    }
-}
-
-/* Large phone (≤600px) */
-@media (max-width: 600px) {
-    .musk-gain-chip {
-        font-size: 18px;
-        padding: 4px 12px;
-        box-shadow: 0 0 16px rgba(226,183,20,0.55), 0 3px 10px rgba(0,0,0,0.4);
-    }
-}
-
-/* Phone (≤480px) */
-@media (max-width: 480px) {
-    .musk-gain-chip {
-        font-size: 15px;
-        padding: 4px 10px;
-    }
-}
-
-/* Extra-small (≤360px) */
-@media (max-width: 360px) {
-    .musk-gain-chip {
-        font-size: 13px;
-        padding: 3px 8px;
-    }
+    .km-score-ring  { width: 64px; height: 64px; }
+    .km-score-inner { width: 56px; height: 56px; }
+    .km-score-num   { font-size: 18px; }
+    .km-score-emoji { font-size: 12px; }
+    .km-score-lbl   { display: none; }
+    #km-scores-panel { padding-bottom: 0; gap: 8px; }
 }
