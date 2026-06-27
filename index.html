@@ -4939,8 +4939,7 @@ function sanitizeStr(s) {
             const _accuracy    = (correctKeystrokes + _totalErrors > 0)
                 ? Math.round((correctKeystrokes / (correctKeystrokes + _totalErrors)) * 100)
                 : 100;
-            const _ck          = correctKeystrokes; // correct keystrokes (anti-cheat field)
-            const _ksc         = totalKeystrokes;   // total  keystrokes  (anti-cheat field)
+            const _ksc         = totalKeystrokes;   // used for local sanity check
 
             // ── Client-side sanity gates ─────────────────────────────────────
             // Firestore rules enforce the same checks server-side; these are a
@@ -5013,19 +5012,13 @@ function sanitizeStr(s) {
 
                 if (!existing.exists() || _wpm > (existingData?.wpm || 0)) {
                     await setDoc(userRef, {
-                        name:              verifiedName,
-                        wpm:               _wpm,
-                        accuracy:          _accuracy,
-                        testDuration:      duration,
-                        country:           verifiedCountry,
-                        uid:               authUser.uid,
-                        time:              _now,
-                        // ── Anti-cheat fields — cross-validated by Firestore rules ──
-                        // A direct window.setDoc() call without consistent values
-                        // for these three fields is rejected by the security rules.
-                        correctKeystrokes: _ck,
-                        keystrokeCount:    _ksc,
-                        elapsedMs:         _elapsedMs
+                        name:         verifiedName,
+                        wpm:          _wpm,
+                        accuracy:     _accuracy,
+                        testDuration: duration,
+                        country:      verifiedCountry,
+                        uid:          authUser.uid,
+                        time:         _now
                     });
                 }
             } catch (e) {
@@ -5359,8 +5352,6 @@ function sanitizeStr(s) {
             const _totalErrors= _typedErrors + (missedChars || 0);
             const _accuracy   = (correctKeystrokes + _totalErrors > 0)
                 ? Math.round((correctKeystrokes / (correctKeystrokes + _totalErrors)) * 100) : 100;
-            const _ck  = correctKeystrokes;
-            const _ksc = totalKeystrokes;
 
             if (_wpm <= 0 || _wpm >= 220 || _accuracy < 50 || _elapsedMs < 2000) return;
 
@@ -5381,16 +5372,13 @@ function sanitizeStr(s) {
 
                 if (!existing.exists() || _wpm > (existing.data()?.wpm || 0)) {
                     await setDoc(ref, {
-                        name:              verifiedName,
-                        wpm:               _wpm,
-                        accuracy:          _accuracy,
-                        wordCount:         wordCount,
-                        country:           verifiedCountry,
-                        uid:               authUser.uid,
-                        time:              _now,
-                        correctKeystrokes: _ck,
-                        keystrokeCount:    _ksc,
-                        elapsedMs:         _elapsedMs
+                        name:      verifiedName,
+                        wpm:       _wpm,
+                        accuracy:  _accuracy,
+                        wordCount: wordCount,
+                        country:   verifiedCountry,
+                        uid:       authUser.uid,
+                        time:      _now
                     });
                 }
             } catch(e) {
