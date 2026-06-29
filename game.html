@@ -91,9 +91,9 @@
     #logo{position:absolute;top:20px;left:20px;width:100px;opacity:0.9;}
     #race-track{width:920px;height:420px;background:#010308;border:6px solid #e2b714;border-radius:16px;position:relative;margin:40px auto 20px;overflow:hidden;box-shadow:0 0 40px rgba(226,183,20,0.4);}
     /* ── Parallax space layers ── */
-    #space-deep{position:absolute;top:0;left:0;width:3200px;height:100%;z-index:0;will-change:transform;transition:transform 0.18s linear;}
-    #space-mid {position:absolute;top:0;left:0;width:3200px;height:100%;z-index:1;will-change:transform;transition:transform 0.12s linear;}
-    #space-bg  {position:absolute;top:0;left:0;width:3200px;height:100%;z-index:2;transition:transform 0.08s linear;will-change:transform;}
+    #space-deep{position:absolute;top:0;left:0;width:8000px;height:100%;z-index:0;will-change:transform;transition:transform 0.18s linear;}
+    #space-mid {position:absolute;top:0;left:0;width:8000px;height:100%;z-index:1;will-change:transform;transition:transform 0.12s linear;}
+    #space-bg  {position:absolute;top:0;left:0;width:8000px;height:100%;z-index:2;transition:transform 0.08s linear;will-change:transform;}
     @keyframes twinkle{0%{opacity:0.2;transform:scale(0.8);}50%{opacity:1;transform:scale(1.4);}100%{opacity:0.3;transform:scale(0.9);}}
     .lane{position:absolute;left:0;width:100%;height:80px;display:flex;align-items:center;padding:0 20px;box-sizing:border-box;contain:layout style;}
     #opp-lane1{top:20px;}#opp-lane2{top:90px;}#opp-lane3{top:160px;}#opp-lane4{top:230px;}
@@ -2129,10 +2129,14 @@ guestBtn.onclick = () => {
 function startGameWithName(name){document.querySelector("#player-lane .name").textContent=name.toUpperCase();resetRace();}
 
 /* ============================================================ GAME CONSTANTS & STATE ============================================================ */
-const TRACK_WIDTH=1200,CENTER=420,PROGRESS_PER_CHAR=7,SCROLL_CENTER=425;
-let worldOffset=0,totalMatches=parseInt(localStorage.getItem("rt_matches"))||0,totalWPM=parseFloat(localStorage.getItem("rt_total_wpm"))||0;
-function getAverageWPM(){return totalMatches===0?25:totalWPM/totalMatches;}
-let words=[],currentWordIndex=0,currentLetterIndex=0,testActive=false,startTime=null,raceStarted=false,raceFinished=false,elapsedInterval=null,opponentInterval=null,playerProgress=0,opponentProgress=[0,0,0,0],opponentSpeeds=[0.55,0.85,0.70,0.60],correctChars=0,rawChars=0,keystrokeTimestamps=[],wordsOffset=0,typedWords=[],missedChars=0,spaces=0,correctSpaces=0,correctKeystrokes=0,totalKeystrokes=0,wordDomStart=0;
+const TRACK_WIDTH=4800,CENTER=420,SCROLL_CENTER=425,STEP=4;
+let worldOffset=0,recentWPMs=JSON.parse(localStorage.getItem('rt_recent_wpms')||'[]');
+function getSessionWPM(){
+  if(recentWPMs.length===0) return 30; // first ever game — default starting point
+  const slice=recentWPMs.slice(-5);    // use up to last 5 races
+  return slice.reduce((a,b)=>a+b,0)/slice.length;
+}
+let words=[],currentWordIndex=0,currentLetterIndex=0,testActive=false,startTime=null,raceStarted=false,raceFinished=false,elapsedInterval=null,opponentInterval=null,playerMomentumInterval=null,playerProgress=0,opponentProgress=[0,0,0,0],opponentWPMs=[0,0,0,0],opponentCurrentWPMs=[0,0,0,0],opponentVarianceTick=[0,0,0,0],raceElapsedTicks=0,opponentsDone=false,playerFinishTimeout=null,correctChars=0,rawChars=0,keystrokeTimestamps=[],wordsOffset=0,typedWords=[],missedChars=0,spaces=0,correctSpaces=0,correctKeystrokes=0,totalKeystrokes=0,wordDomStart=0;
 
 /* ============================================================
    PERFORMANCE LAYER — Cached refs + rAF render scheduler
@@ -2786,7 +2790,7 @@ function updateLiveHud(){
   // Small HUD stats — use cached refs
   if(_elLiveWpm){_elLiveWpm.textContent=wpm;_elLiveWpm.className='typing-stat-val'+(wpm>60?' highlight':'');}
   if(_elLiveAcc){_elLiveAcc.textContent=acc+'%';_elLiveAcc.className='typing-stat-val'+(acc>=95?' highlight':'');}
-  if(_elLiveWord) _elLiveWord.textContent=currentWordIndex;
+  if(_elLiveWord) _elLiveWord.textContent=Math.floor(correctChars/5)+'w';
   // Big race WPM display
   if(_elBigWpm){
     _elBigWpm.textContent=wpm;
@@ -2795,8 +2799,8 @@ function updateLiveHud(){
     else if(wpm>80) _elBigWpm.classList.add('wpm-fast');
   }
   if(_elBigAcc) _elBigAcc.textContent=acc+'% ACC';
-  // Progress bar
-  if(_elProgFill) _elProgFill.style.width=Math.min(100,(playerProgress/1200)*100)+'%';
+  // Progress bar — shows how far player has travelled toward the finish line
+  if(_elProgFill) _elProgFill.style.width=Math.min(100,(playerProgress/TRACK_WIDTH)*100)+'%';
 }
 
 let _lastRhythmDot=null,_rhythmTimer=0;
@@ -2825,7 +2829,7 @@ function highlightNextLetter(){
 function resetLiveHud(){
   if(_elLiveWpm){_elLiveWpm.textContent='—';_elLiveWpm.className='typing-stat-val';}
   if(_elLiveAcc){_elLiveAcc.textContent='—';_elLiveAcc.className='typing-stat-val';}
-  if(_elLiveWord) _elLiveWord.textContent='0';
+  if(_elLiveWord) _elLiveWord.textContent='0w';
   if(_elProgFill) _elProgFill.style.width='0%';
   _rhythmDots.forEach(d=>d.classList.remove('active'));
   rhythmIdx=0;
@@ -3249,19 +3253,17 @@ function handleKeydown(e){
   const key=e.key;
   if(key==='Backspace'){handleBackspace();return;}
   totalKeystrokes++;
-  if(key.length===1||key===' ') keystrokeTimestamps.push(Date.now());
   if(key===' '){
     spaces++;
     const wl=words[currentWordIndex].length;
     const ok=(currentLetterIndex===wl);
     if(ok){
       correctSpaces++;
-      playerProgress+=PROGRESS_PER_CHAR;
       correctChars++;
       correctKeystrokes++;
+      keystrokeTimestamps.push(Date.now());
       playerRocket.parentElement.classList.add('boost');
       setTimeout(()=>playerRocket.parentElement.classList.remove('boost'),280);
-      _schedulePlayerPosition();
     } else {
       missedChars+=wl-currentLetterIndex;
       // Mark remaining letters incorrect — use cached array, no query
@@ -3290,8 +3292,7 @@ function typeLetter(key){
     if(ok){
       correctChars++;
       correctKeystrokes++;
-      playerProgress+=PROGRESS_PER_CHAR;
-      _schedulePlayerPosition();
+      keystrokeTimestamps.push(Date.now());
       /* Web Audio is instant — no overlap, no throttle needed */
       if(ok) playSound('typeCorrect');
     } else {
@@ -3394,11 +3395,37 @@ function moveToNextWord(){
 let _playerPositionRafPending=false;
 function _schedulePlayerPosition(){
   worldOffset=Math.max(0,playerProgress-CENTER);
-  // Rocket left is cheap — one transform write, keep it instant
   playerRocket.style.left=`${Math.min(playerProgress,CENTER)}px`;
-  // Background position writes are batched into the next rAF via dirty flag
   _visualDirty=true;
   _scheduleRender();
+}
+
+/* ── Rolling-window WPM (last 5 s) — decays to 0 within 5 s of no typing ── */
+function _getMomentumWPM(){
+  if(!testActive||!startTime) return 0;
+  const now=Date.now();
+  const windowMs=5000;
+  let count=0;
+  for(let i=keystrokeTimestamps.length-1;i>=0;i--){
+    if(keystrokeTimestamps[i]<now-windowMs) break;
+    count++;
+  }
+  return Math.round(count/5/(windowMs/60000));
+}
+
+/* ── Main movement tick (50 ms) ─────────────────────────────────────────────
+   Player rocket moves WPM × STEP pixels per tick.
+   First rocket to cross TRACK_WIDTH wins.                                  ── */
+function _updatePlayerMomentum(){
+  if(!raceStarted||!testActive||raceFinished) return;
+  const wpm=_getMomentumWPM();
+  if(wpm>0){
+    playerProgress+=wpm*STEP/20;
+    worldOffset=Math.max(0,playerProgress-CENTER);
+    playerRocket.style.left=`${Math.min(playerProgress,CENTER)}px`;
+    _visualDirty=true;
+    _scheduleRender();
+  }
   if(playerProgress>=TRACK_WIDTH){playSound('finish');endRace();}
 }
 
@@ -3412,26 +3439,67 @@ function updateAllVisuals(){
 }
 
 /* updateOpponentProgress — logic only; no DOM writes; visuals batched via rAF */
+/* updateOpponentProgress — human-like variable speed: bursts, slowdowns, brief pauses */
 function updateOpponentProgress(){
   if(!raceStarted) return;
-  let done=false;
+  raceElapsedTicks++;
+  const ramp=Math.min(1,raceElapsedTicks/100); // 0→1 over first 5 s
+
   for(let i=0;i<oppRockets.length;i++){
-    opponentProgress[i]+=opponentSpeeds[i]*0.05;
-    if(opponentProgress[i]>=TRACK_WIDTH) done=true;
+    // ── State machine: pick new speed when timer expires ──────────────────
+    opponentVarianceTick[i]--;
+    if(opponentVarianceTick[i]<=0){
+      const t=opponentWPMs[i]; // target (average) WPM for this opponent
+      const r=Math.random();
+      if(r<0.10){
+        // Brief pause (finger slip / hesitation) — 0.3–1 s
+        opponentCurrentWPMs[i]=0;
+        opponentVarianceTick[i]=6+Math.floor(Math.random()*14);
+      } else if(r<0.25){
+        // Speed burst — 120–160 % of target, 0.5–1.5 s
+        opponentCurrentWPMs[i]=t*(1.2+Math.random()*0.4);
+        opponentVarianceTick[i]=10+Math.floor(Math.random()*20);
+      } else if(r<0.45){
+        // Slow patch — 55–80 % of target, 0.75–2 s
+        opponentCurrentWPMs[i]=t*(0.55+Math.random()*0.25);
+        opponentVarianceTick[i]=15+Math.floor(Math.random()*25);
+      } else {
+        // Normal rhythm — 85–115 % of target, 1–3 s
+        opponentCurrentWPMs[i]=t*(0.85+Math.random()*0.30);
+        opponentVarianceTick[i]=20+Math.floor(Math.random()*40);
+      }
+    }
+    opponentProgress[i]+=Math.max(0,opponentCurrentWPMs[i])*STEP/20*ramp;
   }
-  if(done){endRace();return;}
+
+  // When first opponent crosses finish: keep player racing, 20 s timeout
+  if(!opponentsDone && opponentProgress.some(p=>p>=TRACK_WIDTH)){
+    opponentsDone=true;
+    clearInterval(opponentInterval); opponentInterval=null;
+    playerFinishTimeout=setTimeout(()=>{if(!raceFinished) endRace();},20000);
+  }
   _visualDirty=true;
   _scheduleRender();
 }
 
-function updateElapsed(){if(!startTime)return;const s=Math.floor((Date.now()-startTime)/1000);timerDiv.textContent=`${Math.floor(s/60)}:${(s%60).toString().padStart(2,'0')}`;}
+function updateElapsed(){
+  if(!startTime) return;
+  const s=Math.floor((Date.now()-startTime)/1000);
+  timerDiv.textContent=`${Math.floor(s/60)}:${(s%60).toString().padStart(2,'0')}`;
+}
 function calculateStats(){const em=(Date.now()-startTime)/60000||0.001,wpm=Math.round(correctKeystrokes/5/em),acc=correctKeystrokes+totalKeystrokes-correctKeystrokes+missedChars>0?Math.round((correctKeystrokes/(correctKeystrokes+(totalKeystrokes-correctKeystrokes)+missedChars))*100):100;let cons=100;if(keystrokeTimestamps.length>5){const ws=1000,wins=[];for(let t=startTime;t<=Date.now();t+=ws)wins.push(keystrokeTimestamps.filter(ts=>ts>=t&&ts<t+ws).length);const rw=wins.map(c=>(c*(60000/ws))/5).filter(w=>w>0);if(rw.length>0){const m=rw.reduce((a,b)=>a+b,0)/rw.length,v=rw.reduce((a,b)=>a+Math.pow(b-m,2),0)/rw.length;cons=Math.max(0,Math.min(100,Math.round(100*Math.exp(-0.0125*(m>0?Math.sqrt(v)/m:0)*100))));}}return{wpm:Math.max(0,wpm),acc:Math.min(100,acc),cons:Math.min(100,cons)};}
 
 function endRace(){
   raceFinished=true;  // immediately block all keyboard input and sounds
+  clearTimeout(playerFinishTimeout); playerFinishTimeout=null;
   sounds.ambient.pause();sounds.ambient.currentTime=0;
-  testActive=false;clearInterval(elapsedInterval);elapsedInterval=null;clearInterval(opponentInterval);opponentInterval=null;clearInterval(liveWpmInterval);liveWpmInterval=null;document.body.classList.remove('race-active');
-  let rank=1;for(let i=0;i<opponentProgress.length;i++)if(opponentProgress[i]>playerProgress)rank++;
+  testActive=false;clearInterval(elapsedInterval);elapsedInterval=null;clearInterval(opponentInterval);opponentInterval=null;clearInterval(playerMomentumInterval);playerMomentumInterval=null;clearInterval(liveWpmInterval);liveWpmInterval=null;document.body.classList.remove('race-active');
+  let rank=1;
+  for(let i=0;i<opponentProgress.length;i++){
+    // Opponent crossed finish line → they beat the player regardless of pixel overshoot
+    // Player didn't finish (timeout) → also count opponents with more raw progress
+    if(opponentProgress[i]>=TRACK_WIDTH||(playerProgress<TRACK_WIDTH&&opponentProgress[i]>playerProgress)) rank++;
+  }
   const sfx=['ST','ND','RD','TH','TH'],emj=['🥇','🥈','🥉','4️⃣','5️⃣'],clr=['#ffd700','#c8c8c8','#cd7f32','#aaaaaa','#888888'],msg=['🚀 You launched past every rival!','⚡ Just off the top — insane speed!','🏅 Top 3 podium finish — great run!','💪 Solid race. Close to the podium!','🔥 Keep training, pilot — the stars await!'];
   if(rank===1)playSound('win');else if(rank<=3)playSound('finish');else playSound('lose');
   const stats=calculateStats();
@@ -3465,7 +3533,7 @@ function endRace(){
       });
     });
   }
-  totalMatches++;totalWPM+=stats.wpm;localStorage.setItem("rt_matches",totalMatches);localStorage.setItem("rt_total_wpm",totalWPM);
+  recentWPMs.push(stats.wpm);if(recentWPMs.length>5) recentWPMs.shift();localStorage.setItem('rt_recent_wpms',JSON.stringify(recentWPMs));
   const ri=rank-1;
   const rankColor=clr[ri];
   document.getElementById('rank-badge').textContent=emj[ri];
@@ -3615,7 +3683,7 @@ entries.forEach((e, idx) => {
    Deep (nebulae + far stars) → Mid (medium stars + clusters) → Near (bright stars + spikes)
 ============================================================ */
 function buildSpaceBackground(){
-  const W=3200,H=420;
+  const W=8000,H=420;
   const rnd=Math.random.bind(Math);
 
   /* ── Spectral star color (realistic distribution) ── */
@@ -3891,7 +3959,11 @@ function buildSpaceBackground(){
   document.getElementById('space-bg').dataset.built='1';
 }
 
-function resetRace(){raceStarted=false;raceFinished=false;document.body.classList.remove('race-active');const avg=getAverageWPM(),pp=w=>w*0.5;opponentSpeeds=[pp(avg+20),pp(avg+15),Math.max(5,pp(avg-20)),pp(avg-5)].sort(()=>Math.random()-0.5);if(_countdownIv){clearInterval(_countdownIv);_countdownIv=null;}_countdownActive=false;clearInterval(elapsedInterval);elapsedInterval=null;clearInterval(opponentInterval);opponentInterval=null;clearInterval(liveWpmInterval);liveWpmInterval=null;testActive=false;typedWords=[];missedChars=0;spaces=0;correctSpaces=0;playerProgress=0;opponentProgress=[0,0,0,0];currentWordIndex=0;currentLetterIndex=0;correctChars=0;rawChars=0;correctKeystrokes=0;totalKeystrokes=0;keystrokeTimestamps=[];playerRocket.style.left='0px';oppRockets.forEach(r=>{r.style.left='0px';r.parentElement.classList.remove('boost');});timerDiv.textContent='0:00';resultDiv.classList.remove('visible');resetLiveHud();
+function resetRace(){raceStarted=false;raceFinished=false;document.body.classList.remove('race-active');const avg=getSessionWPM(),base=Math.max(35,avg);
+opponentWPMs=[base+5,Math.max(10,base-5),Math.max(10,base-10),Math.max(10,base-18)].sort(()=>Math.random()-0.5);
+// Initialise variable-speed state: current speed = target, staggered first change
+opponentCurrentWPMs=[...opponentWPMs];
+opponentVarianceTick=[8,16,24,32];if(_countdownIv){clearInterval(_countdownIv);_countdownIv=null;}_countdownActive=false;clearInterval(elapsedInterval);elapsedInterval=null;clearInterval(opponentInterval);opponentInterval=null;clearInterval(playerMomentumInterval);playerMomentumInterval=null;clearInterval(liveWpmInterval);liveWpmInterval=null;testActive=false;typedWords=[];missedChars=0;spaces=0;correctSpaces=0;playerProgress=0;raceElapsedTicks=0;opponentsDone=false;clearTimeout(playerFinishTimeout);playerFinishTimeout=null;opponentProgress=[0,0,0,0];opponentCurrentWPMs=[0,0,0,0];opponentVarianceTick=[0,0,0,0];currentWordIndex=0;currentLetterIndex=0;correctChars=0;rawChars=0;correctKeystrokes=0;totalKeystrokes=0;keystrokeTimestamps=[];playerRocket.style.left='0px';oppRockets.forEach(r=>{r.style.left='0px';r.parentElement.classList.remove('boost');});timerDiv.textContent='0:00';resultDiv.classList.remove('visible');resetLiveHud();
 // Reset active word cache
 _setActiveWord(null);
 _rafPending=false;_caretDirty=false;_visualDirty=false;
@@ -3911,7 +3983,7 @@ let _countdownActive = false;
 function showRaceCountdown(cb){
   if(_countdownActive) return; // prevent double-start
   _countdownActive = true;
-  leaderboardBtn.style.display="none";const ov=document.getElementById("race-start-overlay"),tx=document.getElementById("race-start-text");ov.style.display="flex";tx.textContent="Finding pilots...";playSound('startIgnition');setTimeout(()=>{let count=3;_countdownIv=setInterval(()=>{tx.textContent=count;playSound('countdown');count--;if(count===0){clearInterval(_countdownIv);_countdownIv=null;setTimeout(()=>{tx.textContent="LET'S GO!";playSound('startIgnition');sounds.ambient.currentTime=0;sounds.ambient.play().catch(()=>{});},800);setTimeout(()=>{_countdownActive=false;ov.style.display="none";raceStarted=true;testActive=true;startTime=Date.now();elapsedInterval=setInterval(updateElapsed,1000);opponentInterval=setInterval(updateOpponentProgress,50);caret.style.opacity='1';document.body.classList.add('race-active');startLiveHud();cb();},1600);}},950);},800);
+  leaderboardBtn.style.display="none";const ov=document.getElementById("race-start-overlay"),tx=document.getElementById("race-start-text");ov.style.display="flex";tx.textContent="Finding pilots...";playSound('startIgnition');setTimeout(()=>{let count=3;_countdownIv=setInterval(()=>{tx.textContent=count;playSound('countdown');count--;if(count===0){clearInterval(_countdownIv);_countdownIv=null;setTimeout(()=>{tx.textContent="LET'S GO!";playSound('startIgnition');sounds.ambient.currentTime=0;sounds.ambient.play().catch(()=>{});},800);setTimeout(()=>{_countdownActive=false;ov.style.display="none";raceStarted=true;testActive=true;startTime=Date.now();elapsedInterval=setInterval(updateElapsed,1000);opponentInterval=setInterval(updateOpponentProgress,50);playerMomentumInterval=setInterval(_updatePlayerMomentum,50);caret.style.opacity='1';document.body.classList.add('race-active');startLiveHud();cb();},1600);}},950);},800);
 }
 /* ── Page Visibility API — pause ALL intervals when tab is hidden ──
    Prevents stacked timers and wasted CPU when user switches tabs */
@@ -3920,11 +3992,13 @@ document.addEventListener('visibilitychange',()=>{
     if(opponentInterval){clearInterval(opponentInterval);opponentInterval=null;}
     if(elapsedInterval){clearInterval(elapsedInterval);elapsedInterval=null;}
     if(liveWpmInterval){clearInterval(liveWpmInterval);liveWpmInterval=null;}
+    if(playerMomentumInterval){clearInterval(playerMomentumInterval);playerMomentumInterval=null;}
     sounds.ambient.pause();
   } else if(raceStarted&&testActive){
     if(!opponentInterval) opponentInterval=setInterval(updateOpponentProgress,50);
     if(!elapsedInterval)  elapsedInterval=setInterval(updateElapsed,1000);
     if(!liveWpmInterval)  liveWpmInterval=setInterval(updateLiveHud,400);
+    if(!playerMomentumInterval) playerMomentumInterval=setInterval(_updatePlayerMomentum,50);
     sounds.ambient.play().catch(()=>{});
   }
 });
@@ -3969,6 +4043,7 @@ function showPauseModal(){
   testActive = false;
   if(opponentInterval){clearInterval(opponentInterval);opponentInterval=null;}
   if(elapsedInterval){clearInterval(elapsedInterval);elapsedInterval=null;}
+  if(playerMomentumInterval){clearInterval(playerMomentumInterval);playerMomentumInterval=null;}
   if(liveWpmInterval){clearInterval(liveWpmInterval);liveWpmInterval=null;}
   sounds.ambient.pause();
   document.body.classList.remove('race-active');
@@ -4027,6 +4102,22 @@ document.addEventListener('keydown', function(e){
   // If pause modal is open, Tab is handled by the focus-trap listener below
   const modal = document.getElementById('pause-modal');
   if(modal && modal.classList.contains('visible')) return;
+
+  // After race ends: Tab or Enter skips the landing animation
+  // Once result screen is visible: Enter starts new race, Tab focuses restart button
+  if(raceFinished){
+    if(e.key==='Tab'||e.key==='Enter'){
+      e.preventDefault();
+      if(!resultDiv.classList.contains('visible')){
+        completeLanding(true); // skip animation → show result
+      } else if(e.key==='Enter'){
+        restartBtn.click();    // result visible + Enter → new race
+      } else {
+        restartBtn.focus();    // result visible + Tab → focus restart (don't click yet)
+      }
+      return;
+    }
+  }
 
   if(e.key === 'Tab'){
     const logoutBtn = document.getElementById('game-topnav-logout');
