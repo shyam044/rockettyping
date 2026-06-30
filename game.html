@@ -469,15 +469,15 @@ body.race-active #caret {
     /* ── Table ── */
     #result-table-wrap { width:100%; margin-bottom:14px; }
     #result-table-header {
-      display:grid; grid-template-columns:46px 34px 1fr 170px 68px;
-      gap:0 10px; padding:0 12px 8px;
+      display:grid; grid-template-columns:46px 34px 1fr 110px 118px 64px;
+      gap:0 8px; padding:0 12px 8px;
       font-size:7px; letter-spacing:3px; text-transform:uppercase;
       color:rgba(255,255,255,0.22); border-bottom:1px solid rgba(255,255,255,0.05);
       margin-bottom:3px;
     }
     .res-row {
-      display:grid; grid-template-columns:46px 34px 1fr 170px 68px;
-      gap:0 10px; align-items:center;
+      display:grid; grid-template-columns:46px 34px 1fr 110px 118px 64px;
+      gap:0 8px; align-items:center;
       padding:9px 12px; border-radius:5px; margin-bottom:3px;
       border:1px solid transparent;
       background:rgba(255,255,255,0.018);
@@ -517,6 +517,16 @@ body.race-active #caret {
       font-size:8px; letter-spacing:1px; color:rgba(255,255,255,0.3); text-align:right;
     }
     .res-status { font-size:8px; letter-spacing:2px; text-align:right; font-weight:bold; }
+    .res-stats {
+      display:flex; gap:8px; justify-content:flex-end; align-items:baseline;
+      font-size:10px; font-weight:bold; color:rgba(255,255,255,0.55); white-space:nowrap;
+    }
+    .res-stats span { display:flex; flex-direction:column; align-items:center; gap:1px; }
+    .res-stats span small {
+      font-size:6px; letter-spacing:1px; font-weight:normal; color:rgba(255,255,255,0.28);
+    }
+    .res-row.is-player .res-stats { color:#ffd700; }
+    .res-row.is-player .res-stats span small { color:rgba(255,215,0,0.55); }
     /* ── Stats rings ── */
     #result-stats {
       display:flex; gap:28px; align-items:center; justify-content:center;
@@ -1766,7 +1776,7 @@ body.race-active #caret {
       <div id="result-divider"></div>
       <div id="result-table-wrap">
         <div id="result-table-header">
-          <span>POS</span><span>SHIP</span><span>PILOT</span><span>PROGRESS</span><span style="text-align:right">STATUS</span>
+          <span>POS</span><span>SHIP</span><span>PILOT</span><span>PROGRESS</span><span style="text-align:right">WPM · ACC · TIME</span><span style="text-align:right">STATUS</span>
         </div>
         <div id="positions-list"></div>
       </div>
@@ -2101,6 +2111,69 @@ function _playIncorrectSound(){
   }catch(e){}
 }
 
+/* ============================================================
+   ROCKET ENGINE SOUND — synthesized, intensity scales live with WPM
+   Loops while the rocket is moving, fades out the instant WPM hits 0
+============================================================ */
+let _engineNodes = null;
+function _createNoiseBuffer(ctx){
+  const len = ctx.sampleRate * 2;
+  const buf = ctx.createBuffer(1, len, ctx.sampleRate);
+  const data = buf.getChannelData(0);
+  for(let i=0;i<len;i++) data[i] = Math.random()*2-1;
+  return buf;
+}
+function startEngineSound(){
+  try{
+    const ctx = _getAudioCtx();
+    if(_engineNodes) stopEngineSound();
+    // Layer 1: filtered white noise = air/exhaust roar
+    const noise = ctx.createBufferSource();
+    noise.buffer = _createNoiseBuffer(ctx);
+    noise.loop = true;
+    const filter = ctx.createBiquadFilter();
+    filter.type = 'lowpass'; filter.frequency.value = 220;
+    const noiseGain = ctx.createGain(); noiseGain.gain.value = 0;
+    noise.connect(filter); filter.connect(noiseGain); noiseGain.connect(ctx.destination);
+    noise.start();
+    // Layer 2: low sawtooth = engine rumble
+    const rumble = ctx.createOscillator();
+    rumble.type = 'sawtooth'; rumble.frequency.value = 50;
+    const rumbleGain = ctx.createGain(); rumbleGain.gain.value = 0;
+    rumble.connect(rumbleGain); rumbleGain.connect(ctx.destination);
+    rumble.start();
+    _engineNodes = { noise, filter, noiseGain, rumble, rumbleGain };
+  }catch(e){}
+}
+function setEngineIntensity(wpm){
+  if(!_engineNodes) return;
+  try{
+    const ctx = _getAudioCtx();
+    const t = ctx.currentTime;
+    const norm = Math.min(1, wpm/100);
+    const targetNoiseGain  = wpm>0 ? 0.045 + norm*0.15  : 0;
+    const targetFilterFreq = 200 + norm*900;
+    const targetRumbleGain = wpm>0 ? 0.025 + norm*0.05  : 0;
+    const targetRumbleFreq = 48 + norm*38;
+    _engineNodes.noiseGain.gain.setTargetAtTime(targetNoiseGain, t, 0.18);
+    _engineNodes.filter.frequency.setTargetAtTime(targetFilterFreq, t, 0.25);
+    _engineNodes.rumbleGain.gain.setTargetAtTime(targetRumbleGain, t, 0.18);
+    _engineNodes.rumble.frequency.setTargetAtTime(targetRumbleFreq, t, 0.25);
+  }catch(e){}
+}
+function stopEngineSound(){
+  if(!_engineNodes) return;
+  const nodes = _engineNodes;
+  _engineNodes = null;
+  try{
+    const ctx = _getAudioCtx();
+    const t = ctx.currentTime;
+    nodes.noiseGain.gain.setTargetAtTime(0, t, 0.12);
+    nodes.rumbleGain.gain.setTargetAtTime(0, t, 0.12);
+    setTimeout(()=>{ try{ nodes.noise.stop(); nodes.rumble.stop(); }catch(e){} }, 400);
+  }catch(e){}
+}
+
 function playSound(k){
   if(k==='typeCorrect'){_playCorrectSound();return;}
   if(k==='typeIncorrect'){_playIncorrectSound();return;}
@@ -2136,7 +2209,7 @@ function getSessionWPM(){
   const slice=recentWPMs.slice(-5);    // use up to last 5 races
   return slice.reduce((a,b)=>a+b,0)/slice.length;
 }
-let words=[],currentWordIndex=0,currentLetterIndex=0,testActive=false,startTime=null,raceStarted=false,raceFinished=false,elapsedInterval=null,opponentInterval=null,playerMomentumInterval=null,playerProgress=0,opponentProgress=[0,0,0,0],opponentWPMs=[0,0,0,0],opponentCurrentWPMs=[0,0,0,0],opponentVarianceTick=[0,0,0,0],raceElapsedTicks=0,opponentsDone=false,playerFinishTimeout=null,correctChars=0,rawChars=0,keystrokeTimestamps=[],wordsOffset=0,typedWords=[],missedChars=0,spaces=0,correctSpaces=0,correctKeystrokes=0,totalKeystrokes=0,wordDomStart=0;
+let words=[],currentWordIndex=0,currentLetterIndex=0,testActive=false,startTime=null,raceStarted=false,raceFinished=false,elapsedInterval=null,opponentInterval=null,playerMomentumInterval=null,playerProgress=0,opponentProgress=[0,0,0,0],opponentWPMs=[0,0,0,0],opponentCurrentWPMs=[0,0,0,0],opponentVarianceTick=[0,0,0,0],opponentFinishTimeMs=[null,null,null,null],opponentAccuracy=[0,0,0,0],raceElapsedTicks=0,opponentsDone=false,playerFinishTimeout=null,correctChars=0,rawChars=0,keystrokeTimestamps=[],wordsOffset=0,typedWords=[],missedChars=0,spaces=0,correctSpaces=0,correctKeystrokes=0,totalKeystrokes=0,wordDomStart=0;
 
 /* ============================================================
    PERFORMANCE LAYER — Cached refs + rAF render scheduler
@@ -3419,6 +3492,7 @@ function _getMomentumWPM(){
 function _updatePlayerMomentum(){
   if(!raceStarted||!testActive||raceFinished) return;
   const wpm=_getMomentumWPM();
+  setEngineIntensity(wpm);
   if(wpm>0){
     playerProgress+=wpm*STEP/20;
     worldOffset=Math.max(0,playerProgress-CENTER);
@@ -3469,14 +3543,22 @@ function updateOpponentProgress(){
         opponentVarianceTick[i]=20+Math.floor(Math.random()*40);
       }
     }
+    // Already finished → stay parked exactly at the line, skip further movement
+    if(opponentFinishTimeMs[i]!==null){ opponentProgress[i]=TRACK_WIDTH; continue; }
+
     opponentProgress[i]+=Math.max(0,opponentCurrentWPMs[i])*STEP/20*ramp;
+    if(opponentProgress[i]>=TRACK_WIDTH){
+      opponentProgress[i]=TRACK_WIDTH; // clamp — no overshoot
+      opponentFinishTimeMs[i]=startTime?Date.now()-startTime:0;
+    }
   }
 
-  // When first opponent crosses finish: keep player racing, 20 s timeout
-  if(!opponentsDone && opponentProgress.some(p=>p>=TRACK_WIDTH)){
+  // Only once ALL four opponents have finished does the player get a final
+  // grace window to cross the line themselves — nobody is stopped early.
+  if(!opponentsDone && opponentFinishTimeMs.every(t=>t!==null)){
     opponentsDone=true;
     clearInterval(opponentInterval); opponentInterval=null;
-    playerFinishTimeout=setTimeout(()=>{if(!raceFinished) endRace();},20000);
+    playerFinishTimeout=setTimeout(()=>{if(!raceFinished) endRace();},15000);
   }
   _visualDirty=true;
   _scheduleRender();
@@ -3493,12 +3575,26 @@ function endRace(){
   raceFinished=true;  // immediately block all keyboard input and sounds
   clearTimeout(playerFinishTimeout); playerFinishTimeout=null;
   sounds.ambient.pause();sounds.ambient.currentTime=0;
+  stopEngineSound();
   testActive=false;clearInterval(elapsedInterval);elapsedInterval=null;clearInterval(opponentInterval);opponentInterval=null;clearInterval(playerMomentumInterval);playerMomentumInterval=null;clearInterval(liveWpmInterval);liveWpmInterval=null;document.body.classList.remove('race-active');
+  const _raceElapsedMs = startTime ? (Date.now() - startTime) : 0;
+  const playerFinished = playerProgress>=TRACK_WIDTH;
+  const playerFinishMs = playerFinished ? _raceElapsedMs : Infinity;
   let rank=1;
   for(let i=0;i<opponentProgress.length;i++){
-    // Opponent crossed finish line → they beat the player regardless of pixel overshoot
-    // Player didn't finish (timeout) → also count opponents with more raw progress
-    if(opponentProgress[i]>=TRACK_WIDTH||(playerProgress<TRACK_WIDTH&&opponentProgress[i]>playerProgress)) rank++;
+    const oFinished = opponentFinishTimeMs[i]!==null;
+    const oFinishMs = oFinished ? opponentFinishTimeMs[i] : Infinity;
+    let oppBeatsPlayer;
+    if(oFinished && playerFinished){
+      oppBeatsPlayer = oFinishMs < playerFinishMs; // whoever crossed the line first wins
+    } else if(oFinished && !playerFinished){
+      oppBeatsPlayer = true;  // opponent finished, player didn't (DNF / timeout)
+    } else if(!oFinished && playerFinished){
+      oppBeatsPlayer = false; // player finished, opponent didn't
+    } else {
+      oppBeatsPlayer = opponentProgress[i] > playerProgress; // neither finished — compare raw progress
+    }
+    if(oppBeatsPlayer) rank++;
   }
   const sfx=['ST','ND','RD','TH','TH'],emj=['🥇','🥈','🥉','4️⃣','5️⃣'],clr=['#ffd700','#c8c8c8','#cd7f32','#aaaaaa','#888888'],msg=['🚀 You launched past every rival!','⚡ Just off the top — insane speed!','🏅 Top 3 podium finish — great run!','💪 Solid race. Close to the podium!','🔥 Keep training, pilot — the stars await!'];
   if(rank===1)playSound('win');else if(rank<=3)playSound('finish');else playSound('lose');
@@ -3508,7 +3604,7 @@ function endRace(){
   // SECURITY v4: WPM cap lowered 300→220; accuracy gate added (≥50%);
   // three anti-cheat fields added to the Firestore payload so the rules
   // can cross-validate them and reject direct window.setDoc() forgeries.
-  const _raceElapsedMs = startTime ? (Date.now() - startTime) : 0;
+  // (NOTE: _raceElapsedMs already declared above for rank calculation — reused here)
   if(_authUser && stats.wpm > 0 && stats.wpm < 220 && stats.acc >= 50){
     db.collection("users").doc(_authUser.uid).get().then(userSnap => {
       if(!userSnap.exists) return;
@@ -3540,9 +3636,24 @@ function endRace(){
   document.getElementById('race-result-title').textContent=`${rank}${sfx[ri]} PLACE`;
   document.getElementById('race-result-subtitle').textContent=msg[ri];
   const pn=(localStorage.getItem("rt_registered_name")||"YOU").toUpperCase();
-  const ent=[{name:pn,progress:playerProgress,isPlayer:true,shipEmoji:currentShipAssignment[4].emoji}];
-  for(let i=0;i<4;i++)ent.push({name:raceAINames[i],progress:opponentProgress[i],isPlayer:false,shipEmoji:currentShipAssignment[i].emoji});
-  ent.sort((a,b)=>b.progress-a.progress);
+  const _fmtMs=ms=>{const s=ms/1000;return s.toFixed(1)+'s';};
+  const playerFinishMsForSort = playerFinished ? _raceElapsedMs : Infinity;
+  const ent=[{name:pn,progress:playerProgress,isPlayer:true,shipEmoji:currentShipAssignment[4].emoji,
+    wpm:stats.wpm,acc:stats.acc,timeStr:_raceElapsedMs?_fmtMs(_raceElapsedMs):'--',finished:playerFinished,finishMs:playerFinishMsForSort}];
+  for(let i=0;i<4;i++){
+    const finished=opponentFinishTimeMs[i]!==null;
+    const calcMs=finished?opponentFinishTimeMs[i]:_raceElapsedMs;
+    const calcSec=calcMs/1000;
+    const oppWpm=calcSec>0?Math.round(opponentProgress[i]/(STEP*calcSec)):0;
+    ent.push({name:raceAINames[i],progress:opponentProgress[i],isPlayer:false,shipEmoji:currentShipAssignment[i].emoji,
+      wpm:oppWpm,acc:opponentAccuracy[i],timeStr:finished?_fmtMs(opponentFinishTimeMs[i]):'DNF',finished,
+      finishMs:finished?opponentFinishTimeMs[i]:Infinity});
+  }
+  // Finishers ranked by who crossed first (lowest finishMs); DNFs ranked after, by raw progress
+  ent.sort((a,b)=>{
+    if(a.finishMs!==b.finishMs) return a.finishMs-b.finishMs;
+    return b.progress-a.progress;
+  });
 
   /* PLANET LANDING → then animate result */
   showLandingAnimation(rank,()=>{
@@ -3605,6 +3716,11 @@ entries.forEach((e, idx) => {
         <div class="res-bar-shimmer"></div>
       </div>
       <div class="res-bar-pct">${pct}%</div>
+    </div>
+    <div class="res-stats">
+      <span>${e.wpm}<small>WPM</small></span>
+      <span>${e.acc}%<small>ACC</small></span>
+      <span>${e.timeStr}<small>TIME</small></span>
     </div>
     <div class="res-status" style="color:${finished ? '#44ff88' : '#888888'}">
       ${finished ? '● FINISHED' : '○ RACING'}
@@ -3959,11 +4075,15 @@ function buildSpaceBackground(){
   document.getElementById('space-bg').dataset.built='1';
 }
 
-function resetRace(){raceStarted=false;raceFinished=false;document.body.classList.remove('race-active');const avg=getSessionWPM(),base=Math.max(35,avg);
-opponentWPMs=[base+5,Math.max(10,base-5),Math.max(10,base-10),Math.max(10,base-18)].sort(()=>Math.random()-0.5);
+function resetRace(){raceStarted=false;raceFinished=false;document.body.classList.remove('race-active');stopEngineSound();const avg=getSessionWPM(),base=Math.max(35,avg);
+opponentWPMs=[base+8,base+1,Math.max(10,base-3),Math.max(10,base-15)].sort(()=>Math.random()-0.5);
 // Initialise variable-speed state: current speed = target, staggered first change
 opponentCurrentWPMs=[...opponentWPMs];
-opponentVarianceTick=[8,16,24,32];if(_countdownIv){clearInterval(_countdownIv);_countdownIv=null;}_countdownActive=false;clearInterval(elapsedInterval);elapsedInterval=null;clearInterval(opponentInterval);opponentInterval=null;clearInterval(playerMomentumInterval);playerMomentumInterval=null;clearInterval(liveWpmInterval);liveWpmInterval=null;testActive=false;typedWords=[];missedChars=0;spaces=0;correctSpaces=0;playerProgress=0;raceElapsedTicks=0;opponentsDone=false;clearTimeout(playerFinishTimeout);playerFinishTimeout=null;opponentProgress=[0,0,0,0];opponentCurrentWPMs=[0,0,0,0];opponentVarianceTick=[0,0,0,0];currentWordIndex=0;currentLetterIndex=0;correctChars=0;rawChars=0;correctKeystrokes=0;totalKeystrokes=0;keystrokeTimestamps=[];playerRocket.style.left='0px';oppRockets.forEach(r=>{r.style.left='0px';r.parentElement.classList.remove('boost');});timerDiv.textContent='0:00';resultDiv.classList.remove('visible');resetLiveHud();
+opponentVarianceTick=[8,16,24,32];
+// Synthetic accuracy per opponent — faster pilots tend to be slightly more accurate
+opponentAccuracy=opponentWPMs.map(w=>Math.min(99,Math.round(87+Math.random()*8+(w>base?3:0))));
+opponentFinishTimeMs=[null,null,null,null];
+if(_countdownIv){clearInterval(_countdownIv);_countdownIv=null;}_countdownActive=false;clearInterval(elapsedInterval);elapsedInterval=null;clearInterval(opponentInterval);opponentInterval=null;clearInterval(playerMomentumInterval);playerMomentumInterval=null;clearInterval(liveWpmInterval);liveWpmInterval=null;testActive=false;typedWords=[];missedChars=0;spaces=0;correctSpaces=0;playerProgress=0;raceElapsedTicks=0;opponentsDone=false;clearTimeout(playerFinishTimeout);playerFinishTimeout=null;opponentProgress=[0,0,0,0];opponentCurrentWPMs=[0,0,0,0];opponentVarianceTick=[0,0,0,0];currentWordIndex=0;currentLetterIndex=0;correctChars=0;rawChars=0;correctKeystrokes=0;totalKeystrokes=0;keystrokeTimestamps=[];playerRocket.style.left='0px';oppRockets.forEach(r=>{r.style.left='0px';r.parentElement.classList.remove('boost');});timerDiv.textContent='0:00';resultDiv.classList.remove('visible');resetLiveHud();
 // Reset active word cache
 _setActiveWord(null);
 _rafPending=false;_caretDirty=false;_visualDirty=false;
@@ -3983,7 +4103,7 @@ let _countdownActive = false;
 function showRaceCountdown(cb){
   if(_countdownActive) return; // prevent double-start
   _countdownActive = true;
-  leaderboardBtn.style.display="none";const ov=document.getElementById("race-start-overlay"),tx=document.getElementById("race-start-text");ov.style.display="flex";tx.textContent="Finding pilots...";playSound('startIgnition');setTimeout(()=>{let count=3;_countdownIv=setInterval(()=>{tx.textContent=count;playSound('countdown');count--;if(count===0){clearInterval(_countdownIv);_countdownIv=null;setTimeout(()=>{tx.textContent="LET'S GO!";playSound('startIgnition');sounds.ambient.currentTime=0;sounds.ambient.play().catch(()=>{});},800);setTimeout(()=>{_countdownActive=false;ov.style.display="none";raceStarted=true;testActive=true;startTime=Date.now();elapsedInterval=setInterval(updateElapsed,1000);opponentInterval=setInterval(updateOpponentProgress,50);playerMomentumInterval=setInterval(_updatePlayerMomentum,50);caret.style.opacity='1';document.body.classList.add('race-active');startLiveHud();cb();},1600);}},950);},800);
+  leaderboardBtn.style.display="none";const ov=document.getElementById("race-start-overlay"),tx=document.getElementById("race-start-text");ov.style.display="flex";tx.textContent="Finding pilots...";playSound('startIgnition');setTimeout(()=>{let count=3;_countdownIv=setInterval(()=>{tx.textContent=count;playSound('countdown');count--;if(count===0){clearInterval(_countdownIv);_countdownIv=null;setTimeout(()=>{tx.textContent="LET'S GO!";playSound('startIgnition');sounds.ambient.currentTime=0;sounds.ambient.play().catch(()=>{});},800);setTimeout(()=>{_countdownActive=false;ov.style.display="none";raceStarted=true;testActive=true;startTime=Date.now();elapsedInterval=setInterval(updateElapsed,1000);opponentInterval=setInterval(updateOpponentProgress,50);playerMomentumInterval=setInterval(_updatePlayerMomentum,50);caret.style.opacity='1';document.body.classList.add('race-active');startLiveHud();startEngineSound();cb();},1600);}},950);},800);
 }
 /* ── Page Visibility API — pause ALL intervals when tab is hidden ──
    Prevents stacked timers and wasted CPU when user switches tabs */
@@ -4046,8 +4166,8 @@ function showPauseModal(){
   if(playerMomentumInterval){clearInterval(playerMomentumInterval);playerMomentumInterval=null;}
   if(liveWpmInterval){clearInterval(liveWpmInterval);liveWpmInterval=null;}
   sounds.ambient.pause();
+  stopEngineSound();
   document.body.classList.remove('race-active');
-
   const modal = document.getElementById('pause-modal');
   if(modal){
     modal.classList.add('visible');
