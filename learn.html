@@ -250,6 +250,7 @@ body.lesson-active { overflow-y: auto !important; }
 /* Keyboard scale wrapper */
 #kb-scale-wrap {
   width:100%;
+  overflow: visible;
 }
 
 
@@ -257,6 +258,40 @@ body.lesson-active { overflow-y: auto !important; }
 .lv-hands-panel { display:none; }
 .lv-hands-wrap  { display:none; }
 #hands-svg      { display:none; }
+
+/* ── Typing Hands Overlay ── */
+#hands-overlay-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  pointer-events: none;
+  overflow: visible;
+  z-index: 5;
+}
+/* Finger glow */
+/* Make whole hand (fingers, knuckles/palm, thumb) translucent so the
+   keyboard underneath stays visible. Applied at the group level so every
+   child shape is affected uniformly, without needing to touch each
+   individual path's own fill-opacity. */
+#left-hand-group, #right-hand-group { opacity: 0.55; }
+.hand-finger { transition: filter 0.12s ease; }
+.hand-finger.finger-glow {
+  filter: drop-shadow(0 0 5px rgba(226,183,20,1)) drop-shadow(0 0 11px rgba(226,183,20,0.65));
+}
+.hand-finger.finger-glow-teal {
+  filter: drop-shadow(0 0 7px rgba(0,230,204,1)) drop-shadow(0 0 15px rgba(0,230,204,0.75));
+}
+/* TypeClub-style finger press */
+.hand-finger { --fdx: 0px; }
+@keyframes fingerPress {
+  0%   { transform: translate(var(--fdx,0px), 0px);  }
+  25%  { transform: translate(var(--fdx,0px), 10px); }
+  60%  { transform: translate(var(--fdx,0px), 10px); }
+  100% { transform: translate(var(--fdx,0px), 0px);  }
+}
+.hand-finger.finger-active {
+  animation: fingerPress 0.26s cubic-bezier(0.25,0.46,0.45,0.94) forwards;
+}
 
 
 
@@ -562,9 +597,186 @@ body.lesson-active { overflow-y: auto !important; }
 
       <!-- ── Keyboard + Exercise ── -->
       <div class="lv-kb-container">
-        <div id="kb-scale-wrap">
+        <div id="kb-scale-wrap" style="position:relative;overflow:visible;">
           <div id="learn-kb"></div>
+          <!-- Zero-height overlay: SVG uses overflow:visible to draw hands over+below keyboard -->
+          <div id="hands-overlay-wrap" style="position:absolute;top:0;left:0;width:100%;height:0;overflow:visible;pointer-events:none;">
+            <!--
+              EXACT COORDINATE SYSTEM — 1 SVG unit = 1 keyboard pixel
+              U=36px per key, G=3px gap, keyboard = 543×187px natural size
+              
+              HOME ROW y=76 (top of key face), key center y=93.5
+              KEY X CENTERS:
+                A=86  S=125  D=164  F=203   J=320  K=359  L=398  ;=437
+              
+              SVG viewBox="0 0 543 187": matches keyboard natural size exactly.
+              overflow:visible lets fingertips/palms render outside this box.
+              width=100% → 1 SVG px = 1 keyboard px exactly
+            -->
+            <svg id="hands-overlay-svg"
+                 viewBox="0 0 543 187"
+                 preserveAspectRatio="xMidYMin meet"
+                 xmlns="http://www.w3.org/2000/svg"
+                 style="position:absolute;top:0;left:0;width:100%;height:187px;pointer-events:none;overflow:visible;">
+              <!--
+                VERIFIED COORDINATE SYSTEM:
+                  CSS .lk-key height=35px, gap=3px → row step=38px
+                  Row tops: Row0=0, Row1=38, Row2=76(HOME), Row3=114, Row4=152(SPACE)
+                  Home row key TOP=76, CENTER=93 (76+17), BOTTOM=111
+                  Spacebar TOP=152, CENTER=169
 
+                  KEY X CENTERS: A=86 S=125 D=164 F=203 | J=320 K=359 L=398 ;=437
+
+                  FINGERTIPS at y=93 (KEY CENTER of home row — natural resting position)
+                  FINGER BASE at y=175
+                  PALM: top=175, bottom=232
+                    Left  palm x: 74..216
+                    Right palm x: 308..450
+                  THUMBS: tip y=169 (spacebar center)
+              -->
+              <defs>
+                <filter id="fhs" x="-30%" y="-10%" width="160%" height="150%">
+                  <feDropShadow dx="0" dy="3" stdDeviation="4" flood-color="rgba(0,0,0,0.5)"/>
+                </filter>
+                <linearGradient id="skinL" x1="0.3" y1="0" x2="0.7" y2="1">
+                  <stop offset="0%"   stop-color="#DBBE9A"/>
+                  <stop offset="100%" stop-color="#B8844A"/>
+                </linearGradient>
+                <linearGradient id="skinR" x1="0.3" y1="0" x2="0.7" y2="1">
+                  <stop offset="0%"   stop-color="#DBBE9A"/>
+                  <stop offset="100%" stop-color="#B8844A"/>
+                </linearGradient>
+              </defs>
+
+              <!-- ═══════════════════════════════════════
+                   LEFT HAND  A=86 S=125 D=164 F=203
+                   Fingertips y=93, palm x=74..216
+              ═══════════════════════════════════════ -->
+              <g id="left-hand-group" filter="url(#fhs)">
+                <!-- PALM: snug around A–F, x=74..216, y=175..232 -->
+                <path d="M 76,230 Q 72,220 74,206 Q 76,192 80,181 L 81,175
+                         Q 94,169 116,167 Q 140,165 164,167 Q 187,169 209,173
+                         L 211,179 Q 219,190 220,204 Q 221,218 217,228
+                         Q 211,232 147,232 Q 80,232 76,230 Z"
+                      fill="url(#skinL)" opacity="0.95"/>
+                <ellipse cx="147" cy="204" rx="42" ry="21" fill="rgba(255,210,170,0.18)"/>
+
+                <!-- Left Pinky → A x=84, tip y=93 -->
+                <g id="lf-LP" class="hand-finger" style="transform-origin:84px 93px;">
+                  <path d="M 80,177 C 79,162 78,141 78,120 Q 79,103 84,93 Q 89,103 90,120 C 90,141 89,162 88,177 Z"
+                        fill="#F48FB1" stroke="#C06080" stroke-width="0.6" opacity="0.97"/>
+                  <line x1="79" y1="156" x2="89" y2="156" stroke="rgba(0,0,0,0.15)" stroke-width="1" stroke-linecap="round"/>
+                  <line x1="79" y1="132" x2="89" y2="132" stroke="rgba(0,0,0,0.10)" stroke-width="0.8" stroke-linecap="round"/>
+                  <path d="M 80,101 Q 84,91 88,101" fill="#FFE0C8" stroke="#B07040" stroke-width="0.5" opacity="0.90"/>
+                  <ellipse cx="84" cy="93" rx="4.5" ry="2.5" fill="#F48FB1" opacity="0.45"/>
+                </g>
+
+                <!-- Left Ring → S x=123, tip y=93 -->
+                <g id="lf-LR" class="hand-finger" style="transform-origin:123px 93px;">
+                  <path d="M 119,176 C 118,160 117,137 117,115 Q 119,99 123,93 Q 127,99 129,115 C 129,137 128,160 127,176 Z"
+                        fill="#CE93D8" stroke="#9060B0" stroke-width="0.6" opacity="0.97"/>
+                  <line x1="119" y1="154" x2="127" y2="154" stroke="rgba(0,0,0,0.15)" stroke-width="1" stroke-linecap="round"/>
+                  <line x1="119" y1="130" x2="127" y2="130" stroke="rgba(0,0,0,0.10)" stroke-width="0.8" stroke-linecap="round"/>
+                  <path d="M 120,101 Q 123,91 126,101" fill="#FFE0C8" stroke="#B07040" stroke-width="0.5" opacity="0.90"/>
+                  <ellipse cx="123" cy="93" rx="5" ry="2.5" fill="#CE93D8" opacity="0.45"/>
+                </g>
+
+                <!-- Left Middle → D x=162, tip y=93 -->
+                <g id="lf-LM" class="hand-finger" style="transform-origin:162px 93px;">
+                  <path d="M 158,175 C 157,157 156,132 156,110 Q 157,95 162,93 Q 167,95 168,110 C 168,132 167,157 166,175 Z"
+                        fill="#90CAF9" stroke="#3070C8" stroke-width="0.6" opacity="0.97"/>
+                  <line x1="157" y1="152" x2="167" y2="152" stroke="rgba(0,0,0,0.15)" stroke-width="1" stroke-linecap="round"/>
+                  <line x1="157" y1="127" x2="167" y2="127" stroke="rgba(0,0,0,0.10)" stroke-width="0.8" stroke-linecap="round"/>
+                  <path d="M 158,101 Q 162,90 166,101" fill="#FFE0C8" stroke="#B07040" stroke-width="0.5" opacity="0.90"/>
+                  <ellipse cx="162" cy="93" rx="5.5" ry="2.5" fill="#90CAF9" opacity="0.45"/>
+                </g>
+
+                <!-- Left Index → F x=201, tip y=93 -->
+                <g id="lf-LI" class="hand-finger" style="transform-origin:201px 93px;">
+                  <path d="M 197,176 C 196,160 195,137 195,115 Q 197,99 201,93 Q 205,99 207,115 C 207,137 206,160 205,176 Z"
+                        fill="#A5D6A7" stroke="#408050" stroke-width="0.6" opacity="0.97"/>
+                  <line x1="197" y1="154" x2="205" y2="154" stroke="rgba(0,0,0,0.15)" stroke-width="1" stroke-linecap="round"/>
+                  <line x1="197" y1="130" x2="205" y2="130" stroke="rgba(0,0,0,0.10)" stroke-width="0.8" stroke-linecap="round"/>
+                  <path d="M 198,101 Q 201,91 204,101" fill="#FFE0C8" stroke="#B07040" stroke-width="0.5" opacity="0.90"/>
+                  <ellipse cx="201" cy="93" rx="5" ry="2.5" fill="#A5D6A7" opacity="0.45"/>
+                </g>
+
+                <!-- Left Thumb — tip on spacebar center x=232, y=169 -->
+                <g id="lf-TH" class="hand-finger" style="transform-origin:232px 169px;">
+                  <path d="M 216,215 Q 213,204 215,192 Q 219,179 229,171
+                           Q 237,165 247,166 Q 256,168 258,178
+                           Q 259,188 252,197 Q 243,206 230,211 Q 219,215 216,215 Z"
+                        fill="#90A4AE" stroke="#4A6070" stroke-width="0.6" opacity="0.93"/>
+                  <path d="M 249,165 Q 257,161 260,170" fill="#FFE0C8" stroke="#B07040" stroke-width="0.5" opacity="0.85"/>
+                  <ellipse cx="249" cy="168" rx="8" ry="3" fill="#90A4AE" opacity="0.38"/>
+                </g>
+              </g>
+
+              <!-- ═══════════════════════════════════════
+                   RIGHT HAND  J=320 K=359 L=398 ;=437
+                   Fingertips y=93, palm x=308..450
+              ═══════════════════════════════════════ -->
+              <g id="right-hand-group" filter="url(#fhs)">
+                <!-- PALM: snug around J–; keys, x=308..450, y=175..232 -->
+                <path d="M 467,230 Q 471,220 469,206 Q 467,192 463,181 L 462,175
+                         Q 449,169 429,167 Q 405,165 381,167 Q 357,169 333,173
+                         L 331,179 Q 323,190 322,204 Q 321,218 325,228
+                         Q 331,232 396,232 Q 461,232 467,230 Z"
+                      fill="url(#skinR)" opacity="0.95"/>
+                <ellipse cx="396" cy="204" rx="42" ry="21" fill="rgba(255,210,170,0.18)"/>
+
+                <!-- Right Index → J x=340, tip y=93 -->
+                <g id="rf-RI" class="hand-finger" style="transform-origin:340px 93px;">
+                  <path d="M 336,176 C 335,160 334,137 334,115 Q 336,99 340,93 Q 344,99 346,115 C 346,137 345,160 344,176 Z"
+                        fill="#FFCC80" stroke="#A07818" stroke-width="0.6" opacity="0.97"/>
+                  <line x1="336" y1="154" x2="344" y2="154" stroke="rgba(0,0,0,0.15)" stroke-width="1" stroke-linecap="round"/>
+                  <line x1="336" y1="130" x2="344" y2="130" stroke="rgba(0,0,0,0.10)" stroke-width="0.8" stroke-linecap="round"/>
+                  <path d="M 337,101 Q 340,91 343,101" fill="#FFE0C8" stroke="#B07040" stroke-width="0.5" opacity="0.90"/>
+                  <ellipse cx="340" cy="93" rx="5" ry="2.5" fill="#FFCC80" opacity="0.45"/>
+                </g>
+
+                <!-- Right Middle → K x=379, tip y=93 -->
+                <g id="rf-RM" class="hand-finger" style="transform-origin:379px 93px;">
+                  <path d="M 375,175 C 374,157 373,132 373,110 Q 374,95 379,93 Q 384,95 385,110 C 385,132 384,157 383,175 Z"
+                        fill="#80DEEA" stroke="#008090" stroke-width="0.6" opacity="0.97"/>
+                  <line x1="375" y1="152" x2="383" y2="152" stroke="rgba(0,0,0,0.15)" stroke-width="1" stroke-linecap="round"/>
+                  <line x1="375" y1="127" x2="383" y2="127" stroke="rgba(0,0,0,0.10)" stroke-width="0.8" stroke-linecap="round"/>
+                  <path d="M 376,101 Q 379,90 382,101" fill="#FFE0C8" stroke="#B07040" stroke-width="0.5" opacity="0.90"/>
+                  <ellipse cx="379" cy="93" rx="5.5" ry="2.5" fill="#80DEEA" opacity="0.45"/>
+                </g>
+
+                <!-- Right Ring → L x=418, tip y=93 -->
+                <g id="rf-RR" class="hand-finger" style="transform-origin:418px 93px;">
+                  <path d="M 414,176 C 413,160 412,137 412,115 Q 414,99 418,93 Q 422,99 424,115 C 424,137 423,160 422,176 Z"
+                        fill="#FFAB91" stroke="#B04828" stroke-width="0.6" opacity="0.97"/>
+                  <line x1="414" y1="154" x2="422" y2="154" stroke="rgba(0,0,0,0.15)" stroke-width="1" stroke-linecap="round"/>
+                  <line x1="414" y1="130" x2="422" y2="130" stroke="rgba(0,0,0,0.10)" stroke-width="0.8" stroke-linecap="round"/>
+                  <path d="M 415,101 Q 418,91 421,101" fill="#FFE0C8" stroke="#B07040" stroke-width="0.5" opacity="0.90"/>
+                  <ellipse cx="418" cy="93" rx="5" ry="2.5" fill="#FFAB91" opacity="0.45"/>
+                </g>
+
+                <!-- Right Pinky → ; x=457, tip y=93 -->
+                <g id="rf-RP" class="hand-finger" style="transform-origin:457px 93px;">
+                  <path d="M 454,177 C 453,162 452,141 452,120 Q 453,103 457,93 Q 461,103 462,120 C 462,141 461,162 460,177 Z"
+                        fill="#EF9A9A" stroke="#A82828" stroke-width="0.6" opacity="0.97"/>
+                  <line x1="454" y1="156" x2="460" y2="156" stroke="rgba(0,0,0,0.15)" stroke-width="1" stroke-linecap="round"/>
+                  <line x1="454" y1="132" x2="460" y2="132" stroke="rgba(0,0,0,0.10)" stroke-width="0.8" stroke-linecap="round"/>
+                  <path d="M 455,101 Q 457,91 459,101" fill="#FFE0C8" stroke="#B07040" stroke-width="0.5" opacity="0.90"/>
+                  <ellipse cx="457" cy="93" rx="4.5" ry="2.5" fill="#EF9A9A" opacity="0.45"/>
+                </g>
+
+                <!-- Right Thumb — tip on spacebar center x=311, y=169 -->
+                <g id="rf-TH" class="hand-finger" style="transform-origin:311px 169px;">
+                  <path d="M 327,215 Q 330,204 328,192 Q 324,179 314,171
+                           Q 306,165 296,166 Q 287,168 285,178
+                           Q 284,188 291,197 Q 300,206 313,211 Q 324,215 327,215 Z"
+                        fill="#90A4AE" stroke="#4A6070" stroke-width="0.6" opacity="0.93"/>
+                  <path d="M 294,165 Q 286,161 283,170" fill="#FFE0C8" stroke="#B07040" stroke-width="0.5" opacity="0.85"/>
+                  <ellipse cx="294" cy="168" rx="8" ry="3" fill="#90A4AE" opacity="0.38"/>
+                </g>
+              </g>
+            </svg>
+          </div><!-- #hands-overlay-wrap -->
         </div><!-- #kb-scale-wrap -->
 
         <!-- Next Key hint (below keyboard) -->
@@ -992,6 +1204,8 @@ function buildKeyboard(){
     kb.appendChild(re);
   });
   buildLegend();
+  // Let scaleKB handle layout; SVG overflows via overflow:visible
+  setTimeout(scaleKB, 50);
 }
 function buildLegend(){
   var lg=document.getElementById('lv-finger-legend');if(!lg)return;
@@ -1008,18 +1222,100 @@ function scaleKB(){
   var kbWrap=document.getElementById('kb-scale-wrap');
   var kb=document.getElementById('learn-kb');
   if(!container||!kbWrap||!kb)return;
-  /* Scale the whole wrapper (keyboard + transparent hand overlay) together */
+  /* SVG viewBox: 543×187 (matches keyboard exactly), overflow:visible lets
+     hand palms (which extend to y=232) bleed below the keyboard bottom.
+     Below-keyboard hand area = 232-187 = 45px at natural size. */
+  var HAND_BELOW=45;
   var avail=container.clientWidth-28;
-  var natural=14*(U+G)+2;
+  var natural=14*(U+G)+2;  /* 543px */
   if(avail<natural){
     var sc=avail/natural;
     kbWrap.style.transform='scale('+sc+')';
     kbWrap.style.transformOrigin='top center';
-    kbWrap.style.marginBottom=((sc-1)*kb.scrollHeight)+'px';
+    kbWrap.style.marginBottom=((sc-1)*187 + HAND_BELOW*sc)+'px';
   }else{
     kbWrap.style.transform='';
-    kbWrap.style.marginBottom='';
+    kbWrap.style.marginBottom=HAND_BELOW+'px';
   }
+  alignHandsToKeys();
+}
+
+/* ── Dynamically snap each fingertip exactly onto its home key ──
+   The static SVG coordinates are only an approximation: real key
+   centers shift slightly depending on border/box-sizing and the
+   keyboard's own flex layout, so we measure the *actual* rendered
+   key positions and nudge each finger's resting transform to match
+   exactly, on top of the hand-level press/return animation. */
+var _HOME_FINGER_KEY={
+  'lf-LP':'KeyA','lf-LR':'KeyS','lf-LM':'KeyD','lf-LI':'KeyF',
+  'rf-RI':'KeyJ','rf-RM':'KeyK','rf-RR':'KeyL','rf-RP':'Semicolon'
+};
+var _leftHandBaseDx=0,_rightHandBaseDx=0;
+function alignHandsToKeys(){
+  var svg=document.getElementById('hands-overlay-svg');
+  if(!svg)return;
+  var svgRect=svg.getBoundingClientRect();
+  if(!svgRect.width||!svgRect.height)return;
+  /* The SVG uses viewBox="0 0 543 187" with preserveAspectRatio="xMidYMin meet".
+     Its CSS box is width:100% (can be much wider than 543 once scaled to fit
+     the keyboard) but height is fixed at 187px, so "meet" scales content by
+     the smaller of the two ratios — almost always the height ratio — and
+     letterboxes (centers) it horizontally. We must replicate that exact
+     scale + margin to know where viewBox coordinates actually land. */
+  var scaleX=svgRect.width/543, scaleY=svgRect.height/187;
+  var scale=Math.min(scaleX,scaleY);
+  var marginX=(svgRect.width-543*scale)/2;
+
+  function dxFor(fid){
+    var fingerEl=document.getElementById(fid);
+    var keyEl=document.querySelector('.lk-key[data-code="'+_HOME_FINGER_KEY[fid]+'"]');
+    if(!fingerEl||!keyEl)return null;
+    var keyRect=keyEl.getBoundingClientRect();
+    if(!keyRect.width)return null;
+    var keyCenterX=keyRect.left+keyRect.width/2;
+    var to=fingerEl.style.transformOrigin||'';
+    var m=to.match(/^([\d.]+)px/);
+    var originX=m?parseFloat(m[1]):0;
+    var staticPx=svgRect.left+marginX+originX*scale;
+    return (keyCenterX-staticPx)/scale;
+  }
+
+  /* Compute each finger's raw offset, then average per hand so the whole
+     hand (palm + knuckles + fingers + thumb) moves together as one piece —
+     only a tiny leftover per-finger nudge is applied on top so fingertips
+     still land exactly on their keys. */
+  var leftIds=['lf-LP','lf-LR','lf-LM','lf-LI'];
+  var rightIds=['rf-RI','rf-RM','rf-RR','rf-RP'];
+  var leftDx={}, rightDx={};
+  var leftSum=0,leftN=0,rightSum=0,rightN=0;
+  leftIds.forEach(function(id){var d=dxFor(id);if(d!==null){leftDx[id]=d;leftSum+=d;leftN++;}});
+  rightIds.forEach(function(id){var d=dxFor(id);if(d!==null){rightDx[id]=d;rightSum+=d;rightN++;}});
+  var leftHandDx=leftN?leftSum/leftN:0;
+  var rightHandDx=rightN?rightSum/rightN:0;
+
+  var lHandEl=document.getElementById('left-hand-group');
+  var rHandEl=document.getElementById('right-hand-group');
+  _leftHandBaseDx=leftHandDx;
+  _rightHandBaseDx=rightHandDx;
+  if(lHandEl)lHandEl.style.transform='translate('+leftHandDx.toFixed(2)+'px,0)';
+  if(rHandEl)rHandEl.style.transform='translate('+rightHandDx.toFixed(2)+'px,0)';
+
+  leftIds.forEach(function(id){
+    var el=document.getElementById(id);
+    if(!el||leftDx[id]===undefined)return;
+    var residual=leftDx[id]-leftHandDx;
+    el.dataset.homeDx=residual.toFixed(2);
+    el.style.setProperty('--fdx',residual.toFixed(2)+'px');
+    el.style.transform='translate('+residual.toFixed(2)+'px,0)';
+  });
+  rightIds.forEach(function(id){
+    var el=document.getElementById(id);
+    if(!el||rightDx[id]===undefined)return;
+    var residual=rightDx[id]-rightHandDx;
+    el.dataset.homeDx=residual.toFixed(2);
+    el.style.setProperty('--fdx',residual.toFixed(2)+'px');
+    el.style.transform='translate('+residual.toFixed(2)+'px,0)';
+  });
 }
 
 function setTarget(ch){
@@ -1035,21 +1331,19 @@ function setTarget(ch){
   var nd=document.getElementById('nkh-dot');if(nd)nd.style.background=FC[f]||'#fff';
   var nf=document.getElementById('nkh-fname');if(nf)nf.textContent=FN[f]||'';
   animateHandFinger(f);
-  // Update hands label
-  var hl=document.getElementById('hands-key-label');if(hl)hl.textContent=(ch===' '?'SPACE':ch.toUpperCase())+' — '+( FN[f]||'');
+  /* Pre-position hand toward target key */
+  moveHandToKey(code);
 }
 /* Hand finger animation helpers */
 var _fingerMap={
   LP:'lf-LP', LR:'lf-LR', LM:'lf-LM', LI:'lf-LI',
-  TH:'lf-TH',  /* left thumb for TH */
+  TH:'lf-TH',
   RI:'rf-RI',  RM:'rf-RM',  RR:'rf-RR',  RP:'rf-RP'
 };
 var _currentFingerEl=null;
 function animateHandFinger(finger){
   // Reset previous glow
-  if(_currentFingerEl){
-    _currentFingerEl.classList.remove('finger-glow','finger-glow-teal');
-  }
+  document.querySelectorAll('.hand-finger.finger-glow').forEach(function(el){el.classList.remove('finger-glow','finger-glow-teal');});
   // For TH (thumbs) show both
   var ids=[];
   if(finger==='TH'){ids=['lf-TH','rf-TH'];}
@@ -1068,18 +1362,57 @@ function triggerFingerPress(finger){
   ids.forEach(function(id){
     var g=document.getElementById(id);
     if(!g)return;
-    // Re-trigger animation by cloning
-    var clone=g.cloneNode(true);
-    clone.classList.add('finger-active');
-    clone.classList.add('finger-glow-teal');
-    clone.classList.remove('finger-glow');
-    g.parentNode.replaceChild(clone,g);
+    g.classList.remove('finger-active');
+    void g.offsetWidth; /* force reflow to restart animation */
+    g.classList.add('finger-active','finger-glow-teal');
+    g.classList.remove('finger-glow');
     setTimeout(function(){
-      clone.classList.remove('finger-active');
-      clone.classList.remove('finger-glow-teal');
-      clone.classList.add('finger-glow');
-    },450);
+      g.classList.remove('finger-active','finger-glow-teal');
+      g.classList.add('finger-glow');
+    },380);
   });
+}
+
+/* ── TypeClub-style: move hand toward target key ── */
+/* Row offsets: home=0, top row reach up, bottom row reach down, number row stretch up more */
+var _ROW_OFFSET={
+  'Backquote':-36,'Digit1':-36,'Digit2':-36,'Digit3':-36,'Digit4':-36,'Digit5':-36,
+  'Digit6':-36,'Digit7':-36,'Digit8':-36,'Digit9':-36,'Digit0':-36,'Minus':-36,'Equal':-36,
+  'KeyQ':-19,'KeyW':-19,'KeyE':-19,'KeyR':-19,'KeyT':-19,
+  'KeyY':-19,'KeyU':-19,'KeyI':-19,'KeyO':-19,'KeyP':-19,
+  'BracketLeft':-19,'BracketRight':-19,'Backslash':-19,
+  'KeyA':0,'KeyS':0,'KeyD':0,'KeyF':0,'KeyG':0,
+  'KeyH':0,'KeyJ':0,'KeyK':0,'KeyL':0,'Semicolon':0,'Quote':0,
+  'KeyZ':17,'KeyX':17,'KeyC':17,'KeyV':17,'KeyB':17,
+  'KeyN':17,'KeyM':17,'Comma':17,'Period':17,'Slash':17,
+  'ShiftLeft':17,'ShiftRight':17,
+  'Space':55,
+  'CapsLock':0
+};
+var _lhEl=null,_rhEl=null;
+var _lhTimer=null,_rhTimer=null;
+function moveHandToKey(code){
+  if(!_lhEl)_lhEl=document.getElementById('left-hand-group');
+  if(!_rhEl)_rhEl=document.getElementById('right-hand-group');
+  var dy=_ROW_OFFSET[code]||0;
+  var f=K2F[code];
+  if(!f||f==='TH')return;
+  var isLeft=f.charAt(0)==='L';
+  var el=isLeft?_lhEl:_rhEl;
+  if(!el)return;
+  /* Column offset: move hand slightly toward stretched key */
+  var colOff=0;
+  if(code==='KeyB'||code==='KeyT'||code==='Digit5'||code==='Digit6')colOff=isLeft?12:-12;
+  el.style.transition='transform 0.08s ease-out';
+  el.style.transform='translate('+((isLeft?_leftHandBaseDx:_rightHandBaseDx)+colOff)+'px,'+dy+'px)';
+  /* Return to home after press. Read the base offset live (not captured)
+     since alignHandsToKeys() may update it after this timer is queued. */
+  clearTimeout(isLeft?_lhTimer:_rhTimer);
+  var t=setTimeout(function(){
+    el.style.transition='transform 0.18s ease-in-out';
+    el.style.transform='translate('+(isLeft?_leftHandBaseDx:_rightHandBaseDx)+'px,0)';
+  },230);
+  if(isLeft)_lhTimer=t;else _rhTimer=t;
 }
 
 function flashKey(code,ok){
@@ -1111,6 +1444,7 @@ function engineType(ch){
   var code=C2K[ch]||(ch===' '?'Space':null);
   var f=code?K2F[code]||'TH':'TH';
   triggerFingerPress(f);
+  if(code)moveHandToKey(code);
   S.typed.push({ch:ch,ok:ok});S.pos++;
   if(code)flashKey(code,ok);
   renderDisplay();updateStats();
