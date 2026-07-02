@@ -1331,8 +1331,6 @@ function setTarget(ch){
   var nd=document.getElementById('nkh-dot');if(nd)nd.style.background=FC[f]||'#fff';
   var nf=document.getElementById('nkh-fname');if(nf)nf.textContent=FN[f]||'';
   animateHandFinger(f);
-  /* Pre-position hand toward target key */
-  moveHandToKey(code);
 }
 /* Hand finger animation helpers */
 var _fingerMap={
@@ -1403,11 +1401,21 @@ function moveHandToKey(code){
   /* Column offset: move hand slightly toward stretched key */
   var colOff=0;
   if(code==='KeyB'||code==='KeyT'||code==='Digit5'||code==='Digit6')colOff=isLeft?12:-12;
+  var baseDx=isLeft?_leftHandBaseDx:_rightHandBaseDx;
+  clearTimeout(isLeft?_lhTimer:_rhTimer);
+  /* Every keystroke gets its own fresh, visible move — even back-to-back
+     keys in the same row (e.g. typing "we" or "cvb"). Without this, the
+     hand would already be sitting at the target from the previous key and
+     the browser has nothing to transition, so it silently looks like it
+     never moved. Snapping instantly to home and forcing a reflow first
+     guarantees every keystroke re-triggers the up/down motion. */
+  el.style.transition='none';
+  el.style.transform='translate('+baseDx+'px,0)';
+  void el.offsetWidth; /* force reflow */
   el.style.transition='transform 0.08s ease-out';
-  el.style.transform='translate('+((isLeft?_leftHandBaseDx:_rightHandBaseDx)+colOff)+'px,'+dy+'px)';
+  el.style.transform='translate('+(baseDx+colOff)+'px,'+dy+'px)';
   /* Return to home after press. Read the base offset live (not captured)
      since alignHandsToKeys() may update it after this timer is queued. */
-  clearTimeout(isLeft?_lhTimer:_rhTimer);
   var t=setTimeout(function(){
     el.style.transition='transform 0.18s ease-in-out';
     el.style.transform='translate('+(isLeft?_leftHandBaseDx:_rightHandBaseDx)+'px,0)';
@@ -1429,6 +1437,7 @@ function engineInit(text){
   S.text=text;S.pos=0;S.typed=[];S.startTime=null;
   S.keystrokes=0;S.errors=0;S.streak=0;S.exDone=false;
   renderDisplay();updateStats();setTarget(text[0]||null);
+  if(text&&text[0]){var c0=C2K[text[0]]||(text[0]===' '?'Space':null);if(c0)moveHandToKey(c0);}
   var bc=document.getElementById('btn-continue');var br=document.getElementById('btn-retry');
   if(bc)bc.classList.remove('visible');if(br)br.classList.remove('visible');
   var d=document.getElementById('lv-display');if(d)d.classList.remove('lv-done-flash');
@@ -1454,6 +1463,8 @@ function engineType(ch){
 function engineBS(){
   if(S.pos<=0||S.exDone)return;
   S.pos--;S.typed.pop();renderDisplay();setTarget(S.text[S.pos]);updateStats();
+  var bc=C2K[S.text[S.pos]]||(S.text[S.pos]===' '?'Space':null);
+  if(bc)moveHandToKey(bc);
 }
 function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 function renderDisplay(){
