@@ -1,0 +1,15 @@
+version: 2
+updates:
+  # Keep GitHub Actions themselves patched
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+
+  # If/when you add a package.json (build tooling, tests, etc.), Dependabot
+  # will start scanning it automatically once this block exists.
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
