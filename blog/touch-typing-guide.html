@@ -50,7 +50,13 @@
       "datePublished": "2026-03-19",
       "dateModified": "2026-03-19",
       "url": "https://www.rockettyping.com/blog/touch-typing-guide.html",
-      "image": "https://www.rockettyping.com/images/og-banner.png",
+      "image": [
+        "https://www.rockettyping.com/images/og-banner.png",
+        "https://www.rockettyping.com/blog/images/touch-typing-home-row-finger-placement-beginners.webp",
+        "https://www.rockettyping.com/blog/images/touch-typing-finger-color-map-home-row.webp",
+        "https://www.rockettyping.com/blog/images/touch-typing-left-hand-home-row-finger-placement.webp",
+        "https://www.rockettyping.com/blog/images/touch-typing-right-hand-home-row-finger-placement.webp"
+      ],
       "mainEntityOfPage": {"@type": "WebPage", "@id": "https://www.rockettyping.com/blog/touch-typing-guide.html"}
     }
     </script>
@@ -71,11 +77,201 @@
         .cta-btn { background: #4ecdc4; color: #1e2022; }
         .cta-btn:hover { box-shadow: 0 8px 24px rgba(78,205,196,0.3); }
         footer a { color: #4ecdc4; }
+
+        /* ---------- Article images ---------- */
+        .img-figure {
+            margin: 28px 0;
+            text-align: center;
+        }
+        .img-figure img {
+            max-width: 100%;
+            height: auto;
+            display: inline-block;
+            border-radius: 12px;
+            border: 1px solid rgba(78, 205, 196, 0.25);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+            cursor: zoom-in;
+            transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+            background: #1e2022;
+        }
+        .img-figure img:hover {
+            transform: translateY(-3px) scale(1.01);
+            box-shadow: 0 12px 28px rgba(78, 205, 196, 0.25);
+            border-color: rgba(78, 205, 196, 0.6);
+        }
+        .img-figure figcaption {
+            margin-top: 10px;
+            font-size: 13px;
+            color: #9aa0a6;
+            font-family: 'Inter', sans-serif;
+            letter-spacing: 0.2px;
+        }
+        .img-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            margin: 28px 0;
+        }
+        .img-row .img-figure {
+            flex: 1 1 260px;
+            max-width: 360px;
+            margin: 0;
+        }
+
+        /* ---------- Lightbox ---------- */
+        .lightbox-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(10, 11, 12, 0.92);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+            z-index: 9999;
+            padding: 40px 20px;
+        }
+        .lightbox-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        .lightbox-content {
+            position: relative;
+            max-width: min(90vw, 1100px);
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+        }
+        .lightbox-overlay.active .lightbox-content {
+            transform: scale(1);
+        }
+        .lightbox-content img {
+            max-width: 100%;
+            max-height: 80vh;
+            border-radius: 10px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(78, 205, 196, 0.4);
+        }
+        .lightbox-caption {
+            color: #d7dadc;
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            margin-top: 16px;
+            text-align: center;
+            max-width: 700px;
+        }
+        .lightbox-close {
+            position: absolute;
+            top: -46px;
+            right: -6px;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(78, 205, 196, 0.5);
+            color: #4ecdc4;
+            font-size: 20px;
+            line-height: 1;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s ease, transform 0.2s ease;
+        }
+        .lightbox-close:hover {
+            background: rgba(78, 205, 196, 0.15);
+            transform: rotate(90deg);
+        }
+        .lightbox-hint {
+            color: #6b7175;
+            font-size: 12px;
+            margin-top: 6px;
+            font-family: 'Inter', sans-serif;
+        }
+        @media (max-width: 600px) {
+            .lightbox-close { top: -40px; right: 0; }
+        }
+
+        /* =====================================================
+           RESPONSIVE ADDITIONS — fills gaps blog.css doesn't cover
+           for this page's new elements (images, lightbox, table
+           scroll). Typography, article-wrap width/padding, and
+           step-box stacking are already handled correctly by
+           blog.css itself, so they are intentionally left alone
+           here to avoid fighting the shared stylesheet.
+           ===================================================== */
+        body { overflow-x: hidden; }
+
+        /* Header: defensive flex-wrap so nav never overflows on very
+           narrow screens (blog.css already sizes header/logo per
+           breakpoint after the fix below) */
+        header { flex-wrap: wrap; row-gap: 8px; }
+        header nav { flex-wrap: wrap; }
+
+        /* Table: horizontal scroll instead of squeezing on phones —
+           blog.css styles the table itself but has no overflow
+           handling, so very narrow screens would otherwise force
+           the whole page to scroll sideways */
+        .table-scroll {
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            margin: 28px 0;
+        }
+        .finger-table { min-width: 480px; margin: 0; }
+
+        /* Image rows: 2-up on tablets+, single column on phones */
+        @media (max-width: 480px) {
+            .img-row { flex-direction: column; }
+            .img-row .img-figure { max-width: 100%; }
+        }
+
+        /* CTA button: full-width on small screens for easy tapping */
+        @media (max-width: 480px) {
+            .cta-btn { display: block; width: 100%; text-align: center; }
+        }
     </style>
+    <script type="application/ld+json">
+{
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "How long does it take to learn touch typing?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Most beginners reach basic touch typing competence, covering every key without looking, within 4 to 6 weeks of daily practice. Matching your old hunt-and-peck speed typically takes another 2 to 3 months, and after about 6 months most people are noticeably faster than they ever were before switching."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Which finger goes on which key in touch typing?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Each finger rests on the home row and covers the keys directly above and below it. For example, the left index finger covers F, R, V, T, G, and B, while the right index finger covers J, Y, H, N, U, and M. The full finger-to-key map is listed in the table above."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Why does my typing speed get worse when I start touch typing?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "You are replacing years of ingrained hunt-and-peck muscle memory with a new pattern, so a temporary drop in speed for roughly 3 to 6 weeks is normal and expected. Typists who push through this phase consistently end up faster than before."
+          }
+        }
+      ]
+    }
+    </script>
 </head>
 <body>
     <header>
-        <a href="/"><img src="/images/logo.png" alt="Rocket Typing Logo"></a>
+        <a href="/"><img src="/images/logo.png" alt="Rocket Typing Logo" ></a>
         <nav>
             <a href="/blog/">← Blog</a>
             <a href="/">Typing Test</a>
@@ -104,35 +300,27 @@
         <p>Touch typing is a method of typing where you use all ten fingers and never need to look at the keyboard. Each finger is assigned specific keys on the keyboard, and through repetition, your fingers learn exactly where each key is — the same way a pianist doesn't look at the piano keys while playing.</p>
         <p>The average hunt-and-peck typist (looking at the keyboard and using 2–4 fingers) maxes out at around 40 WPM. The average touch typist reaches 60–80 WPM with ease, and expert touch typists regularly hit 100+ WPM. The difference is entirely in the method.</p>
 
+       <figure class="img-figure">
+           <img src="images/touch-typing-home-row-finger-placement-beginners.webp"
+                alt="Touch typing home row finger placement guide for beginners keyboard layout"
+                width="960" height="1280" loading="eager" fetchpriority="high" class="zoomable">
+           <figcaption>Home row finger placement — where every finger rests before it moves</figcaption>
+       </figure>
+
+
+
         <h2>🏠 Understanding the Home Row</h2>
         <p>The home row is the middle row of letter keys on a standard QWERTY keyboard — the row containing A, S, D, F, G, H, J, K, L. This is where your fingers live when not pressing any key. Every keystroke starts and ends at the home row.</p>
         <p>Notice the small raised bump on the F and J keys. These bumps exist specifically for touch typists — they let you feel when your index fingers are correctly positioned without looking. When you sit down to type, find these bumps with your index fingers and place all eight fingers on the home row.</p>
 
-        <div class="keyboard-visual">
-            <h3>FINGER COLOUR MAP — HOME ROW</h3>
-            <div class="key-row">
-                <div class="key left-pinky home">A</div>
-                <div class="key left-ring home">S</div>
-                <div class="key left-middle home">D</div>
-                <div class="key left-index home">F</div>
-                <div class="key left-index">G</div>
-                <div class="key right-index">H</div>
-                <div class="key right-index home">J</div>
-                <div class="key right-middle home">K</div>
-                <div class="key right-ring home">L</div>
-                <div class="key right-pinky home">;</div>
-            </div>
-            <div class="legend">
-                <div class="legend-item"><div class="legend-dot" style="background:#ff6384;"></div>Pinky</div>
-                <div class="legend-item"><div class="legend-dot" style="background:#ff9f40;"></div>Ring</div>
-                <div class="legend-item"><div class="legend-dot" style="background:#ffcd56;"></div>Middle</div>
-                <div class="legend-item"><div class="legend-dot" style="background:#4bc0c0;"></div>Left Index</div>
-                <div class="legend-item"><div class="legend-dot" style="background:#36a2eb;"></div>Right Index</div>
-                <div class="legend-item"><div class="legend-dot" style="background:#9966ff;"></div>Right Middle</div>
-            </div>
-        </div>
-
+        <figure class="img-figure">
+            <img src="images/touch-typing-finger-color-map-home-row.webp"
+                 alt="Home row keyboard finger color map showing which fingers should press A, S, D, F, G, H, J, K, L, and ; keys."
+                 width="895" height="252" loading="lazy" class="zoomable">
+            <figcaption>Finger colour map — match each key to the finger responsible for it</figcaption>
+        </figure>
         <h2>🗺️ The Complete Finger Assignment Map</h2>
+        <div class="table-scroll">
         <table class="finger-table">
             <tr>
                 <th>Finger</th>
@@ -150,6 +338,7 @@
             <tr><td>Right Ring</td><td>O, L, period (.), 9</td><td>L</td></tr>
             <tr><td>Right Pinky</td><td>P, ;, /, 0, Enter, Backspace, Shift</td><td>;</td></tr>
         </table>
+        </div>
 
         <h2>📋 Step-by-Step Learning Plan</h2>
 
@@ -158,6 +347,20 @@
             <div class="step-content">
                 <h3>Week 1: Learn the Home Row Only</h3>
                 <p>Spend the entire first week typing only home row keys: A S D F G H J K L ;. This feels slow and boring, but it is the critical foundation. Type simple words using only these letters — like "fall", "glad", "flask", "flesh". Do not move on until home row feels natural and automatic.</p>
+            <div class="img-row">
+                <figure class="img-figure">
+                    <img src="images/touch-typing-left-hand-home-row-finger-placement.webp"
+                         alt="Left hand finger placement on the home row showing the correct position for A, S, D, and F keys in touch typing."
+                         width="900" height="2451" loading="lazy" class="zoomable">
+                    <figcaption>Left hand — A, S, D, F</figcaption>
+                </figure>
+                <figure class="img-figure">
+                    <img src="images/touch-typing-right-hand-home-row-finger-placement.webp"
+                         alt="Right hand finger placement on the home row showing the correct position for J, K, L, and semicolon keys in touch typing."
+                         width="786" height="2252" loading="lazy" class="zoomable">
+                    <figcaption>Right hand — J, K, L, ;</figcaption>
+                </figure>
+            </div>
             </div>
         </div>
 
@@ -166,6 +369,12 @@
             <div class="step-content">
                 <h3>Week 2: Add the Top Row (QWERTY)</h3>
                 <p>Introduce the top row: Q W E R T Y U I O P. Practice reaching up with the correct finger for each key, then immediately returning to home row. Drill words that use combinations of top row and home row keys. Keep accuracy above 95% — do not rush.</p>
+           
+   <!-- Week 2: Top Row (QWERTY) -->
+<figure class="img-figure">
+    <img src="images/top-row-qwerty-keyboard.webp" alt="Top row keyboard keys QWERTYUIOP" width="1400" height="173" loading="lazy" class="zoomable">
+    <figcaption>Top row — Q W E R T Y U I O P</figcaption>
+</figure>
             </div>
         </div>
 
@@ -174,6 +383,12 @@
             <div class="step-content">
                 <h3>Week 3: Add the Bottom Row (ZXCVBNM)</h3>
                 <p>Add the bottom row: Z X C V B N M and punctuation. Reaching down is harder for most people — especially the pinky for Z. Practice deliberate downward reaches and immediately return to home row. By end of week 3, you should be able to type any word on the keyboard.</p>
+        <!-- Week 3: Bottom Row (ZXCVBNM) -->
+<figure class="img-figure">
+    <img src="images/bottom-row-zxcvbnm-keyboard.webp" alt="Bottom row keyboard keys ZXCVBNM" width="1400" height="267" loading="lazy" class="zoomable">
+    <figcaption>Bottom row — Z X C V B N M</figcaption>
+</figure>
+
             </div>
         </div>
 
@@ -182,6 +397,12 @@
             <div class="step-content">
                 <h3>Week 4: Numbers and Punctuation</h3>
                 <p>Add numbers (top row, same finger as the letter below) and common punctuation. Numbers are often the hardest — most people use wrong fingers for them for years. Learn them correctly now. Practice typing dates, phone numbers, and addresses.</p>
+           
+<!-- Week 4: Numbers and Punctuation -->
+<figure class="img-figure">
+    <img src="images/number-row-keyboard.webp" alt="Keyboard number row with punctuation keys" width="1400" height="173" loading="lazy" class="zoomable">
+    <figcaption>Number row — 1 2 3 4 5 6 7 8 9 0</figcaption>
+</figure>
             </div>
         </div>
 
@@ -213,11 +434,27 @@
         <p>Most dedicated beginners reach basic touch typing competence (all keys, no looking) within 4–6 weeks. Reaching the same speed as your old hunt-and-peck style typically takes 2–3 months. After 6 months of regular practice, most touch typists are significantly faster than they ever were before.</p>
         <p>The key variable is consistency. Practicing 15 minutes every day beats 2 hours on Sundays every time. Muscle memory is built through frequency, not volume.</p>
 
-        <div class="cta-box">
+            <div class="seo-box">
+        <h2>Why learning to touch type properly matters</h2>
+        <p>Touch typing removes the biggest bottleneck in most people's typing: constantly glancing down to find keys. Once your fingers memorise the home row and its surrounding zones, your eyes stay on the screen, your error rate drops, and your words-per-minute climbs from the 30–40 WPM range typical of hunt-and-peck typing toward 60–100+ WPM. The finger-placement charts and week-by-week plan above are designed to get you there with a structured, repeatable routine rather than trial and error.</p>
+    </div>
+
+<div class="related-box">
+        <h2>Related typing guides</h2>
+        <p>Explore related Rocket Typing posts to learn more and keep improving faster.</p>
+        <ul>
+            <li><a href="/blog/advanced-touch-typing-techniques.html">Advanced Touch Typing Techniques for Faster, Cleaner Typing</a></li>
+            <li><a href="/blog/consistency-in-typing.html">What Is Consistency in Typing? The Complete Guide to Improving Speed, Accuracy, and Productivity – Rocket Typing</a></li>
+            <li><a href="/blog/how-to-improve-typing-accuracy.html">How to Improve Typing Accuracy: The Complete Guide – Rocket Typing</a></li>
+        </ul>
+    </div>
+
+<div class="cta-box">
             <h3>🖐 Start Practising Now</h3>
             <p>Apply what you just learned. Take a free typing test on Rocket Typing — use Easy mode to focus on accuracy, and keep your eyes on the screen instead of the keyboard.</p>
             <a href="/" class="cta-btn">Open Typing Test →</a>
         </div>
+ 
     </div>
 
     <footer>
@@ -231,5 +468,54 @@
         </p>
         <p style="font-size:12px;">&copy; 2026 <strong style="color:#4ecdc4;">Rocket Typing</strong>. All rights reserved.</p>
     </footer>
+
+    <!-- Lightbox for zoomable article images -->
+    <div class="lightbox-overlay" id="lightboxOverlay">
+        <div class="lightbox-content">
+            <button class="lightbox-close" id="lightboxClose" aria-label="Close image">✕</button>
+            <img id="lightboxImg" src="" alt="">
+            <p class="lightbox-caption" id="lightboxCaption"></p>
+            <p class="lightbox-hint">Click anywhere outside the image, press Esc, or tap ✕ to close</p>
+        </div>
+    </div>
+
+    <script>
+        (function () {
+            const overlay   = document.getElementById('lightboxOverlay');
+            const lbImg     = document.getElementById('lightboxImg');
+            const lbCaption = document.getElementById('lightboxCaption');
+            const closeBtn  = document.getElementById('lightboxClose');
+
+            function openLightbox(img) {
+                lbImg.src = img.getAttribute('src');
+                lbImg.alt = img.getAttribute('alt') || '';
+                const figure = img.closest('figure');
+                const caption = figure ? figure.querySelector('figcaption') : null;
+                lbCaption.textContent = caption ? caption.textContent : (img.getAttribute('alt') || '');
+                overlay.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+
+            function closeLightbox() {
+                overlay.classList.remove('active');
+                document.body.style.overflow = '';
+                setTimeout(() => { lbImg.src = ''; }, 300);
+            }
+
+            document.querySelectorAll('img.zoomable').forEach(img => {
+                img.addEventListener('click', () => openLightbox(img));
+            });
+
+            closeBtn.addEventListener('click', closeLightbox);
+
+            overlay.addEventListener('click', (e) => {
+                if (e.target === overlay) closeLightbox();
+            });
+
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && overlay.classList.contains('active')) closeLightbox();
+            });
+        })();
+    </script>
 </body>
 </html>
