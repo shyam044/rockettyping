@@ -26,7 +26,8 @@ body {
 
 /* ---------- Header ---------- */
 header {
-    padding: 20px 40px;
+    height: 76px;
+    padding: 0 40px;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -37,7 +38,7 @@ header {
     z-index: 100;
     backdrop-filter: blur(10px);
 }
-header img { width: 100px; }
+header img { max-height: 100px; width: auto; }
 header nav a {
     color: var(--accent);
     text-decoration: none;
@@ -440,23 +441,35 @@ code { background: #1e2022; color: #4ecdc4; padding: 2px 7px; border-radius: 4px
 .read-link { font-size: 13px; color: #e2b714; font-weight: 600; font-family: 'Roboto Mono', monospace; }
 
 /* ---------- Footer ---------- */
-footer { background: #2b2d30; border-top: 1px solid #3a3d41; padding: 20px; text-align: center; color: #666; font-size: 13px; }
-footer a { color: var(--accent); text-decoration: none; margin: 0 8px; }
+footer { 
+    background: #2b2d30; 
+    border-top: 1px solid #3a3d41; 
+    padding: 28px 40px; 
+    text-align: center; 
+    color: #666; 
+    font-size: 13px;
+    margin-top: 60px;
+}
+footer p { margin: 8px 0; }
+footer a { 
+    color: var(--accent); 
+    text-decoration: none; 
+    margin: 0 4px;
+    transition: opacity 0.2s;
+}
+footer a:hover { opacity: 0.8; }
 
 /* ---------- Responsive ---------- */
 @media (max-width: 600px) {
-    header { padding: 15px 20px; }
+    header {
+        height: 60px;
+        padding: 0 20px;
+    }
+    header img { max-height: 75px; width: auto; }
     .hero  { padding: 50px 20px 40px; }
     .stat-row     { grid-template-columns: 1fr; }
     .compare-grid { grid-template-columns: 1fr; }
     .article-wrap { padding: 40px 16px 80px; }
     .job-card  { flex-direction: column; gap: 12px; }
     .step-box  { flex-direction: column; gap: 12px; }
-}header {
-    height: 70px;
-    padding: 0 40px;
-}
-
-header img {
-    width: 90px;
 }
