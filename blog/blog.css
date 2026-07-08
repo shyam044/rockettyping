@@ -26,7 +26,7 @@ body {
 
 /* ---------- Header ---------- */
 header {
-    height: 76px;
+    height: 116px;
     padding: 0 40px;
     display: flex;
     align-items: center;
@@ -462,7 +462,7 @@ footer a:hover { opacity: 0.8; }
 /* ---------- Responsive ---------- */
 @media (max-width: 600px) {
     header {
-        height: 60px;
+        height: 88px;
         padding: 0 20px;
     }
     header img { max-height: 75px; width: auto; }
@@ -473,3 +473,155 @@ footer a:hover { opacity: 0.8; }
     .job-card  { flex-direction: column; gap: 12px; }
     .step-box  { flex-direction: column; gap: 12px; }
 }
+       /* ---------- Article images ---------- */
+        .img-figure {
+            margin: 28px 0;
+            text-align: center;
+        }
+        .img-figure img {
+            max-width: 100%;
+            height: auto;
+            display: inline-block;
+            border-radius: 12px;
+            border: 1px solid rgba(78, 205, 196, 0.25);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+            cursor: zoom-in;
+            transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+            background: #1e2022;
+        }
+        .img-figure img:hover {
+            transform: translateY(-3px) scale(1.01);
+            box-shadow: 0 12px 28px rgba(78, 205, 196, 0.25);
+            border-color: rgba(78, 205, 196, 0.6);
+        }
+        .img-figure figcaption {
+            margin-top: 10px;
+            font-size: 13px;
+            color: #9aa0a6;
+            font-family: 'Inter', sans-serif;
+            letter-spacing: 0.2px;
+        }
+        .img-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            margin: 28px 0;
+        }
+        .img-row .img-figure {
+            flex: 1 1 260px;
+            max-width: 360px;
+            margin: 0;
+        }
+
+        /* ---------- Lightbox ---------- */
+        .lightbox-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(10, 11, 12, 0.92);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+            z-index: 9999;
+            padding: 40px 20px;
+        }
+        .lightbox-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        .lightbox-content {
+            position: relative;
+            max-width: min(90vw, 1100px);
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+        }
+        .lightbox-overlay.active .lightbox-content {
+            transform: scale(1);
+        }
+        .lightbox-content img {
+            max-width: 100%;
+            max-height: 80vh;
+            border-radius: 10px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(78, 205, 196, 0.4);
+        }
+        .lightbox-caption {
+            color: #d7dadc;
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            margin-top: 16px;
+            text-align: center;
+            max-width: 700px;
+        }
+        .lightbox-close {
+            position: absolute;
+            top: -46px;
+            right: -6px;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(78, 205, 196, 0.5);
+            color: #4ecdc4;
+            font-size: 20px;
+            line-height: 1;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s ease, transform 0.2s ease;
+        }
+        .lightbox-close:hover {
+            background: rgba(78, 205, 196, 0.15);
+            transform: rotate(90deg);
+        }
+        .lightbox-hint {
+            color: #6b7175;
+            font-size: 12px;
+            margin-top: 6px;
+            font-family: 'Inter', sans-serif;
+        }
+        @media (max-width: 600px) {
+            .lightbox-close { top: -40px; right: 0; }
+        }
+
+        /* =====================================================
+           RESPONSIVE ADDITIONS — fills gaps blog.css doesn't cover
+           for this page's new elements (images, lightbox, table
+           scroll). Typography, article-wrap width/padding, and
+           step-box stacking are already handled correctly by
+           blog.css itself, so they are intentionally left alone
+           here to avoid fighting the shared stylesheet.
+           ===================================================== */
+        body { overflow-x: hidden; }
+
+  
+        /* Table: horizontal scroll instead of squeezing on phones —
+           blog.css styles the table itself but has no overflow
+           handling, so very narrow screens would otherwise force
+           the whole page to scroll sideways */
+        .table-scroll {
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            margin: 28px 0;
+        }
+        .finger-table { min-width: 480px; margin: 0; }
+
+        /* Image rows: 2-up on tablets+, single column on phones */
+        @media (max-width: 480px) {
+            .img-row { flex-direction: column; }
+            .img-row .img-figure { max-width: 100%; }
+        }
+
+        /* CTA button: full-width on small screens for easy tapping */
+        @media (max-width: 480px) {
+            .cta-btn { display: block; width: 100%; text-align: center; }
+        }
