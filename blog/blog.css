@@ -36,7 +36,7 @@ header {
     position: sticky;
     top: 0;
     z-index: 100;
-    backdrop-filter: blur(10px);
+    backdrop-filter: blur(0.1px);
 }
 header img { max-height: 100px; width: auto; }
 header nav a {
