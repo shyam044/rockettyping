@@ -1,0 +1,2125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rocket Typing – Coding Practice</title>
+<meta name="description" content="Practice coding problems with real-time typing analytics on Rocket Typing. Solve beginner to advanced programming problems and track your WPM, accuracy, and consistency.">
+
+<!-- Monaco Editor -->
+<link rel="stylesheet" data-name="vs/editor/editor.main"
+  href="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs/editor/editor.main.min.css">
+
+<!-- Chart.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+
+<!-- Google Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@300;400;500;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+/* ═══════════════════════════════════════════════════════════════════════════
+   ROCKET TYPING – CODING PLATFORM  |  Matching rockettyping.com design
+   Palette: bg #0a0a23 · gold #ffd700 · orange #ff9900 · cyan #00e6cc
+   Font: Roboto Mono (code) · Inter (UI)
+═══════════════════════════════════════════════════════════════════════════ */
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:        #0a0a23;
+  --bg2:       #0f0f2e;
+  --bg3:       #13132d;
+  --gold:      #ffd700;
+  --gold2:     #e2b714;
+  --orange:    #ff9900;
+  --cyan:      #00e6cc;
+  --red:       #ff4c4c;
+  --green:     #00c896;
+  --purple:    #a855f7;
+  --text:      #c9d1d9;
+  --text2:     #8b949e;
+  --border:    rgba(255,215,0,0.18);
+  --glass:     rgba(10,10,35,0.75);
+  --glass2:    rgba(255,255,255,0.04);
+  --radius:    12px;
+  --radius-lg: 20px;
+  --shadow:    0 0 40px rgba(255,215,0,0.12);
+  --font-mono: 'Roboto Mono', monospace;
+  --font-ui:   'Inter', sans-serif;
+  --sidebar-w: 340px;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-ui);
+  min-height: 100vh;
+  overflow-x: hidden;
+  background-image:
+    radial-gradient(circle at 20% 15%, rgba(255,215,0,0.08) 0%, transparent 45%),
+    radial-gradient(circle at 80% 85%, rgba(255,100,0,0.08) 0%, transparent 45%),
+    radial-gradient(circle at 60% 40%, rgba(0,230,204,0.04) 0%, transparent 35%);
+}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--bg2); }
+::-webkit-scrollbar-thumb { background: rgba(255,215,0,0.25); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(255,215,0,0.45); }
+
+/* ── STAR BACKGROUND ── */
+body::before {
+  content: '';
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  background: url('https://rockettyping.vercel.app/images/stars-bg.png') repeat;
+  opacity: 0.3; z-index: -1;
+  animation: nebula-move 120s linear infinite;
+}
+@keyframes nebula-move {
+  0%   { transform: translate(0, 0); }
+  100% { transform: translate(-200px, -200px); }
+}
+
+/* ═══════════════ TOP NAV ═══════════════ */
+.nav {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 24px; height: 58px;
+  background: rgba(10,10,35,0.92);
+  border-bottom: 1px solid var(--border);
+  backdrop-filter: blur(12px);
+  position: sticky; top: 0; z-index: 100;
+}
+.nav-logo {
+  display: flex; align-items: center; gap: 10px;
+  font-family: var(--font-mono); font-size: 18px; font-weight: 700;
+  color: var(--gold); text-decoration: none; letter-spacing: 1px;
+}
+.nav-logo span { color: var(--orange); }
+.nav-logo .rocket { font-size: 22px; }
+.nav-links { display: flex; align-items: center; gap: 6px; }
+.nav-btn {
+  background: none; border: 1px solid transparent;
+  color: var(--text2); padding: 6px 14px; border-radius: 8px;
+  font-family: var(--font-ui); font-size: 13px; cursor: pointer;
+  transition: all 0.2s; text-decoration: none; display: inline-block;
+}
+.nav-btn:hover { color: var(--gold); border-color: var(--border); background: var(--glass2); }
+.nav-btn.active { color: var(--gold); border-color: rgba(255,215,0,0.35); background: rgba(255,215,0,0.07); }
+.nav-btn.primary {
+  background: linear-gradient(135deg, var(--gold2), var(--orange));
+  color: #0a0a23; border: none; font-weight: 600;
+}
+.nav-btn.primary:hover { box-shadow: 0 0 20px rgba(255,153,0,0.5); transform: translateY(-1px); }
+
+/* ═══════════════ APP SHELL ═══════════════ */
+#app { position: relative; }
+
+/* ══ VIEWS ══ */
+.view { display: none; }
+.view.active { display: flex; flex-direction: column; }
+
+/* ═══════════════ DASHBOARD ═══════════════ */
+#view-dashboard {
+  padding: 32px 28px; gap: 28px; max-width: 1400px; margin: 0 auto; width: 100%;
+}
+
+.dashboard-header { margin-bottom: 4px; }
+.dashboard-header h1 {
+  font-size: 28px; font-weight: 700; color: var(--gold);
+  font-family: var(--font-mono); letter-spacing: 1px;
+}
+.dashboard-header p { color: var(--text2); margin-top: 6px; font-size: 14px; }
+
+.stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+
+.stat-card {
+  background: var(--glass);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  backdrop-filter: blur(8px);
+  transition: all 0.25s;
+  position: relative; overflow: hidden;
+}
+.stat-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, var(--gold2), var(--orange));
+  opacity: 0; transition: opacity 0.25s;
+}
+.stat-card:hover { border-color: rgba(255,215,0,0.35); transform: translateY(-2px); box-shadow: var(--shadow); }
+.stat-card:hover::before { opacity: 1; }
+
+.stat-icon { font-size: 24px; margin-bottom: 10px; }
+.stat-value { font-size: 32px; font-weight: 700; font-family: var(--font-mono); color: var(--gold); }
+.stat-label { font-size: 12px; color: var(--text2); margin-top: 4px; text-transform: uppercase; letter-spacing: 0.8px; }
+
+.stat-card.cyan  .stat-value { color: var(--cyan); }
+.stat-card.green .stat-value { color: var(--green); }
+.stat-card.orange .stat-value { color: var(--orange); }
+
+/* Difficulty breakdown */
+.diff-breakdown {
+  background: var(--glass); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 20px; backdrop-filter: blur(8px);
+}
+.diff-breakdown h3 { font-size: 14px; color: var(--text2); margin-bottom: 16px; text-transform: uppercase; letter-spacing: 0.8px; }
+.diff-row { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+.diff-label { width: 70px; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.6px; }
+.diff-label.easy   { color: var(--green); }
+.diff-label.medium { color: var(--gold2); }
+.diff-label.hard   { color: var(--red); }
+.diff-bar-bg { flex: 1; background: rgba(255,255,255,0.06); border-radius: 4px; height: 8px; }
+.diff-bar { height: 8px; border-radius: 4px; transition: width 0.6s cubic-bezier(0.4,0,0.2,1); }
+.diff-bar.easy   { background: var(--green); }
+.diff-bar.medium { background: var(--gold2); }
+.diff-bar.hard   { background: var(--red); }
+.diff-count { font-size: 12px; color: var(--text2); width: 50px; text-align: right; font-family: var(--font-mono); }
+
+.progress-ring-wrap {
+  display: flex; align-items: center; justify-content: center; padding: 20px;
+  flex-direction: column; gap: 8px;
+}
+.progress-ring-label { font-size: 12px; color: var(--text2); text-transform: uppercase; letter-spacing: 0.8px; }
+.progress-ring-pct { font-size: 28px; font-weight: 700; font-family: var(--font-mono); color: var(--cyan); }
+
+.dashboard-row { display: grid; grid-template-columns: 1fr 280px; gap: 16px; }
+.dashboard-recent {
+  background: var(--glass); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 20px; backdrop-filter: blur(8px);
+}
+.dashboard-recent h3 { font-size: 14px; color: var(--text2); margin-bottom: 14px; text-transform: uppercase; letter-spacing: 0.8px; }
+.recent-item {
+  display: flex; align-items: center; gap: 12px; padding: 10px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+.recent-item:last-child { border: none; }
+.recent-num { font-size: 11px; color: var(--text2); font-family: var(--font-mono); width: 28px; }
+.recent-title { flex: 1; font-size: 13px; color: var(--text); }
+.recent-badge { font-size: 10px; padding: 2px 8px; border-radius: 4px; font-weight: 600; text-transform: uppercase; }
+.recent-badge.easy   { background: rgba(0,200,150,0.15); color: var(--green); }
+.recent-badge.medium { background: rgba(226,183,20,0.15); color: var(--gold2); }
+.recent-badge.hard   { background: rgba(255,76,76,0.15);  color: var(--red); }
+.recent-status { font-size: 10px; padding: 2px 8px; border-radius: 4px; font-weight: 600; }
+.recent-status.solved { background: rgba(0,200,150,0.15); color: var(--green); }
+
+.cta-card {
+  background: linear-gradient(135deg, rgba(255,153,0,0.15), rgba(255,215,0,0.08));
+  border: 1px solid rgba(255,153,0,0.3);
+  border-radius: var(--radius); padding: 24px;
+  display: flex; flex-direction: column; gap: 14px;
+}
+.cta-card h3 { color: var(--gold); font-size: 16px; font-weight: 600; }
+.cta-card p  { color: var(--text2); font-size: 13px; line-height: 1.5; }
+.cta-btn {
+  background: linear-gradient(135deg, var(--gold2), var(--orange));
+  color: #0a0a23; border: none; padding: 10px 20px;
+  border-radius: 8px; font-size: 13px; font-weight: 700; cursor: pointer;
+  transition: all 0.2s; font-family: var(--font-ui);
+}
+.cta-btn:hover { box-shadow: 0 0 24px rgba(255,153,0,0.5); transform: translateY(-1px); }
+
+/* ═══════════════ PROBLEMS LIST ═══════════════ */
+#view-problems {
+  flex-direction: column; height: calc(100vh - 58px);
+}
+
+.problems-toolbar {
+  display: flex; align-items: center; gap: 12px; padding: 14px 20px;
+  background: rgba(10,10,35,0.8); border-bottom: 1px solid var(--border);
+  backdrop-filter: blur(8px); flex-wrap: wrap;
+}
+.search-box {
+  display: flex; align-items: center; gap: 8px;
+  background: var(--glass2); border: 1px solid var(--border);
+  border-radius: 8px; padding: 8px 12px; flex: 1; min-width: 200px; max-width: 360px;
+}
+.search-box input {
+  background: none; border: none; outline: none; color: var(--text);
+  font-family: var(--font-mono); font-size: 13px; flex: 1;
+}
+.search-box input::placeholder { color: var(--text2); }
+.search-icon { color: var(--text2); font-size: 14px; }
+
+.filter-group { display: flex; align-items: center; gap: 6px; }
+.filter-btn {
+  background: none; border: 1px solid var(--border);
+  color: var(--text2); padding: 6px 14px; border-radius: 20px;
+  font-size: 12px; font-weight: 500; cursor: pointer; transition: all 0.2s;
+  font-family: var(--font-ui);
+}
+.filter-btn:hover { border-color: rgba(255,215,0,0.4); color: var(--gold); }
+.filter-btn.active { color: #0a0a23; font-weight: 600; }
+.filter-btn.f-all.active    { background: var(--gold2); border-color: var(--gold2); }
+.filter-btn.f-easy.active   { background: var(--green); border-color: var(--green); }
+.filter-btn.f-medium.active { background: var(--gold2); border-color: var(--gold2); }
+.filter-btn.f-hard.active   { background: var(--red);   border-color: var(--red); }
+
+.problems-body { display: flex; flex: 1; overflow: hidden; }
+
+.problems-list {
+  flex: 1; overflow-y: auto;
+  padding: 0;
+}
+
+.problems-table { width: 100%; border-collapse: collapse; }
+.problems-table th {
+  font-size: 11px; font-weight: 600; text-transform: uppercase;
+  letter-spacing: 0.8px; color: var(--text2);
+  padding: 10px 16px; text-align: left;
+  border-bottom: 1px solid var(--border);
+  background: rgba(10,10,35,0.6); position: sticky; top: 0; z-index: 5;
+}
+.problems-table td { padding: 12px 16px; border-bottom: 1px solid rgba(255,255,255,0.04); }
+.problems-table tr { cursor: pointer; transition: background 0.15s; }
+.problems-table tr:hover td { background: rgba(255,215,0,0.04); }
+
+.prob-num { font-family: var(--font-mono); font-size: 12px; color: var(--text2); width: 50px; }
+.prob-status-icon { font-size: 14px; width: 30px; }
+.prob-title { font-size: 14px; font-weight: 500; color: var(--text); }
+.prob-title:hover { color: var(--gold); }
+.prob-topic { font-size: 11px; color: var(--text2); margin-top: 2px; }
+
+.badge {
+  display: inline-block; font-size: 11px; padding: 2px 10px;
+  border-radius: 5px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.4px;
+}
+.badge.easy   { background: rgba(0,200,150,0.12); color: var(--green); border: 1px solid rgba(0,200,150,0.25); }
+.badge.medium { background: rgba(226,183,20,0.12); color: var(--gold2); border: 1px solid rgba(226,183,20,0.25); }
+.badge.hard   { background: rgba(255,76,76,0.12);  color: var(--red);   border: 1px solid rgba(255,76,76,0.25); }
+
+.status-dot { font-size: 16px; }
+.status-dot.solved   { color: var(--green); }
+.status-dot.attempted{ color: var(--gold2); }
+.status-dot.none     { color: rgba(255,255,255,0.1); }
+
+/* ═══════════════ WORKSPACE ═══════════════ */
+#view-workspace {
+  flex-direction: row; height: calc(100vh - 58px); overflow: hidden;
+}
+
+.workspace-sidebar {
+  width: var(--sidebar-w); min-width: 280px; max-width: 480px;
+  border-right: 1px solid var(--border);
+  display: flex; flex-direction: column; overflow: hidden;
+  resize: horizontal;
+}
+
+.sidebar-tabs {
+  display: flex; border-bottom: 1px solid var(--border);
+  background: rgba(10,10,35,0.7);
+}
+.sidebar-tab {
+  flex: 1; padding: 10px; font-size: 12px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.6px; cursor: pointer;
+  border: none; background: none; color: var(--text2); transition: all 0.2s;
+  border-bottom: 2px solid transparent; font-family: var(--font-ui);
+}
+.sidebar-tab.active { color: var(--gold); border-bottom-color: var(--gold); }
+.sidebar-tab:hover:not(.active) { color: var(--text); }
+
+.sidebar-content { flex: 1; overflow-y: auto; padding: 20px; }
+
+/* Problem description */
+.prob-meta { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; }
+.prob-meta h2 { font-size: 17px; font-weight: 700; color: var(--gold); font-family: var(--font-mono); width: 100%; }
+.meta-pill {
+  font-size: 11px; padding: 3px 10px; border-radius: 5px; font-weight: 600;
+  background: var(--glass2); border: 1px solid var(--border); color: var(--text2);
+}
+
+.prob-section { margin-bottom: 18px; }
+.prob-section h4 { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.7px; color: var(--gold2); margin-bottom: 8px; }
+.prob-section p, .prob-section ul { font-size: 13px; line-height: 1.7; color: var(--text); }
+.prob-section ul { padding-left: 16px; }
+.prob-section li { margin-bottom: 4px; }
+.prob-section code {
+  background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 4px; padding: 1px 6px; font-family: var(--font-mono); font-size: 12px; color: var(--cyan);
+}
+
+.io-box {
+  background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 8px; padding: 12px; font-family: var(--font-mono); font-size: 12px;
+  color: #a8d8a8; margin-top: 8px; white-space: pre-wrap; line-height: 1.6;
+}
+
+.hint-box {
+  background: rgba(0,230,204,0.05); border: 1px solid rgba(0,230,204,0.2);
+  border-radius: 8px; padding: 12px; font-size: 12px; color: var(--cyan);
+  line-height: 1.6;
+}
+
+/* Workspace main */
+.workspace-main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+
+.editor-toolbar {
+  display: flex; align-items: center; gap: 8px; padding: 8px 12px;
+  background: rgba(10,10,35,0.85); border-bottom: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+.lang-select {
+  background: var(--glass2); border: 1px solid var(--border); color: var(--gold);
+  padding: 5px 10px; border-radius: 7px; font-family: var(--font-mono); font-size: 12px;
+  cursor: pointer; outline: none;
+}
+.lang-select option { background: #0f0f2e; }
+
+.editor-btn {
+  background: var(--glass2); border: 1px solid var(--border);
+  color: var(--text2); padding: 5px 11px; border-radius: 7px;
+  font-size: 12px; cursor: pointer; transition: all 0.2s; font-family: var(--font-ui);
+  display: flex; align-items: center; gap: 5px;
+}
+.editor-btn:hover { color: var(--gold); border-color: rgba(255,215,0,0.35); background: rgba(255,215,0,0.06); }
+.editor-btn.run {
+  background: rgba(0,200,150,0.12); border-color: rgba(0,200,150,0.35); color: var(--green);
+}
+.editor-btn.run:hover { background: rgba(0,200,150,0.22); box-shadow: 0 0 14px rgba(0,200,150,0.3); }
+.editor-btn.submit {
+  background: linear-gradient(135deg, var(--gold2), var(--orange));
+  color: #0a0a23; border: none; font-weight: 700;
+}
+.editor-btn.submit:hover { box-shadow: 0 0 20px rgba(255,153,0,0.5); transform: translateY(-1px); }
+.editor-btn.mic { background: rgba(168,85,247,0.12); border-color: rgba(168,85,247,0.35); color: var(--purple); }
+.editor-btn.mic.listening { background: rgba(168,85,247,0.3); animation: pulse-mic 1s infinite alternate; }
+@keyframes pulse-mic { 0% { box-shadow: 0 0 0 rgba(168,85,247,0.4); } 100% { box-shadow: 0 0 16px rgba(168,85,247,0.7); } }
+
+.editor-btn[disabled], .editor-btn.busy {
+  opacity: 0.6; pointer-events: none; cursor: default;
+}
+.btn-spinner {
+  display: inline-block; width: 11px; height: 11px;
+  border: 2px solid rgba(255,255,255,0.35); border-top-color: currentColor;
+  border-radius: 50%; animation: spin-btn 0.7s linear infinite; vertical-align: -1px;
+}
+@keyframes spin-btn { to { transform: rotate(360deg); } }
+
+.output-line.compile { color: var(--purple); }
+.output-line.running { color: var(--cyan); }
+.tc-row.running .tc-status { color: var(--cyan); }
+.exec-progress {
+  font-size: 11px; color: var(--text2); padding: 4px 0; font-family: var(--font-mono);
+}
+
+.toolbar-spacer { flex: 1; }
+
+.timer-display {
+  font-family: var(--font-mono); font-size: 13px; color: var(--gold2);
+  background: var(--glass2); border: 1px solid var(--border); padding: 5px 12px; border-radius: 7px;
+}
+
+.editor-wrap { flex: 1; position: relative; }
+#monaco-editor { width: 100%; height: 100%; }
+
+/* Bottom panel */
+.output-panel {
+  height: 200px; border-top: 1px solid var(--border);
+  display: flex; flex-direction: column; background: rgba(6,6,18,0.9);
+}
+.output-tabs { display: flex; border-bottom: 1px solid var(--border); }
+.output-tab {
+  padding: 7px 16px; font-size: 12px; font-weight: 600; text-transform: uppercase;
+  letter-spacing: 0.5px; cursor: pointer; border: none; background: none; color: var(--text2);
+  border-bottom: 2px solid transparent; transition: all 0.2s; font-family: var(--font-ui);
+}
+.output-tab.active { color: var(--cyan); border-bottom-color: var(--cyan); }
+.output-body { flex: 1; overflow-y: auto; padding: 12px 16px; font-family: var(--font-mono); font-size: 12px; line-height: 1.7; }
+
+.output-line { margin-bottom: 2px; }
+.output-line.success { color: var(--green); }
+.output-line.error   { color: var(--red); }
+.output-line.info    { color: var(--cyan); }
+.output-line.warn    { color: var(--gold2); }
+.output-line.dim     { color: var(--text2); }
+
+/* test case results */
+.tc-row { display: flex; align-items: center; gap: 10px; padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.04); }
+.tc-idx { color: var(--text2); font-size: 11px; width: 24px; }
+.tc-status { font-size: 13px; }
+.tc-status.pass { color: var(--green); }
+.tc-status.fail { color: var(--red); }
+.tc-detail { font-size: 11px; color: var(--text2); flex: 1; }
+.tc-detail span { color: var(--text); }
+
+/* ═══════════════ RESULT OVERLAY ═══════════════ */
+#result-overlay {
+  position: fixed; inset: 0; z-index: 200;
+  background: rgba(5,5,15,0.92); backdrop-filter: blur(6px);
+  display: none; align-items: center; justify-content: center;
+  padding: 20px; overflow-y: auto;
+}
+#result-overlay.open { display: flex; }
+
+.result-card {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); padding: 32px;
+  max-width: 1040px; width: 100%; position: relative;
+  box-shadow: 0 0 60px rgba(255,215,0,0.15);
+  animation: result-in 0.35s cubic-bezier(0.34,1.56,0.64,1);
+}
+
+/* Two-column result body: left = submission + typing stats, right = graphs */
+.result-body-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  align-items: start;
+}
+.result-col-left, .result-col-right { min-width: 0; }
+.result-col-right .chart-wrap:last-child { margin-bottom: 0; }
+@keyframes result-in {
+  from { opacity: 0; transform: scale(0.92) translateY(20px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.result-close {
+  position: absolute; top: 16px; right: 16px; width: 32px; height: 32px;
+  border-radius: 50%; background: var(--glass2); border: 1px solid var(--border);
+  color: var(--text2); font-size: 16px; cursor: pointer; display: flex;
+  align-items: center; justify-content: center; transition: all 0.2s;
+}
+.result-close:hover { color: var(--red); border-color: rgba(255,76,76,0.4); }
+
+.result-status-banner {
+  text-align: center; padding: 20px; border-radius: var(--radius);
+  margin-bottom: 24px; font-size: 24px; font-weight: 700; font-family: var(--font-mono);
+}
+.result-status-banner.accepted { background: rgba(0,200,150,0.1); border: 1px solid rgba(0,200,150,0.3); color: var(--green); }
+.result-status-banner.wrong    { background: rgba(255,76,76,0.1);  border: 1px solid rgba(255,76,76,0.3);  color: var(--red); }
+.result-status-banner.error    { background: rgba(255,153,0,0.1);  border: 1px solid rgba(255,153,0,0.3);  color: var(--orange); }
+
+.result-status-banner .status-sub { font-size: 13px; font-weight: 400; margin-top: 6px; opacity: 0.8; font-family: var(--font-ui); }
+
+.result-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 24px; }
+.result-stat {
+  background: var(--glass2); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 14px; text-align: center;
+}
+.result-stat-val { font-size: 22px; font-weight: 700; font-family: var(--font-mono); color: var(--gold); }
+.result-stat-lbl { font-size: 11px; color: var(--text2); margin-top: 4px; text-transform: uppercase; letter-spacing: 0.6px; }
+
+.result-stat.cyan-val   .result-stat-val { color: var(--cyan); }
+.result-stat.green-val  .result-stat-val { color: var(--green); }
+.result-stat.orange-val .result-stat-val { color: var(--orange); }
+.result-stat.purple-val .result-stat-val { color: var(--purple); }
+
+.result-section-title {
+  font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.8px;
+  color: var(--gold2); margin: 20px 0 12px; display: flex; align-items: center; gap: 8px;
+}
+.result-section-title::after {
+  content: ''; flex: 1; height: 1px; background: var(--border);
+}
+
+.typing-analytics-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+.analytics-box {
+  background: var(--glass2); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 14px;
+}
+.analytics-box h5 { font-size: 11px; color: var(--text2); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 8px; }
+.analytics-val { font-size: 26px; font-weight: 700; font-family: var(--font-mono); color: var(--cyan); }
+.analytics-sub { font-size: 11px; color: var(--text2); margin-top: 2px; }
+
+.chart-wrap { background: var(--glass2); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; margin-bottom: 16px; }
+.chart-wrap h5 { font-size: 11px; color: var(--text2); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 12px; }
+.chart-wrap canvas { max-height: 140px; }
+
+.result-actions { display: flex; gap: 10px; justify-content: center; margin-top: 20px; }
+.result-actions button {
+  padding: 10px 24px; border-radius: 8px; font-size: 13px; font-weight: 600;
+  cursor: pointer; font-family: var(--font-ui); transition: all 0.2s;
+}
+.btn-retry { background: var(--glass2); border: 1px solid var(--border); color: var(--text); }
+.btn-retry:hover { border-color: rgba(255,215,0,0.35); color: var(--gold); }
+.btn-next { background: linear-gradient(135deg, var(--gold2), var(--orange)); border: none; color: #0a0a23; }
+.btn-next:hover { box-shadow: 0 0 20px rgba(255,153,0,0.5); transform: translateY(-1px); }
+
+/* ═══════════════ MIC PANEL ═══════════════ */
+.mic-panel {
+  position: absolute; bottom: 210px; right: 16px; width: 280px;
+  background: var(--bg3); border: 1px solid rgba(168,85,247,0.35);
+  border-radius: var(--radius); padding: 14px; z-index: 20;
+  display: none; box-shadow: 0 0 30px rgba(168,85,247,0.2);
+}
+.mic-panel.open { display: block; }
+.mic-panel h4 { font-size: 12px; font-weight: 600; color: var(--purple); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.6px; }
+.mic-transcript {
+  background: rgba(0,0,0,0.3); border-radius: 6px; padding: 10px;
+  font-size: 12px; color: var(--text); min-height: 60px; max-height: 100px;
+  overflow-y: auto; font-family: var(--font-mono); line-height: 1.5; margin-bottom: 10px;
+}
+.mic-controls { display: flex; gap: 6px; }
+.mic-ctrl { flex: 1; padding: 6px; border-radius: 6px; border: 1px solid var(--border); background: var(--glass2); color: var(--text2); font-size: 11px; cursor: pointer; font-family: var(--font-ui); transition: all 0.15s; }
+.mic-ctrl:hover { color: var(--purple); border-color: rgba(168,85,247,0.4); }
+
+/* ═══════════════ PROFILE ═══════════════ */
+#view-profile {
+  padding: 32px 28px; gap: 20px; max-width: 900px; margin: 0 auto; width: 100%;
+}
+.profile-header { display: flex; align-items: center; gap: 20px; }
+.profile-avatar {
+  width: 72px; height: 72px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--gold2), var(--orange));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 28px; font-weight: 700; color: #0a0a23; font-family: var(--font-mono);
+}
+.profile-info h2 { font-size: 20px; font-weight: 700; color: var(--gold); font-family: var(--font-mono); }
+.profile-info p  { font-size: 13px; color: var(--text2); margin-top: 4px; }
+.profile-stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+
+/* ═══════════════ LOADING SKELETON ═══════════════ */
+.skeleton {
+  background: linear-gradient(90deg, rgba(255,255,255,0.04) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.04) 75%);
+  background-size: 200% 100%; animation: shimmer 1.5s infinite;
+  border-radius: 6px;
+}
+@keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+/* ═══════════════ TOAST ═══════════════ */
+.toast-container { position: fixed; bottom: 24px; right: 24px; z-index: 300; display: flex; flex-direction: column; gap: 8px; }
+.toast {
+  padding: 10px 18px; border-radius: 8px; font-size: 13px; font-weight: 500;
+  backdrop-filter: blur(8px); animation: toast-in 0.25s ease;
+  border: 1px solid; max-width: 280px;
+}
+.toast.success { background: rgba(0,200,150,0.15); border-color: rgba(0,200,150,0.35); color: var(--green); }
+.toast.error   { background: rgba(255,76,76,0.15);  border-color: rgba(255,76,76,0.35);  color: var(--red); }
+.toast.info    { background: rgba(0,230,204,0.12);  border-color: rgba(0,230,204,0.3);   color: var(--cyan); }
+@keyframes toast-in { from { opacity:0; transform:translateX(20px); } to { opacity:1; transform:translateX(0); } }
+
+/* ═══════════════ RESPONSIVE ═══════════════ */
+@media (max-width: 900px) {
+  .stats-grid { grid-template-columns: repeat(2, 1fr); }
+  .dashboard-row { grid-template-columns: 1fr; }
+  .result-grid { grid-template-columns: repeat(2, 1fr); }
+  .typing-analytics-grid { grid-template-columns: 1fr; }
+  .profile-stats-grid { grid-template-columns: repeat(2, 1fr); }
+  /* Stack the two result columns (stats / graphs) on smaller screens */
+  .result-body-grid { grid-template-columns: 1fr; gap: 20px; }
+}
+@media (max-width: 700px) {
+  #view-workspace { flex-direction: column; }
+  .workspace-sidebar { width: 100%; max-width: 100%; height: 40vh; resize: none; border-right: none; border-bottom: 1px solid var(--border); }
+  .workspace-main { min-height: 60vh; }
+  .stats-grid { grid-template-columns: repeat(2, 1fr); }
+  .nav-links .nav-btn:not(.primary) { display: none; }
+}
+@media (max-width: 480px) {
+  .stats-grid { grid-template-columns: 1fr 1fr; }
+  .result-grid { grid-template-columns: 1fr 1fr; }
+  #view-dashboard { padding: 16px; }
+}
+
+/* Autosave indicator */
+.autosave-dot {
+  width: 7px; height: 7px; border-radius: 50%; background: var(--green);
+  display: inline-block; margin-left: 4px; opacity: 0; transition: opacity 0.3s;
+}
+.autosave-dot.visible { opacity: 1; animation: dot-fade 1.5s forwards; }
+@keyframes dot-fade { 0%{opacity:1} 80%{opacity:1} 100%{opacity:0} }
+
+/* Paste warning */
+.paste-warn { background: rgba(255,76,76,0.1); border: 1px solid rgba(255,76,76,0.3); border-radius: 6px; padding: 8px 12px; font-size: 12px; color: var(--red); margin-bottom: 8px; display: none; }
+.paste-warn.show { display: block; }
+</style>
+</head>
+
+<body>
+
+<!-- ══ NAV ══ -->
+<nav class="nav">
+  <a href="index.html" class="nav-logo"><span class="rocket">🚀</span>Rocket<span>Typing</span></a>
+  <div class="nav-links">
+    <button class="nav-btn" onclick="goHome()">⌨️ Typing Test</button>
+    <button class="nav-btn active" onclick="showView('dashboard')" id="nb-dash">Dashboard</button>
+    <button class="nav-btn" onclick="showView('problems')"  id="nb-prob">Problems</button>
+    <button class="nav-btn" onclick="showView('profile')"   id="nb-prof">Profile</button>
+  </div>
+</nav>
+
+<div id="app">
+
+  <!-- ══ DASHBOARD VIEW ══ -->
+  <div id="view-dashboard" class="view">
+    <div class="dashboard-header">
+      <h1>⌨️ Coding Practice</h1>
+      <p>Sharpen your code and your typing speed — one problem at a time.</p>
+    </div>
+
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon">📋</div>
+        <div class="stat-value" id="ds-total">—</div>
+        <div class="stat-label">Total Problems</div>
+      </div>
+      <div class="stat-card green">
+        <div class="stat-icon">✅</div>
+        <div class="stat-value" id="ds-solved">0</div>
+        <div class="stat-label">Solved</div>
+      </div>
+      <div class="stat-card cyan">
+        <div class="stat-icon">🔄</div>
+        <div class="stat-value" id="ds-attempted">0</div>
+        <div class="stat-label">Attempted</div>
+      </div>
+      <div class="stat-card orange">
+        <div class="stat-icon">🔖</div>
+        <div class="stat-value" id="ds-bookmarked">0</div>
+        <div class="stat-label">Bookmarked</div>
+      </div>
+    </div>
+
+    <div class="dashboard-row">
+      <div class="diff-breakdown">
+        <h3>Difficulty Breakdown</h3>
+        <div class="diff-row">
+          <span class="diff-label easy">Easy</span>
+          <div class="diff-bar-bg"><div class="diff-bar easy" id="db-easy-bar" style="width:0%"></div></div>
+          <span class="diff-count" id="db-easy-txt">0 / 0</span>
+        </div>
+        <div class="diff-row">
+          <span class="diff-label medium">Medium</span>
+          <div class="diff-bar-bg"><div class="diff-bar medium" id="db-med-bar" style="width:0%"></div></div>
+          <span class="diff-count" id="db-med-txt">0 / 0</span>
+        </div>
+        <div class="diff-row">
+          <span class="diff-label hard">Hard</span>
+          <div class="diff-bar-bg"><div class="diff-bar hard" id="db-hard-bar" style="width:0%"></div></div>
+          <span class="diff-count" id="db-hard-txt">0 / 0</span>
+        </div>
+        <div style="margin-top:20px">
+          <div style="font-size:12px;color:var(--text2);text-transform:uppercase;letter-spacing:.7px;margin-bottom:8px">Overall Completion</div>
+          <div style="background:rgba(255,255,255,0.06);border-radius:6px;height:10px">
+            <div id="db-overall-bar" style="height:10px;border-radius:6px;background:linear-gradient(90deg,var(--gold2),var(--orange));width:0%;transition:width .6s ease"></div>
+          </div>
+          <div style="font-size:12px;color:var(--gold2);margin-top:6px;font-family:var(--font-mono)" id="db-pct">0%</div>
+        </div>
+      </div>
+
+      <div class="cta-card">
+        <h3>🚀 Ready to Code?</h3>
+        <p>Pick a problem from the list, write your solution, and discover how your typing speed affects your coding performance.</p>
+        <button class="cta-btn" onclick="showView('problems')">Browse Problems →</button>
+      </div>
+    </div>
+
+    <div class="dashboard-recent">
+      <h3>Recently Solved</h3>
+      <div id="ds-recent-list">
+        <div style="color:var(--text2);font-size:13px;padding:16px 0">No solved problems yet. Start with Problem #1!</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ PROBLEMS VIEW ══ -->
+  <div id="view-problems" class="view">
+    <div class="problems-toolbar">
+      <div class="search-box">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="search-input" placeholder="Search by title or #number…" oninput="filterProblems()">
+      </div>
+      <div class="filter-group">
+        <button class="filter-btn f-all active"    onclick="setDiffFilter('all')"   >All</button>
+        <button class="filter-btn f-easy"          onclick="setDiffFilter('Easy')"  >Easy</button>
+        <button class="filter-btn f-medium"        onclick="setDiffFilter('Medium')">Medium</button>
+        <button class="filter-btn f-hard"          onclick="setDiffFilter('Hard')"  >Hard</button>
+      </div>
+      <div class="filter-group" style="margin-left:auto">
+        <select class="lang-select" id="sort-select" onchange="filterProblems()">
+          <option value="id">Sort: # Number</option>
+          <option value="diff">Sort: Difficulty</option>
+          <option value="solved">Sort: Solved First</option>
+        </select>
+      </div>
+    </div>
+    <div class="problems-body">
+      <div class="problems-list">
+        <table class="problems-table">
+          <thead>
+            <tr>
+              <th style="width:50px">#</th>
+              <th style="width:30px"></th>
+              <th>Title</th>
+              <th style="width:100px">Difficulty</th>
+              <th style="width:100px">Topic</th>
+              <th style="width:80px">Status</th>
+            </tr>
+          </thead>
+          <tbody id="problems-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ WORKSPACE VIEW ══ -->
+  <div id="view-workspace" class="view">
+    <!-- Left: problem description -->
+    <div class="workspace-sidebar">
+      <div class="sidebar-tabs">
+        <button class="sidebar-tab active" onclick="setSidebarTab('desc',this)">Description</button>
+        <button class="sidebar-tab" onclick="setSidebarTab('notes',this)">Notes</button>
+        <button class="sidebar-tab" onclick="setSidebarTab('hint',this)">Hint</button>
+      </div>
+      <div class="sidebar-content" id="sidebar-desc">
+        <!-- filled by JS -->
+      </div>
+      <div class="sidebar-content" id="sidebar-notes" style="display:none">
+        <textarea id="notes-area" placeholder="Write your personal notes for this problem…"
+          style="width:100%;height:calc(100% - 0px);background:transparent;border:none;outline:none;color:var(--text);font-family:var(--font-mono);font-size:12px;resize:none;line-height:1.7"
+          oninput="saveNote()"></textarea>
+      </div>
+      <div class="sidebar-content" id="sidebar-hint" style="display:none">
+        <div class="hint-box" id="hint-content"></div>
+      </div>
+    </div>
+
+    <!-- Right: editor + output -->
+    <div class="workspace-main">
+      <div class="editor-toolbar">
+        <select class="lang-select" id="lang-select" onchange="changeLanguage()">
+          <option value="python">Python</option>
+          <option value="javascript">JavaScript</option>
+          <option value="java">Java</option>
+          <option value="cpp">C++</option>
+          <option value="c">C</option>
+          <option value="typescript">TypeScript</option>
+          <option value="go">Go</option>
+          <option value="rust">Rust</option>
+          <option value="kotlin">Kotlin</option>
+          <option value="swift">Swift</option>
+          <option value="php">PHP</option>
+          <option value="csharp">C#</option>
+          <option value="ruby">Ruby</option>
+        </select>
+
+        <button class="editor-btn" onclick="resetCode()" title="Reset code">↺ Reset</button>
+        <button class="editor-btn" onclick="copyCode()"  title="Copy code">📋 Copy</button>
+        <button class="editor-btn" onclick="downloadCode()" title="Download">⬇ Save</button>
+        <button class="editor-btn" onclick="uploadCode()"   title="Upload file">⬆ Upload</button>
+        <input type="file" id="file-upload" accept=".py,.js,.java,.cpp,.c,.ts,.go,.rs,.kt,.swift,.php,.cs,.rb" style="display:none" onchange="handleUpload(event)">
+
+        <button class="editor-btn mic" id="mic-btn" onclick="toggleMic()" title="Voice to Code">🎤 Voice</button>
+
+        <div class="toolbar-spacer"></div>
+
+        <span class="timer-display" id="workspace-timer">00:00</span>
+        <span class="autosave-dot" id="autosave-dot"></span>
+
+        <button class="editor-btn run"    id="run-btn"    onclick="runCode()">▶ Run</button>
+        <button class="editor-btn submit" id="submit-btn" onclick="submitCode()">⚡ Submit</button>
+      </div>
+
+      <!-- Monaco -->
+      <div class="editor-wrap">
+        <div id="monaco-editor"></div>
+        <!-- Mic panel -->
+        <div class="mic-panel" id="mic-panel">
+          <h4>🎤 Voice to Code</h4>
+          <div class="mic-transcript" id="mic-transcript">Say something…</div>
+          <div class="mic-controls">
+            <button class="mic-ctrl" onclick="pauseMic()">⏸ Pause</button>
+            <button class="mic-ctrl" onclick="resumeMic()">▶ Resume</button>
+            <button class="mic-ctrl" onclick="stopMic()">⏹ Stop</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Output panel -->
+      <div class="output-panel">
+        <div class="output-tabs">
+          <button class="output-tab active" onclick="setOutputTab('output',this)">Output</button>
+          <button class="output-tab" onclick="setOutputTab('testcases',this)">Test Cases</button>
+          <button class="output-tab" onclick="setOutputTab('console',this)">Console</button>
+        </div>
+        <div class="output-body" id="output-output">
+          <div class="output-line dim">Click "Run" to execute your code against sample test cases.</div>
+        </div>
+        <div class="output-body" id="output-testcases" style="display:none">
+          <div class="output-line dim">No test results yet.</div>
+        </div>
+        <div class="output-body" id="output-console" style="display:none">
+          <div class="output-line dim">Console output will appear here.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ PROFILE VIEW ══ -->
+  <div id="view-profile" class="view">
+    <div class="profile-header">
+      <div class="profile-avatar" id="pf-avatar">U</div>
+      <div class="profile-info">
+        <h2>Coder Profile</h2>
+        <p id="pf-subtitle">Your personal coding and typing statistics</p>
+      </div>
+    </div>
+    <div class="profile-stats-grid" id="pf-stats-grid">
+      <!-- filled by JS -->
+    </div>
+    <div class="dashboard-recent">
+      <h3>Recent Submissions</h3>
+      <div id="pf-recent"></div>
+    </div>
+  </div>
+
+</div><!-- #app -->
+
+<!-- ══ RESULT OVERLAY ══ -->
+<div id="result-overlay">
+  <div class="result-card">
+    <button class="result-close" onclick="closeResult()">✕</button>
+
+    <div class="result-status-banner" id="res-banner">
+      <div id="res-banner-title">—</div>
+      <div class="status-sub" id="res-banner-sub">—</div>
+    </div>
+
+    <!-- Two-column layout: submission + typing stats on the left, graphs on the right -->
+    <div class="result-body-grid">
+
+      <!-- LEFT COLUMN: status stats + typing analytics numbers -->
+      <div class="result-col result-col-left">
+        <div class="result-grid" id="res-grid"><!-- JS filled --></div>
+
+        <div class="result-section-title">Typing Analytics</div>
+        <div class="paste-warn" id="paste-warn">⚠️ Paste detected. Typing analytics may not be accurate.</div>
+        <div class="typing-analytics-grid">
+          <div class="analytics-box"><h5>WPM</h5><div class="analytics-val" id="ra-wpm">—</div><div class="analytics-sub">Words per minute</div></div>
+          <div class="analytics-box"><h5>Accuracy</h5><div class="analytics-val" id="ra-acc">—</div><div class="analytics-sub">Correct keystrokes</div></div>
+          <div class="analytics-box"><h5>Consistency</h5><div class="analytics-val" id="ra-con">—</div><div class="analytics-sub">Speed variation score</div></div>
+          <div class="analytics-box"><h5>Active Time</h5><div class="analytics-val" id="ra-time">—</div><div class="analytics-sub">Time actively typing</div></div>
+          <div class="analytics-box"><h5>Keystrokes</h5><div class="analytics-val" id="ra-ks">—</div><div class="analytics-sub">Total key presses</div></div>
+          <div class="analytics-box"><h5>Backspaces</h5><div class="analytics-val" id="ra-bs">—</div><div class="analytics-sub">Corrections made</div></div>
+        </div>
+      </div>
+
+      <!-- RIGHT COLUMN: graphs -->
+      <div class="result-col result-col-right">
+        <div class="chart-wrap">
+          <h5>Typing Speed Over Time (WPM)</h5>
+          <canvas id="wpm-chart"></canvas>
+        </div>
+        <div class="chart-wrap">
+          <h5>Keystroke Timeline</h5>
+          <canvas id="ks-chart"></canvas>
+        </div>
+      </div>
+
+    </div><!-- /result-body-grid -->
+
+    <div class="result-actions">
+      <button class="btn-retry" onclick="closeResult()">Try Again</button>
+      <button class="btn-next"  onclick="nextProblem()">Next Problem →</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast container -->
+<div class="toast-container" id="toast-container"></div>
+
+<!-- Monaco loader -->
+<script>var require = { paths: { vs: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs' } };</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs/loader.min.js"></script>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     ADVANCED COMPILER SUITE — 100% self-written, fully offline, no APIs.
+     Each language has its own real compiler file in /compilers. Keep
+     this load order: core-engine + adapter-utils first (shared by every
+     language), then each *-compiler.js, then registry.js last.
+     If you add a 14th language, drop in compilers/<lang>-compiler.js
+     and register it in compilers/registry.js — nothing else changes.
+════════════════════════════════════════════════════════════════════ -->
+<script src="compilers/core-engine.js"></script>
+<script src="compilers/adapter-utils.js"></script>
+<script src="compilers/python-compiler.js"></script>
+<script src="compilers/javascript-compiler.js"></script>
+<script src="compilers/typescript-compiler.js"></script>
+<script src="compilers/java-compiler.js"></script>
+<script src="compilers/cpp-compiler.js"></script>
+<script src="compilers/c-compiler.js"></script>
+<script src="compilers/go-compiler.js"></script>
+<script src="compilers/rust-compiler.js"></script>
+<script src="compilers/kotlin-compiler.js"></script>
+<script src="compilers/swift-compiler.js"></script>
+<script src="compilers/csharp-compiler.js"></script>
+<script src="compilers/php-compiler.js"></script>
+<script src="compilers/ruby-compiler.js"></script>
+<script src="compilers/registry.js"></script>
+
+<script>
+/* ═══════════════════════════════════════════════════════════════════════════
+   ROCKET TYPING – CODING PLATFORM
+   Architecture:
+     QuestionRegistry  — loads all codeN.js files
+     CompilerRegistry   — routes Run/Submit to /compilers/<lang>-compiler.js
+                          (real tokenizer→parser→evaluator per language,
+                          100% offline — see the compilers/ folder)
+     TypingTracker     — keystroke analytics
+     AppState          — progress, settings, persistence
+     UI                — views, Monaco, charts
+═══════════════════════════════════════════════════════════════════════════ */
+
+"use strict";
+
+/* ══════════════════════════════
+   QUESTION REGISTRY
+   Auto-loads code1.js, code2.js, … up to code99.js
+   To add questions: just drop codeN.js in the same folder.
+══════════════════════════════ */
+const QuestionRegistry = (() => {
+  let allQuestions = [];
+  let loaded = 0;
+  let total = 0;
+
+  function registerQuestions(arr) {
+    allQuestions.push(...arr);
+    allQuestions.sort((a, b) => a.id - b.id);
+  }
+  // expose globally so question files can call it
+  window.registerQuestions = registerQuestions;
+
+  // Merge any questions already pushed via window.__rocketQuestions
+  function mergeGlobal() {
+    if (window.__rocketQuestions && window.__rocketQuestions.length) {
+      registerQuestions(window.__rocketQuestions);
+      window.__rocketQuestions = [];
+    }
+  }
+
+  async function loadFile(n) {
+    return new Promise(resolve => {
+      const s = document.createElement('script');
+      // Question files live in the coding/ folder: coding/code1.js, coding/code2.js, …
+      s.src = `coding/code${n}.js?v=${Date.now()}`;
+      s.onload  = () => { mergeGlobal(); resolve(true); };
+      s.onerror = () => resolve(false);
+      document.head.appendChild(s);
+    });
+  }
+
+  async function loadAll() {
+    // Try code1.js → code99.js, stop at first 404
+    let n = 1; let consecutive_misses = 0;
+    while (consecutive_misses < 2) {
+      const ok = await loadFile(n);
+      if (!ok) consecutive_misses++;
+      else consecutive_misses = 0;
+      n++;
+      if (n > 200) break; // safety cap
+    }
+    mergeGlobal();
+    return allQuestions;
+  }
+
+  return { loadAll, getAll: () => allQuestions, registerQuestions };
+})();
+
+/* ══════════════════════════════
+   TYPING TRACKER
+   Tracks every keystroke in Monaco editor
+══════════════════════════════ */
+const TypingTracker = (() => {
+  let data = {
+    keystrokes: 0,
+    backspaces: 0,
+    startTime: null,
+    lastKeyTime: null,
+    idleMs: 0,
+    pasteDetected: false,
+    wpmSamples: [],   // { t (ms from start), wpm }
+    ksSamples: [],    // { t, ks }
+    intervals: [],    // ms between keystrokes
+    charCount: 0,
+  };
+
+  function reset() {
+    data = {
+      keystrokes: 0, backspaces: 0,
+      startTime: null, lastKeyTime: null, idleMs: 0,
+      pasteDetected: false, wpmSamples: [], ksSamples: [],
+      intervals: [], charCount: 0
+    };
+    _samplerInterval && clearInterval(_samplerInterval);
+    _samplerInterval = null;
+  }
+
+  let _samplerInterval = null;
+
+  function start() {
+    reset();
+    data.startTime = Date.now();
+    // Sample WPM every 3 seconds
+    _samplerInterval = setInterval(() => {
+      const elapsed = (Date.now() - data.startTime) / 1000 / 60;
+      if (elapsed > 0) {
+        const wpm = Math.round(data.charCount / 5 / elapsed);
+        const t   = Date.now() - data.startTime;
+        data.wpmSamples.push({ t, wpm });
+        data.ksSamples.push({ t, ks: data.keystrokes });
+      }
+    }, 3000);
+  }
+
+  function recordKey(key) {
+    if (!data.startTime) start();
+    const now = Date.now();
+    if (data.lastKeyTime) {
+      const gap = now - data.lastKeyTime;
+      if (gap > 3000) data.idleMs += gap;
+      else data.intervals.push(gap);
+    }
+    data.lastKeyTime = now;
+    data.keystrokes++;
+    if (key === 'Backspace' || key === 'Delete') data.backspaces++;
+    else data.charCount++;
+  }
+
+  function recordPaste() { data.pasteDetected = true; }
+
+  function finish() {
+    _samplerInterval && clearInterval(_samplerInterval);
+    _samplerInterval = null;
+    if (!data.startTime) return stats();
+    // Final sample
+    const elapsed = (Date.now() - data.startTime) / 1000 / 60;
+    if (elapsed > 0) {
+      data.wpmSamples.push({ t: Date.now() - data.startTime, wpm: Math.round(data.charCount / 5 / elapsed) });
+    }
+    return stats();
+  }
+
+  function stats() {
+    const elapsedMs = data.startTime ? (Date.now() - data.startTime) : 0;
+    const activeMs  = Math.max(0, elapsedMs - data.idleMs);
+    const activeMins = activeMs / 1000 / 60;
+    const wpm = activeMins > 0 ? Math.round(data.charCount / 5 / activeMins) : 0;
+    const total = data.keystrokes;
+    const accuracy = total > 0 ? Math.round(((total - data.backspaces) / total) * 100) : 100;
+
+    // Consistency: 100 - coefficient of variation of intervals
+    let consistency = 100;
+    if (data.intervals.length > 2) {
+      const mean = data.intervals.reduce((a,b)=>a+b,0) / data.intervals.length;
+      const variance = data.intervals.reduce((s,v) => s + (v-mean)**2, 0) / data.intervals.length;
+      const cv = Math.sqrt(variance) / (mean || 1);
+      consistency = Math.max(0, Math.round((1 - Math.min(cv, 1)) * 100));
+    }
+
+    return {
+      wpm, accuracy, consistency,
+      keystrokes: total,
+      backspaces: data.backspaces,
+      charCount: data.charCount,
+      elapsedMs, activeMs, idleMs: data.idleMs,
+      pasteDetected: data.pasteDetected,
+      wpmSamples: data.wpmSamples,
+      ksSamples: data.ksSamples,
+    };
+  }
+
+  return { reset, start, recordKey, recordPaste, finish, stats };
+})();
+
+/* ══════════════════════════════
+   APP STATE
+   Persisted in localStorage
+══════════════════════════════ */
+const AppState = (() => {
+  const KEY = 'rkt_coding_v1';
+
+  function load() {
+    try { return JSON.parse(localStorage.getItem(KEY)) || {}; }
+    catch { return {}; }
+  }
+  function save(st) {
+    try { localStorage.setItem(KEY, JSON.stringify(st)); } catch {}
+  }
+
+  let state = load();
+
+  function getStatus(id)    { return (state.statuses || {})[id] || 'none'; }   // 'solved'|'attempted'|'none'
+  function setStatus(id, s) { state.statuses = state.statuses || {}; state.statuses[id] = s; save(state); }
+
+  function getBookmark(id)  { return !!(state.bookmarks || {})[id]; }
+  function toggleBookmark(id) {
+    state.bookmarks = state.bookmarks || {};
+    state.bookmarks[id] = !state.bookmarks[id];
+    save(state); return state.bookmarks[id];
+  }
+
+  function getNote(id)       { return (state.notes || {})[id] || ''; }
+  function setNote(id, text) { state.notes = state.notes || {}; state.notes[id] = text; save(state); }
+
+  function getSavedCode(id, lang) { return ((state.codes || {})[id] || {})[lang] || ''; }
+  function setSavedCode(id, lang, code) {
+    state.codes = state.codes || {};
+    state.codes[id] = state.codes[id] || {};
+    state.codes[id][lang] = code;
+    save(state);
+  }
+
+  function addSubmission(sub) {
+    state.submissions = state.submissions || [];
+    state.submissions.unshift(sub);
+    if (state.submissions.length > 100) state.submissions.pop();
+    save(state);
+  }
+  function getSubmissions() { return state.submissions || []; }
+
+  function getStreak() { return state.streak || { current: 0, longest: 0, lastDate: null }; }
+  function bumpStreak() {
+    const today = new Date().toDateString();
+    let s = getStreak();
+    if (s.lastDate !== today) {
+      const yesterday = new Date(Date.now() - 86400000).toDateString();
+      if (s.lastDate === yesterday) s.current++;
+      else s.current = 1;
+      if (s.current > s.longest) s.longest = s.current;
+      s.lastDate = today;
+      state.streak = s; save(state);
+    }
+  }
+
+  function getAvgStats() { return state.avgStats || { wpm: 0, accuracy: 0, consistency: 0, count: 0 }; }
+  function updateAvgStats(wpm, acc, con) {
+    let a = getAvgStats();
+    a.count++;
+    a.wpm         = Math.round((a.wpm         * (a.count-1) + wpm) / a.count);
+    a.accuracy    = Math.round((a.accuracy    * (a.count-1) + acc) / a.count);
+    a.consistency = Math.round((a.consistency * (a.count-1) + con) / a.count);
+    state.avgStats = a; save(state);
+  }
+
+  return { getStatus, setStatus, getBookmark, toggleBookmark, getNote, setNote,
+           getSavedCode, setSavedCode, addSubmission, getSubmissions,
+           getStreak, bumpStreak, getAvgStats, updateAvgStats };
+})();
+
+/* ══════════════════════════════
+   BEGINNER INTERPRETER
+   Supports: Python-like syntax for beginner problems.
+   NO eval() used anywhere.
+   Supports: variable assign, int/str/input, print,
+             arithmetic (+,-,*,//,%,**), comparisons,
+             if/elif/else, basic string ops (len, [n], [:-1], [:n-1])
+             string concat (+), repeat (*n), join
+══════════════════════════════ */
+/* ══════════════════════════════
+   TEST RUNNER
+   Every language now runs through CompilerRegistry (compilers/*.js) —
+   real self-written tokenizer -> parser -> evaluator per language,
+   100% offline, no network calls, no third-party execution APIs.
+══════════════════════════════ */
+function runTestCasesSmart(lang, code, testCases, onProgress) {
+  const results = [];
+  for (let i = 0; i < testCases.length; i++) {
+    const tc = testCases[i];
+    if (onProgress) onProgress(i, testCases.length);
+    const start = performance.now();
+    const res = CompilerRegistry.run(lang, code, tc.input);
+    const ms = performance.now() - start;
+    const actual = (res.output || '').trim();
+    const expected = (tc.expectedOutput || '').trim();
+    const passed = res.ok && (actual === expected);
+    results.push({ passed, actual, expected, error: res.error || null, ms: ms.toFixed(1), errorType: res.errorType });
+    // A compile/syntax error will fail identically for every remaining
+    // test case, so stop early instead of repeating the same failure.
+    if (res.errorType === 'CompileError' || res.errorType === 'SyntaxError' || res.errorType === 'ConfigError') {
+      for (let j = i + 1; j < testCases.length; j++) {
+        results.push({ passed: false, actual: '', expected: (testCases[j].expectedOutput||'').trim(), error: 'Skipped (previous test failed to compile).', ms: '0.0', errorType: res.errorType });
+      }
+      break;
+    }
+  }
+  return results;
+}
+
+
+/* ══════════════════════════════
+   VOICE-TO-CODE
+══════════════════════════════ */
+const VoiceEngine = (() => {
+  let recog = null;
+  let active = false;
+  let paused = false;
+  let onResult = null;
+
+  const REPLACEMENTS = {
+    'open bracket':'(', 'close bracket':')', 'open paren':'(',
+    'close paren':')', 'open square bracket':'[', 'close square bracket':']',
+    'open curly bracket':'{', 'close curly bracket':'}', 'open brace':'{',
+    'close brace':'}', 'colon':':', 'semicolon':';', 'comma':',',
+    'dot':'.', 'equals':'=', 'double equals':'==', 'not equals':'!=',
+    'less than':'<', 'greater than':'>', 'plus':'+', 'minus':'-',
+    'times':'*', 'divided by':'/', 'modulo':'%', 'power':'**',
+    'new line':'\n', 'newline':'\n', 'tab':'\t', 'space':' ',
+    'quote':'"', 'single quote':"'", 'underscore':'_', 'hash':'#',
+    'true':'True', 'false':'False', 'none':'None', 'null':'None',
+  };
+
+  function processTranscript(txt) {
+    let out = txt.toLowerCase();
+    // Replace spoken punctuation
+    for (const [spoken, sym] of Object.entries(REPLACEMENTS)) {
+      out = out.replace(new RegExp(`\\b${spoken}\\b`, 'gi'), sym);
+    }
+    return out;
+  }
+
+  function start(callback) {
+    if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+      toast('Speech recognition not supported in this browser.', 'error'); return;
+    }
+    onResult = callback;
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    recog = new SR();
+    recog.continuous = true;
+    recog.interimResults = true;
+    recog.lang = 'en-US';
+
+    recog.onresult = (evt) => {
+      if (paused) return;
+      let interim = '';
+      for (let i = evt.resultIndex; i < evt.results.length; i++) {
+        const t = evt.results[i][0].transcript;
+        if (evt.results[i].isFinal) {
+          document.getElementById('mic-transcript').textContent = t;
+          onResult(processTranscript(t));
+        } else { interim += t; }
+      }
+      if (interim) document.getElementById('mic-transcript').textContent = interim;
+    };
+    recog.onerror = (e) => toast(`Mic error: ${e.error}`, 'error');
+    recog.onend   = () => { if (active && !paused) recog.start(); }; // keep alive
+    recog.start();
+    active = true;
+  }
+
+  function pause()  { paused = true; }
+  function resume() { paused = false; }
+  function stop()   { active = false; paused = false; recog && recog.stop(); }
+
+  return { start, pause, resume, stop, isActive: () => active };
+})();
+
+/* ══════════════════════════════
+   MONACO + EDITOR
+══════════════════════════════ */
+let monacoEditor = null;
+let monacoLoaded = false;
+
+// Every language starts with just a blank comment prompt — no boilerplate,
+// no imports, nothing prefilled. The user types their solution from scratch.
+const STARTER_CODE = {
+  python:     `# start typing here\n`,
+  javascript: `// start typing here\n`,
+  java:       `// start typing here\n`,
+  cpp:        `// start typing here\n`,
+  c:          `// start typing here\n`,
+  typescript: `// start typing here\n`,
+  go:         `// start typing here\n`,
+  rust:       `// start typing here\n`,
+  kotlin:     `// start typing here\n`,
+  swift:      `// start typing here\n`,
+  php:        `<?php\n// start typing here\n`,
+  csharp:     `// start typing here\n`,
+  ruby:       `# start typing here\n`,
+};
+
+function initMonaco() {
+  require(['vs/editor/editor.main'], () => {
+    // Custom Rocket Typing theme
+    monaco.editor.defineTheme('rocketDark', {
+      base: 'vs-dark',
+      inherit: true,
+      rules: [
+        { token: 'keyword',  foreground: 'ffd700', fontStyle: 'bold' },
+        { token: 'string',   foreground: '00e6cc' },
+        { token: 'number',   foreground: 'ff9900' },
+        { token: 'comment',  foreground: '556070', fontStyle: 'italic' },
+        { token: 'function', foreground: 'a8d8ff' },
+        { token: 'variable', foreground: 'ffffff' },
+      ],
+      colors: {
+        'editor.background':              '#0a0a23',
+        'editor.foreground':              '#c9d1d9',
+        'editorLineNumber.foreground':    '#3a3a6a',
+        'editorLineNumber.activeForeground': '#ffd700',
+        'editor.lineHighlightBackground':'#0f0f30',
+        'editorCursor.foreground':        '#ffd700',
+        'editor.selectionBackground':     '#ffd70030',
+        'editorBracketMatch.background':  '#ffd70025',
+        'editorBracketMatch.border':      '#ffd700',
+        'scrollbarSlider.background':     '#ffd70020',
+        'scrollbarSlider.hoverBackground':'#ffd70040',
+      }
+    });
+
+    monacoEditor = monaco.editor.create(document.getElementById('monaco-editor'), {
+      value: STARTER_CODE.python,
+      language: 'python',
+      theme: 'rocketDark',
+      fontSize: 14,
+      fontFamily: "'Roboto Mono', monospace",
+      fontLigatures: true,
+      lineNumbers: 'on',
+      renderLineHighlight: 'line',
+      minimap: { enabled: false },
+      scrollBeyondLastLine: false,
+      wordWrap: 'off',
+      automaticLayout: true,
+      bracketPairColorization: { enabled: true },
+      suggest: { showKeywords: true, showSnippets: true },
+      autoClosingBrackets: 'always',
+      autoClosingQuotes: 'always',
+      tabSize: 4,
+      insertSpaces: true,
+      cursorBlinking: 'phase',
+      cursorStyle: 'line',
+      smoothScrolling: true,
+    });
+
+    monacoLoaded = true;
+
+    // Typing tracker integration
+    monacoEditor.onKeyDown(e => {
+      TypingTracker.recordKey(e.code);
+    });
+
+    // Paste detection
+    monacoEditor.onDidPaste(() => {
+      TypingTracker.recordPaste();
+    });
+
+    // Auto-save every 5 seconds
+    setInterval(() => {
+      if (currentQuestion && monacoEditor) {
+        const code = monacoEditor.getValue();
+        const lang  = document.getElementById('lang-select').value;
+        AppState.setSavedCode(currentQuestion.id, lang, code);
+        // Show autosave dot
+        const dot = document.getElementById('autosave-dot');
+        dot.classList.add('visible');
+        setTimeout(() => dot.classList.remove('visible'), 1500);
+      }
+    }, 5000);
+  });
+}
+
+/* ══════════════════════════════
+   WORKSPACE TIMER
+══════════════════════════════ */
+let timerInterval = null;
+let timerSeconds  = 0;
+let questionStartTime = null;
+
+function startTimer() {
+  timerSeconds = 0;
+  questionStartTime = Date.now();
+  clearInterval(timerInterval);
+  timerInterval = setInterval(() => {
+    timerSeconds++;
+    const m = String(Math.floor(timerSeconds / 60)).padStart(2,'0');
+    const s = String(timerSeconds % 60).padStart(2,'0');
+    document.getElementById('workspace-timer').textContent = `${m}:${s}`;
+  }, 1000);
+}
+
+function stopTimer() { clearInterval(timerInterval); }
+
+/* ══════════════════════════════
+   CHARTS
+══════════════════════════════ */
+let wpmChart = null;
+let ksChart  = null;
+
+function renderCharts(typingStats) {
+  const wpmCtx = document.getElementById('wpm-chart').getContext('2d');
+  const ksCtx  = document.getElementById('ks-chart').getContext('2d');
+
+  if (wpmChart) wpmChart.destroy();
+  if (ksChart)  ksChart.destroy();
+
+  const labels = typingStats.wpmSamples.map((_, i) => `${(i+1)*3}s`);
+  const wpmData = typingStats.wpmSamples.map(s => s.wpm);
+  const ksData  = typingStats.ksSamples.map(s => s.ks);
+
+  // Pad if not enough samples
+  const fallbackLabels = ['Start', 'Mid', 'End'];
+  const usedLabels = labels.length > 0 ? labels : fallbackLabels;
+  const usedWpm    = wpmData.length > 0 ? wpmData : [typingStats.wpm, typingStats.wpm, typingStats.wpm];
+  const usedKs     = ksData.length  > 0 ? ksData  : [0, Math.floor(typingStats.keystrokes/2), typingStats.keystrokes];
+
+  wpmChart = new Chart(wpmCtx, {
+    type: 'line',
+    data: {
+      labels: usedLabels,
+      datasets: [{ label:'WPM', data: usedWpm,
+        borderColor: '#00e6cc', backgroundColor: 'rgba(0,230,204,0.1)',
+        tension: 0.4, fill: true, pointRadius: 3, pointBackgroundColor: '#00e6cc' }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { ticks: { color:'#8b949e', font:{size:10} }, grid: { color:'rgba(255,255,255,0.04)' } },
+        y: { ticks: { color:'#8b949e', font:{size:10} }, grid: { color:'rgba(255,255,255,0.06)' }, beginAtZero: true }
+      }
+    }
+  });
+
+  ksChart = new Chart(ksCtx, {
+    type: 'bar',
+    data: {
+      labels: usedLabels,
+      datasets: [{ label:'Keystrokes', data: usedKs,
+        backgroundColor: 'rgba(255,153,0,0.4)', borderColor: '#ff9900', borderWidth: 1, borderRadius: 3 }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { ticks: { color:'#8b949e', font:{size:10} }, grid: { color:'rgba(255,255,255,0.04)' } },
+        y: { ticks: { color:'#8b949e', font:{size:10} }, grid: { color:'rgba(255,255,255,0.06)' }, beginAtZero: true }
+      }
+    }
+  });
+}
+
+/* ══════════════════════════════
+   UI HELPERS
+══════════════════════════════ */
+function showView(name) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.getElementById(`view-${name}`).classList.add('active');
+  ['dash','prob','prof'].forEach(id => document.getElementById(`nb-${id}`).classList.remove('active'));
+  const map = { dashboard:'dash', problems:'prob', profile:'prof', workspace:'prob' };
+  if (map[name]) document.getElementById(`nb-${map[name]}`).classList.add('active');
+  if (name === 'dashboard') refreshDashboard();
+  if (name === 'problems')  renderProblems();
+  if (name === 'profile')   renderProfile();
+}
+
+function toast(msg, type='info') {
+  const tc = document.getElementById('toast-container');
+  const t  = document.createElement('div');
+  t.className = `toast ${type}`;
+  t.textContent = msg;
+  tc.appendChild(t);
+  setTimeout(() => t.remove(), 3000);
+}
+
+function goHome() { window.location.href = 'index.html'; }
+
+function setSidebarTab(name, btn) {
+  ['desc','notes','hint'].forEach(n => {
+    const el = document.getElementById(`sidebar-${n}`);
+    if (el) el.style.display = n === name ? 'block' : 'none';
+  });
+  document.querySelectorAll('.sidebar-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+function setOutputTab(name, btn) {
+  ['output','testcases','console'].forEach(n => {
+    document.getElementById(`output-${n}`).style.display = n === name ? '' : 'none';
+  });
+  document.querySelectorAll('.output-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+/* ══════════════════════════════
+   DASHBOARD
+══════════════════════════════ */
+function refreshDashboard() {
+  const qs = QuestionRegistry.getAll();
+  const total = qs.length;
+  document.getElementById('ds-total').textContent = total;
+
+  let solved=0, attempted=0, bookmarked=0;
+  let easy=0, med=0, hard=0, esol=0, msol=0, hsol=0;
+
+  qs.forEach(q => {
+    const st = AppState.getStatus(q.id);
+    if (st === 'solved')    solved++;
+    if (st === 'attempted') attempted++;
+    if (AppState.getBookmark(q.id)) bookmarked++;
+    if (q.difficulty === 'Easy')   { easy++;   if(st==='solved') esol++; }
+    if (q.difficulty === 'Medium') { med++;    if(st==='solved') msol++; }
+    if (q.difficulty === 'Hard')   { hard++;   if(st==='solved') hsol++; }
+  });
+
+  document.getElementById('ds-solved').textContent    = solved;
+  document.getElementById('ds-attempted').textContent = attempted;
+  document.getElementById('ds-bookmarked').textContent = bookmarked;
+
+  const pct = total > 0 ? Math.round(solved/total*100) : 0;
+  document.getElementById('db-pct').textContent = `${pct}% complete`;
+  document.getElementById('db-overall-bar').style.width = pct + '%';
+
+  setTimeout(() => {
+    document.getElementById('db-easy-bar').style.width  = easy  > 0 ? `${esol/easy*100}%`  : '0%';
+    document.getElementById('db-med-bar').style.width   = med   > 0 ? `${msol/med*100}%`   : '0%';
+    document.getElementById('db-hard-bar').style.width  = hard  > 0 ? `${hsol/hard*100}%`  : '0%';
+  }, 100);
+
+  document.getElementById('db-easy-txt').textContent  = `${esol} / ${easy}`;
+  document.getElementById('db-med-txt').textContent   = `${msol} / ${med}`;
+  document.getElementById('db-hard-txt').textContent  = `${hsol} / ${hard}`;
+
+  // Recent solved
+  const subs = AppState.getSubmissions().filter(s => s.accepted).slice(0,5);
+  const container = document.getElementById('ds-recent-list');
+  if (subs.length === 0) {
+    container.innerHTML = `<div style="color:var(--text2);font-size:13px;padding:16px 0">No solved problems yet. Start with Problem #1!</div>`;
+  } else {
+    container.innerHTML = subs.map(s => {
+      const q = qs.find(q => q.id === s.qid);
+      if (!q) return '';
+      return `<div class="recent-item">
+        <span class="recent-num">#${q.id}</span>
+        <span class="recent-title">${q.title}</span>
+        <span class="recent-badge ${q.difficulty.toLowerCase()}">${q.difficulty}</span>
+        <span class="recent-status solved">Solved</span>
+      </div>`;
+    }).join('');
+  }
+}
+
+/* ══════════════════════════════
+   PROBLEMS LIST
+══════════════════════════════ */
+let diffFilter = 'all';
+
+function setDiffFilter(f) {
+  diffFilter = f;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  const map = {'all':'f-all','Easy':'f-easy','Medium':'f-medium','Hard':'f-hard'};
+  document.querySelector(`.${map[f]}`).classList.add('active');
+  filterProblems();
+}
+
+function filterProblems() {
+  const search = document.getElementById('search-input').value.toLowerCase();
+  const sort   = document.getElementById('sort-select').value;
+  let qs = [...QuestionRegistry.getAll()];
+
+  if (diffFilter !== 'all') qs = qs.filter(q => q.difficulty === diffFilter);
+  if (search) qs = qs.filter(q =>
+    q.title.toLowerCase().includes(search) ||
+    String(q.id).includes(search) ||
+    (q.topic || '').toLowerCase().includes(search)
+  );
+
+  if (sort === 'diff') {
+    const ord = {Easy:1, Medium:2, Hard:3};
+    qs.sort((a,b) => (ord[a.difficulty]||9) - (ord[b.difficulty]||9));
+  } else if (sort === 'solved') {
+    qs.sort((a,b) => {
+      const sa = AppState.getStatus(a.id), sb = AppState.getStatus(b.id);
+      const rank = s => s === 'solved' ? 0 : s === 'attempted' ? 1 : 2;
+      return rank(sa) - rank(sb);
+    });
+  } else {
+    qs.sort((a,b) => a.id - b.id);
+  }
+
+  renderProblemRows(qs);
+}
+
+function renderProblems() { filterProblems(); }
+
+function renderProblemRows(qs) {
+  const tbody = document.getElementById('problems-tbody');
+  if (qs.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:32px;color:var(--text2)">No problems found.</td></tr>`;
+    return;
+  }
+  tbody.innerHTML = qs.map(q => {
+    const st  = AppState.getStatus(q.id);
+    const bm  = AppState.getBookmark(q.id);
+    const dot = st === 'solved' ? '✅' : st === 'attempted' ? '🔄' : '⬜';
+    const stLabel = st === 'solved' ? `<span style="color:var(--green);font-size:11px;font-weight:600">Solved</span>`
+                  : st === 'attempted' ? `<span style="color:var(--gold2);font-size:11px">Attempted</span>`
+                  : `<span style="color:var(--text2);font-size:11px">—</span>`;
+    return `<tr onclick="openProblem(${q.id})">
+      <td class="prob-num">#${q.id}</td>
+      <td class="prob-status-icon">${dot}</td>
+      <td><div class="prob-title">${q.title}${bm ? ' 🔖' : ''}</div><div class="prob-topic">${q.topic||''}</div></td>
+      <td><span class="badge ${q.difficulty.toLowerCase()}">${q.difficulty}</span></td>
+      <td style="font-size:12px;color:var(--text2)">${q.topic||'—'}</td>
+      <td>${stLabel}</td>
+    </tr>`;
+  }).join('');
+}
+
+/* ══════════════════════════════
+   WORKSPACE
+══════════════════════════════ */
+let currentQuestion = null;
+
+function openProblem(id) {
+  const q = QuestionRegistry.getAll().find(q => q.id === id);
+  if (!q) return;
+  currentQuestion = q;
+
+  showView('workspace');
+
+  // Fill description
+  const desc = document.getElementById('sidebar-desc');
+  desc.innerHTML = `
+    <div class="prob-meta">
+      <h2>#${q.id} ${q.title}</h2>
+      <span class="badge ${q.difficulty.toLowerCase()}">${q.difficulty}</span>
+      <span class="meta-pill">⏱ ${q.timeLimit}</span>
+      <span class="meta-pill">💾 ${q.memoryLimit}</span>
+      <span class="meta-pill">🏷 ${q.topic}</span>
+      <button onclick="toggleBookmark(${q.id})" id="bm-btn-${q.id}" style="background:none;border:1px solid var(--border);color:var(--text2);padding:4px 10px;border-radius:5px;cursor:pointer;font-size:11px">
+        ${AppState.getBookmark(q.id) ? '🔖 Bookmarked' : '🔖 Bookmark'}
+      </button>
+    </div>
+    <div class="prob-section">
+      <h4>Problem Statement</h4>
+      <p>${q.description.replace(/\n/g,'<br>').replace(/`([^`]+)`/g,'<code>$1</code>').replace(/\*\*([^*]+)\*\*/g,'<strong>$1</strong>')}</p>
+    </div>
+    <div class="prob-section">
+      <h4>Input Format</h4>
+      <p>${q.inputFormat.replace(/\n/g,'<br>').replace(/`([^`]+)`/g,'<code>$1</code>')}</p>
+    </div>
+    <div class="prob-section">
+      <h4>Output Format</h4>
+      <p>${q.outputFormat.replace(/\n/g,'<br>').replace(/`([^`]+)`/g,'<code>$1</code>').replace(/```[\s\S]*?```/g, m => `<div class="io-box">${m.replace(/```\n?/g,'')}</div>`)}</p>
+    </div>
+    <div class="prob-section">
+      <h4>Constraints</h4>
+      <p>${q.constraints.replace(/\n/g,'<br>').replace(/`([^`]+)`/g,'<code>$1</code>')}</p>
+    </div>
+    <div class="prob-section">
+      <h4>Sample Input</h4>
+      <div class="io-box">${q.sampleInput || '(No input required)'}</div>
+    </div>
+    <div class="prob-section">
+      <h4>Sample Output</h4>
+      <div class="io-box">${q.sampleOutput}</div>
+    </div>
+    <div class="prob-section">
+      <h4>Explanation</h4>
+      <p>${q.explanation.replace(/\n/g,'<br>').replace(/`([^`]+)`/g,'<code>$1</code>')}</p>
+    </div>
+  `;
+
+  // Hint
+  document.getElementById('hint-content').textContent = q.hint || 'No hint available for this problem.';
+
+  // Notes
+  document.getElementById('notes-area').value = AppState.getNote(q.id);
+
+  // Restore saved code or use starter
+  const lang = document.getElementById('lang-select').value;
+  const saved = AppState.getSavedCode(q.id, lang);
+  if (monacoEditor) {
+    monacoEditor.setValue(saved || STARTER_CODE[lang] || '');
+    monaco.editor.setModelLanguage(monacoEditor.getModel(), lang === 'cpp' ? 'cpp' : lang === 'csharp' ? 'csharp' : lang);
+  }
+
+  // Clear output
+  document.getElementById('output-output').innerHTML = `<div class="output-line dim">Click "Run" to execute against sample test cases.</div>`;
+  document.getElementById('output-testcases').innerHTML = `<div class="output-line dim">No test results yet.</div>`;
+  document.getElementById('output-console').innerHTML = `<div class="output-line dim">Console output will appear here.</div>`;
+
+  // Reset sidebar tab
+  setSidebarTab('desc', document.querySelector('.sidebar-tab'));
+
+  // Start timer & tracker
+  startTimer();
+  TypingTracker.reset();
+  TypingTracker.start();
+
+  AppState.setStatus(q.id, AppState.getStatus(q.id) === 'none' ? 'attempted' : AppState.getStatus(q.id));
+}
+
+function changeLanguage() {
+  if (!currentQuestion || !monacoEditor) return;
+  const lang = document.getElementById('lang-select').value;
+  const saved = AppState.getSavedCode(currentQuestion.id, lang);
+  monacoEditor.setValue(saved || STARTER_CODE[lang] || '');
+  const langMap = { csharp:'csharp', cpp:'cpp', typescript:'typescript' };
+  monaco.editor.setModelLanguage(monacoEditor.getModel(), langMap[lang] || lang);
+}
+
+function resetCode() {
+  if (!monacoEditor) return;
+  const lang = document.getElementById('lang-select').value;
+  monacoEditor.setValue(STARTER_CODE[lang] || '');
+  toast('Code reset to starter template.', 'info');
+}
+
+function copyCode() {
+  if (!monacoEditor) return;
+  navigator.clipboard.writeText(monacoEditor.getValue()).then(() => toast('Code copied!', 'success'));
+}
+
+function downloadCode() {
+  if (!monacoEditor) return;
+  const lang = document.getElementById('lang-select').value;
+  const ext  = { python:'py', javascript:'js', java:'java', cpp:'cpp', c:'c', typescript:'ts', go:'go', rust:'rs', kotlin:'kt', swift:'swift', php:'php', csharp:'cs', ruby:'rb' };
+  const blob = new Blob([monacoEditor.getValue()], { type:'text/plain' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `solution_${currentQuestion?.id || 'q'}.${ext[lang] || 'txt'}`;
+  a.click();
+}
+
+function uploadCode() { document.getElementById('file-upload').click(); }
+
+function handleUpload(evt) {
+  const file = evt.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    if (monacoEditor) monacoEditor.setValue(e.target.result);
+    toast('File uploaded.', 'success');
+  };
+  reader.readAsText(file);
+  evt.target.value = '';
+}
+
+function saveNote() {
+  if (currentQuestion) AppState.setNote(currentQuestion.id, document.getElementById('notes-area').value);
+}
+
+function toggleBookmark(id) {
+  const on = AppState.toggleBookmark(id);
+  const btn = document.getElementById(`bm-btn-${id}`);
+  if (btn) btn.textContent = on ? '🔖 Bookmarked' : '🔖 Bookmark';
+  toast(on ? 'Bookmarked!' : 'Bookmark removed.', 'info');
+}
+
+/* ── BUTTON BUSY STATE HELPERS ── */
+function setBtnBusy(id, busyLabel) {
+  const btn = document.getElementById(id);
+  if (!btn) return;
+  if (!btn.dataset.origLabel) btn.dataset.origLabel = btn.innerHTML;
+  btn.disabled = true;
+  btn.classList.add('busy');
+  btn.innerHTML = `<span class="btn-spinner"></span> ${busyLabel}`;
+}
+function clearBtnBusy(id) {
+  const btn = document.getElementById(id);
+  if (!btn) return;
+  btn.disabled = false;
+  btn.classList.remove('busy');
+  if (btn.dataset.origLabel) btn.innerHTML = btn.dataset.origLabel;
+}
+
+/* ── RUN CODE ──
+   Compiles/interprets the REAL language via CompilerRegistry (100%
+   against the sample test cases, with live progress feedback. ── */
+async function runCode() {
+  if (!currentQuestion || !monacoEditor) return;
+  const code = monacoEditor.getValue().trim();
+  const lang = document.getElementById('lang-select').value;
+  const testCases = currentQuestion.testCases || [];
+
+  if (!code) { toast('Write some code first.', 'error'); return; }
+  if (testCases.length === 0) {
+    document.getElementById('output-output').innerHTML = `<div class="output-line warn">No sample test cases defined.</div>`;
+    setOutputTab('output', document.querySelector('.output-tab'));
+    return;
+  }
+
+  AppState.setSavedCode(currentQuestion.id, lang, code);
+  setBtnBusy('run-btn', 'Running…');
+  document.getElementById('output-output').innerHTML =
+    `<div class="output-line running">⏳ Compiling &amp; running your ${langLabel(lang)} code…</div>`;
+  setOutputTab('output', document.querySelector('.output-tab'));
+
+  try {
+    const startMs = performance.now();
+    const results = await runTestCasesSmart(lang, code, testCases, (i, total) => {
+      if (total > 1) {
+        document.getElementById('output-output').innerHTML =
+          `<div class="output-line running">⏳ Running test case ${i+1} / ${total}…</div>`;
+      }
+    });
+    const totalMs = (performance.now() - startMs).toFixed(1);
+
+    // Output tab
+    const firstResult = results[0];
+    let outputHtml = '';
+    if (!firstResult) {
+      outputHtml = `<div class="output-line warn">No sample test cases defined.</div>`;
+    } else if (firstResult.error) {
+      outputHtml = `<div class="output-line error">❌ ${firstResult.errorType || 'Error'}: ${escapeHtml(firstResult.error)}</div>`;
+      if (firstResult.output) outputHtml += `<div class="output-line dim">stdout so far:\n${escapeHtml(firstResult.output)}</div>`;
+    } else {
+      outputHtml = `<div class="output-line ${firstResult.passed ? 'success' : 'error'}">${escapeHtml(firstResult.actual) || '(empty output)'}</div>`;
+      outputHtml += `<div class="output-line dim">⏱ ${totalMs}ms · ${langLabel(lang)}</div>`;
+    }
+    document.getElementById('output-output').innerHTML = outputHtml;
+
+    // Test cases tab
+    const tcHtml = results.map((r, i) => `
+      <div class="tc-row">
+        <span class="tc-idx">${i+1}</span>
+        <span class="tc-status ${r.passed ? 'pass' : 'fail'}">${r.passed ? '✅' : '❌'}</span>
+        <span class="tc-detail">Expected: <span>${escapeHtml(r.expected)}</span> | Got: <span>${escapeHtml(r.error ? r.error : r.actual)}</span></span>
+        <span class="tc-detail" style="text-align:right">${r.ms}ms</span>
+      </div>`).join('');
+    document.getElementById('output-testcases').innerHTML = tcHtml || '<div class="output-line dim">No test cases.</div>';
+
+    toast(`Run complete. ${results.filter(r=>r.passed).length}/${results.length} passed.`, results.every(r=>r.passed) ? 'success' : 'info');
+  } catch (err) {
+    document.getElementById('output-output').innerHTML = `<div class="output-line error">❌ Unexpected error: ${escapeHtml(err.message)}</div>`;
+  } finally {
+    clearBtnBusy('run-btn');
+  }
+}
+
+/* ── SUBMIT CODE ──
+   Runs sample + hidden test cases through the real compiler/interpreter. ── */
+async function submitCode() {
+  if (!currentQuestion || !monacoEditor) return;
+  const code = monacoEditor.getValue().trim();
+  const lang = document.getElementById('lang-select').value;
+
+  if (!code) { toast('Write some code first.', 'error'); return; }
+
+  const typingStats = TypingTracker.finish();
+  stopTimer();
+
+  const allTCs = [...(currentQuestion.testCases||[]), ...(currentQuestion.hiddenTestCases || [])];
+  if (allTCs.length === 0) { toast('No test cases defined for this problem.', 'error'); return; }
+
+  setBtnBusy('submit-btn', 'Judging…');
+  document.getElementById('output-output').innerHTML =
+    `<div class="output-line running">⏳ Compiling &amp; judging your ${langLabel(lang)} submission…</div>`;
+  setOutputTab('output', document.querySelector('.output-tab'));
+
+  try {
+    const results = await runTestCasesSmart(lang, code, allTCs, (i, total) => {
+      document.getElementById('output-output').innerHTML =
+        `<div class="output-line running">⏳ Judging test case ${i+1} / ${total}…</div>`;
+      const progress = document.getElementById('output-testcases');
+      if (progress) progress.innerHTML = `<div class="exec-progress">Judging ${i+1} / ${total}…</div>`;
+    });
+
+    const passed    = results.filter(r => r.passed).length;
+    const total     = results.length;
+    const accepted  = passed === total;
+    const runtime   = results.reduce((s,r) => s + parseFloat(r.ms), 0).toFixed(1);
+
+    // Reflect final per-testcase results too, in case the user checks that tab
+    const tcHtml = results.map((r, i) => `
+      <div class="tc-row">
+        <span class="tc-idx">${i+1}</span>
+        <span class="tc-status ${r.passed ? 'pass' : 'fail'}">${r.passed ? '✅' : '❌'}</span>
+        <span class="tc-detail">Expected: <span>${escapeHtml(r.expected)}</span> | Got: <span>${escapeHtml(r.error ? r.error : r.actual)}</span></span>
+        <span class="tc-detail" style="text-align:right">${r.ms}ms</span>
+      </div>`).join('');
+    document.getElementById('output-testcases').innerHTML = tcHtml || '<div class="output-line dim">No test cases.</div>';
+
+    // Update progress
+    if (accepted) {
+      AppState.setStatus(currentQuestion.id, 'solved');
+      AppState.bumpStreak();
+    } else if (AppState.getStatus(currentQuestion.id) !== 'solved') {
+      AppState.setStatus(currentQuestion.id, 'attempted');
+    }
+
+    AppState.updateAvgStats(typingStats.wpm, typingStats.accuracy, typingStats.consistency);
+    AppState.addSubmission({
+      qid: currentQuestion.id,
+      accepted,
+      lang,
+      passed, total,
+      runtime,
+      wpm: typingStats.wpm,
+      accuracy: typingStats.accuracy,
+      date: new Date().toISOString(),
+    });
+
+    showResult(accepted, passed, total, runtime, lang, code, typingStats);
+  } catch (err) {
+    document.getElementById('output-output').innerHTML = `<div class="output-line error">❌ Unexpected error: ${escapeHtml(err.message)}</div>`;
+    toast('Submission failed unexpectedly. See Output tab.', 'error');
+  } finally {
+    clearBtnBusy('submit-btn');
+  }
+}
+
+/* ── small helpers used above ── */
+function langLabel(lang) {
+  const opt = document.querySelector(`#lang-select option[value="${lang}"]`);
+  return opt ? opt.textContent : lang;
+}
+function escapeHtml(str) {
+  if (str === null || str === undefined) return '';
+  return String(str)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+/* ══════════════════════════════
+   RESULT OVERLAY
+══════════════════════════════ */
+function showResult(accepted, passed, total, runtime, lang, code, typing) {
+  // Banner
+  const banner = document.getElementById('res-banner');
+  banner.className = `result-status-banner ${accepted ? 'accepted' : 'wrong'}`;
+  document.getElementById('res-banner-title').textContent = accepted ? '✅ Accepted' : '❌ Wrong Answer';
+  document.getElementById('res-banner-sub').textContent   = `${passed} / ${total} test cases passed · ${runtime}ms`;
+
+  // Stats grid
+  const codeLen = code.length;
+  document.getElementById('res-grid').innerHTML = `
+    <div class="result-stat"><div class="result-stat-val">${passed}/${total}</div><div class="result-stat-lbl">Test Cases</div></div>
+    <div class="result-stat cyan-val"><div class="result-stat-val">${runtime}ms</div><div class="result-stat-lbl">Runtime</div></div>
+    <div class="result-stat orange-val"><div class="result-stat-val">${lang}</div><div class="result-stat-lbl">Language</div></div>
+    <div class="result-stat green-val"><div class="result-stat-val">${codeLen}</div><div class="result-stat-lbl">Characters</div></div>
+    <div class="result-stat purple-val"><div class="result-stat-val">${Math.round(typing.activeMs/1000)}s</div><div class="result-stat-lbl">Time Spent</div></div>
+    <div class="result-stat"><div class="result-stat-val">${typing.pasteDetected ? '⚠️ Yes' : '✅ No'}</div><div class="result-stat-lbl">Paste Used</div></div>
+  `;
+
+  // Paste warning
+  document.getElementById('paste-warn').classList.toggle('show', typing.pasteDetected);
+
+  // Typing analytics
+  document.getElementById('ra-wpm').textContent  = `${typing.wpm}`;
+  document.getElementById('ra-acc').textContent  = `${typing.accuracy}%`;
+  document.getElementById('ra-con').textContent  = `${typing.consistency}%`;
+  document.getElementById('ra-time').textContent = `${Math.round(typing.activeMs/1000)}s`;
+  document.getElementById('ra-ks').textContent   = typing.keystrokes;
+  document.getElementById('ra-bs').textContent   = typing.backspaces;
+
+  document.getElementById('result-overlay').classList.add('open');
+
+  // Charts (defer for animation)
+  setTimeout(() => renderCharts(typing), 100);
+}
+
+function closeResult() {
+  document.getElementById('result-overlay').classList.remove('open');
+  // Restart timer & tracker for retry
+  startTimer();
+  TypingTracker.reset();
+  TypingTracker.start();
+}
+
+function nextProblem() {
+  document.getElementById('result-overlay').classList.remove('open');
+  const qs = QuestionRegistry.getAll();
+  if (!currentQuestion) return;
+  const idx = qs.findIndex(q => q.id === currentQuestion.id);
+  if (idx < qs.length - 1) openProblem(qs[idx+1].id);
+  else { showView('problems'); toast('🎉 You\'ve reached the last problem!', 'success'); }
+}
+
+/* ══════════════════════════════
+   VOICE TO CODE
+══════════════════════════════ */
+let micOpen = false;
+
+function toggleMic() {
+  const btn   = document.getElementById('mic-btn');
+  const panel = document.getElementById('mic-panel');
+
+  if (!micOpen) {
+    micOpen = true;
+    panel.classList.add('open');
+    btn.classList.add('listening');
+    VoiceEngine.start(text => {
+      if (monacoEditor) {
+        const pos    = monacoEditor.getPosition();
+        const lineNum = pos.lineNumber;
+        const col     = pos.column;
+        monacoEditor.executeEdits('voice', [{
+          range: new monaco.Range(lineNum, col, lineNum, col),
+          text: text,
+          forceMoveMarkers: true,
+        }]);
+        toast('Voice inserted.', 'info');
+      }
+    });
+  } else {
+    stopMic();
+  }
+}
+
+function pauseMic()  { VoiceEngine.pause();  toast('Mic paused.', 'info'); }
+function resumeMic() { VoiceEngine.resume(); toast('Mic resumed.', 'info'); }
+function stopMic() {
+  micOpen = false;
+  VoiceEngine.stop();
+  document.getElementById('mic-btn').classList.remove('listening');
+  document.getElementById('mic-panel').classList.remove('open');
+  toast('Mic stopped.', 'info');
+}
+
+/* ══════════════════════════════
+   PROFILE
+══════════════════════════════ */
+function renderProfile() {
+  const qs   = QuestionRegistry.getAll();
+  const subs = AppState.getSubmissions();
+  const avg  = AppState.getAvgStats();
+  const str  = AppState.getStreak();
+  let solved = 0; qs.forEach(q => { if(AppState.getStatus(q.id)==='solved') solved++; });
+  const acc  = subs.length > 0 ? Math.round(subs.filter(s=>s.accepted).length/subs.length*100) : 0;
+
+  // Pick most used lang
+  const langCount = {};
+  subs.forEach(s => { langCount[s.lang] = (langCount[s.lang]||0)+1; });
+  const topLang = Object.entries(langCount).sort((a,b)=>b[1]-a[1])[0];
+
+  document.getElementById('pf-stats-grid').innerHTML = `
+    <div class="stat-card"><div class="stat-icon">✅</div><div class="stat-value">${solved}</div><div class="stat-label">Problems Solved</div></div>
+    <div class="stat-card"><div class="stat-icon">📋</div><div class="stat-value">${subs.length}</div><div class="stat-label">Total Submissions</div></div>
+    <div class="stat-card green"><div class="stat-icon">🎯</div><div class="stat-value">${acc}%</div><div class="stat-label">Acceptance Rate</div></div>
+    <div class="stat-card cyan"><div class="stat-icon">⌨️</div><div class="stat-value">${avg.wpm || '—'}</div><div class="stat-label">Avg WPM</div></div>
+    <div class="stat-card"><div class="stat-icon">✍️</div><div class="stat-value">${avg.accuracy ? avg.accuracy+'%' : '—'}</div><div class="stat-label">Avg Accuracy</div></div>
+    <div class="stat-card orange"><div class="stat-icon">🔥</div><div class="stat-value">${str.current}</div><div class="stat-label">Current Streak</div></div>
+    <div class="stat-card"><div class="stat-icon">🏆</div><div class="stat-value">${str.longest}</div><div class="stat-label">Longest Streak</div></div>
+    <div class="stat-card"><div class="stat-icon">💻</div><div class="stat-value" style="font-size:18px">${topLang ? topLang[0] : '—'}</div><div class="stat-label">Fav Language</div></div>
+    <div class="stat-card purple-val"><div class="stat-icon">📊</div><div class="stat-value" style="font-size:18px">${avg.consistency ? avg.consistency+'%' : '—'}</div><div class="stat-label">Avg Consistency</div></div>
+  `;
+
+  const recent = subs.slice(0,8);
+  document.getElementById('pf-recent').innerHTML = recent.length === 0
+    ? `<div style="color:var(--text2);font-size:13px;padding:16px 0">No submissions yet.</div>`
+    : recent.map(s => {
+        const q = qs.find(q => q.id === s.qid);
+        return `<div class="recent-item">
+          <span class="recent-num">#${s.qid}</span>
+          <span class="recent-title">${q ? q.title : '—'}</span>
+          <span class="recent-badge ${s.accepted ? 'easy' : 'hard'}">${s.accepted ? 'Accepted' : 'Wrong'}</span>
+          <span style="font-size:11px;color:var(--text2)">${s.lang} · ${s.wpm || '?'} WPM</span>
+        </div>`;
+      }).join('');
+}
+
+/* ══════════════════════════════
+   INIT
+══════════════════════════════ */
+async function init() {
+  // Load Monaco
+  initMonaco();
+
+  // Load questions
+  const questions = await QuestionRegistry.loadAll();
+
+  if (questions.length === 0) {
+    // Friendly warning if code1.js is missing
+    console.warn('[Rocket Coding] No question files found. Make sure code1.js is in the same folder as coding.html.');
+  }
+
+  // Default view
+  showView('dashboard');
+}
+
+init();
+</script>
+</body>
+</html>
