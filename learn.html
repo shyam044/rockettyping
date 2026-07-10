@@ -126,7 +126,7 @@ body.lesson-active { overflow-y: auto !important; }
 /* ─── HERO ─── */
 #view-hero {
   display:flex; flex-direction:column; align-items:center; justify-content:center;
-  padding:110px 20px 60px; text-align:center; min-height:90vh; position:relative;
+  padding:152px 20px 60px; text-align:center; min-height:90vh; position:relative;
 }
 .hero-rocket { font-size:72px; animation:lp-float 3s ease-in-out infinite; margin-bottom:20px; filter:drop-shadow(0 0 30px rgba(226,183,20,0.5)); }
 @keyframes lp-float { 0%,100%{transform:translateY(0) rotate(-10deg);} 50%{transform:translateY(-14px) rotate(-10deg);} }
@@ -184,7 +184,7 @@ body.lesson-active { overflow-y: auto !important; }
 .hero-bottom-note { font-size:12px; color:rgba(255,255,255,0.3); }
 
 /* ─── CURRICULUM ─── */
-#view-curriculum { padding:90px 24px 60px; }
+#view-curriculum { padding:132px 24px 60px; }
 .curr-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:36px; flex-wrap:wrap; gap:16px; }
 .curr-title { font-size:26px; font-weight:900; color:#ffd700; text-shadow:0 0 20px rgba(255,215,0,0.3); }
 .curr-summary { display:flex; gap:16px; flex-wrap:wrap; }
@@ -217,7 +217,7 @@ body.lesson-active { overflow-y: auto !important; }
 
 /* ─── LESSON VIEW ─── */
 #view-lesson {
-  padding:66px 16px 24px;
+  padding:108px 16px 24px;
   min-height:100vh;
   box-sizing:border-box;
   display:flex;
@@ -436,6 +436,65 @@ body.lesson-active { overflow-y: auto !important; }
 #course-complete-msg .cc-title { font-size:20px; font-weight:900; color:#ffd700; margin-bottom:8px; }
 #course-complete-msg .cc-sub { font-size:13px; color:rgba(255,255,255,0.65); margin-bottom:18px; line-height:1.55; }
 
+/* ── Top banner ad — sits inline inside the header, between nav groups ── */
+#top-banner-ad {
+  flex: 1 1 auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  min-width: 0;
+  height: 90px;
+}
+
+/* ── Side ad rails — left/right empty space ── */
+.ad-rail-lp {
+  position: fixed;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 160px;
+  z-index: 9000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.ad-rail-lp-left { left: 12px; }
+.ad-rail-lp-right { right: 12px; }
+
+/* ── Lesson page: ads flank the keyboard/exercise card directly,
+   instead of sitting at the far viewport edges ── */
+.lv-page-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 20px;
+  width: 100%;
+}
+.lv-content-col {
+  flex: 1 1 auto;
+  max-width: 900px;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+#view-lesson .ad-rail-lp {
+  position: sticky;
+  top: 116px;
+  flex: 0 0 160px;
+  left: auto;
+  right: auto;
+  transform: none;
+}
+
+@media (max-width:1300px) {
+  .ad-rail-lp { display: none; }
+  #top-banner-ad { display: none; }
+  #main-header { height: 58px !important; }
+  #view-hero { padding-top: 110px !important; }
+  #view-curriculum { padding-top: 90px !important; }
+  #view-lesson { padding-top: 66px !important; }
+}
 @media(max-width:600px){
   #lp-xp-track{width:55px;}
   #lv-display{font-size:16px;letter-spacing:1px;}
@@ -521,18 +580,30 @@ body.lesson-active { overflow-y: auto !important; }
   line-height: 1.6;
 }
 .lg-tip b { color: #00e6cc; }
-</style>
+</style>    <script async="async" data-cfasync="false" src="https://pl30277778.effectivecpmnetwork.com/42f27a48e35d8fefd79d32771cdb9094/invoke.js"></script>
 </head>
 <body>
 <div id="app">
 
 <!-- HEADER -->
-<header id="main-header" style="position:fixed;top:0;left:0;right:0;height:58px;display:flex;align-items:center;justify-content:space-between;z-index:9999;background:rgba(10,10,35,0.97);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid rgba(226,183,20,0.2);padding:0 24px;box-sizing:border-box;">
+<header id="main-header" style="position:fixed;top:0;left:0;right:0;height:100px;display:flex;align-items:center;justify-content:space-between;gap:20px;z-index:9999;background:rgba(10,10,35,0.97);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid rgba(226,183,20,0.2);padding:0 24px;box-sizing:border-box;">
   <div style="display:flex;align-items:center;gap:14px;cursor:pointer;" onclick="window.location.href='index.html'">
     <img src="images/logo.png" alt="Rocket Typing" style="height:34px;width:auto;" />
     <button onclick="event.stopPropagation();window.location.href='index.html'" class="play-game-btn" style="font-size:12px;padding:8px 18px;">
       <span>⌨️</span> TYPING TEST
     </button>
+  </div>
+  <div id="top-banner-ad">
+    <script>
+      atOptions = {
+        'key' : 'ec2cd2e3ac271efe174e656e9ef09deb',
+        'format' : 'iframe',
+        'height' : 90,
+        'width' : 728,
+        'params' : {}
+      };
+    </script>
+    <script src="https://www.highperformanceformat.com/ec2cd2e3ac271efe174e656e9ef09deb/invoke.js"></script>
   </div>
   <div id="lp-xp-wrap">
     <span id="lp-level-badge">Lv. 1</span>
@@ -581,19 +652,34 @@ body.lesson-active { overflow-y: auto !important; }
 
 <!-- ═══ VIEW: LESSON ═══ -->
 <div id="view-lesson" class="lv">
-  <div class="lv-topbar">
-    <button class="lv-back" onclick="lp.showCurriculum()">← Lessons</button>
-    <div class="lv-topbar-info">
-      <span class="lv-stage-chip" id="lv-stage-chip">STAGE 1</span>
-      <span id="lv-lesson-title" style="font-size:12px;color:rgba(255,255,255,0.8);font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:175px;"></span>
+  <div class="lv-page-row">
+    <div class="ad-rail-lp ad-rail-lp-left">
+      <script>
+        atOptions = {
+          'key' : 'e3a304a061bb8b53fdbf045abe87c573',
+          'format' : 'iframe',
+          'height' : 300,
+          'width' : 160,
+          'params' : {}
+        };
+      </script>
+      <script src="https://www.highperformanceformat.com/e3a304a061bb8b53fdbf045abe87c573/invoke.js"></script>
     </div>
-    <div id="lv-prog-bar-wrap"><div id="lv-prog-fill"></div></div>
-    <span id="lv-ex-indicator">1 / 1</span>
-  </div>
 
-  <!-- Single-column: keyboard + exercise -->
-  <div class="lv-lesson-grid">
-    <div class="lv-right-col">
+    <div class="lv-content-col">
+      <div class="lv-topbar">
+        <button class="lv-back" onclick="lp.showCurriculum()">← Lessons</button>
+        <div class="lv-topbar-info">
+          <span class="lv-stage-chip" id="lv-stage-chip">STAGE 1</span>
+          <span id="lv-lesson-title" style="font-size:12px;color:rgba(255,255,255,0.8);font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:175px;"></span>
+        </div>
+        <div id="lv-prog-bar-wrap"><div id="lv-prog-fill"></div></div>
+        <span id="lv-ex-indicator">1 / 1</span>
+      </div>
+
+      <!-- Single-column: keyboard + exercise -->
+      <div class="lv-lesson-grid">
+        <div class="lv-right-col">
 
       <!-- ── Keyboard + Exercise ── -->
       <div class="lv-kb-container">
@@ -817,6 +903,21 @@ body.lesson-active { overflow-y: auto !important; }
 
     </div><!-- .lv-right-col -->
   </div><!-- .lv-lesson-grid -->
+    </div><!-- .lv-content-col -->
+
+    <div class="ad-rail-lp ad-rail-lp-right">
+      <script>
+        atOptions = {
+          'key' : 'e3a304a061bb8b53fdbf045abe87c573',
+          'format' : 'iframe',
+          'height' : 300,
+          'width' : 160,
+          'params' : {}
+        };
+      </script>
+      <script src="https://www.highperformanceformat.com/e3a304a061bb8b53fdbf045abe87c573/invoke.js"></script>
+    </div>
+  </div><!-- .lv-page-row -->
 </div>
 
 <!-- ═══ VIEW: COMPLETE ═══ -->
@@ -1880,5 +1981,8 @@ if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded'
 
 })();
 </script>
+    <!-- Adsterra Native Banner -->
+    <div id="container-42f27a48e35d8fefd79d32771cdb9094"></div>
+
 </body>
 </html>
