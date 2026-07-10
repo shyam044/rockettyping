@@ -56,7 +56,7 @@ img { max-width: 100%; }
     #app               { max-width: 96%; padding: 16px; }
     #words             { font-size: 32px; }
     #difficulty-container { right: 10px; }
-    .diff-btn          { padding: 9px 16px; font-size: 12.5px; }
+    .diff-btn, .qlen-btn { padding: 9px 16px; font-size: 12.5px; }
 }
 
 /* ════════════════════════════════════════════════════════════════
@@ -104,6 +104,9 @@ img { max-width: 100%; }
         top: 0 !important;
         padding: 12px 20px;
         font-size: 13px;
+        border-radius: 8px !important;
+        border: 2px solid #0a0a23 !important;
+        margin: 0 !important;
     }
 
     /* Live WPM */
@@ -170,7 +173,7 @@ img { max-width: 100%; }
     }
 
     .difficulty-group { flex-wrap: wrap; justify-content: center; }
-    .diff-btn         { padding: 8px 14px; font-size: 12px; }
+    .diff-btn, .qlen-btn { padding: 8px 14px; font-size: 12px; }
 
     /* Typing area */
     #words {
@@ -412,7 +415,7 @@ img { max-width: 100%; }
 
     #timer { font-size: 26px; }
 
-    .diff-btn { padding: 7px 10px; font-size: 10.5px; letter-spacing: 0.6px; }
+    .diff-btn, .qlen-btn { padding: 7px 10px; font-size: 10.5px; letter-spacing: 0.6px; }
 
     #words {
         font-size: 20px;
@@ -504,7 +507,7 @@ img { max-width: 100%; }
 
     #words { font-size: 17px; }
 
-    .diff-btn { padding: 6px 8px; font-size: 9.5px; }
+    .diff-btn, .qlen-btn { padding: 6px 8px; font-size: 9.5px; }
 
     .result-stats-panel .main-stat { width: 96px !important; height: 90px !important; }
     .result-stats-panel .main-stat .stat-value { font-size: 30px !important; }
