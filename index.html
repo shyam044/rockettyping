@@ -328,7 +328,7 @@
     <!-- Confetti: deferred so it never blocks the main thread on load -->
     <script defer src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
     <!-- Quotes database — loaded before main script so QUOTES_ALL is available -->
-    <script  src="quotes.js"></script>
+    <script src="quotes.js"></script>
     <!-- PWA + SEO additions -->
     <link rel="alternate" hreflang="en" href="https://www.rockettyping.com/" />
     <link rel="alternate" hreflang="x-default" href="https://www.rockettyping.com/" />
@@ -1886,6 +1886,7 @@
     .km-key { height: 18px; min-width: 18px; font-size: 6.5px; border-radius: 3px; }
 }
 </style>
+    <script async="async" data-cfasync="false" src="https://pl30277778.effectivecpmnetwork.com/42f27a48e35d8fefd79d32771cdb9094/invoke.js"></script>
 </head>
 <body>
     <div id="app" role="main" aria-label="Rocket Typing speed test application">
@@ -1900,12 +1901,13 @@
     
     <div id="play-game">
         <button onclick="window.location.href='game.html'" class="play-game-btn">
-            <span class="rocket-icon">🚀</span>
-            PLAY GAME
+            GAME
+        </button>
+        <button onclick="window.location.href='coding.html'" class="learn-type-btn">
+            CODE
         </button>
         <button onclick="window.location.href='learn.html'" class="learn-type-btn">
-            <span class="learn-icon">⌨️</span>
-            LEARN TO TYPE
+            LEARN
         </button>
     </div>
 
@@ -1944,7 +1946,7 @@
         <div id="timer">30</div>
         <div id="difficulty-container">
 
-            <div class="difficulty-group">
+            <div class="difficulty-group" id="difficulty-group">
                 <button class="diff-btn active" data-difficulty="easy"
                     title="Simple words &amp; sentences - beginner friendly">
                     🌟 EASY
@@ -1955,6 +1957,19 @@
                 <button class="diff-btn" data-difficulty="hard"
                     title="Complex sentences, dates, quotes &amp; punctuation">
                     ☄️ HARD
+                </button>
+            </div>
+
+            <!-- Quote length selector — shown only in Quotes mode. Medium is selected by default. -->
+            <div class="difficulty-group" id="quote-length-group" style="display:none;">
+                <button class="qlen-btn" data-qlen="short" title="Quick, short quotes">
+                    🌟 SHORT
+                </button>
+                <button class="qlen-btn active" data-qlen="medium" title="Balanced, medium-length quotes">
+                    🌠 MEDIUM
+                </button>
+                <button class="qlen-btn" data-qlen="long" title="Longer, more challenging quotes">
+                    ☄️ LONG
                 </button>
             </div>
         </div>
@@ -2162,7 +2177,9 @@
             <div class="rmb-sub">seconds</div>
         </div>
     </div>
-    <div id="result-ad" style=" padding-bottom:10px; text-align:center;"></div>
+    <div id="result-ad" style=" padding-bottom:10px; text-align:center;">
+        <div id="container-42f27a48e35d8fefd79d32771cdb9094"></div>
+    </div>
 </div>
 
 
@@ -2934,7 +2951,8 @@ window.deleteUser = deleteUser;
             mode: 'time',
             time: 30,
             words: 50,
-            difficulty: 'easy'
+            difficulty: 'easy',
+            quoteLength: 'medium'
         };
         let currentLeaderboardDuration = 15;
         const savedConfig = JSON.parse(localStorage.getItem('typingTestConfig')) || {};
@@ -2942,6 +2960,7 @@ window.deleteUser = deleteUser;
         config.time = savedConfig.time || config.time;
         config.words = savedConfig.words || config.words;
         config.difficulty = savedConfig.difficulty || config.difficulty;
+        config.quoteLength = savedConfig.quoteLength || config.quoteLength;
         document.querySelectorAll('.mode').forEach(b => b.classList.remove('active'));
         // ==================== NEW DIFFICULTY BUTTONS ====================
         function initDifficultyButtons() {
@@ -2967,10 +2986,35 @@ window.deleteUser = deleteUser;
             if (activeBtn) activeBtn.classList.add('active');
         }
 
+        // ==================== QUOTE LENGTH BUTTONS (Short / Medium / Long) ====================
+        function initQuoteLengthButtons() {
+            const qlenButtons = document.querySelectorAll('.qlen-btn');
+
+            qlenButtons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    qlenButtons.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+
+                    config.quoteLength = btn.dataset.qlen;
+                    saveConfig();
+                    resetTest();
+                });
+            });
+
+            // Set initial active state from localStorage/config (defaults to "medium")
+            qlenButtons.forEach(b => b.classList.remove('active'));
+            const activeQlenBtn = Array.from(qlenButtons).find(
+                b => b.dataset.qlen === config.quoteLength
+            ) || Array.from(qlenButtons).find(b => b.dataset.qlen === 'medium');
+            if (activeQlenBtn) activeQlenBtn.classList.add('active');
+        }
+
         // Call it once after resetTest()
         initDifficultyButtons();
+        initQuoteLengthButtons();
         const activeModeBtn = document.querySelector(`.mode[data-mode="${config.mode}"]`);
         if (activeModeBtn) activeModeBtn.classList.add('active');
+        toggleDifficultyVsQuoteLengthUI();
         function saveConfig() {
             localStorage.setItem('typingTestConfig', JSON.stringify(config));
         }
@@ -3027,9 +3071,25 @@ window.deleteUser = deleteUser;
                 saveConfig();
                 /* Hide attribution bar immediately when leaving quotes mode */
                 if (config.mode !== 'quotes') setQuoteAuthor('');
+                toggleDifficultyVsQuoteLengthUI();
                 resetTest();
             });
         });
+
+        /* Show the Short/Medium/Long selector in Quotes mode, and the
+           Easy/Medium/Hard selector in Time/Words mode. */
+        function toggleDifficultyVsQuoteLengthUI() {
+            const diffGroup = document.getElementById('difficulty-group');
+            const qlenGroup = document.getElementById('quote-length-group');
+            if (!diffGroup || !qlenGroup) return;
+            if (config.mode === 'quotes') {
+                diffGroup.style.display = 'none';
+                qlenGroup.style.display = 'flex';
+            } else {
+                diffGroup.style.display = 'flex';
+                qlenGroup.style.display = 'none';
+            }
+        }
         input.addEventListener('keydown', handleKeydown);
         restartBtn.addEventListener('click', resetTest);
 
@@ -3486,16 +3546,25 @@ nouns: ["ability", "absence", "academy", "account", "achievement", "acid", "acti
             ]
         };
         /**
-         * quotesPool — sourced from quotes.js (QUOTES_ALL).
-         * Falls back to a minimal built-in set if the file didn't load.
+         * getQuotesPool() — sourced from quotes.js (QUOTES_DB), filtered by the
+         * currently selected quote length (short / medium / long). Falls back to
+         * QUOTES_ALL, then to a minimal built-in set, if quotes.js didn't load.
          */
-        const quotesPool = (typeof QUOTES_ALL !== 'undefined' && QUOTES_ALL.length > 0)
-            ? QUOTES_ALL
-            : [
-                { text: "The only way to do great work is to love what you do.", author: "Steve Jobs" },
-                { text: "In the middle of every difficulty lies opportunity.", author: "Albert Einstein" },
-                { text: "The journey of a thousand miles begins with one step.", author: "Lao Tzu" }
-              ];
+        const FALLBACK_QUOTES_POOL = [
+            { text: "The only way to do great work is to love what you do.", author: "Steve Jobs" },
+            { text: "In the middle of every difficulty lies opportunity.", author: "Albert Einstein" },
+            { text: "The journey of a thousand miles begins with one step.", author: "Lao Tzu" }
+        ];
+        function getQuotesPool() {
+            const len = config.quoteLength || 'medium';
+            if (typeof QUOTES_DB !== 'undefined' && QUOTES_DB[len] && QUOTES_DB[len].length > 0) {
+                return QUOTES_DB[len];
+            }
+            if (typeof QUOTES_ALL !== 'undefined' && QUOTES_ALL.length > 0) {
+                return QUOTES_ALL;
+            }
+            return FALLBACK_QUOTES_POOL;
+        }
 
         /* Track the active quote's author so we can display it */
         let activeQuoteAuthor = '';
@@ -3570,7 +3639,7 @@ nouns: ["ability", "absence", "academy", "account", "achievement", "acid", "acti
             words = [];
 
             if (config.mode === 'quotes') {
-                const quoteObj = randomItem(quotesPool);
+                const quoteObj = randomItem(getQuotesPool());
                 /* Support both object form { text, author } and legacy plain strings */
                 const quoteText = (typeof quoteObj === 'object' && quoteObj.text) ? quoteObj.text : String(quoteObj);
                 activeQuoteAuthor = (typeof quoteObj === 'object' && quoteObj.author) ? quoteObj.author : '';
@@ -3962,6 +4031,7 @@ if (!testActive && !testEnded && e.key.length === 1) {
                 endTest();
             }
             if (config.mode === 'quotes' && currentWordIndex === words.length - 1 && currentLetterIndex === words[currentWordIndex].length) {
+                timerDiv.textContent = 0;
                 endTest();
             }
         }
@@ -3983,6 +4053,8 @@ if (!testActive && !testEnded && e.key.length === 1) {
 
                 if (config.mode === 'words') {
                     timerDiv.textContent = config.words - currentWordIndex;
+                } else if (config.mode === 'quotes') {
+                    timerDiv.textContent = words.length - currentWordIndex;
                 }
                 currentLetterIndex = 0;
                 extendWordsIfNeeded();
@@ -4067,12 +4139,9 @@ if (!testActive && !testEnded && e.key.length === 1) {
 
             if (config.mode === 'time') {
                 timerInterval = setInterval(updateTimer, 1000);
-            } else if (config.mode === 'quotes') {
-                timerInterval = setInterval(function() {
-                    const elapsed = Math.floor((Date.now() - startTime) / 1000);
-                    timerDiv.textContent = formatTime(elapsed);
-                }, 1000);
             }
+            /* Quotes mode: no ticking interval needed — the word countdown
+               (see moveToNextWord) updates the display as the user types. */
         }
         function updateTimer() {
             if (config.mode !== 'time') return;
@@ -4389,23 +4458,10 @@ if (!testActive && !testEnded && e.key.length === 1) {
                 origin: { y: 0.6 },
                 colors: ['#ffd700', '#ff9900', '#ffffff']
             });
-            setTimeout(() => {
-                const adContainer = document.getElementById("result-ad");
-
-                // Prevent duplicate ads
-                if (adContainer.innerHTML.trim() !== "") return;
-
-                adContainer.innerHTML = `
-        <ins class="adsbygoogle"
-            style="display:block"
-            data-ad-client="ca-pub-8311353174841359"
-            data-ad-slot="5317025689"
-            data-ad-format="auto"
-            data-full-width-responsive="true"></ins>
-    `;
-
-                (adsbygoogle = window.adsbygoogle || []).push({});
-            }, 1000);
+            // Adsterra Native Banner: no longer injected here. The ad script loads
+            // once in <head> and renders into the #result-ad container in the
+            // background while the user is still typing, so it's already sitting
+            // there — ready instantly — the moment results are shown.
         }
         // ============================================================
         //  ROCKET CHART  v3  — accurate, permanent drops, stays alive
@@ -4784,7 +4840,6 @@ if (!testActive && !testEnded && e.key.length === 1) {
             document.getElementById("timer").style.display = "block";
             document.getElementById("leaderboard-btn").style.display = "block";
             document.getElementById('main-header').style.display = 'flex';
-            document.getElementById("result-ad").innerHTML = "";
             document.getElementById("play-game").style.display = "flex";
                 // === SHOW DISTRACTIONS AGAIN AFTER TEST ===
     document.getElementById("page-title").style.display = "block";           // ← new
@@ -4850,7 +4905,7 @@ if (!testActive && !testEnded && e.key.length === 1) {
                 timerDiv.textContent = config.words;
                 timerDiv.classList.add('highlight');
             } else if (config.mode === 'quotes') {
-                timerDiv.textContent = formatTime(0);
+                timerDiv.textContent = words.length;
                 timerDiv.classList.add('highlight');
             }
 
