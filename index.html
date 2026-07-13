@@ -1886,7 +1886,11 @@
     .km-key { height: 18px; min-width: 18px; font-size: 6.5px; border-radius: 3px; }
 }
 </style>
-    <script async="async" data-cfasync="false" src="https://pl30277778.effectivecpmnetwork.com/42f27a48e35d8fefd79d32771cdb9094/invoke.js"></script>
+    <!-- result-ad loads via the safe iframe-based loadNativeBannerAd()
+         helper further down the page (see main script), which keeps
+         the ad network's document.write() calls contained inside their
+         own iframe instead of the main document — and rebuilds the ad
+         fresh, in its own iframe, every time the user retakes the test. -->
 </head>
 <body>
     <div id="app" role="main" aria-label="Rocket Typing speed test application">
@@ -4347,6 +4351,10 @@ if (!testActive && !testEnded && e.key.length === 1) {
             // Show result
             resultDiv.style.display = 'block';
             resultDiv.classList.add('visible');
+            // Mark that the result-ad slot is now visible/loaded, so the next
+            // resetTest() (Retake Test / Tab+Enter / Enter) knows to swap in a
+            // fresh native banner ad ready for the *next* result screen.
+            window._resultAdShown = true;
             document.getElementById('main-header').style.display = 'none';
             wordsDiv.style.display = 'none';
             timerDiv.style.display = 'none';
@@ -4822,7 +4830,101 @@ if (!testActive && !testEnded && e.key.length === 1) {
             })();
         }
 
+        // ============================================================
+        //  NATIVE BANNER AD LOADER (safe, reusable)
+        //  Loads a native-banner ad into any container by ID, contained
+        //  inside its own isolated <iframe>.
+        //
+        //  WHY AN IFRAME: these ad-network invoke.js scripts render
+        //  themselves via document.write(). Calling document.write()
+        //  on the MAIN page after it has already loaded is dangerous —
+        //  browsers implicitly re-open and WIPE the entire document
+        //  when that happens. Putting the ad in its own iframe fixes
+        //  this permanently: document.write() inside a freshly-opened
+        //  iframe document only ever affects that iframe, never the
+        //  parent page — safe on every reload.
+        //
+        //  NOTE: the ad's script tag is built with doc.createElement +
+        //  appendChild below, NOT by writing literal script-tag text
+        //  into a string. Some hosts run an HTML/JS auto-minifier over
+        //  the page (e.g. Netlify asset optimization, Cloudflare Auto
+        //  Minify) that can get confused by a script-open-tag-looking
+        //  substring sitting inside another script's own string
+        //  content, and mis-close the real surrounding script block —
+        //  which turns the rest of the page's JS into plain visible
+        //  text instead of running it. Avoiding that substring
+        //  anywhere in this file's source sidesteps the problem
+        //  entirely.
+        // ============================================================
+        function loadNativeBannerAd(containerElId, adKey) {
+            var container = document.getElementById(containerElId);
+            if (!container) return;
+
+            container.innerHTML = '';
+
+            var iframe = document.createElement('iframe');
+            iframe.setAttribute('scrolling', 'no');
+            iframe.setAttribute('frameborder', '0');
+            iframe.style.cssText = 'width:100%; min-height:90px; height:90px; border:0; display:block; overflow:hidden;';
+            container.appendChild(iframe);
+
+            // Build the iframe's contents purely via DOM methods — never
+            // doc.write() with an HTML string. A freshly created same-origin
+            // iframe (no src set) already has an empty document with a
+            // head and body element in place, so we can just populate it
+            // directly.
+            //
+            // WHY THIS MATTERS: dev tools like VS Code's Live Server inject
+            // their own live-reload script by doing a naive text search for
+            // a closing body tag in the raw file and splicing code in right
+            // before it. If that closing-tag text appears anywhere in this
+            // file's source — including inside a JS string meant for a
+            // doc.write() call — the injector cannot tell the difference and
+            // corrupts the middle of this very script block. Building the
+            // iframe with createElement/appendChild instead means no such
+            // tag text ever exists in this file for anything to misfire on.
+            var doc = iframe.contentDocument || iframe.contentWindow.document;
+
+            var styleEl = doc.createElement('style');
+            styleEl.textContent = 'html,body{margin:0;padding:0;background:transparent;}';
+            doc.head.appendChild(styleEl);
+
+            var adContainer = doc.createElement('div');
+            adContainer.id = 'container-' + adKey;
+            doc.body.appendChild(adContainer);
+
+            // Build and inject the ad network's script tag via the DOM API too.
+            var adScript = doc.createElement('script');
+            adScript.async = true;
+            adScript.setAttribute('data-cfasync', 'false');
+            adScript.src = 'https://pl30277778.effectivecpmnetwork.com/' + adKey + '/invoke.js';
+            doc.body.appendChild(adScript);
+
+            // Auto-grow the iframe to fit whatever height the ad renders at.
+            try {
+                var ro = new ResizeObserver(function () {
+                    var h = doc.body ? doc.body.scrollHeight : 90;
+                    iframe.style.height = Math.max(h, 90) + 'px';
+                });
+                ro.observe(doc.body);
+            } catch (e) { /* ResizeObserver not supported — fixed height stands */ }
+        }
+
+        // Swaps in a brand-new result-screen ad. Called on page init, and
+        // again from resetTest() every time the user leaves a finished
+        // result screen (Retake Test / Tab+Enter / Enter) — so the fresh
+        // ad has the entire next typing test to finish loading in the
+        // background, ready instantly the moment the NEXT result shows.
+        function refreshResultAd() {
+            loadNativeBannerAd('result-ad', '42f27a48e35d8fefd79d32771cdb9094');
+        }
+
         function resetTest() {
+            // Leaving a finished result screen → line up a fresh ad for next time.
+            if (window._resultAdShown) {
+                window._resultAdShown = false;
+                refreshResultAd();
+            }
             // ── Live WPM: stop updater, hide circle, restore Sunday Champ ──
             if (window._liveWpmInterval) { clearInterval(window._liveWpmInterval); window._liveWpmInterval = null; }
             var liveWpmEl   = document.getElementById('live-wpm-display');
@@ -4913,6 +5015,7 @@ if (!testActive && !testEnded && e.key.length === 1) {
             rowsCacheInvalid = true;   // ← ensure cache is fresh after full reset
         }
         resetTest();
+        refreshResultAd();
 
         // CARET FIX: styles.css loads asynchronously (media="print" trick), so when
         // resetTest() runs on page load, styles.css hasn't applied yet.
