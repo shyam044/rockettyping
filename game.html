@@ -138,12 +138,24 @@
       background: radial-gradient(circle at center, #1a2333 0%, #0b0e17 80%);
     }
 
+    * {
+      box-sizing: border-box;
+    }
+
+    img {
+      max-width: 100%;
+    }
+
     #app {
       display: flex;
       flex-direction: column;
       align-items: center;
       min-height: 100vh;
       padding-top: 8px;
+      padding-left: clamp(6px, 2vw, 20px);
+      padding-right: clamp(6px, 2vw, 20px);
+      width: 100%;
+      overflow-x: hidden;
     }
 
     #logo {
@@ -151,7 +163,19 @@
       top: 20px;
       left: 20px;
       width: 100px;
+      max-width: 18vw;
       opacity: 0.9;
+    }
+
+    /* Wrapper that uniformly scales the fixed 920x420 race-track stage down
+       to fit any viewport, so all internal pixel-based rocket/HUD math
+       (which is calibrated against the 920x420 design) stays correct. */
+    #race-track-scale-wrap {
+      width: 100%;
+      max-width: 920px;
+      margin: 12px auto 16px;
+      display: flex;
+      justify-content: center;
     }
 
     #race-track {
@@ -161,9 +185,11 @@
       border: 6px solid #e2b714;
       border-radius: 16px;
       position: relative;
-      margin: 12px auto 16px;
+      margin: 0;
       overflow: hidden;
       box-shadow: 0 0 40px rgba(226, 183, 20, 0.4);
+      transform-origin: top center;
+      flex-shrink: 0;
     }
 
     /* ── Parallax space layers ── */
@@ -392,7 +418,8 @@
 
     #typing-zone {
       position: relative;
-      width: 920px;
+      width: 100%;
+      max-width: 920px;
       margin: 0 auto 24px;
       background: linear-gradient(160deg, rgba(12, 15, 26, 0.96) 0%, rgba(6, 9, 16, 0.94) 100%);
       border: 1px solid rgba(226, 183, 20, 0.14);
@@ -2939,16 +2966,19 @@
 <body>
   <div id="app">
     <div id="top-banner-ad" style="width:100%;height:50px;display:flex;justify-content:center;align-items:flex-start;flex-shrink:0;overflow:hidden;">
-      <script>
-        atOptions = {
-          'key': 'ec2cd2e3ac271efe174e656e9ef09deb',
-          'format': 'iframe',
-          'height': 50,
-          'width': 728,
-          'params': {}
-        };
-      </script>
-      <script src="https://www.highperformanceformat.com/ec2cd2e3ac271efe174e656e9ef09deb/invoke.js"></script>
+<script>
+  atOptions = {
+    'key' : 'e8642ebc1588f7663a0e84f1c8058052',
+    'format' : 'iframe',
+    'height' : 50,
+    'width' : 320,
+    'params' : {}
+  };
+</script>
+<script src="https://www.highperformanceformat.com/e8642ebc1588f7663a0e84f1c8058052/invoke.js"></script>
+
+
+
     </div>
     <!-- Visually hidden H1 for SEO — screen readers and Googlebot see this -->
     <h1 style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;">Rocket
@@ -3194,6 +3224,228 @@
           display: none;
         }
       }
+
+      /* ══════════════════════════════════════════════════════
+         DEVICE-FRIENDLY BREAKPOINTS
+         xs   ≤ 400px   (small phones)
+         sm   401–576px (large phones)
+         md   577–768px (small tablets / landscape phones)
+         lg   769–1024px (tablets)
+         xl   1025–1300px (small laptops — side ad rails hidden above)
+      ══════════════════════════════════════════════════════ */
+
+      /* ── xl / lg: tighten side padding a touch, everything else already fluid ── */
+      @media (max-width:1024px) {
+        #result-inner {
+          padding: 16px 20px;
+        }
+      }
+
+      /* ── md: tablets & landscape phones ── */
+      @media (max-width:768px) {
+        #logo {
+          width: 70px;
+          top: 12px;
+          left: 12px;
+        }
+
+        #pause-modal-box {
+          min-width: 0;
+          width: 90vw;
+          padding: 28px 22px;
+        }
+
+        #leaderboard {
+          width: 92%;
+          padding: 20px 16px;
+        }
+
+        #leaderboard table {
+          font-size: 14px !important;
+        }
+
+        #result-header {
+          gap: 14px;
+        }
+
+        #rank-badge {
+          font-size: 48px;
+        }
+
+        #race-result-title {
+          font-size: 30px;
+          letter-spacing: 2px;
+        }
+
+        #race-result-subtitle {
+          font-size: 11px;
+        }
+
+        #result-table-header,
+        .res-row {
+          grid-template-columns: 32px 26px 1fr 78px 84px 48px;
+          font-size: 10px;
+          padding-left: 8px;
+          padding-right: 8px;
+        }
+
+        #result-stats {
+          gap: 14px;
+        }
+
+        .rstat-ring-wrap {
+          width: 68px;
+          height: 68px;
+        }
+
+        #result-bottom {
+          flex-wrap: wrap;
+          justify-content: center;
+        }
+
+        #restart-btn {
+          padding: 12px 22px;
+          font-size: 13px;
+        }
+      }
+
+      /* ── sm: large phones ── */
+      @media (max-width:576px) {
+        #app {
+          padding-top: 4px;
+        }
+
+        #logo {
+          width: 54px;
+          top: 8px;
+          left: 8px;
+        }
+
+        #typing-zone {
+          border-radius: 10px;
+          margin-bottom: 16px;
+        }
+
+        #pause-modal-box {
+          width: 94vw;
+          padding: 22px 16px;
+        }
+
+        #pause-modal-icon {
+          font-size: 40px;
+        }
+
+        #pause-modal-msg {
+          font-size: 16px;
+        }
+
+        #leaderboard {
+          width: 95%;
+          padding: 16px 12px;
+        }
+
+        #leaderboard h2 {
+          font-size: 18px;
+        }
+
+        #leaderboard table {
+          font-size: 12px !important;
+        }
+
+        #leaderboard td,
+        #leaderboard th {
+          padding: 6px 3px !important;
+        }
+
+        #result-inner {
+          padding: 14px 12px;
+        }
+
+        #result-header {
+          gap: 10px;
+          margin-bottom: 12px;
+        }
+
+        #rank-badge {
+          font-size: 38px;
+        }
+
+        #race-result-title {
+          font-size: 22px;
+          letter-spacing: 1px;
+        }
+
+        #result-mission-label {
+          letter-spacing: 3px;
+        }
+
+        #result-table-header,
+        .res-row {
+          grid-template-columns: 26px 22px 1fr 0 66px 40px;
+        }
+
+        #result-table-header > *:nth-child(4),
+        .res-row > *:nth-child(4) {
+          display: none;
+        }
+
+        #result-stats {
+          gap: 10px;
+        }
+
+        .rstat-ring-wrap {
+          width: 56px;
+          height: 56px;
+        }
+
+        .rstat-val {
+          font-size: 15px;
+        }
+
+        #restart-btn,
+        button {
+          font-size: 13px;
+          padding: 11px 18px;
+        }
+
+        input,
+        select,
+        textarea {
+          font-size: 16px !important;
+        }
+      }
+
+      /* ── xs: small phones ── */
+      @media (max-width:400px) {
+        #logo {
+          width: 44px;
+        }
+
+        #pause-modal-box {
+          padding: 18px 12px;
+        }
+
+        #rank-badge {
+          font-size: 30px;
+        }
+
+        #race-result-title {
+          font-size: 18px;
+        }
+
+        #result-corner-tl,
+        #result-corner-tr,
+        #result-corner-bl,
+        #result-corner-br {
+          width: 36px;
+          height: 36px;
+        }
+
+        .rstat-ring-wrap {
+          width: 48px;
+          height: 48px;
+        }
+      }
     </style>
 
     <!-- ══ INLINE AUTH MODAL v4 (no redirect) ══ -->
@@ -3393,20 +3645,26 @@
 
     </div>
     <div class="ad-rail ad-rail-right">
-      <script>
-        atOptions = {
-          'key': 'e3a304a061bb8b53fdbf045abe87c573',
-          'format': 'iframe',
-          'height': 300,
-          'width': 160,
-          'params': {}
-        };
-      </script>
-      <script src="https://www.highperformanceformat.com/e3a304a061bb8b53fdbf045abe87c573/invoke.js"></script>
+<script>
+  atOptions = {
+    'key' : 'f9fd656d91c4953d559c8174661c6df8',
+    'format' : 'iframe',
+    'height' : 600,
+    'width' : 160,
+    'params' : {}
+  };
+</script>
+<script src="https://www.highperformanceformat.com/f9fd656d91c4953d559c8174661c6df8/invoke.js"></script>
+
+
+
+
+
 
     </div>
 
     <img id="logo" src="images/logo.png" alt="Rocket Typing Logo">
+    <div id="race-track-scale-wrap">
     <div id="race-track">
       <button id="leaderboard-btn"
         style="position:absolute;top:12px;right:12px;background:#e2b714;color:#0b0e17;border:none;padding:8px 14px;font-size:14px;font-weight:bold;border-radius:6px;cursor:pointer;z-index:70;">🏆
@@ -3460,8 +3718,9 @@
         </div>
         <div class="name" style="top:12px;color:#ffd700;">YOU</div>
       </div>
+      <div id="timer">0:00</div>
     </div>
-    <div id="timer">0:00</div>
+    </div><!-- /#race-track-scale-wrap -->
     <div id="typing-zone">
       <!-- Scanline texture overlay -->
       <div id="typing-scanline"></div>
@@ -3755,6 +4014,13 @@
 
     <!-- Tap to skip button — always visible during animation -->
     <button id="lo-skip-hint" onclick="completeLanding(true)">CLICK ANYWHERE TO SKIP</button>
+  </div>
+
+  <!-- In-content ad unit — placed above the About section -->
+  <div style="width:100%;max-width:920px;margin:0 auto;display:flex;justify-content:center;overflow:hidden;">
+    <script async="async" data-cfasync="false"
+      src="https://pl30277778.effectivecpmnetwork.com/42f27a48e35d8fefd79d32771cdb9094/invoke.js"></script>
+    <div id="container-42f27a48e35d8fefd79d32771cdb9094"></div>
   </div>
 
   <!-- ══ SEO CONTENT SECTION — crawlable text about the game ══ -->
@@ -6804,6 +7070,36 @@
     };
     function getFlag(c) { return COUNTRY_FLAGS[c] || '🌍'; }
     function fmtDate(ts) { if (!ts) return ''; const d = new Date(ts); return d.getDate() + ' ' + ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][d.getMonth()] + ' ' + d.getFullYear(); }
+  </script>
+
+  <!-- ══ RESPONSIVE STAGE SCALER ══
+       The race track is built at a fixed 920x420 design size (rocket
+       positions/HUD are calculated in real pixels against that design).
+       Instead of resizing the box — which would break those pixel
+       calculations — we scale the whole box down uniformly to fit
+       phones/tablets, so everything inside stays perfectly aligned. -->
+  <script>
+    (function () {
+      var BASE_W = 920, BASE_H = 420;
+      var wrap, track;
+      function scaleRaceTrack() {
+        wrap = wrap || document.getElementById('race-track-scale-wrap');
+        track = track || document.getElementById('race-track');
+        if (!wrap || !track) return;
+        var available = wrap.clientWidth || BASE_W;
+        var scale = Math.min(1, available / BASE_W);
+        track.style.transform = 'scale(' + scale + ')';
+        wrap.style.height = Math.round(BASE_H * scale) + 'px';
+      }
+      window.addEventListener('resize', scaleRaceTrack);
+      window.addEventListener('orientationchange', scaleRaceTrack);
+      if (document.readyState === 'complete' || document.readyState === 'interactive') {
+        scaleRaceTrack();
+      } else {
+        document.addEventListener('DOMContentLoaded', scaleRaceTrack);
+      }
+      window.addEventListener('load', scaleRaceTrack);
+    })();
   </script>
 
 </body>
