@@ -571,11 +571,48 @@ padding: 11px 24px;
     border-top: 1px solid rgba(0,230,204,0.15);
     min-height: 90px;
     contain: layout;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 #result-ad iframe {
     display: block;
     width: 100%;
+    max-width: 100%;
     border: 0;
+    margin: 0 auto;
+}
+
+/* Native banner ad slots — SEO content / FAQ placements */
+.native-ad-slot {
+    max-width: 1400px;
+    margin: 0 auto 32px;
+    padding: 0 4px;
+    text-align: center;
+    min-height: 100px;
+    contain: layout;
+    box-sizing: border-box;
+    /* Flexbox centers whatever the ad network injects (div / ins / iframe),
+       fixed-width or not — text-align alone only centers inline content. */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.native-ad-slot iframe,
+.native-ad-slot ins,
+.native-ad-slot > div {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    border: 0;
+    margin: 0 auto;
+}.native-ad-slot .ad-label {
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    color: #555;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    font-family: 'Roboto Mono', 'Courier New', monospace;
 }
 
 @media (max-width: 600px) {
