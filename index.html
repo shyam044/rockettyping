@@ -2612,6 +2612,16 @@
     box-sizing: border-box;
 ">
 
+    <!-- ── BANNER AD #1 — directly below the typing test (728x90) ──
+         Loads via the same safe iframe-based loader as result-ad, and
+         is refreshed with a brand-new ad every time the user leaves a
+         finished result screen and returns to the typing test — so it
+         no longer shows the exact same ad on every retake. -->
+    <div class="native-ad-slot" id="typing-area-ad" style="min-height:90px;">
+        <div class="ad-label">Advertisement</div>
+        <div id="container-typing-area-ad"></div>
+    </div>
+
     <!-- ── TOP FEATURE GRID ── -->
     <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-bottom: 40px;">
         <div style="background:rgba(226,183,20,0.06); border:1px solid rgba(226,183,20,0.15); border-radius:12px; padding:18px 16px; text-align:center;">
@@ -2644,6 +2654,12 @@
             <div style="color:#e2b714; font-weight:700; font-size:13px; letter-spacing:1px; margin-bottom:6px;">100% FREE</div>
             <div style="font-size:12px; color:#6a7080;">No subscription, no login required. Take unlimited free online typing tests and practice sessions anytime.</div>
         </div>
+    </div>
+
+    <!-- ── BANNER AD #2 — below the 6 feature cards (300x250) ── -->
+    <div class="native-ad-slot" id="ad-slot-2" style="min-height:250px;">
+        <div class="ad-label">Advertisement</div>
+        <div id="container-ad-slot-2"></div>
     </div>
 
     <!-- ── MAIN CONTENT COLUMNS ── -->
@@ -2744,6 +2760,13 @@
 
     <!-- ── FAQ SECTION ── -->
     <div style="margin-bottom: 32px;">
+
+        <!-- ── BANNER AD #3 — top of FAQ (320x50) ── -->
+        <div class="native-ad-slot" id="ad-slot-3" style="min-height:50px;">
+            <div class="ad-label">Advertisement</div>
+            <div id="container-ad-slot-3"></div>
+        </div>
+
         <h2 style="color:#e2b714; font-size:16px; letter-spacing:1.5px; margin:0 0 20px; text-align:center;">
             ❓ FREQUENTLY ASKED QUESTIONS
         </h2>
@@ -2773,6 +2796,11 @@
                 <div style="font-size:12px; color:#6a7080;">WPM is calculated as (correctly typed characters ÷ 5) ÷ minutes elapsed. The standard word length of 5 characters is used so results are consistent regardless of word length. Raw WPM counts all keystrokes including errors.</div>
             </div>
         </div>
+    </div>
+
+        <div class="native-ad-slot" id="ad-slot-4" style="min-height:60px;">
+        <div class="ad-label">Advertisement</div>
+        <div id="container-ad-slot-4"></div>
     </div>
 
     <!-- ── KEYWORD TAG CLOUD ── -->
@@ -4886,7 +4914,7 @@ if (!testActive && !testEnded && e.key.length === 1) {
             var doc = iframe.contentDocument || iframe.contentWindow.document;
 
             var styleEl = doc.createElement('style');
-            styleEl.textContent = 'html,body{margin:0;padding:0;background:transparent;}';
+            styleEl.textContent = 'html,body{margin:0;padding:0;background:transparent;display:flex;justify-content:center;align-items:center;}';
             doc.head.appendChild(styleEl);
 
             var adContainer = doc.createElement('div');
@@ -4910,6 +4938,58 @@ if (!testActive && !testEnded && e.key.length === 1) {
             } catch (e) { /* ResizeObserver not supported — fixed height stands */ }
         }
 
+        // ============================================================
+        //  DIRECT BANNER AD LOADER (safe, reusable)
+        //  For ad-network scripts that read their config off a global
+        //  `atOptions` object and typically use document.write() to
+        //  inject the ad markup (highperformanceformat.com / Adsterra
+        //  "Banner" format). document.write() only works correctly
+        //  during a document's initial parse — calling it into an
+        //  iframe that's already finished loading gets silently
+        //  blocked/wiped by the browser, which is why ads went blank.
+        //  Using srcdoc gives the ad script tags a real initial parse,
+        //  identical to the original static embed, just isolated in
+        //  its own document so repeated calls can't collide or leak.
+        // ============================================================
+        //  NOTE: the closing body/html tags inside the srcdoc string below
+        //  are deliberately written with a backslash (<\/body><\/html>) —
+        //  same reasoning as the <\/script> escaping already used elsewhere
+        //  in this file. Local dev tools like VS Code's Live Server inject
+        //  their live-reload script by doing a naive text search for a
+        //  literal closing-tag substring in the raw file and splicing code
+        //  in right before it. That search cannot tell a real page's
+        //  closing tag from one sitting inside a JS string — if it matches
+        //  the one in this string, it splices its script into the middle
+        //  of this string literal, breaking the whole enclosing <script>
+        //  block for everything after it. The escaped form is functionally
+        //  identical once parsed at runtime, but doesn't match that search.
+        function loadDirectBannerAd(containerElId, adKey, width, height) {
+            var container = document.getElementById(containerElId);
+            if (!container) return;
+
+            container.innerHTML = '';
+
+            var iframe = document.createElement('iframe');
+            iframe.setAttribute('scrolling', 'no');
+            iframe.setAttribute('frameborder', '0');
+            iframe.style.cssText = 'display:block; width:' + width + 'px; max-width:100%; height:' + height + 'px; border:0; overflow:hidden; margin:0 auto;';
+
+            // Cache-bust: without this, the browser can silently serve the
+            // exact same cached invoke.js response (same embedded ad
+            // markup) on every reload instead of asking the ad server for
+            // a new one. A unique query string per call forces a real
+            // network round-trip every time.
+            var cacheBust = Date.now() + Math.random().toString(36).slice(2);
+
+            iframe.srcdoc =
+                '<!DOCTYPE html><html><head><style>html,body{margin:0;padding:0;background:transparent;display:flex;justify-content:center;align-items:center;overflow:hidden;}</style></head><body>' +
+                '<script>atOptions={"key":"' + adKey + '","format":"iframe","height":' + height + ',"width":' + width + ',"params":{}};<\/script>' +
+                '<script src="https://www.highperformanceformat.com/' + adKey + '/invoke.js?_=' + cacheBust + '"><\/script>' +
+                '<\/body><\/html>';
+
+            container.appendChild(iframe);
+        }
+
         // Swaps in a brand-new result-screen ad. Called on page init, and
         // again from resetTest() every time the user leaves a finished
         // result screen (Retake Test / Tab+Enter / Enter) — so the fresh
@@ -4919,11 +4999,21 @@ if (!testActive && !testEnded && e.key.length === 1) {
             loadNativeBannerAd('result-ad', '42f27a48e35d8fefd79d32771cdb9094');
         }
 
+        // Swaps in a brand-new ad for the banner directly below the typing
+        // test. Called on page init, and again every time the user leaves
+        // a finished result screen back to the typing test — so this slot
+        // stops showing the exact same creative on every retake, and each
+        // swap counts as a freshly served impression.
+        function refreshTypingAreaAd() {
+            loadDirectBannerAd('container-typing-area-ad', 'ec2cd2e3ac271efe174e656e9ef09deb', 728, 90);
+        }
+
         function resetTest() {
             // Leaving a finished result screen → line up a fresh ad for next time.
             if (window._resultAdShown) {
                 window._resultAdShown = false;
                 refreshResultAd();
+                refreshTypingAreaAd();
             }
             // ── Live WPM: stop updater, hide circle, restore Sunday Champ ──
             if (window._liveWpmInterval) { clearInterval(window._liveWpmInterval); window._liveWpmInterval = null; }
@@ -5016,6 +5106,13 @@ if (!testActive && !testEnded && e.key.length === 1) {
         }
         resetTest();
         refreshResultAd();
+        refreshTypingAreaAd();
+        // Ads #2–#4 don't need to refresh on retake (they're not tied to the
+        // typing-test/result cycle) — load them once via the same safe,
+        // guaranteed-centered iframe technique as the others.
+        loadDirectBannerAd('container-ad-slot-2', 'c0570a980250971b0f952672ff8a136a', 300, 250);
+        loadDirectBannerAd('container-ad-slot-3', 'e8642ebc1588f7663a0e84f1c8058052', 320, 50);
+        loadDirectBannerAd('container-ad-slot-4', '95b624fbbcc4571e53cd5d3a062f9758', 468, 60);
 
         // CARET FIX: styles.css loads asynchronously (media="print" trick), so when
         // resetTest() runs on page load, styles.css hasn't applied yet.
@@ -5176,7 +5273,13 @@ function sanitizeStr(s) {
                         testDuration: duration,
                         country:      verifiedCountry,
                         uid:          authUser.uid,
-                        time:         _now
+                        time:         _now,
+                        // Required by the hardened Firestore rules — lets the
+                        // server independently verify wpm/accuracy against the
+                        // actual keystroke timing instead of trusting them outright.
+                        correctKeystrokes: correctKeystrokes,
+                        keystrokeCount:    totalKeystrokes,
+                        elapsedMs:         _elapsedMs
                     });
                 }
             } catch (e) {
@@ -5536,7 +5639,12 @@ function sanitizeStr(s) {
                         wordCount: wordCount,
                         country:   verifiedCountry,
                         uid:       authUser.uid,
-                        time:      _now
+                        time:      _now,
+                        // Required by the hardened Firestore rules — see
+                        // saveScore() above for why.
+                        correctKeystrokes: correctKeystrokes,
+                        keystrokeCount:    totalKeystrokes,
+                        elapsedMs:         _elapsedMs
                     });
                 }
             } catch(e) {
