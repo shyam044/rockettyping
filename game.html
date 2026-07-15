@@ -87,6 +87,7 @@
     href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600&family=Roboto+Mono:wght@400;700&display=swap"
     rel="stylesheet">
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-check-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
   <style>
@@ -4081,7 +4082,11 @@
   <script>
     /* ============================================================ FIREBASE ============================================================ */
     const firebaseConfig = { apiKey: "AIzaSyDFlSFyLG8RtOshIRI3XJ-d2Ws4R6bCqjE", authDomain: "typing-usernames.firebaseapp.com", projectId: "typing-usernames", storageBucket: "typing-usernames.firebasestorage.app", messagingSenderId: "978036744790", appId: "1:978036744790:web:1c66d79a27f19a7493d1f7", measurementId: "G-GEH3BRFRST" };
-    firebase.initializeApp(firebaseConfig); const db = firebase.firestore(); const auth = firebase.auth();
+    firebase.initializeApp(firebaseConfig);
+    // ── App Check: blocks requests that don't come from a real browser
+    //    running this actual site (bots, curl, scripts with a stolen key) ──
+    firebase.appCheck().activate('6Lc-VFQtAAAAAKXHBKgK-v4XgeBU8HcZQMvZr9y6', true);
+    const db = firebase.firestore(); const auth = firebase.auth();
     auth.onAuthStateChanged(async (user) => {
       const spinner = document.getElementById('auth-spinner');
       const gate = document.getElementById('auth-gate');
