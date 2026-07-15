@@ -221,7 +221,7 @@
             .result-stat .val { font-size: 28px; }
             .auth-modal-box { padding: 28px 18px; }
         }
-    </style>
+    </style>    <script async="async" data-cfasync="false" src="https://pl30277778.effectivecpmnetwork.com/42f27a48e35d8fefd79d32771cdb9094/invoke.js"></script>
 </head>
 <body>
 <div id="app">
@@ -523,7 +523,7 @@
                 <button onclick="window.location.href='index.html'" style="padding:14px 36px;background:linear-gradient(135deg,#00e6cc,#e2b714);color:#0a0a23;border:none;border-radius:10px;font-family:'Roboto Mono',monospace;font-size:15px;font-weight:900;letter-spacing:2px;cursor:pointer;transition:all .25s;box-shadow:0 0 30px rgba(0,230,204,0.3);" onmouseover="this.style.boxShadow='0 0 50px rgba(0,230,204,0.6)';this.style.transform='translateY(-2px)'" onmouseout="this.style.boxShadow='0 0 30px rgba(0,230,204,0.3)';this.style.transform='none'">
                     🏋️ PRACTICE NOW
                 </button>
-                <p style="font-size:11px;color:var(--muted);margin-top:12px;letter-spacing:1px;">FREE · UNLIMITED · rockettyping.vercel.app</p>
+                <p style="font-size:11px;color:var(--muted);margin-top:12px;letter-spacing:1px;">FREE · UNLIMITED · rockettyping.com</p>
             </div>
         </div>
     </div>
@@ -551,6 +551,7 @@ window.toggleCountryDrop=toggleCountryDrop;window.filterCountries=filterCountrie
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { initializeAppCheck, ReCaptchaV3Provider } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app-check.js";
 import {
     getFirestore, collection, query, getDocs,
     doc, getDoc, setDoc, updateDoc, arrayUnion, where, onSnapshot
@@ -576,6 +577,14 @@ const app  = initializeApp({
     messagingSenderId: "978036744790",
     appId:             "1:978036744790:web:1c66d79a27f19a7493d1f7"
 });
+
+// ── App Check: blocks requests that don't come from a real browser
+//    running this actual site (bots, curl, scripts with a stolen key) ──
+initializeAppCheck(app, {
+    provider: new ReCaptchaV3Provider('6Lc-VFQtAAAAAKXHBKgK-v4XgeBU8HcZQMvZr9y6'),
+    isTokenAutoRefreshEnabled: true
+});
+
 const db   = getFirestore(app);
 const auth = getAuth(app);
 
@@ -1677,5 +1686,20 @@ onAuthStateChanged(auth, async(user)=>{
     }
 });
 </script>
+    <!-- Adsterra Native Banner -->
+    <div id="container-42f27a48e35d8fefd79d32771cdb9094"></div>
+
+    <!-- Adsterra 728x90 Banner -->
+    <script>
+        atOptions = {
+            'key' : 'ec2cd2e3ac271efe174e656e9ef09deb',
+            'format' : 'iframe',
+            'height' : 90,
+            'width' : 728,
+            'params' : {}
+        };
+    </script>
+    <script src="https://www.highperformanceformat.com/ec2cd2e3ac271efe174e656e9ef09deb/invoke.js"></script>
+
 </body>
 </html>
