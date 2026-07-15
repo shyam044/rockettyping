@@ -2832,7 +2832,7 @@
 </section>
    <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { initializeAppCheck, ReCaptchaV3Provider } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app-check.js";
+    import { initializeAppCheck,  ReCaptchaEnterpriseProvider } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app-check.js";
     import { getFirestore, collection, addDoc, query, orderBy, limit, getDocs, doc, getDoc, setDoc, where } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
     import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, GoogleAuthProvider, GithubAuthProvider, signInWithPopup, sendPasswordResetEmail, sendEmailVerification, updateProfile, deleteUser } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
@@ -2851,7 +2851,7 @@
     // ── App Check: blocks requests that don't come from a real browser
     //    running this actual site (bots, curl, scripts with a stolen key) ──
     initializeAppCheck(app, {
-        provider: new ReCaptchaV3Provider('6Lc-VFQtAAAAAKXHBKgK-v4XgeBU8HcZQMvZr9y6'),
+        provider: new ReCaptchaEnterpriseProvider('6Lc-VFQtAAAAAKXHBKgK-v4XgeBU8HcZQMvZr9y6'),
         isTokenAutoRefreshEnabled: true
     });
 
