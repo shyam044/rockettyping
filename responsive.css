@@ -25,6 +25,61 @@ body { overflow-x: hidden; }
 img { max-width: 100%; }
 
 /* ════════════════════════════════════════════════════════════════
+   ADS — centered + scaled at every breakpoint tier
+   (extra-small / small / medium / medium-large / large / extra-large)
+   ════════════════════════════════════════════════════════════════ */
+.native-ad-slot,
+#result-ad {
+    width: 100%;
+    box-sizing: border-box;
+    overflow: hidden; /* clip any ad creative wider than its slot instead of causing page-wide horizontal scroll */
+}
+.native-ad-slot iframe,
+.native-ad-slot ins,
+.native-ad-slot > div,
+#result-ad iframe {
+    max-width: 100%;
+}
+
+/* Extra-large desktop (>1400px) — ads keep their native size, centered */
+@media (min-width: 1401px) {
+    .native-ad-slot { min-height: 100px; }
+}
+
+/* Large desktop / laptop (901–1400px) */
+@media (min-width: 901px) and (max-width: 1400px) {
+    .native-ad-slot { padding: 0 12px; }
+}
+
+/* Medium-large / small laptop & large tablet (≤1024px) */
+@media (max-width: 1024px) {
+    .native-ad-slot { margin-bottom: 24px; }
+}
+
+/* Medium / tablet (≤900px) */
+@media (max-width: 900px) {
+    .native-ad-slot { padding: 0 8px; margin-bottom: 20px; }
+    .native-ad-slot .ad-label { font-size: 9px; }
+}
+
+/* Small / large phone (≤600px) */
+@media (max-width: 600px) {
+    .native-ad-slot { min-height: 60px; margin-bottom: 16px; }
+    #typing-area-ad { min-height: 50px; }
+}
+
+/* Extra-small phone (≤480px) */
+@media (max-width: 480px) {
+    .native-ad-slot { padding: 0 4px; margin-bottom: 14px; }
+    .native-ad-slot .ad-label { font-size: 8.5px; letter-spacing: 1px; }
+}
+
+/* Smallest supported phones (≤360px) */
+@media (max-width: 360px) {
+    .native-ad-slot { min-height: 50px; }
+}
+
+/* ════════════════════════════════════════════════════════════════
    EXTRA-LARGE DESKTOP  (>1400px)
    ════════════════════════════════════════════════════════════════ */
 @media (min-width: 1401px) {
