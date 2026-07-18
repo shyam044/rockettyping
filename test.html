@@ -10,9 +10,12 @@
     <link rel="apple-touch-icon" href="/images/logo-192.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;700;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+    <!-- Google Fonts: loaded non-render-blocking via the preload+onload swap trick -->
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;700;900&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;700;900&display=swap" rel="stylesheet"></noscript>
+    <!-- Font Awesome removed: only one icon (X/Twitter share glyph) was ever used
+         from this 100+ KB library. Replaced with an inline SVG at the point of use. -->
+    <script defer src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
     <style>
         :root {
             --bg:        #0a0a23;
@@ -505,7 +508,7 @@
             </div>
             <div class="result-actions">
                 <button class="btn-back" onclick="window.location.href='index.html'">← BACK TO PRACTICE</button>
-                <button class="btn-share" id="share-btn"><i class="fa-brands fa-x-twitter"></i> SHARE RESULT</button>
+                <button class="btn-share" id="share-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:-2px;margin-right:2px" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg> SHARE RESULT</button>
             </div>
             <!-- Daily Practice Promo Banner -->
             <div class="daily-promo-banner" style="margin-top:28px;background:linear-gradient(135deg,rgba(0,230,204,0.08),rgba(226,183,20,0.08));border:2px solid rgba(0,230,204,0.35);border-radius:16px;padding:24px 20px;text-align:center;">
