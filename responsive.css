@@ -84,7 +84,9 @@ img { max-width: 100%; }
    ════════════════════════════════════════════════════════════════ */
 @media (min-width: 1401px) {
     #app  { max-width: 1500px; }
-    #words { font-size: 38px; }
+    /* height = font-size(38) × line-height(1.5) × 3 rows, so overflow:hidden
+       clips to exactly 3 rows here too (not slightly less than 3). */
+    #words { font-size: 38px; height: 171px; }
 }
 
 /* ════════════════════════════════════════════════════════════════
@@ -109,7 +111,8 @@ img { max-width: 100%; }
    ════════════════════════════════════════════════════════════════ */
 @media (max-width: 1024px) {
     #app               { max-width: 96%; padding: 16px; }
-    #words             { font-size: 32px; }
+    /* height = font-size(32) × line-height(1.5) × 3 rows */
+    #words             { font-size: 32px; height: 144px; }
     #difficulty-container { right: 10px; }
     .diff-btn, .qlen-btn { padding: 9px 16px; font-size: 12.5px; }
 }
@@ -234,8 +237,11 @@ img { max-width: 100%; }
     #words {
         margin-top: 10px;
         font-size: 28px;
-        height: auto;
-        min-height: 120px;
+        /* height = font-size(28) × line-height(1.5, inherited from base) × 3 rows.
+           MUST be a fixed height, not auto/min-height — auto has nothing for
+           overflow:hidden to clip, so the box grows to fit every generated
+           word (many rows) instead of showing exactly 3 like desktop does. */
+        height: 126px;
         padding: 0 10px;
     }
 
@@ -308,7 +314,8 @@ img { max-width: 100%; }
 
     #page-title { font-size: 12px !important; }
 
-    #words { font-size: 24px; line-height: 1.4; gap: 4px; }
+    /* height = font-size(24) × line-height(1.4) × 3 rows */
+    #words { font-size: 24px; line-height: 1.4; gap: 4px; height: 101px; }
 
     #timer { font-size: 30px; }
 
@@ -476,7 +483,9 @@ img { max-width: 100%; }
         font-size: 20px;
         line-height: 1.5;
         padding: 0 4px;
-        min-height: 100px;
+        /* height = font-size(20) × line-height(1.5) × 3 rows.
+           Fixed height (not min-height) so it actually clips to 3 rows. */
+        height: 90px;
     }
 
     /* Hide live WPM circle on very small screens */
@@ -560,7 +569,8 @@ img { max-width: 100%; }
     #play-game { flex-direction: column !important; width: 100%; }
     .play-game-btn, .learn-type-btn { width: 100%; justify-content: center; }
 
-    #words { font-size: 17px; }
+    /* height = font-size(17) × line-height(1.5, inherited) × 3 rows */
+    #words { font-size: 17px; height: 77px; }
 
     .diff-btn, .qlen-btn { padding: 6px 8px; font-size: 9.5px; }
 
@@ -603,7 +613,8 @@ img { max-width: 100%; }
 @media (max-height: 480px) and (max-width: 900px) {
     #km-scene    { max-height: 130px; }
     .km-key      { height: 18px; min-width: 18px; font-size: 7px; }
-    #words       { min-height: 80px; }
+    /* #words height is fully handled by the width-based breakpoints above —
+       no override needed here now that those are exact fixed heights. */
 
     .km-score-ring  { width: 64px; height: 64px; }
     .km-score-inner { width: 56px; height: 56px; }
