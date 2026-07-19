@@ -4697,6 +4697,59 @@ if (!testActive && !testEnded && e.key.length === 1) {
             container.appendChild(iframe);
         }
 
+        // ── VIEWABILITY-BASED LAZY LOADING for the 4 ad slots below the typing
+        // test (typing-area-ad, ad-slot-2, ad-slot-3, ad-slot-4) ──
+        //
+        // PROBLEM this fixes: these slots used to fire their ad request the
+        // instant the page loaded (or, for ad #1, the instant the user hit
+        // Retake) — no matter whether the slot was actually on-screen. Every
+        // one of those requests counts as a "served" impression to the ad
+        // network, but if the user never scrolls down to actually see it,
+        // it's never a "viewed" impression. A high served-but-unviewed ratio
+        // is exactly what drags down CPM over time.
+        //
+        // FIX: don't request an ad for a slot until that slot is actually
+        // about to enter the viewport. One IntersectionObserver watches all
+        // four containers; each slot only ever loads once it's genuinely
+        // about to be seen, so every served impression is a real viewable one.
+        const _adSlotLoaders = {
+            'container-typing-area-ad': () => loadDirectBannerAd('container-typing-area-ad', 'ec2cd2e3ac271efe174e656e9ef09deb', 728, 90),
+            'container-ad-slot-2':      () => loadDirectBannerAd('container-ad-slot-2', 'c0570a980250971b0f952672ff8a136a', 300, 250),
+            'container-ad-slot-3':      () => loadDirectBannerAd('container-ad-slot-3', 'e8642ebc1588f7663a0e84f1c8058052', 320, 50),
+            'container-ad-slot-4':      () => loadDirectBannerAd('container-ad-slot-4', '95b624fbbcc4571e53cd5d3a062f9758', 468, 60),
+        };
+        const _adSlotLoaded = { 'container-typing-area-ad': false, 'container-ad-slot-2': false, 'container-ad-slot-3': false, 'container-ad-slot-4': false };
+
+        const _adLazyObserver = ('IntersectionObserver' in window) ? new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+                if (!entry.isIntersecting) return;
+                const id = entry.target.id;
+                if (_adSlotLoaded[id]) return; // already loaded, and not marked dirty — nothing to do
+                _adSlotLoaded[id] = true;
+                _adSlotLoaders[id]();
+            });
+            // Start loading ~200px before the slot actually reaches the viewport, so
+            // the ad has finished its network round-trip by the time it's visible —
+            // still a real viewable impression, just without a blank flash on arrival.
+        }, { rootMargin: '200px 0px', threshold: 0.01 }) : null;
+
+        function _observeAdSlot(containerId) {
+            const el = document.getElementById(containerId);
+            if (!el) return;
+            if (_adLazyObserver) {
+                _adLazyObserver.observe(el);
+            } else {
+                // No IntersectionObserver support (very old browser) — fall back
+                // to loading immediately rather than never loading at all.
+                if (!_adSlotLoaded[containerId]) { _adSlotLoaded[containerId] = true; _adSlotLoaders[containerId](); }
+            }
+        }
+
+        // Registers all 4 slots for lazy loading. Called once on page init.
+        function initAdLazyLoading() {
+            Object.keys(_adSlotLoaders).forEach(_observeAdSlot);
+        }
+
         // Swaps in a brand-new result-screen ad. Called on page init, and
         // again from resetTest() every time the user leaves a finished
         // result screen (Retake Test / Tab+Enter / Enter) — so the fresh
@@ -4706,13 +4759,26 @@ if (!testActive && !testEnded && e.key.length === 1) {
             loadNativeBannerAd('result-ad', '42f27a48e35d8fefd79d32771cdb9094');
         }
 
-        // Swaps in a brand-new ad for the banner directly below the typing
-        // test. Called on page init, and again every time the user leaves
-        // a finished result screen back to the typing test — so this slot
-        // stops showing the exact same creative on every retake, and each
-        // swap counts as a freshly served impression.
+        // Marks the typing-area banner (ad #1) as needing a fresh ad next time
+        // the user retakes the test — but does NOT force-load it blind. If the
+        // slot happens to be on-screen right now, load immediately (that's a
+        // genuine viewable impression). If it's scrolled out of view, leave it
+        // alone — the IntersectionObserver above will load it the moment the
+        // user actually scrolls back down to it, so we never serve an ad nobody
+        // is looking at.
         function refreshTypingAreaAd() {
-            loadDirectBannerAd('container-typing-area-ad', 'ec2cd2e3ac271efe174e656e9ef09deb', 728, 90);
+            const id = 'container-typing-area-ad';
+            _adSlotLoaded[id] = false; // mark dirty so it's eligible to reload
+            const el = document.getElementById(id);
+            if (!el) return;
+            const rect = el.getBoundingClientRect();
+            const isCurrentlyVisible = rect.bottom > 0 && rect.top < window.innerHeight;
+            if (isCurrentlyVisible) {
+                _adSlotLoaded[id] = true;
+                _adSlotLoaders[id]();
+            }
+            // else: left unloaded on purpose — the observer (still watching this
+            // element) will fire the loader itself once it scrolls into view.
         }
 
         function resetTest() {
@@ -4813,13 +4879,11 @@ if (!testActive && !testEnded && e.key.length === 1) {
         }
         resetTest();
         refreshResultAd();
-        refreshTypingAreaAd();
-        // Ads #2–#4 don't need to refresh on retake (they're not tied to the
-        // typing-test/result cycle) — load them once via the same safe,
-        // guaranteed-centered iframe technique as the others.
-        loadDirectBannerAd('container-ad-slot-2', 'c0570a980250971b0f952672ff8a136a', 300, 250);
-        loadDirectBannerAd('container-ad-slot-3', 'e8642ebc1588f7663a0e84f1c8058052', 320, 50);
-        loadDirectBannerAd('container-ad-slot-4', '95b624fbbcc4571e53cd5d3a062f9758', 468, 60);
+        // All 4 below-the-test ad slots (typing-area-ad, ad-slot-2, ad-slot-3,
+        // ad-slot-4) now load lazily — only once each is actually about to be
+        // visible — instead of firing every ad request the instant the page
+        // loads. See initAdLazyLoading() / IntersectionObserver setup above.
+        initAdLazyLoading();
 
         // CARET FIX: styles.css loads asynchronously (media="print" trick), so when
         // resetTest() runs on page load, styles.css hasn't applied yet.
