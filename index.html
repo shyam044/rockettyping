@@ -181,8 +181,11 @@
     <!-- Preconnect / DNS-prefetch for external origins -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="preconnect" href="https://firestore.googleapis.com">
-    <link rel="preconnect" href="https://www.gstatic.com">
+    <!-- Firebase/Firestore now load lazily (after first idle/interaction, see
+         the deferred module script below), so a full preconnect handshake
+         isn't needed on initial load — dns-prefetch is enough head-start -->
+    <link rel="dns-prefetch" href="https://firestore.googleapis.com">
+    <link rel="dns-prefetch" href="https://www.gstatic.com">
     <link rel="dns-prefetch" href="https://firebase.googleapis.com">
     <link rel="dns-prefetch" href="https://identitytoolkit.googleapis.com">
     <!-- Stars bg served from Vercel — warm up DNS+TCP early so the bg image
@@ -325,8 +328,27 @@
     </script>
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8311353174841359"
         crossorigin="anonymous"></script>
-    <!-- Confetti: deferred so it never blocks the main thread on load -->
-    <script defer src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+    <!-- Confetti: lazy-loaded on first actual use (see fireConfetti() below)
+         instead of on every page load — most visits never trigger it. -->
+    <script>
+        var _confettiLoadPromise = null;
+        function _loadConfetti() {
+            if (!_confettiLoadPromise) {
+                _confettiLoadPromise = new Promise(function(resolve) {
+                    var s = document.createElement('script');
+                    s.src = 'https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js';
+                    s.onload = resolve;
+                    document.head.appendChild(s);
+                });
+            }
+            return _confettiLoadPromise;
+        }
+        // Drop-in replacement for calling confetti(...) directly — same
+        // arguments, just fetches the library first if it isn't loaded yet.
+        function fireConfetti(opts) {
+            _loadConfetti().then(function() { window.confetti(opts); });
+        }
+    </script>
     <!-- Quotes database — loaded before main script so QUOTES_ALL is available -->
     <!-- quotes.js moved to just before the main script, right after all
          visible markup — see near end of body. It no longer blocks the
@@ -2836,11 +2858,39 @@
         </div>
     </div>
 </section>
-   <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { initializeAppCheck,  ReCaptchaEnterpriseProvider } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app-check.js";
-    import { getFirestore, collection, addDoc, query, orderBy, limit, getDocs, doc, getDoc, setDoc, where } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, GoogleAuthProvider, GithubAuthProvider, signInWithPopup, sendPasswordResetEmail, sendEmailVerification, updateProfile, deleteUser } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+   <script>
+    // ── Firebase is now lazy-loaded instead of imported eagerly ──────────
+    // Previously this was a `type="module"` with static imports, which the
+    // browser fetches and executes on EVERY page load before the page is
+    // fully interactive — even for the ~majority of visitors who never log
+    // in. That was the single biggest contributor to TBT/INP in PageSpeed.
+    //
+    // Now it loads on whichever happens first:
+    //   1) the browser's first idle moment (capped at 2s so it never waits
+    //      forever), or
+    //   2) the user's first click/keypress/touch on the page
+    // ...so it's still ready almost immediately for real users, but no
+    // longer competes with first paint / initial interactivity.
+    // Everything below (window.* exports, the firebase-ready event,
+    // onAuthStateChanged behavior, updateAuthUI) is byte-for-byte the same
+    // logic as before — only the loading trigger changed.
+    let _fbLoading = false, _fbLoaded = false;
+
+    async function _initFirebase() {
+        if (_fbLoading || _fbLoaded) return;
+        _fbLoading = true;
+
+    const [
+        { initializeApp },
+        { initializeAppCheck, ReCaptchaEnterpriseProvider },
+        { getFirestore, collection, addDoc, query, orderBy, limit, getDocs, doc, getDoc, setDoc, where },
+        { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, GoogleAuthProvider, GithubAuthProvider, signInWithPopup, sendPasswordResetEmail, sendEmailVerification, updateProfile, deleteUser }
+    ] = await Promise.all([
+        import("https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"),
+        import("https://www.gstatic.com/firebasejs/10.12.2/firebase-app-check.js"),
+        import("https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js"),
+        import("https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js")
+    ]);
 
     const firebaseConfig = {
         apiKey: "AIzaSyDFlSFyLG8RtOshIRI3XJ-d2Ws4R6bCqjE",
@@ -2951,6 +3001,24 @@ window.deleteUser = deleteUser;
         }
     }
     window.updateAuthUI = updateAuthUI;
+
+    _fbLoaded = true;
+    } // end _initFirebase
+
+    // Trigger loading: first idle moment (max 2s wait) OR first interaction,
+    // whichever comes first.
+    var _fbEvents = ['pointerdown', 'keydown', 'touchstart'];
+    function _fbTriggerOnce() {
+        _fbEvents.forEach(function(ev) { window.removeEventListener(ev, _fbTriggerOnce); });
+        _initFirebase();
+    }
+    _fbEvents.forEach(function(ev) { window.addEventListener(ev, _fbTriggerOnce, { once: true, passive: true }); });
+
+    if ('requestIdleCallback' in window) {
+        requestIdleCallback(_initFirebase, { timeout: 2000 });
+    } else {
+        window.addEventListener('load', function() { setTimeout(_initFirebase, 300); });
+    }
 </script>
     <script>
         function openLeaderboardModal() {
@@ -4196,7 +4264,7 @@ if (!testActive && !testEnded && e.key.length === 1) {
                 } catch(_lsErr) { console.warn('localStorage words/quotes save failed:', _lsErr); }
             }
 
-            confetti({
+            fireConfetti({
                 particleCount: 80,
                 spread: 65,
                 origin: { y: 0.6 },
@@ -5164,7 +5232,7 @@ function sanitizeStr(s) {
             window._lbCache[duration] = { ts: Date.now(), entries };
 
             if (registeredName && [...body.children].some(r => r.classList.contains('you'))) {
-                confetti({ particleCount: 80, spread: 60, origin: { y: 0.6 } });
+                fireConfetti({ particleCount: 80, spread: 60, origin: { y: 0.6 } });
             }
 
             // ← REMOVED the old updateLeaderboardPrompt() from here (now at top)
@@ -5268,7 +5336,7 @@ function sanitizeStr(s) {
             window._lbCache[cacheKey] = { ts: Date.now(), entries };
 
             if (registeredName && [...body.children].some(r => r.classList.contains('you'))) {
-                confetti({ particleCount: 80, spread: 60, origin: { y: 0.6 } });
+                fireConfetti({ particleCount: 80, spread: 60, origin: { y: 0.6 } });
             }
         }
 
@@ -6391,7 +6459,7 @@ function _showMuskToast(score, totalSecs) {
     toast.classList.add('show');
     // confetti burst
     try {
-        confetti({ particleCount: 120, spread: 80, origin: { y: 0.8 },
+        fireConfetti({ particleCount: 120, spread: 80, origin: { y: 0.8 },
             colors: ['#ffd700','#ff9900','#ff6600','#ffffff'] });
     } catch(e) {}
     clearTimeout(window._muskToastTimer);
