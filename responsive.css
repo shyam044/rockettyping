@@ -642,3 +642,10 @@ img { max-width: 100%; }
     .km-score-lbl   { display: none; }
     #km-scores-panel { padding-bottom: 0; gap: 8px; }
 }
+
+
+/* ── SEO content grid (from index.html) ── */
+@media (max-width: 768px) {
+    #seo-content > div:nth-of-type(2) { grid-template-columns: 1fr !important; }
+    #seo-content { padding: 24px 14px !important; margin: 0 8px 30px !important; }
+}
