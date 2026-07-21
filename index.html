@@ -206,20 +206,6 @@
          animations) can live only in styles.css.
          ═══════════════════════════════════════════════════════════════════ -->
     <style>
-        /* ── 1. Font-metric fallback — eliminates double font-swap CLS ──────────── */
-        /* styles.css also defines this but it can't be used until styles.css loads. */
-        /* Defining it here means the adjusted Courier New metrics are active from    */
-        /* frame 1, so neither the raw→adjusted nor adjusted→Roboto Mono swap shifts  */
-        /* any text.                                                                  */
-        @font-face{
-            font-family:'Roboto Mono Fallback';
-            src:local('Courier New'),local('Courier');
-            size-adjust:95%;
-            ascent-override:88%;
-            descent-override:22%;
-            line-gap-override:0%
-        }
-
         /* ── 2. Base layout — matches styles.css exactly ────────────────────────── */
         html{background:#0a0a23}
         /* overflow-y:auto and font-size-adjust:0.5 mirror styles.css body rule.     */
@@ -228,7 +214,7 @@
         body{
             background:#0a0a23;
             margin:0;
-            font-family:'Roboto Mono Fallback','Courier New',monospace;
+            font-family:'Roboto Mono',monospace;
             color:#ffd700;
             overflow-x:hidden;
             overflow-y:auto;
@@ -2634,7 +2620,7 @@
     background: rgba(10,10,35,0.6);
     border: 1px solid rgba(226,183,20,0.12);
     border-radius: 20px;
-    font-family: 'Roboto Mono', 'Courier New', monospace;
+    font-family: 'Roboto Mono', monospace;
     color: #9aa0a8;
     line-height: 1.8;
     box-sizing: border-box;
