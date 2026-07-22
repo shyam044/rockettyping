@@ -1,0 +1,774 @@
+<style>
+
+/* ── Profile Modal Overlay ── */
+#profileModal {
+    position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.88);
+    backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+    align-items: center; justify-content: center;
+    z-index: 1200; display: none; padding: 0; box-sizing: border-box;
+    overflow-y: auto;
+}
+#profileModal.open { display: flex; }
+
+#profileModalBox {
+    background: linear-gradient(145deg, #0e0e28, #1a1a38);
+    border: 1px solid rgba(226,183,20,0.25);
+    border-radius: 0;
+    padding: 0;
+    width: 100%; max-width: 100%;
+    max-height: 100vh;
+    position: relative;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.04), inset 0 1px 0 rgba(255,255,255,0.06);
+    animation: pmSlideIn .3s cubic-bezier(.22,1,.36,1);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    font-family: 'Roboto Mono', monospace;
+}
+
+/* ── Scrollable inner body ── */
+#pm-scroll-body {
+    overflow-y: auto;
+    overflow-x: hidden;
+    flex: 1 1 auto;
+    padding-bottom: 32px;
+    padding-top: 70px;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(226,183,20,0.3) transparent;
+}
+#pm-scroll-body::-webkit-scrollbar { width: 5px; }
+#pm-scroll-body::-webkit-scrollbar-track { background: transparent; }
+#pm-scroll-body::-webkit-scrollbar-thumb {
+    background: rgba(226,183,20,0.3);
+    border-radius: 4px;
+}
+#pm-scroll-body::-webkit-scrollbar-thumb:hover { background: rgba(226,183,20,0.55); }
+@keyframes pmSlideIn {
+    from { opacity:0; transform: translateY(24px) scale(0.97); }
+    to   { opacity:1; transform: translateY(0) scale(1); }
+}
+
+/* ── Banner / Header Area ── */
+.pm-banner {
+    height: 110px;
+    background: linear-gradient(135deg, #0a0a23 0%, #1e1e4a 40%, #2a1040 70%, #0a0a23 100%);
+    position: sticky;
+    top: 0;
+    overflow: visible;
+    border-radius: 0;
+    flex-shrink: 0;
+    z-index: 20;
+}
+/* clip only the gradient bg, not the avatar child */
+.pm-banner > *:not(.pm-avatar-wrap) { overflow: hidden; }
+.pm-banner::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse at 50% 100%, rgba(226,183,20,0.18) 0%, transparent 70%);
+}
+/* Stars in banner */
+.pm-banner::before {
+    content: '✦ ✧ ✦ ✧ ✦ ✧ ✦';
+    position: absolute; top: 18px; width: 100%;
+    text-align: center; color: rgba(226,183,20,0.2);
+    font-size: 14px; letter-spacing: 14px;
+}
+
+/* ── Avatar Ring ── */
+.pm-avatar-wrap {
+    position: absolute;
+    bottom: -54px; left: 50%; transform: translateX(-50%);
+    z-index: 5;
+    cursor: pointer;
+}
+.pm-avatar-ring {
+    width: 110px; height: 110px;
+    border-radius: 50%;
+    border: 4px solid #e2b714;
+    box-shadow: 0 0 0 4px #0e0e28, 0 0 28px rgba(226,183,20,0.5);
+    background: linear-gradient(135deg, #1a1a3e, #2a2060);
+    display: flex; align-items: center; justify-content: center;
+    overflow: hidden;
+    position: relative;
+    transition: box-shadow .25s;
+}
+.pm-avatar-ring:hover { box-shadow: 0 0 0 4px #0e0e28, 0 0 40px rgba(226,183,20,0.75); }
+.pm-avatar-ring img {
+    width: 100%; height: 100%; object-fit: cover;
+    border-radius: 50%;
+}
+.pm-avatar-initial {
+    font-size: 42px; font-weight: 900;
+    color: #0a0a23;
+    background: linear-gradient(135deg, #e2b714, #ff9900);
+    width: 100%; height: 100%;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 50%;
+    font-family: 'Roboto Mono', monospace;
+}
+/* Camera overlay on hover */
+.pm-avatar-ring::after {
+    content: '📷';
+    position: absolute; inset: 0;
+    background: rgba(0,0,0,0.52);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 28px;
+    border-radius: 50%;
+    opacity: 0;
+    transition: opacity .2s;
+    display: grid; place-items: center;
+}
+.pm-avatar-ring:hover::after { opacity: 1; }
+
+/* "Add Photo" label under avatar */
+.pm-add-photo-label {
+    text-align: center;
+    font-size: 11px; color: #e2b714;
+    letter-spacing: 1px;
+    margin-top: 6px;
+    opacity: 0.75;
+    font-family: 'Roboto Mono', monospace;
+}
+#pm-avatar-input { display: none; }
+
+/* ── Modal Body ── */
+.pm-body {
+    padding: 10px 36px 0;
+    text-align: center;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.pm-username {
+    font-size: 22px; font-weight: 900;
+    color: #fff; letter-spacing: 1px;
+    margin: 0 0 4px;
+}
+.pm-country-row {
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    font-size: 13px; color: #888; margin-bottom: 16px;
+}
+.pm-country-row img { width: 22px; height: 16px; object-fit: contain; }
+.pm-member-since {
+    font-size: 11px; color: #555; letter-spacing: .5px;
+    margin-top: -10px; margin-bottom: 16px;
+}
+
+/* ── Stats Grid ── */
+.pm-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin: 18px 0;
+}
+.pm-stat-card {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(226,183,20,0.14);
+    border-radius: 14px;
+    padding: 16px 10px;
+    text-align: center;
+    transition: border-color .2s, background .2s;
+}
+.pm-stat-card:hover {
+    border-color: rgba(226,183,20,0.35);
+    background: rgba(226,183,20,0.05);
+}
+.pm-stat-icon {
+    font-size: 20px; margin-bottom: 6px; display: block;
+}
+.pm-stat-val {
+    font-size: 24px; font-weight: 900;
+    color: #ffd700; display: block; letter-spacing: .5px;
+}
+.pm-stat-label {
+    font-size: 9px; color: #555;
+    letter-spacing: 1.2px; margin-top: 4px;
+    display: block; text-transform: uppercase;
+}
+
+/* ── Wide Stat Cards (for 2-col bottom row) ── */
+.pm-stats-grid-2 {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin: 0 0 18px;
+}
+
+/* ── Divider ── */
+.pm-divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(226,183,20,0.18), transparent);
+    margin: 18px 0;
+}
+
+/* ── Speed Bar Visual ── */
+.pm-speed-bar-wrap { margin: 16px 0 0; text-align: left; }
+.pm-speed-bar-label {
+    display: flex; justify-content: space-between;
+    font-size: 10px; color: #666; margin-bottom: 4px; letter-spacing: .5px;
+}
+.pm-speed-bar-track {
+    background: rgba(255,255,255,0.06);
+    border-radius: 6px; height: 8px; overflow: hidden;
+    position: relative;
+}
+.pm-speed-bar-fill {
+    height: 100%; border-radius: 6px;
+    background: linear-gradient(90deg, #3b82f6, #e2b714, #ff9900);
+    transition: width 1.2s cubic-bezier(0.34,1.56,0.64,1);
+    position: relative;
+}
+.pm-speed-bar-dot {
+    position: absolute; right: -1px; top: 50%;
+    transform: translateY(-50%);
+    width: 12px; height: 12px; border-radius: 50%;
+    background: #ffd700; border: 2px solid #fff;
+    box-shadow: 0 0 8px rgba(255,215,0,0.7);
+}
+
+/* ── Recent Tests ── */
+.pm-recent-header {
+    text-align: left; font-size: 11px; color: #646669;
+    letter-spacing: 1.5px; margin-bottom: 8px; font-weight: 700;
+}
+.pm-recent-scroll {
+    max-height: 400px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    border: 1px solid rgba(226,183,20,0.1);
+    border-radius: 10px;
+    background: rgba(0,0,0,0.18);
+    scrollbar-width: thin;
+    scrollbar-color: rgba(226,183,20,0.25) transparent;
+}
+.pm-recent-scroll::-webkit-scrollbar { width: 4px; }
+.pm-recent-scroll::-webkit-scrollbar-track { background: transparent; }
+.pm-recent-scroll::-webkit-scrollbar-thumb {
+    background: rgba(226,183,20,0.25);
+    border-radius: 4px;
+}
+.pm-recent-row {
+    display: grid;
+    grid-template-columns: 1fr 70px 70px 90px;
+    gap: 4px;
+    padding: 10px 14px;
+    font-size: 12px;
+    color: #888;
+    transition: background .15s;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+.pm-recent-row:last-child { border-bottom: none; }
+.pm-recent-row:hover { background: rgba(255,255,255,0.05); }
+.pm-recent-row span:nth-child(2) { color: #ffd700; font-weight: 900; text-align: center; }
+.pm-recent-row span:nth-child(3) { color: #00e6cc; text-align: center; }
+.pm-recent-row span:nth-child(4) { color: #888; text-align: right; }
+.pm-recent-row-head {
+    font-size: 9px; color: #444; letter-spacing: 1px; font-weight: 700;
+    padding: 6px 14px 6px; margin-top: 4px;
+    display: grid;
+    grid-template-columns: 1fr 70px 70px 90px;
+    gap: 4px;
+    border-bottom: 1px solid rgba(226,183,20,0.1);
+}
+.pm-recent-row-head span:not(:first-child) { text-align: center; }
+.pm-recent-row-head span:last-child { text-align: right; }
+
+/* ── Close Button ── */
+.pm-close-top {
+    position: absolute; top: 12px; left: 14px;
+    display: inline-flex; align-items: center; gap: 5px;
+    background: rgba(0,0,0,0.35); border: 1.5px solid rgba(226,183,20,0.4);
+    color: #e2b714;
+    font-family: 'Roboto Mono', monospace;
+    font-size: 12px; font-weight: 700; letter-spacing: 1px;
+    padding: 6px 14px; border-radius: 50px;
+    cursor: pointer; z-index: 30;
+    transition: background .2s, border-color .2s, box-shadow .2s;
+}
+.pm-close-top:hover {
+    background: rgba(226,183,20,0.15);
+    border-color: rgba(226,183,20,0.85);
+    box-shadow: 0 0 14px rgba(226,183,20,0.25);
+}
+
+/* ── Loading ── */
+.pm-loading {
+    text-align: center; padding: 20px 0;
+    color: #646669; font-size: 12px; letter-spacing: 1px;
+}
+.pm-loading-dot {
+    display: inline-block; width: 8px; height: 8px;
+    border-radius: 50%; background: #e2b714;
+    margin: 0 3px;
+    animation: pm-pulse 1.2s ease-in-out infinite;
+}
+.pm-loading-dot:nth-child(2) { animation-delay: .2s; }
+.pm-loading-dot:nth-child(3) { animation-delay: .4s; }
+@keyframes pm-pulse {
+    0%,80%,100% { opacity: .2; transform: scale(.85); }
+    40%          { opacity: 1;  transform: scale(1.1); }
+}
+
+/* ── Rank Badge ── */
+.pm-rank-badge {
+    display: inline-block;
+    padding: 3px 14px;
+    border-radius: 20px;
+    font-size: 11px; font-weight: 900;
+    letter-spacing: 1px;
+    margin-bottom: 12px;
+}
+
+/* ── Edit username / country buttons ── */
+.pm-edit-row {
+    display: flex; gap: 8px; justify-content: center; margin-bottom: 12px;
+}
+.pm-edit-btn {
+    font-size: 10px; padding: 4px 12px; border-radius: 20px;
+    border: 1px solid rgba(226,183,20,0.3); color: #e2b714;
+    background: none; cursor: pointer; letter-spacing: .8px;
+    font-family: 'Roboto Mono', monospace; transition: all .2s;
+}
+.pm-edit-btn:hover { background: rgba(226,183,20,0.1); border-color: rgba(226,183,20,0.65); }
+
+/* Mobile */
+@media (max-width: 720px) {
+    #profileModalBox { border-radius: 0; max-width: 100%; }
+    .pm-stats-grid { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+    .pm-body { padding: 10px 16px 0; }
+    .pm-stat-val { font-size: 18px; }
+    .pm-recent-row, .pm-recent-row-head { grid-template-columns: 1fr 60px 60px 70px; }
+}
+</style>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     MUSK SCORE STYLES
+═══════════════════════════════════════════════════════════════ -->
+<style>
+/* ── Musk Score Hero Card ── */
+.pm-musk-card {
+    position: relative;
+    background: linear-gradient(135deg, rgba(10,10,35,0.95) 0%, rgba(30,10,60,0.95) 50%, rgba(10,10,35,0.95) 100%);
+    border: 2px solid transparent;
+    border-radius: 18px;
+    padding: 20px 18px 16px;
+    margin: 18px 0 4px;
+    text-align: center;
+    overflow: hidden;
+    cursor: default;
+    transition: transform .2s, box-shadow .2s;
+}
+.pm-musk-card::before {
+    content: '';
+    position: absolute; inset: 0;
+    border-radius: 18px;
+    padding: 2px;
+    background: conic-gradient(from 0deg, #e2b714, #ff6600, #9b72cf, #e2b714);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor; mask-composite: exclude;
+    animation: musk-border-spin 4s linear infinite;
+    transform-origin: center;
+}
+@keyframes musk-border-spin {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+}
+.pm-musk-card:hover { transform: translateY(-2px); box-shadow: 0 12px 40px rgba(226,183,20,0.3); }
+
+/* Rocket icon floating top */
+.pm-musk-rocket {
+    font-size: 28px;
+    display: block;
+    margin-bottom: 4px;
+    animation: musk-float 3s ease-in-out infinite;
+}
+@keyframes musk-float {
+    0%, 100% { transform: translateY(0px); }
+    50%       { transform: translateY(-5px); }
+}
+
+/* "MUSK SCORE" label */
+.pm-musk-label {
+    font-size: 10px; font-weight: 900;
+    letter-spacing: 3px; color: #e2b714;
+    text-transform: uppercase;
+    margin-bottom: 6px; display: block;
+    text-shadow: 0 0 12px rgba(226,183,20,0.6);
+}
+
+/* The big number */
+.pm-musk-number {
+    font-size: 56px; font-weight: 900;
+    background: linear-gradient(135deg, #ffd700 30%, #ff9900 70%, #ff6600);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1; letter-spacing: -2px;
+    display: block;
+    filter: drop-shadow(0 0 14px rgba(255,165,0,0.5));
+    transition: transform .35s cubic-bezier(0.34,1.56,0.64,1);
+}
+.pm-musk-number.pop {
+    animation: musk-pop .5s cubic-bezier(0.34,1.56,0.64,1);
+}
+@keyframes musk-pop {
+    0%   { transform: scale(1); }
+    40%  { transform: scale(1.35); }
+    100% { transform: scale(1); }
+}
+
+/* sub-label: "points earned" */
+.pm-musk-sub {
+    font-size: 10px; color: #555; letter-spacing: 1px;
+    margin-top: 4px; display: block;
+}
+
+/* Progress ring to next score */
+.pm-musk-progress-wrap {
+    margin-top: 12px;
+    display: flex; flex-direction: column; align-items: center; gap: 5px;
+}
+.pm-musk-progress-label {
+    display: flex; justify-content: space-between; width: 100%;
+    font-size: 9px; color: #555; letter-spacing: .5px;
+}
+.pm-musk-progress-track {
+    width: 100%; height: 6px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 6px; overflow: hidden;
+}
+.pm-musk-progress-fill {
+    height: 100%; border-radius: 6px;
+    background: linear-gradient(90deg, #e2b714, #ff9900, #ff6600);
+    transition: width 1.2s cubic-bezier(0.34,1.56,0.64,1);
+    box-shadow: 0 0 8px rgba(226,183,20,0.5);
+}
+
+/* Tooltip on hover */
+.pm-musk-tooltip {
+    position: absolute; bottom: calc(100% + 8px); left: 50%;
+    transform: translateX(-50%);
+    background: #0e0e28;
+    border: 1px solid rgba(226,183,20,0.35);
+    border-radius: 10px; padding: 12px 16px;
+    font-size: 11px; color: #d1d0c5;
+    line-height: 1.7; white-space: nowrap;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.6);
+    pointer-events: none;
+    opacity: 0; transition: opacity .2s;
+    z-index: 50;
+    text-align: left;
+}
+.pm-musk-tooltip::after {
+    content: '';
+    position: absolute; top: 100%; left: 50%;
+    transform: translateX(-50%);
+    border: 6px solid transparent;
+    border-top-color: rgba(226,183,20,0.35);
+}
+.pm-musk-card:hover .pm-musk-tooltip { opacity: 1; }
+.pm-musk-tooltip strong { color: #e2b714; }
+.pm-musk-tooltip .tt-ex { color: #666; font-size: 10px; }
+
+/* ── Milestone Toast ── */
+
+/* ══════════════════════════════════════════════
+   ELON SCORE CARD (profile modal)
+══════════════════════════════════════════════ */
+.pm-elon-card {
+    position: relative;
+    border-radius: 16px;
+    padding: 18px 20px 14px;
+    text-align: center;
+    background: linear-gradient(135deg, rgba(0,180,255,0.07), rgba(0,90,180,0.05));
+    border: 1px solid rgba(0,180,255,0.25);
+    margin: 8px 0 4px;
+    overflow: hidden;
+    cursor: default;
+    transition: transform .2s, box-shadow .2s;
+}
+.pm-elon-card::before {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    border-radius: 18px;
+    background: conic-gradient(
+        rgba(0,180,255,0) 0deg,
+        rgba(0,180,255,0.5) 90deg,
+        rgba(0,220,255,0) 180deg,
+        rgba(0,180,255,0.5) 270deg,
+        rgba(0,180,255,0) 360deg
+    );
+    animation: elon-border-spin 5s linear infinite;
+    z-index: 0;
+    pointer-events: none;
+}
+@keyframes elon-border-spin {
+    0%   { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+.pm-elon-card:hover { transform: translateY(-2px); box-shadow: 0 12px 40px rgba(0,180,255,0.2); }
+.pm-elon-rocket {
+    font-size: 28px;
+    display: block;
+    margin-bottom: 2px;
+    animation: elon-pulse 2.5s ease-in-out infinite;
+}
+@keyframes elon-pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50%       { opacity: 0.7; transform: scale(1.1); }
+}
+.pm-elon-label {
+    display: block;
+    font-size: 10px;
+    letter-spacing: 2.5px;
+    color: #00b4ff;
+    font-weight: 900;
+    text-transform: uppercase;
+    margin-bottom: 2px;
+}
+.pm-elon-number {
+    display: block;
+    font-size: 52px;
+    font-weight: 900;
+    color: #00d4ff;
+    line-height: 1;
+    letter-spacing: -1px;
+    text-shadow: 0 0 30px rgba(0,212,255,0.5);
+    margin: 4px 0;
+}
+.pm-elon-number.pop {
+    animation: musk-pop .5s cubic-bezier(0.34,1.56,0.64,1);
+}
+.pm-elon-sub {
+    display: block;
+    font-size: 11px;
+    color: #555;
+    letter-spacing: 0.5px;
+    margin-bottom: 10px;
+}
+.pm-elon-fill {
+    background: linear-gradient(90deg, #007bbf, #00d4ff) !important;
+    box-shadow: 0 0 10px rgba(0,212,255,0.4) !important;
+}
+.pm-elon-tooltip {
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: #111;
+    border: 1px solid rgba(0,180,255,0.3);
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 11px;
+    color: #aaa;
+    line-height: 1.6;
+    width: 230px;
+    text-align: left;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .2s;
+    z-index: 10;
+    white-space: normal;
+}
+.pm-elon-tooltip::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 6px solid transparent;
+    border-top-color: rgba(0,180,255,0.3);
+}
+.pm-elon-card:hover .pm-elon-tooltip { opacity: 1; }
+.pm-elon-tooltip strong { color: #00d4ff; }
+.pm-elon-tooltip .tt-ex { color: #666; font-size: 10px; }
+
+</style>
+
+<div id="profileModal" role="dialog" aria-modal="true" aria-label="User Profile">
+  <div id="profileModalBox">
+    <!-- Banner with avatar (sticky at top, not scrolled) -->
+    <div class="pm-banner">
+      <button class="pm-close-top" onclick="closeProfileModal()" aria-label="Close profile">
+        ← &nbsp;Back to Typing Test
+      </button>
+      <div class="pm-avatar-wrap" id="pm-avatar-wrap">
+        <div class="pm-avatar-ring" id="pm-avatar-ring">
+          <!-- filled by JS -->
+        </div>
+        <div class="pm-add-photo-label" id="pm-add-photo-label">+ ADD PHOTO</div>
+      </div>
+    </div>
+    <input type="file" id="pm-avatar-input" accept="image/*" aria-label="Upload profile photo">
+
+    <!-- Scrollable body -->
+    <div id="pm-scroll-body">
+    <!-- Body -->
+    <div class="pm-body">
+      <div id="pm-loading" class="pm-loading">
+        <span class="pm-loading-dot"></span><span class="pm-loading-dot"></span><span class="pm-loading-dot"></span>
+      </div>
+      <div id="pm-content" style="display:none;">
+        <h2 class="pm-username" id="pm-username-display"></h2>
+        <div class="pm-country-row" id="pm-country-row"></div>
+        <div class="pm-member-since" id="pm-member-since"></div>
+
+        <!-- Rank badge -->
+        <div id="pm-rank-badge"></div>
+
+        <!-- ✦ MUSK SCORE — headline feature ✦ -->
+        <div class="pm-musk-card" id="pm-musk-card" style="display:none;">
+          <div class="pm-musk-tooltip" id="pm-musk-tooltip">
+            <strong>🚀 How Musk Score works</strong><br>
+            Every second you spend typing adds up.<br>
+            <strong>60 seconds = 1 Musk Score point.</strong><br><br>
+            <span class="tt-ex">Example: 1s + 9s + 50s = 60s → score +1<br>
+            120s total = Musk Score 2, and so on.</span>
+          </div>
+          <span class="pm-musk-rocket">🚀</span>
+          <span class="pm-musk-label">Musk Score</span>
+          <span class="pm-musk-number" id="pm-musk-number">0</span>
+          <span class="pm-musk-sub" id="pm-musk-sub">total seconds typed</span>
+          <div class="pm-musk-progress-wrap">
+            <div class="pm-musk-progress-label">
+              <span id="pm-musk-prog-left">0s this round</span>
+              <span id="pm-musk-prog-right">next point at 60s</span>
+            </div>
+            <div class="pm-musk-progress-track">
+              <div class="pm-musk-progress-fill" id="pm-musk-bar" style="width:0%"></div>
+            </div>
+          </div>
+        </div>
+
+
+        <!-- ✦ ELON SCORE ✦ -->
+        <div class="pm-elon-card" id="pm-elon-card" style="display:none;">
+          <div class="pm-elon-tooltip" id="pm-elon-tooltip">
+            <strong>⚡ How Elon Score works</strong><br>
+            Calculated once per completed 60-minute session.<br>
+            <strong>Score = Prev + (avg WPM + avg Acc) ÷ 100 + Improvement</strong><br>
+            Improvement = max(0, SessionScore − PrevScore)<br><br>
+            <span class="tt-ex">Score is frozen during a session and only<br>
+            updates when the full 60 minutes completes.</span>
+          </div>
+          <span class="pm-elon-rocket">⚡</span>
+          <span class="pm-elon-label">Elon Score</span>
+          <span class="pm-elon-number" id="pm-elon-number">0</span>
+          <span class="pm-elon-sub" id="pm-elon-sub">session avg: — WPM / —% acc</span>
+          <div class="pm-musk-progress-wrap">
+            <div class="pm-musk-progress-label">
+              <span id="pm-elon-prog-left">0 tests this session</span>
+              <span id="pm-elon-prog-right">score updates in 60 min</span>
+            </div>
+            <div class="pm-musk-progress-track">
+              <div class="pm-musk-progress-fill pm-elon-fill" id="pm-elon-bar" style="width:0%"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Speed visual bar -->
+        <div class="pm-speed-bar-wrap" id="pm-speed-bar-wrap" style="display:none;">
+          <div class="pm-speed-bar-label">
+            <span id="pm-bar-low-label">LOW</span>
+            <span id="pm-bar-avg-label">AVG SPEED</span>
+            <span id="pm-bar-high-label">PEAK</span>
+          </div>
+          <div class="pm-speed-bar-track">
+            <div class="pm-speed-bar-fill" id="pm-speed-bar" style="width:0%;">
+              <div class="pm-speed-bar-dot"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pm-divider"></div>
+
+        <!-- 3-col stats: Avg WPM | Best WPM | Tests -->
+        <div class="pm-stats-grid">
+          <div class="pm-stat-card">
+            <span class="pm-stat-icon">⚡</span>
+            <span class="pm-stat-val" id="pm-avg-wpm">—</span>
+            <span class="pm-stat-label">Avg Speed</span>
+          </div>
+          <div class="pm-stat-card">
+            <span class="pm-stat-icon">🚀</span>
+            <span class="pm-stat-val" id="pm-best-wpm">—</span>
+            <span class="pm-stat-label">Best WPM</span>
+          </div>
+          <div class="pm-stat-card">
+            <span class="pm-stat-icon">🎯</span>
+            <span class="pm-stat-val" id="pm-total-tests">—</span>
+            <span class="pm-stat-label">Tests</span>
+          </div>
+        </div>
+
+        <!-- 2-col: Accuracy | Consistency -->
+        <div class="pm-stats-grid-2">
+          <div class="pm-stat-card">
+            <span class="pm-stat-icon">✅</span>
+            <span class="pm-stat-val" id="pm-accuracy">—</span>
+            <span class="pm-stat-label">Avg Accuracy</span>
+          </div>
+          <div class="pm-stat-card">
+            <span class="pm-stat-icon">📈</span>
+            <span class="pm-stat-val" id="pm-consistency">—</span>
+            <span class="pm-stat-label">Consistency</span>
+          </div>
+        </div>
+
+        <!-- 3-col: Low | Avg | High speed breakdown -->
+        <div class="pm-stats-grid" id="pm-speed-breakdown" style="display:none;">
+          <div class="pm-stat-card">
+            <span class="pm-stat-icon">🐢</span>
+            <span class="pm-stat-val" id="pm-low-wpm">—</span>
+            <span class="pm-stat-label">Low Speed</span>
+          </div>
+          <div class="pm-stat-card" style="border-color:rgba(226,183,20,0.3);background:rgba(226,183,20,0.05);">
+            <span class="pm-stat-icon">⚡</span>
+            <span class="pm-stat-val" id="pm-avg-wpm2">—</span>
+            <span class="pm-stat-label">Avg Speed</span>
+          </div>
+          <div class="pm-stat-card">
+            <span class="pm-stat-icon">🔥</span>
+            <span class="pm-stat-val" id="pm-high-wpm">—</span>
+            <span class="pm-stat-label">High Speed</span>
+          </div>
+        </div>
+
+        <div class="pm-divider" id="pm-recent-divider" style="display:none;"></div>
+
+        <!-- Recent tests -->
+        <div id="pm-recent-section" style="display:none; text-align:left;">
+          <div class="pm-recent-header">RECENT TESTS</div>
+          <div class="pm-recent-row-head">
+            <span>MODE</span><span>WPM</span><span>ACC</span><span>DATE</span>
+          </div>
+          <div class="pm-recent-scroll">
+            <div id="pm-recent-list"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Back to Typing Test — inside scroll body so it's always reachable -->
+    <div style="padding: 24px 20px 32px; text-align: center;">
+        <button onclick="closeProfileModal()" style="
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 12px 32px; border-radius: 50px;
+            border: 1.5px solid rgba(226,183,20,0.5);
+            background: rgba(226,183,20,0.08);
+            color: #e2b714;
+            font-family: 'Roboto Mono', monospace;
+            font-size: 13px; font-weight: 700; letter-spacing: 1px;
+            cursor: pointer; transition: all 0.2s;
+            width: 100%; max-width: 320px; justify-content: center;
+        "
+        onmouseover="this.style.background='rgba(226,183,20,0.18)';this.style.boxShadow='0 0 18px rgba(226,183,20,0.25)'"
+        onmouseout="this.style.background='rgba(226,183,20,0.08)';this.style.boxShadow='none'"
+        >
+            &#9000; &nbsp;Back to Typing Test
+        </button>
+    </div>
+    </div><!-- end pm-scroll-body -->
+  </div>
+</div>

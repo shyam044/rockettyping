@@ -1,0 +1,192 @@
+<style>
+/* ── Leaderboard modal — wider ── */
+.leaderboard-modal {
+    max-width: 1000px !important;
+    width: 95% !important;
+    padding: 34px 32px !important;
+}
+
+/* ── Leaderboard grid columns — scaled up ── */
+.leaderboard-header-grid,
+.leaderboard-row { 
+    grid-template-columns: 80px 1fr 120px 100px 100px 140px !important;
+    padding: 14px 26px !important;
+    font-size: 16px !important;
+}
+
+/* Header label text */
+.leaderboard-header-grid {
+    font-size: 15px !important;
+}
+
+/* Row rank number / medal */
+.leaderboard-row .rank {
+    font-size: 26px !important;
+}
+
+/* Player name */
+.lb-player-name {
+    font-size: 17px !important;
+}
+
+/* WPM / ACC values in rows */
+.leaderboard-row span[style*="color:#ffd700"],
+.leaderboard-row span[style*="color: #ffd700"] {
+    font-size: 18px !important;
+}
+
+/* Date cell */
+.lb-date-cell {
+    font-size: 14px !important;
+}
+
+/* Flag cell — bigger emoji + wider column */
+.lb-flag-cell { 
+    font-size: 28px !important; 
+    width: 90px !important;
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+}
+
+/* Header title */
+.header-title {
+    font-size: 34px !important;
+}
+
+/* Leaderboard body — taller to fit more rows comfortably */
+.leaderboard-body {
+    max-height: 520px !important;
+}
+
+/* ── Responsive overrides for wider leaderboard ── */
+@media (max-width: 600px) {
+    .leaderboard-modal { padding: 18px 14px !important; }
+    .leaderboard-header-grid,
+    .leaderboard-row {
+        grid-template-columns: 50px 1fr 72px 68px 68px 82px !important;
+        padding: 10px 10px !important;
+        font-size: 13px !important;
+    }
+    .lb-flag-cell { font-size: 20px !important; width: 56px !important; }
+    .header-title { font-size: 22px !important; }
+    .lb-player-name { font-size: 13px !important; }
+    .leaderboard-row .rank { font-size: 20px !important; }
+}
+
+@media (max-width: 480px) {
+    .leaderboard-header-grid,
+    .leaderboard-row {
+        grid-template-columns: 40px 1fr 58px 56px !important;
+        font-size: 12px !important;
+        padding: 8px 8px !important;
+    }
+    .lb-flag-cell { font-size: 18px !important; width: 46px !important; }
+    .header-title { font-size: 18px !important; }
+    .leaderboard-row .rank { font-size: 18px !important; }
+    /* hide date + country columns on phone */
+    .leaderboard-header-grid > *:nth-child(5),
+    .leaderboard-header-grid > *:nth-child(6),
+    .leaderboard-row > *:nth-child(5),
+    .leaderboard-row > *:nth-child(6) { display: none; }
+}
+
+@media (max-width: 360px) {
+    .leaderboard-header-grid,
+    .leaderboard-row {
+        grid-template-columns: 34px 1fr 50px 50px !important;
+        font-size: 10px !important;
+        padding: 7px 6px !important;
+    }
+    .header-title { font-size: 15px !important; }
+}
+.leaderboard-mode-tabs {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    margin: 10px 0 4px;
+}
+.lb-mode-tab {
+    background: transparent;
+    border: 2px solid rgba(255,215,0,0.3);
+    color: #aaa;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    padding: 7px 22px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background 0.18s, color 0.18s, border-color 0.18s;
+}
+.lb-mode-tab.active {
+    background: rgba(255,215,0,0.15);
+    border-color: #ffd700;
+    color: #ffd700;
+}
+.lb-mode-tab:hover:not(.active) {
+    border-color: rgba(255,215,0,0.6);
+    color: #ccc;
+}
+
+</style>
+
+    <div id="leaderboardModal">
+        <div class="modal-content leaderboard-modal">
+            <!-- New cosmic header -->
+            <button class="modal-close" onclick="closeLeaderboardModal()">×</button>
+
+            <div class="leaderboard-header-cosmic">
+                <div class="header-title">
+                    GLOBAL LEADERBOARD
+                </div>
+                <div id="leaderboard-stats" class="total-stats">TOP 10 • LIVE</div>
+            </div>
+            <!-- COSMIC REGISTER BANNER — shown only when not registered -->
+            <div id="lb-register-prompt" class="register-prompt-banner">
+                <div class="register-banner-left">
+                    <span class="register-banner-icon">🚀</span>
+                    <div class="register-banner-text">
+                        <strong>You're not on the board yet!</strong>
+                        <span>Register your name and compete globally</span>
+                    </div>
+                </div>
+                <button onclick="openAuthModal('signup')" class="register-banner-btn">
+                    REGISTER NOW →
+                </button>
+            </div>
+            <div class="leaderboard-mode-tabs">
+                <button class="lb-mode-tab active" data-lbmode="time">TIME</button>
+                <button class="lb-mode-tab" data-lbmode="words">WORDS</button>
+                <button class="lb-mode-tab" data-lbmode="elon">⚡ ELON</button>
+            </div>
+            <div class="leaderboard-time-tabs" id="lb-duration-tabs">
+                <button class="time-tab active" data-duration="10" data-lbfor="time">10s</button>
+                <button class="time-tab" data-duration="15" data-lbfor="time">15s</button>
+                <button class="time-tab" data-duration="30" data-lbfor="time">30s</button>
+                <button class="time-tab" data-duration="60" data-lbfor="time">60s</button>
+                <button class="time-tab" data-duration="10" data-lbfor="words" style="display:none">10w</button>
+                <button class="time-tab" data-duration="25" data-lbfor="words" style="display:none">25w</button>
+                <button class="time-tab" data-duration="50" data-lbfor="words" style="display:none">50w</button>
+                <button class="time-tab" data-duration="100" data-lbfor="words" style="display:none">100w</button>
+            </div>
+            <div class="leaderboard-wrapper">
+                <!-- HEADER MOVED TO TOP (this fixes the "downside" problem) -->
+                <div class="leaderboard-header-grid">
+                    <span>RANK</span>
+                    <span>PLAYER</span>
+                    <span>COUNTRY</span>
+                    <span>WPM</span>
+                    <span>ACC</span>
+                    <span>DATE</span>
+                </div>
+
+                <!-- Skeleton loader -->
+                <div id="lb-skeleton" class="skeleton-wrapper">
+                    <!-- 10 skeleton rows (JS will remove when loaded) -->
+                </div>
+
+                <div id="leaderboard-body" class="leaderboard-body"></div>
+            </div>
+        </div>
+    </div>
