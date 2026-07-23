@@ -31,6 +31,8 @@ header {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    flex-wrap: wrap;
+    row-gap: 8px;
     border-bottom: 1px solid #444;
     background: rgba(43, 45, 48, 0.95);
     position: sticky;
@@ -49,6 +51,25 @@ header nav a {
     transition: opacity 0.2s;
 }
 header nav a:hover { opacity: 1; }
+
+/* Ad slot sits between the logo and nav on wide screens; on
+   narrower screens it wraps onto its own centered row below
+   the logo/nav row so nothing overlaps or overflows. */
+.ad-header-slot {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 50px;
+}
+@media (min-width: 1300px) {
+    .ad-header-slot { width: 728px; min-height: 90px; }
+}
+@media (max-width: 1299px) {
+    header { height: auto; padding-top: 14px; padding-bottom: 14px; }
+    header > a:first-child { order: 1; }
+    header nav { order: 2; }
+    .ad-header-slot { order: 3; flex: 1 1 100%; width: 100%; }
+}
 
 /* ---------- Article wrapper ---------- */
 .article-wrap {
@@ -462,8 +483,8 @@ footer a:hover { opacity: 0.8; }
 /* ---------- Responsive ---------- */
 @media (max-width: 600px) {
     header {
-        height: 88px;
-        padding: 0 20px;
+        height: auto;
+        padding: 12px 20px;
     }
     header img { max-height: 75px; width: auto; }
     .hero  { padding: 50px 20px 40px; }
@@ -625,3 +646,66 @@ footer a:hover { opacity: 0.8; }
         @media (max-width: 480px) {
             .cta-btn { display: block; width: 100%; text-align: center; }
         }
+
+/* ============================================================
+   Ad slots — Rocket Typing monetization
+   Device-friendly: top slot lives inside the header (between
+   logo and nav) and swaps size by breakpoint, sidebars only
+   render where there's real whitespace to sit in, in-content
+   units are lazy-loaded so off-screen ads never fire a request.
+   (.ad-header-slot rules are defined alongside header, above.)
+   ============================================================ */
+
+.ad-header-slot iframe { max-width: 100%; }
+
+/* ---- Fixed left/right skyscraper slots (roomy desktop only) ---- */
+.ad-sidebar {
+    position: fixed;
+    top: 115px;
+    width: 160px;
+    z-index: 40;
+    display: none;
+    justify-content: center;
+}
+.ad-sidebar-left  { left: 14px; }
+.ad-sidebar-right { right: 14px; }
+
+@media (min-width: 1360px) {
+    .ad-sidebar { display: flex; }
+}
+
+/* ---- In-content ad wrapper (rectangle / mid-article) ---- */
+.ad-inline {
+    display: flex;
+    justify-content: center;
+    margin: 36px auto;
+}
+.ad-inline-box { text-align: center; }
+.ad-slot-label {
+    font-family: 'Roboto Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: #666;
+    margin-bottom: 8px;
+}
+.ad-inline iframe { max-width: 100%; }
+
+/* ---- Native banner (blends into article flow) ---- */
+.ad-native {
+    margin: 36px 0;
+    min-height: 90px;
+}
+
+/* ---- Footer banner (above the copyright bar) ---- */
+.ad-footer-banner {
+    display: flex;
+    justify-content: center;
+    margin: 32px auto 8px;
+}
+.ad-footer-banner iframe { max-width: 100%; }
+
+/* ---- Responsive guardrails ---- */
+@media (max-width: 1359px) {
+    .ad-sidebar { display: none !important; }
+}
