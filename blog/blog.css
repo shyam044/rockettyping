@@ -661,7 +661,7 @@ footer a:hover { opacity: 0.8; }
 /* ---- Fixed left/right skyscraper slots (roomy desktop only) ---- */
 .ad-sidebar {
     position: fixed;
-    top: 210px;
+    top: 115px;
     width: 160px;
     z-index: 40;
     display: none;
