@@ -64,6 +64,7 @@
     }
     </script>
     <link rel="stylesheet" href="blog.css">
+    <script src="ads.js" defer></script>
     <style>
         :root {
             --accent:      #4ecdc4;
@@ -270,11 +271,14 @@
 <body>
     <header>
         <a href="/"><img src="/images/logo.png" alt="Rocket Typing Logo" ></a>
+        <div class="ad-header-slot" id="ad-top" aria-label="Advertisement"></div>
         <nav>
             <a href="/blog/">← Blog</a>
             <a href="/">Typing Test</a>
         </nav>
     </header>
+    <div class="ad-sidebar ad-sidebar-left" id="ad-sidebar-left" aria-label="Advertisement"></div>
+    <div class="ad-sidebar ad-sidebar-right" id="ad-sidebar-right" aria-label="Advertisement"></div>
 
     <div class="article-wrap">
         <div class="breadcrumb">
@@ -299,7 +303,7 @@
         <p>The average hunt-and-peck typist (looking at the keyboard and using 2–4 fingers) maxes out at around 40 WPM. The average touch typist reaches 60–80 WPM with ease, and expert touch typists regularly hit 100+ WPM. The difference is entirely in the method.</p>
 
        <figure class="img-figure">
-           <img src="images/touch-typing-home-row-finger-placement-beginners.webp"
+           <img src="images/touch-typing-guide-images/touch-typing-home-row-finger-placement-beginners.webp"
                 alt="Touch typing home row finger placement guide for beginners keyboard layout"
                 width="960" height="1280" loading="eager" fetchpriority="high" class="zoomable">
            <figcaption>Home row finger placement — where every finger rests before it moves</figcaption>
@@ -312,7 +316,7 @@
         <p>Notice the small raised bump on the F and J keys. These bumps exist specifically for touch typists — they let you feel when your index fingers are correctly positioned without looking. When you sit down to type, find these bumps with your index fingers and place all eight fingers on the home row.</p>
 
         <figure class="img-figure">
-            <img src="images/touch-typing-finger-color-map-home-row.webp"
+            <img src="images/touch-typing-guide-images/touch-typing-finger-color-map-home-row.webp"
                  alt="Home row keyboard finger color map showing which fingers should press A, S, D, F, G, H, J, K, L, and ; keys."
                  width="895" height="252" loading="lazy" class="zoomable">
             <figcaption>Finger colour map — match each key to the finger responsible for it</figcaption>
@@ -338,6 +342,13 @@
         </table>
         </div>
 
+        <div class="ad-inline">
+            <div class="ad-inline-box">
+                <p class="ad-slot-label">Advertisement</p>
+                <div data-ad="rectangle" style="width:300px;max-width:100%;min-height:250px;"></div>
+            </div>
+        </div>
+
         <h2>📋 Step-by-Step Learning Plan</h2>
 
         <div class="step-box">
@@ -347,13 +358,13 @@
                 <p>Spend the entire first week typing only home row keys: A S D F G H J K L ;. This feels slow and boring, but it is the critical foundation. Type simple words using only these letters — like "fall", "glad", "flask", "flesh". Do not move on until home row feels natural and automatic.</p>
             <div class="img-row">
                 <figure class="img-figure">
-                    <img src="images/touch-typing-left-hand-home-row-finger-placement.webp"
+                    <img src="images/touch-typing-guide-images/touch-typing-left-hand-home-row-finger-placement.webp"
                          alt="Left hand finger placement on the home row showing the correct position for A, S, D, and F keys in touch typing."
                          width="900" height="2451" loading="lazy" class="zoomable">
                     <figcaption>Left hand — A, S, D, F</figcaption>
                 </figure>
                 <figure class="img-figure">
-                    <img src="images/touch-typing-right-hand-home-row-finger-placement.webp"
+                    <img src="images/touch-typing-guide-images/touch-typing-right-hand-home-row-finger-placement.webp"
                          alt="Right hand finger placement on the home row showing the correct position for J, K, L, and semicolon keys in touch typing."
                          width="786" height="2252" loading="lazy" class="zoomable">
                     <figcaption>Right hand — J, K, L, ;</figcaption>
@@ -370,7 +381,7 @@
            
    <!-- Week 2: Top Row (QWERTY) -->
 <figure class="img-figure">
-    <img src="images/top-row-qwerty-keyboard.webp" alt="Top row keyboard keys QWERTYUIOP" width="1400" height="173" loading="lazy" class="zoomable">
+    <img src="images/touch-typing-guide-images/top-row-qwerty-keyboard.webp" alt="Top row keyboard keys QWERTYUIOP" width="1400" height="173" loading="lazy" class="zoomable">
     <figcaption>Top row — Q W E R T Y U I O P</figcaption>
 </figure>
             </div>
@@ -383,7 +394,7 @@
                 <p>Add the bottom row: Z X C V B N M and punctuation. Reaching down is harder for most people — especially the pinky for Z. Practice deliberate downward reaches and immediately return to home row. By end of week 3, you should be able to type any word on the keyboard.</p>
         <!-- Week 3: Bottom Row (ZXCVBNM) -->
 <figure class="img-figure">
-    <img src="images/bottom-row-zxcvbnm-keyboard.webp" alt="Bottom row keyboard keys ZXCVBNM" width="1400" height="267" loading="lazy" class="zoomable">
+    <img src="images/touch-typing-guide-images/bottom-row-zxcvbnm-keyboard.webp" alt="Bottom row keyboard keys ZXCVBNM" width="1400" height="267" loading="lazy" class="zoomable">
     <figcaption>Bottom row — Z X C V B N M</figcaption>
 </figure>
 
@@ -398,7 +409,7 @@
            
 <!-- Week 4: Numbers and Punctuation -->
 <figure class="img-figure">
-    <img src="images/number-row-keyboard.webp" alt="Keyboard number row with punctuation keys" width="1400" height="173" loading="lazy" class="zoomable">
+    <img src="images/touch-typing-guide-images/number-row-keyboard.webp" alt="Keyboard number row with punctuation keys" width="1400" height="173" loading="lazy" class="zoomable">
     <figcaption>Number row — 1 2 3 4 5 6 7 8 9 0</figcaption>
 </figure>
             </div>
@@ -428,6 +439,8 @@
             <li><strong>Don't:</strong> Compare your speed to others during the learning phase</li>
         </ul>
 
+        <div class="ad-native" data-ad="native" aria-label="Advertisement"></div>
+
         <h2>⏱ How Long Does Touch Typing Take to Learn?</h2>
         <p>Most dedicated beginners reach basic touch typing competence (all keys, no looking) within 4–6 weeks. Reaching the same speed as your old hunt-and-peck style typically takes 2–3 months. After 6 months of regular practice, most touch typists are significantly faster than they ever were before.</p>
         <p>The key variable is consistency. Practicing 15 minutes every day beats 2 hours on Sundays every time. Muscle memory is built through frequency, not volume.</p>
@@ -452,7 +465,14 @@
             <p>Apply what you just learned. Take a free typing test on Rocket Typing — use Easy mode to focus on accuracy, and keep your eyes on the screen instead of the keyboard.</p>
             <a href="/" class="cta-btn">Open Typing Test →</a>
         </div>
- 
+
+        <div class="ad-footer-banner">
+            <div class="ad-inline-box">
+                <p class="ad-slot-label">Advertisement</p>
+                <div data-ad="footer-banner" style="width:468px;max-width:100%;min-height:60px;"></div>
+            </div>
+        </div>
+
     </div>
 
     <footer>
