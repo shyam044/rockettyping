@@ -2019,7 +2019,7 @@ window.deleteUser = deleteUser;
                 ? `<img src="${savedAvatar}" style="width:30px;height:30px;border-radius:50%;object-fit:cover;border:2px solid #e2b714;margin-right:6px;vertical-align:middle;">`
                 : `<span style="display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,#e2b714,#ff9900);color:#0a0a23;font-size:13px;font-weight:900;margin-right:6px;vertical-align:middle;">${_safeInitial}</span>`;
             if (headerAuthBtn) headerAuthBtn.innerHTML =
-                `<span onclick="openProfileModal()" style="cursor:pointer;display:inline-flex;align-items:center;gap:4px;color:#e2b714;font-size:13px;padding:4px 8px;border-radius:20px;border:1px solid rgba(226,183,20,0.3);transition:all .2s;"
+                `<span onclick="window.location.href='/profile'" style="cursor:pointer;display:inline-flex;align-items:center;gap:4px;color:#e2b714;font-size:13px;padding:4px 8px;border-radius:20px;border:1px solid rgba(226,183,20,0.3);transition:all .2s;"
                   onmouseover="this.style.background='rgba(226,183,20,0.1)'"
                   onmouseout="this.style.background='none'"
                   title="View Profile">${avatarHtml}${sanitizeStr(username)}</span>
@@ -2083,7 +2083,12 @@ window.deleteUser = deleteUser;
         }
     </script>
     <script>
+        window._originalPageTitle = window._originalPageTitle || document.title;
         async function openLeaderboardModal() {
+            if (window.location.pathname !== '/leaderboard') {
+                window.history.pushState({ modal: 'leaderboard' }, '', '/leaderboard');
+            }
+            document.title = 'Leaderboard | Rocket Typing';
             await ensureLeaderboardModalLoaded();
             document.getElementById('leaderboardModal').classList.add('active');
 
@@ -2121,8 +2126,14 @@ window.deleteUser = deleteUser;
         }
         function closeLeaderboardModal() {
             document.getElementById('leaderboardModal').classList.remove('active');
+            if (window.location.pathname === '/leaderboard') {
+                window.history.pushState({}, '', '/');
+                document.title = window._originalPageTitle || document.title;
+            }
         }
-        document.getElementById("leaderboard-btn").addEventListener("click", openLeaderboardModal);
+        document.getElementById("leaderboard-btn").addEventListener("click", function() {
+            window.location.href = '/leaderboard';
+        });
     </script>
     <!-- Quotes database — loaded here (after all visible markup) instead of
          <head>, so it no longer blocks the initial paint. Still synchronous
@@ -5024,7 +5035,18 @@ function sanitizeStr(s) {
 
 window.openProfileModal = async function() {
     const user = window._currentUser;
-    if (!user) { openAuthModal('login'); return; }
+    if (!user) {
+        openAuthModal('login');
+        if (window.location.pathname === '/profile') {
+            window.history.replaceState({}, '', '/');
+        }
+        return;
+    }
+
+    if (window.location.pathname !== '/profile') {
+        window.history.pushState({ modal: 'profile' }, '', '/profile');
+    }
+    document.title = 'Profile | Rocket Typing';
 
     await ensureProfileModalLoaded();
 
@@ -5890,6 +5912,10 @@ window.closeProfileModal = function() {
     const modal = document.getElementById('profileModal');
     modal.classList.remove('open');
     document.body.style.overflow = '';
+    if (window.location.pathname === '/profile') {
+        window.history.pushState({}, '', '/');
+        document.title = window._originalPageTitle || document.title;
+    }
     if (document._pmEscHandler) {
         document.removeEventListener('keydown', document._pmEscHandler);
         document._pmEscHandler = null;
@@ -5993,6 +6019,10 @@ function openRegisterModal() { openAuthModal('signup'); }
         }, { once: true });
     }
 })();
+// NOTE: /leaderboard and /profile are now real standalone pages
+// (leaderboard.html / profile.html), reached via vercel.json rewrites —
+// see the LEADERBOARD button and profile-avatar link below, which now
+// navigate there directly instead of opening an in-page modal.
 </script>
 <script>
 /* ── COUNTRY DROPDOWN (index.html) ── */
