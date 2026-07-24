@@ -57,6 +57,16 @@
       "source": "/learn.html",
       "destination": "/learn",
       "permanent": true
+    },
+    {
+      "source": "/leaderboard.html",
+      "destination": "/leaderboard",
+      "permanent": true
+    },
+    {
+      "source": "/profile.html",
+      "destination": "/profile",
+      "permanent": true
     }
   ],
 
@@ -97,6 +107,14 @@
     {
       "source": "/learn",
       "destination": "/learn.html"
+    },
+    {
+      "source": "/leaderboard",
+      "destination": "/leaderboard.html"
+    },
+    {
+      "source": "/profile",
+      "destination": "/profile.html"
     }
   ],
 
@@ -120,7 +138,7 @@
       ]
     },
     {
-      "source": "/(test|game|about|privacy|blog|terms|contact|learn)",
+      "source": "/(test|game|about|privacy|blog|terms|contact|learn|leaderboard|profile)",
       "headers": [
         { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate, stale-while-revalidate=86400" }
       ]
@@ -138,7 +156,7 @@
       ]
     },
     {
-     "source": "/images/(.*)",
+      "source": "/images/(.*)",
       "headers": [
         { "key": "Cache-Control", "value": "public, max-age=2592000, stale-while-revalidate=86400" }
       ]
