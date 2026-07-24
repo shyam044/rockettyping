@@ -1,3 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile | Rocket Typing</title>
+    <meta name="description" content="View your Rocket Typing profile — best WPM, accuracy, Musk Score, Elon Score, and recent test history.">
+    <meta name="robots" content="noindex, follow">
+    <link rel="canonical" href="https://www.rockettyping.com/profile">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="My Profile | Rocket Typing">
+    <meta property="og:description" content="Your typing stats, rank badge, and recent test history on Rocket Typing.">
+    <meta property="og:url" content="https://www.rockettyping.com/profile">
+    <meta property="og:site_name" content="Rocket Typing">
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16.png">
+    <link rel="apple-touch-icon" href="/images/logo-192.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <meta name="theme-color" content="#323437">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="dns-prefetch" href="https://firestore.googleapis.com">
+    <link rel="dns-prefetch" href="https://www.gstatic.com">
+    <link rel="dns-prefetch" href="https://identitytoolkit.googleapis.com">
+    <link rel="preload" as="image" href="/images/logo.png" fetchpriority="high">
+    <link rel="preload" href="styles.css" as="style">
+    <link rel="preload" href="responsive.css" as="style">
+    <style>
+        html{background:#0a0a23}
+        body{background:#0a0a23;margin:0;font-family:'Roboto Mono',monospace;color:#ffd700;overflow-x:hidden;overflow-y:auto;}
+    </style>
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=optional" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=optional" rel="stylesheet"></noscript>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="responsive.css">
+    <style>
+
+/* ── Standalone page overrides: this is no longer a fixed-overlay
+   modal, it IS the page, so neutralize the overlay chrome and give
+   it sensible page margins instead. ── */
+#profileModal {
+    position: static !important;
+    inset: auto !important;
+    background: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    display: flex !important;
+    z-index: auto !important;
+    padding: 0 !important;
+    overflow: visible !important;
+}
+#profileModalBox {
+    width: 100% !important;
+    max-width: 720px !important;
+    max-height: none !important;
+    margin: 140px auto 60px !important;
+    border-radius: 20px !important;
+}
+#pm-scroll-body {
+    overflow: visible !important;
+    max-height: none !important;
+    padding-top: 24px !important;
+}
+@media (max-width: 600px) {
+    #profileModalBox { margin: 110px auto 40px !important; border-radius: 12px !important; }
+}
+    </style>
+</head>
+<body>
+    <div id="app">
+    <header id="main-header"
+        style="position:relative; max-width:1100px; margin:0 auto; padding:20px; display:flex; align-items:flex-start; justify-content:space-between; z-index:10;">
+        <a href="/" style="cursor:pointer; display:flex; flex-direction:column; align-items:flex-start; text-decoration:none;">
+            <img src="images/logo.png" alt="Rocket Typing" width="120" height="120" style="width:120px; margin-bottom:5px;" fetchpriority="high" loading="eager" decoding="sync" />
+            <div id="play-game">
+                <button onclick="window.location.href='/game'" class="play-game-btn">GAME</button>
+                <button onclick="window.location.href='/coding.html'" class="learn-type-btn">CODE</button>
+                <button onclick="window.location.href='/learn'" class="learn-type-btn">LEARN</button>
+            </div>
+        </a>
+        <div id="header-right-group" style="display:flex;align-items:center;gap:8px;z-index:35;position:relative;top:6px;">
+            <div id="header-auth-btn" style="display:flex;align-items:center;"></div>
+        </div>
+    </header>
 <style>
 
 /* ── Profile Modal Overlay ── */
@@ -772,3 +857,1806 @@
     </div><!-- end pm-scroll-body -->
   </div>
 </div>
+    <div id="authModal" role="dialog" aria-modal="true" aria-label="Sign in or create account"
+         style="position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.88);
+                backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+                align-items:center;justify-content:center;z-index:1100;display:none;
+                padding:20px;box-sizing:border-box;">
+      <div id="authModalBox" style="
+            background:linear-gradient(145deg,#12122a,#1a1a35);
+            border:1px solid rgba(226,183,20,0.25);
+            border-radius:20px;
+            padding:36px 32px 28px;
+            width:100%;max-width:420px;
+            position:relative;
+            box-shadow:0 25px 80px rgba(0,0,0,0.7),0 0 0 1px rgba(255,255,255,0.04),inset 0 1px 0 rgba(255,255,255,0.07);
+            animation:rtAuthSlideIn .28s cubic-bezier(.22,1,.36,1);
+            box-sizing:border-box;">
+
+        <!-- Close button -->
+        <button onclick="closeAuthModal()" aria-label="Close"
+                style="position:absolute;top:14px;right:16px;background:none;border:none;
+                       color:#646669;font-size:22px;cursor:pointer;line-height:1;
+                       transition:color .15s;padding:4px 8px;border-radius:4px;"
+                onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#646669'">×</button>
+
+        <!-- Logo -->
+        <div style="text-align:center;margin-bottom:20px;">
+          <span style="font-size:28px;">🚀</span>
+          <div style="font-family:'Roboto Mono',monospace;font-size:13px;
+                      color:#646669;letter-spacing:2px;margin-top:4px;">ROCKET TYPING</div>
+        </div>
+
+        <!-- Tab switcher -->
+        <div style="display:flex;gap:0;margin-bottom:24px;
+                    border-bottom:1px solid rgba(255,255,255,0.08);">
+          <button id="tab-login" onclick="switchAuthTab('login')"
+                  style="flex:1;background:none;border:none;border-bottom:2px solid #e2b714;
+                         color:#e2b714;padding:10px;cursor:pointer;
+                         font-family:'Roboto Mono',monospace;font-size:13px;font-weight:900;
+                         letter-spacing:1px;transition:all .2s;margin-bottom:-1px;">LOGIN</button>
+          <button id="tab-signup" onclick="switchAuthTab('signup')"
+                  style="flex:1;background:none;border:none;border-bottom:2px solid transparent;
+                         color:#646669;padding:10px;cursor:pointer;
+                         font-family:'Roboto Mono',monospace;font-size:13px;font-weight:900;
+                         letter-spacing:1px;transition:all .2s;margin-bottom:-1px;">SIGN UP</button>
+        </div>
+
+        <!-- ── SOCIAL LOGIN BUTTONS (shared, shown on both tabs) ── -->
+        <div id="auth-social-btns" style="display:flex;flex-direction:column;gap:10px;margin-bottom:18px;">
+          <button id="btn-google" onclick="doSocialLogin('google')"
+                  style="display:flex;align-items:center;justify-content:center;gap:10px;
+                         width:100%;padding:11px;border:1px solid rgba(255,255,255,0.15);
+                         border-radius:10px;background:rgba(255,255,255,0.04);color:#e8e8e8;
+                         cursor:pointer;font-family:'Roboto Mono',monospace;font-size:13px;
+                         font-weight:700;letter-spacing:.5px;transition:all .2s;"
+                  onmouseover="this.style.background='rgba(255,255,255,0.09)';this.style.borderColor='rgba(255,255,255,0.3)'"
+                  onmouseout="this.style.background='rgba(255,255,255,0.04)';this.style.borderColor='rgba(255,255,255,0.15)'">
+            <svg width="18" height="18" viewBox="0 0 18 18"><path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.874 2.684-6.615z" fill="#4285F4"/><path d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z" fill="#34A853"/><path d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z" fill="#FBBC05"/><path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z" fill="#EA4335"/></svg>
+            Continue with Google
+          </button>
+          <button id="btn-github" onclick="doSocialLogin('github')"
+                  style="display:flex;align-items:center;justify-content:center;gap:10px;
+                         width:100%;padding:11px;border:1px solid rgba(255,255,255,0.15);
+                         border-radius:10px;background:rgba(255,255,255,0.04);color:#e8e8e8;
+                         cursor:pointer;font-family:'Roboto Mono',monospace;font-size:13px;
+                         font-weight:700;letter-spacing:.5px;transition:all .2s;"
+                  onmouseover="this.style.background='rgba(255,255,255,0.09)';this.style.borderColor='rgba(255,255,255,0.3)'"
+                  onmouseout="this.style.background='rgba(255,255,255,0.04)';this.style.borderColor='rgba(255,255,255,0.15)'">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="#e8e8e8"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+            Continue with GitHub
+          </button>
+        </div>
+
+        <!-- Divider -->
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:18px;">
+          <div style="flex:1;height:1px;background:rgba(255,255,255,0.1);"></div>
+          <span style="color:#646669;font-size:11px;font-family:'Roboto Mono',monospace;
+                       letter-spacing:1px;">OR</span>
+          <div style="flex:1;height:1px;background:rgba(255,255,255,0.1);"></div>
+        </div>
+
+        <!-- ── LOGIN FORM ── -->
+        <div id="form-login">
+          <!-- Email -->
+          <div style="position:relative;margin-bottom:12px;">
+            <label for="auth-login-email" class="sr-only">Email address</label>
+            <input id="auth-login-email" type="email" placeholder="Email address"
+                   autocomplete="email" autocapitalize="off"
+                   style="width:100%;padding:13px 15px;font-size:14px;
+                          background:rgba(255,255,255,0.05);border:1.5px solid rgba(226,183,20,0.25);
+                          border-radius:10px;color:#fff;font-family:'Roboto Mono',monospace;
+                          outline:none;transition:border-color .2s;box-sizing:border-box;"
+                   onfocus="this.style.borderColor='rgba(226,183,20,0.7)'"
+                   onblur="this.style.borderColor='rgba(226,183,20,0.25)'">
+          </div>
+
+          <!-- Password with show/hide -->
+          <div style="position:relative;margin-bottom:8px;">
+            <label for="auth-login-password" class="sr-only">Password</label>
+            <input id="auth-login-password" type="password" placeholder="Password"
+                   autocomplete="current-password"
+                   style="width:100%;padding:13px 44px 13px 15px;font-size:14px;
+                          background:rgba(255,255,255,0.05);border:1.5px solid rgba(226,183,20,0.25);
+                          border-radius:10px;color:#fff;font-family:'Roboto Mono',monospace;
+                          outline:none;transition:border-color .2s;box-sizing:border-box;"
+                   onfocus="this.style.borderColor='rgba(226,183,20,0.7)'"
+                   onblur="this.style.borderColor='rgba(226,183,20,0.25)'"
+                   onkeydown="if(event.key==='Enter')doLogin()">
+            <button type="button" onclick="togglePw('auth-login-password',this)"
+                    tabindex="-1" aria-label="Show/hide password"
+                    style="position:absolute;right:12px;top:50%;transform:translateY(-50%);
+                           background:none;border:none;color:#646669;cursor:pointer;
+                           font-size:15px;padding:2px;line-height:1;">👁</button>
+          </div>
+
+          <!-- Forgot password link -->
+          <div style="text-align:right;margin-bottom:12px;">
+            <button onclick="showForgotPassword()" type="button"
+                    style="background:none;border:none;color:#e2b714;font-size:12px;
+                           font-family:'Roboto Mono',monospace;cursor:pointer;
+                           text-decoration:underline;opacity:.8;padding:0;"
+                    onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='.8'">
+              Forgot password?
+            </button>
+          </div>
+
+          <div id="auth-login-error"
+               style="color:#ff6b6b;font-size:12px;margin-bottom:10px;min-height:18px;
+                      font-family:'Roboto Mono',monospace;"></div>
+
+          <button id="btn-login" onclick="doLogin()"
+                  style="background:linear-gradient(135deg,#e2b714,#ff9900);color:#0a0a23;
+                         width:100%;padding:13px;font-weight:900;
+                         font-family:'Roboto Mono',monospace;font-size:14px;border:none;
+                         border-radius:10px;cursor:pointer;letter-spacing:1px;
+                         transition:all .2s;position:relative;overflow:hidden;"
+                  onmouseover="if(!this.disabled)this.style.filter='brightness(1.1)'"
+                  onmouseout="this.style.filter='none'">
+            <span id="btn-login-text">LOGIN →</span>
+          </button>
+
+          <p style="text-align:center;margin-top:16px;font-size:12px;color:#646669;
+                    font-family:'Roboto Mono',monospace;">
+            No account?
+            <button onclick="switchAuthTab('signup')" type="button"
+                    style="background:none;border:none;color:#e2b714;cursor:pointer;
+                           font-family:'Roboto Mono',monospace;font-size:12px;
+                           text-decoration:underline;padding:0;">Sign up free</button>
+          </p>
+        </div>
+
+        <!-- ── SIGNUP FORM ── -->
+        <div id="form-signup" style="display:none;">
+          <!-- Username -->
+          <div style="position:relative;margin-bottom:4px;">
+            <label for="auth-signup-username" class="sr-only">Username (3–15 characters, letters, numbers, underscore)</label>
+            <input id="auth-signup-username" type="text" maxlength="15"
+                   placeholder="Username (3–15 chars, letters/numbers/_)"
+                   autocomplete="username" autocapitalize="off" autocorrect="off"
+                   style="width:100%;padding:13px 40px 13px 15px;font-size:14px;
+                          background:rgba(255,255,255,0.05);border:1.5px solid rgba(226,183,20,0.25);
+                          border-radius:10px;color:#fff;font-family:'Roboto Mono',monospace;
+                          outline:none;transition:border-color .2s;box-sizing:border-box;"
+                   onfocus="this.style.borderColor='rgba(226,183,20,0.7)'"
+                   onblur="this.style.borderColor='rgba(226,183,20,0.25)'"
+                   oninput="validateUsernameField(this)">
+            <span id="signup-username-icon"
+                  style="position:absolute;right:12px;top:50%;transform:translateY(-50%);
+                         font-size:14px;pointer-events:none;"></span>
+          </div>
+          <div id="signup-username-hint"
+               style="font-size:11px;color:#646669;font-family:'Roboto Mono',monospace;
+                      margin-bottom:10px;min-height:15px;padding-left:4px;"></div>
+
+          <!-- Country picker (keep existing) -->
+          <div class="idx-country-wrap" id="idx-country-wrap"
+               style="position:relative;width:100%;margin-bottom:12px;">
+            <div id="idx-country-display" onclick="toggleCountryDrop('idx')"
+                 style="width:100%;padding:13px 15px;font-size:14px;
+                        background:rgba(255,255,255,0.05);border:1.5px solid rgba(226,183,20,0.25);
+                        border-radius:10px;color:#fff;font-family:'Roboto Mono',monospace;
+                        cursor:pointer;display:flex;justify-content:space-between;align-items:center;
+                        box-sizing:border-box;user-select:none;transition:border-color .2s;">
+              <span id="idx-country-text" style="color:#646669;">Your country</span>
+              <span style="color:#e2b714;font-size:10px;flex-shrink:0;margin-left:8px;">▼</span>
+            </div>
+            <div id="idx-country-drop"
+                 style="display:none;position:absolute;z-index:9999;top:calc(100% + 4px);
+                        left:0;right:0;background:#1a1a2e;
+                        border:1.5px solid rgba(226,183,20,0.4);border-radius:10px;
+                        overflow:hidden;box-shadow:0 12px 40px rgba(0,0,0,0.8);">
+              <div style="padding:8px;border-bottom:1px solid rgba(255,255,255,0.08);">
+                <label for="idx-country-search" class="sr-only">Search country</label>
+                <input id="idx-country-search" placeholder="Search country…"
+                       oninput="filterCountries('idx')"
+                       style="width:100%;padding:8px 10px;font-size:13px;
+                              font-family:'Roboto Mono',monospace;
+                              background:rgba(255,255,255,0.06);
+                              border:1px solid rgba(226,183,20,0.2);border-radius:6px;
+                              color:#fff;outline:none;box-sizing:border-box;">
+              </div>
+              <div id="idx-country-list" style="max-height:200px;overflow-y:auto;"></div>
+            </div>
+          </div>
+          <input type="hidden" id="auth-signup-country">
+
+          <!-- Email -->
+          <div style="position:relative;margin-bottom:12px;">
+            <label for="auth-signup-email" class="sr-only">Email address</label>
+            <input id="auth-signup-email" type="email" placeholder="Email address"
+                   autocomplete="email" autocapitalize="off"
+                   style="width:100%;padding:13px 15px;font-size:14px;
+                          background:rgba(255,255,255,0.05);border:1.5px solid rgba(226,183,20,0.25);
+                          border-radius:10px;color:#fff;font-family:'Roboto Mono',monospace;
+                          outline:none;transition:border-color .2s;box-sizing:border-box;"
+                   onfocus="this.style.borderColor='rgba(226,183,20,0.7)'"
+                   onblur="this.style.borderColor='rgba(226,183,20,0.25)'">
+          </div>
+
+          <!-- Password with strength meter -->
+          <div style="position:relative;margin-bottom:6px;">
+            <label for="auth-signup-password" class="sr-only">Password (minimum 8 characters)</label>
+            <input id="auth-signup-password" type="password"
+                   placeholder="Password (min 8 characters)"
+                   autocomplete="new-password"
+                   style="width:100%;padding:13px 44px 13px 15px;font-size:14px;
+                          background:rgba(255,255,255,0.05);border:1.5px solid rgba(226,183,20,0.25);
+                          border-radius:10px;color:#fff;font-family:'Roboto Mono',monospace;
+                          outline:none;transition:border-color .2s;box-sizing:border-box;"
+                   onfocus="this.style.borderColor='rgba(226,183,20,0.7)'"
+                   onblur="this.style.borderColor='rgba(226,183,20,0.25)'"
+                   oninput="updatePwStrength(this.value)"
+                   onkeydown="if(event.key==='Enter')doSignup()">
+            <button type="button" onclick="togglePw('auth-signup-password',this)"
+                    tabindex="-1" aria-label="Show/hide password"
+                    style="position:absolute;right:12px;top:50%;transform:translateY(-50%);
+                           background:none;border:none;color:#646669;cursor:pointer;
+                           font-size:15px;padding:2px;line-height:1;">👁</button>
+          </div>
+          <!-- Password strength bar -->
+          <div id="pw-strength-bar-wrap"
+               style="height:4px;border-radius:4px;background:rgba(255,255,255,0.08);
+                      margin-bottom:6px;overflow:hidden;">
+            <div id="pw-strength-bar"
+                 style="height:100%;width:0%;border-radius:4px;
+                        transition:width .3s,background .3s;background:#e2b714;"></div>
+          </div>
+          <div id="pw-strength-label"
+               style="font-size:11px;color:#646669;font-family:'Roboto Mono',monospace;
+                      margin-bottom:10px;min-height:15px;padding-left:4px;"></div>
+
+          <div id="auth-signup-error"
+               style="color:#ff6b6b;font-size:12px;margin-bottom:10px;min-height:18px;
+                      font-family:'Roboto Mono',monospace;"></div>
+
+          <button id="btn-signup" onclick="doSignup()"
+                  style="background:linear-gradient(135deg,#e2b714,#ff9900);color:#0a0a23;
+                         width:100%;padding:13px;font-weight:900;
+                         font-family:'Roboto Mono',monospace;font-size:14px;border:none;
+                         border-radius:10px;cursor:pointer;letter-spacing:1px;
+                         transition:all .2s;position:relative;"
+                  onmouseover="if(!this.disabled)this.style.filter='brightness(1.1)'"
+                  onmouseout="this.style.filter='none'">
+            <span id="btn-signup-text">CREATE ACCOUNT →</span>
+          </button>
+
+          <p style="text-align:center;margin-top:16px;font-size:11px;color:#444;
+                    font-family:'Roboto Mono',monospace;line-height:1.5;">
+            By signing up you agree to our
+            <a href="/privacy" target="_blank"
+               style="color:#646669;text-decoration:underline;">Privacy Policy</a>
+          </p>
+          <p style="text-align:center;margin-top:8px;font-size:12px;color:#646669;
+                    font-family:'Roboto Mono',monospace;">
+            Have an account?
+            <button onclick="switchAuthTab('login')" type="button"
+                    style="background:none;border:none;color:#e2b714;cursor:pointer;
+                           font-family:'Roboto Mono',monospace;font-size:12px;
+                           text-decoration:underline;padding:0;">Log in</button>
+          </p>
+        </div>
+
+        <!-- ── FORGOT PASSWORD PANEL ── -->
+        <div id="form-forgot" style="display:none;">
+          <div style="text-align:center;margin-bottom:18px;">
+            <div style="font-size:28px;margin-bottom:8px;">🔑</div>
+            <h3 style="margin:0;color:#e2b714;font-family:'Roboto Mono',monospace;
+                       font-size:16px;letter-spacing:1px;">Reset Password</h3>
+            <p style="color:#646669;font-size:12px;font-family:'Roboto Mono',monospace;
+                      margin:8px 0 0;">
+              Enter your email and we'll send a reset link
+            </p>
+          </div>
+          <label for="auth-forgot-email" class="sr-only">Your email address for password reset</label>
+          <input id="auth-forgot-email" type="email" placeholder="Your email address"
+                 autocomplete="email"
+                 style="width:100%;padding:13px 15px;font-size:14px;
+                        background:rgba(255,255,255,0.05);border:1.5px solid rgba(226,183,20,0.25);
+                        border-radius:10px;color:#fff;font-family:'Roboto Mono',monospace;
+                        outline:none;transition:border-color .2s;box-sizing:border-box;
+                        margin-bottom:12px;"
+                 onfocus="this.style.borderColor='rgba(226,183,20,0.7)'"
+                 onblur="this.style.borderColor='rgba(226,183,20,0.25)'"
+                 onkeydown="if(event.key==='Enter')doForgotPassword()">
+          <div id="auth-forgot-msg"
+               style="font-size:12px;margin-bottom:10px;min-height:18px;
+                      font-family:'Roboto Mono',monospace;"></div>
+          <button id="btn-forgot" onclick="doForgotPassword()"
+                  style="background:linear-gradient(135deg,#e2b714,#ff9900);color:#0a0a23;
+                         width:100%;padding:13px;font-weight:900;
+                         font-family:'Roboto Mono',monospace;font-size:14px;border:none;
+                         border-radius:10px;cursor:pointer;letter-spacing:1px;transition:all .2s;">
+            SEND RESET LINK
+          </button>
+          <button onclick="switchAuthTab('login')" type="button"
+                  style="display:block;margin:14px auto 0;background:none;border:none;
+                         color:#646669;font-size:12px;font-family:'Roboto Mono',monospace;
+                         cursor:pointer;text-decoration:underline;">← Back to login</button>
+        </div>
+
+      </div><!-- /authModalBox -->
+    </div>
+    </div>
+    <footer id="footer">
+        <p style="margin: 0;">
+            <a href="/about.html">About</a> |
+            <a href="/privacy.html">Privacy Policy</a> |
+            <a href="/blog/">Blog</a> |
+            <a href="/terms.html">Terms of Service</a> |
+            <a href="contact.html">Contact</a>
+        </p>
+    </footer>
+<script>
+        let _fbLoading = false, _fbLoaded = false;
+        let app, db, auth, initializeApp, initializeAppCheck, ReCaptchaEnterpriseProvider,
+            getFirestore, collection, addDoc, query, orderBy, limit, getDocs, doc, getDoc, setDoc, where,
+            getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged,
+            GoogleAuthProvider, GithubAuthProvider, signInWithPopup, sendPasswordResetEmail,
+            sendEmailVerification, updateProfile, deleteUser;
+    async function _initFirebase() {
+        if (_fbLoading || _fbLoaded) return;
+        _fbLoading = true;
+
+    [
+        { initializeApp },
+        { initializeAppCheck, ReCaptchaEnterpriseProvider },
+        { getFirestore, collection, addDoc, query, orderBy, limit, getDocs, doc, getDoc, setDoc, where },
+        { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, GoogleAuthProvider, GithubAuthProvider, signInWithPopup, sendPasswordResetEmail, sendEmailVerification, updateProfile, deleteUser }
+    ] = await Promise.all([
+        import("https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"),
+        import("https://www.gstatic.com/firebasejs/10.12.2/firebase-app-check.js"),
+        import("https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js"),
+        import("https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js")
+    ]);
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyDFlSFyLG8RtOshIRI3XJ-d2Ws4R6bCqjE",
+        authDomain: "typing-usernames.firebaseapp.com",
+        projectId: "typing-usernames",
+        storageBucket: "typing-usernames.firebasestorage.app",
+        messagingSenderId: "978036744790",
+        appId: "1:978036744790:web:1c66d79a27f19a7493d1f7",
+        measurementId: "G-GEH3BRFRST"
+    };
+
+    app  = initializeApp(firebaseConfig);
+
+    // ── App Check: blocks requests that don't come from a real browser
+    //    running this actual site (bots, curl, scripts with a stolen key) ──
+    initializeAppCheck(app, {
+        provider: new ReCaptchaEnterpriseProvider('6Lc-VFQtAAAAAKXHBKgK-v4XgeBU8HcZQMvZr9y6'),
+        isTokenAutoRefreshEnabled: true
+    });
+
+    db   = getFirestore(app);
+    auth = getAuth(app);
+
+    // Expose to global scope (same as before, plus auth)
+    window.doc = doc; window.getDoc = getDoc; window.setDoc = setDoc;
+    window.db = db; window.auth = auth;
+    window.collection = collection; window.addDoc = addDoc;
+    window.query = query; window.orderBy = orderBy;
+window.limit = limit; window.getDocs = getDocs; window.where = where;
+window.signOut = signOut;
+window.signInWithEmailAndPassword = signInWithEmailAndPassword;
+window.createUserWithEmailAndPassword = createUserWithEmailAndPassword;
+window.GoogleAuthProvider = GoogleAuthProvider;
+window.GithubAuthProvider = GithubAuthProvider;
+window.signInWithPopup = signInWithPopup;
+window.sendPasswordResetEmail = sendPasswordResetEmail;
+window.sendEmailVerification = sendEmailVerification;
+window.deleteUser = deleteUser;
+
+    // Auth state listener — runs on every page load
+    onAuthStateChanged(auth, async (user) => {
+        if (user) {
+            // Fetch username from Firestore using uid
+            const userDoc = await getDoc(doc(db, "users", user.uid));
+            if (userDoc.exists()) {
+                const username = userDoc.data().name;
+                const uCountry = userDoc.data().country||'';
+                window._currentUser = { uid: user.uid, email: user.email, name: username, country: uCountry };
+                localStorage.setItem('rt_user_country', uCountry);
+                localStorage.setItem('rt_registered_name', username); // keep for leaderboard compat
+                updateAuthUI(true, username);
+
+                // ── Restore Musk & Elon scores from Firestore (cross-device sync) ──
+                try {
+                    const scoresDoc = await getDoc(doc(db, 'user_scores', user.uid));
+                    if (scoresDoc.exists()) {
+                        const sd = scoresDoc.data();
+                        const MUSK_LS = 'rt_musk_' + user.uid;
+                        const ELON_LS = 'rt_elon_'  + user.uid;
+                        const localMusk = parseFloat(localStorage.getItem(MUSK_LS) || '0');
+                        // Only overwrite if Firestore has MORE seconds (device with more progress wins)
+                        if ((sd.muskSecs || 0) > localMusk) {
+                            localStorage.setItem(MUSK_LS, sd.muskSecs.toString());
+                        }
+                        // Restore elon state if Firestore elonScore is higher than local
+                        if (sd.elonState) {
+                            let localElonState = {};
+                            try { localElonState = JSON.parse(localStorage.getItem(ELON_LS) || '{}'); } catch(_e) {}
+                            const localElonScore = localElonState.elonScore || 0;
+                            if ((sd.elonState.elonScore || 0) > localElonScore) {
+                                localStorage.setItem(ELON_LS, JSON.stringify(sd.elonState));
+                            }
+                        }
+                    }
+                } catch (_syncErr) { console.warn('Score restore from Firestore failed:', _syncErr); }
+            }
+        } else {
+            window._currentUser = null;
+            localStorage.removeItem('rt_registered_name');
+            updateAuthUI(false, null);
+        }
+        window.dispatchEvent(new Event('firebase-ready'));
+    });
+
+    function updateAuthUI(loggedIn, username) {
+        const prompt = document.getElementById('lb-register-prompt');
+        const headerAuthBtn = document.getElementById('header-auth-btn');
+        if (loggedIn) {
+            if (prompt) prompt.style.display = 'none';
+            // Get saved avatar
+            const savedAvatar = localStorage.getItem('rt_avatar_' + (window._currentUser?.uid || ''));
+            const _safeInitial = sanitizeStr((username||'?')[0].toUpperCase());
+            const avatarHtml = savedAvatar
+                ? `<img src="${savedAvatar}" style="width:30px;height:30px;border-radius:50%;object-fit:cover;border:2px solid #e2b714;margin-right:6px;vertical-align:middle;">`
+                : `<span style="display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,#e2b714,#ff9900);color:#0a0a23;font-size:13px;font-weight:900;margin-right:6px;vertical-align:middle;">${_safeInitial}</span>`;
+            if (headerAuthBtn) headerAuthBtn.innerHTML =
+                `<span onclick="window.location.href='/profile'" style="cursor:pointer;display:inline-flex;align-items:center;gap:4px;color:#e2b714;font-size:13px;padding:4px 8px;border-radius:20px;border:1px solid rgba(226,183,20,0.3);transition:all .2s;"
+                  onmouseover="this.style.background='rgba(226,183,20,0.1)'"
+                  onmouseout="this.style.background='none'"
+                  title="View Profile">${avatarHtml}${sanitizeStr(username)}</span>
+                 <button onclick="doSignOut()" style="margin-left:4px;background:none;border:1px solid #646669;color:#646669;border-radius:4px;padding:4px 8px;cursor:pointer;font-size:11px;font-family:'Roboto Mono',monospace;transition:all .2s;"
+                  onmouseover="this.style.borderColor='#e2b714';this.style.color='#e2b714'"
+                  onmouseout="this.style.borderColor='#646669';this.style.color='#646669'">LOGOUT</button>`;
+        } else {
+            if (prompt) prompt.style.display = 'flex';
+            if (headerAuthBtn) headerAuthBtn.innerHTML =
+                `<button onclick="openAuthModal('login')" style="background:linear-gradient(135deg,#e2b714,#ff9900);color:#0a0a23;border:none;border-radius:20px;padding:8px 16px;cursor:pointer;font-size:12px;font-weight:900;font-family:'Roboto Mono',monospace;letter-spacing:1px;">LOGIN / SIGNUP</button>`;
+        }
+    }
+    window.updateAuthUI = updateAuthUI;
+
+    _fbLoaded = true;
+    } // end _initFirebase
+
+        _initFirebase();
+
+function sanitizeStr(s) {
+    if (s == null) return '';
+    return String(s)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#x27;')
+        .replace(/\//g, '&#x2F;');
+}
+
+    // ══════════════════════════════════════════════════════════════
+    //  AUTH MODULE  — Rocket Typing v4
+    //  Handles: email/password, Google OAuth, GitHub OAuth,
+    //           forgot-password, password-strength, show/hide pw,
+    //           username availability check, loading states.
+    //  Security: Firebase Auth handles all password hashing (scrypt).
+    //            Passwords never stored locally. Rate-limited by Firebase.
+    // ══════════════════════════════════════════════════════════════
+
+    // ── Open / Close ─────────────────────────────────────────────
+    function openAuthModal(tab = 'login') {
+        const mainInput = document.getElementById('input');
+        if (mainInput) { mainInput.disabled = true; mainInput.blur(); }
+        document.getElementById('authModal').style.display = 'flex';
+        switchAuthTab(tab);
+        setTimeout(() => {
+            const field = tab === 'signup'
+                ? document.getElementById('auth-signup-username')
+                : document.getElementById('auth-login-email');
+            if (field) field.focus();
+        }, 120);
+    }
+
+    function closeAuthModal() {
+        const mainInput = document.getElementById('input');
+        if (mainInput) mainInput.disabled = false;
+        document.getElementById('authModal').style.display = 'none';
+        // Clear all error messages
+        ['auth-login-error','auth-signup-error','auth-forgot-msg'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.textContent = '';
+        });
+    }
+
+    // Close on backdrop click
+    document.getElementById('authModal').addEventListener('click', function(e) {
+        if (e.target === this) closeAuthModal();
+    });
+    // Close on Escape
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && document.getElementById('authModal').style.display === 'flex')
+            closeAuthModal();
+    });
+
+    // ── Tab Switcher ──────────────────────────────────────────────
+    function switchAuthTab(tab) {
+        ['login','signup','forgot'].forEach(t => {
+            const form = document.getElementById('form-' + t);
+            if (form) form.style.display = t === tab ? 'block' : 'none';
+        });
+        const tLogin  = document.getElementById('tab-login');
+        const tSignup = document.getElementById('tab-signup');
+        const socialBtns = document.getElementById('auth-social-btns');
+        // Show social buttons only on login + signup tabs
+        if (socialBtns) socialBtns.style.display = (tab === 'forgot') ? 'none' : 'flex';
+        if (tLogin) {
+            tLogin.style.color = tab === 'login' ? '#e2b714' : '#646669';
+            tLogin.style.borderBottomColor = tab === 'login' ? '#e2b714' : 'transparent';
+        }
+        if (tSignup) {
+            tSignup.style.color = tab === 'signup' ? '#e2b714' : '#646669';
+            tSignup.style.borderBottomColor = tab === 'signup' ? '#e2b714' : 'transparent';
+        }
+        // Pre-fill forgot email from login email
+        if (tab === 'forgot') {
+            const loginEmail = document.getElementById('auth-login-email');
+            const forgotEmail = document.getElementById('auth-forgot-email');
+            if (loginEmail && forgotEmail && loginEmail.value)
+                forgotEmail.value = loginEmail.value;
+        }
+    }
+    function showForgotPassword() { switchAuthTab('forgot'); }
+
+    // ── Helpers ───────────────────────────────────────────────────
+    function togglePw(inputId, btn) {
+        const inp = document.getElementById(inputId);
+        if (!inp) return;
+        const show = inp.type === 'password';
+        inp.type = show ? 'text' : 'password';
+        btn.textContent = show ? '🙈' : '👁';
+    }
+
+    function setAuthLoading(btnId, textId, loading, label) {
+        const btn  = document.getElementById(btnId);
+        const span = document.getElementById(textId);
+        if (!btn || !span) return;
+        if (loading) {
+            btn.disabled = true;
+            btn.style.opacity = '.75';
+            span.innerHTML = '<span style="display:inline-block;animation:rtSpin .7s linear infinite">⟳</span> ' + (label || 'Please wait…');
+        } else {
+            btn.disabled = false;
+            btn.style.opacity = '1';
+            span.textContent = label;
+        }
+    }
+
+    function showError(elId, msg) {
+        const el = document.getElementById(elId);
+        if (!el) return;
+        el.textContent = msg;
+        el.style.animation = 'none';
+        void el.offsetWidth; // reflow
+        el.style.animation = 'rtShake .35s ease';
+    }
+
+    function showSuccess(elId, msg) {
+        const el = document.getElementById(elId);
+        if (!el) return;
+        el.textContent = msg;
+        el.style.color = '#4caf50';
+    }
+
+    // ── Password Strength ─────────────────────────────────────────
+    function updatePwStrength(pw) {
+        const bar   = document.getElementById('pw-strength-bar');
+        const label = document.getElementById('pw-strength-label');
+        if (!bar || !label) return;
+        let score = 0;
+        if (pw.length >= 8)  score++;
+        if (pw.length >= 12) score++;
+        if (/[A-Z]/.test(pw)) score++;
+        if (/[0-9]/.test(pw)) score++;
+        if (/[^A-Za-z0-9]/.test(pw)) score++;
+        const pct   = ['0%','25%','40%','65%','85%','100%'][score];
+        const color = ['#444','#e74c3c','#e67e22','#f1c40f','#2ecc71','#00e6cc'][score];
+        const text  = ['','Weak','Fair','Good','Strong','Very strong'][score];
+        bar.style.width = pct;
+        bar.style.background = color;
+        label.textContent = text;
+        label.style.color = color;
+    }
+
+    // ── Username field validation (live) ─────────────────────────
+    function validateUsernameField(inp) {
+        const val  = inp.value.trim().toLowerCase();
+        const icon = document.getElementById('signup-username-icon');
+        const hint = document.getElementById('signup-username-hint');
+        if (!val) { if(icon) icon.textContent=''; if(hint) hint.textContent=''; return; }
+        if (val.length < 3) {
+            if(icon) icon.textContent='❌'; if(hint) { hint.textContent='Too short (min 3)'; hint.style.color='#ff6b6b'; } return;
+        }
+        if (!/^[a-z0-9_]+$/.test(val)) {
+            if(icon) icon.textContent='❌'; if(hint) { hint.textContent='Only lowercase letters, numbers, _'; hint.style.color='#ff6b6b'; } return;
+        }
+        if(icon) icon.textContent='✅'; if(hint) { hint.textContent='Looks good!'; hint.style.color='#4caf50'; }
+    }
+
+    // ── Email/Password Login ──────────────────────────────────────
+    async function doLogin() {
+        const email    = document.getElementById('auth-login-email').value.trim();
+        const password = document.getElementById('auth-login-password').value;
+        const errEl    = document.getElementById('auth-login-error');
+        errEl.style.color = '#ff6b6b';
+        errEl.textContent = '';
+        if (!email)    return showError('auth-login-error', 'Please enter your email.');
+        if (!password) return showError('auth-login-error', 'Please enter your password.');
+        setAuthLoading('btn-login','btn-login-text', true, 'Signing in…');
+        try {
+            const cred = await signInWithEmailAndPassword(auth, email, password);
+
+            // ── Recovery path for previously "stuck" accounts ──
+            // Old versions of signup could leave an email registered in
+            // Firebase Auth with no matching /users/{uid} profile (e.g. the
+            // profile save failed and the email got left behind). Instead of
+            // leaving such accounts stranded, detect that here and let the
+            // person finish registration with this same email right now.
+            const userSnap = await getDoc(doc(db, 'users', cred.user.uid));
+            if (!userSnap.exists()) {
+                switchAuthTab('signup');
+                const emailField = document.getElementById('auth-signup-email');
+                if (emailField) { emailField.value = cred.user.email || ''; emailField.disabled = true; }
+                window._pendingOAuthUser = cred.user;
+                window._oauthSignupMode  = true;
+                const sErrEl = document.getElementById('auth-signup-error');
+                if (sErrEl) {
+                    sErrEl.style.color = '#e2b714';
+                    sErrEl.textContent = '✓ Signed in! Your earlier registration never finished — pick a username to complete it.';
+                }
+            } else {
+                closeAuthModal();
+            }
+        } catch (e) {
+            const msg = {
+                'auth/invalid-credential':  'Wrong email or password.',
+                'auth/user-not-found':       'Wrong email or password.',
+                'auth/wrong-password':       'Wrong email or password.',
+                'auth/too-many-requests':    'Too many attempts. Try again later or reset your password.',
+                'auth/user-disabled':        'This account has been disabled.',
+            }[e.code] || 'Login failed. Please try again.';
+            showError('auth-login-error', msg);
+        } finally {
+            setAuthLoading('btn-login','btn-login-text', false, 'LOGIN →');
+        }
+    }
+
+    // ── Email/Password Signup ─────────────────────────────────────
+    // Registration is atomic from the user's perspective:
+    //  1. Every check we CAN do before touching Firebase Auth happens first
+    //     (field validation + username availability).
+    //  2. createUserWithEmailAndPassword immediately reserves the email in
+    //     Firebase Auth — there's no "dry run". So if ANYTHING after that
+    //     point fails (username race condition, profile write failure,
+    //     network error, etc.), we delete the Auth account we just created.
+    //     That frees the email again so it doesn't get stuck as
+    //     "already in use" with no working profile behind it.
+    //  3. The email is only considered "activated" once the /users profile
+    //     document has been written successfully.
+    async function doSignup() {
+        const username = document.getElementById('auth-signup-username').value.trim().toLowerCase();
+        const country  = document.getElementById('auth-signup-country').value.trim();
+        const email    = document.getElementById('auth-signup-email').value.trim();
+        const password = document.getElementById('auth-signup-password').value;
+        const errEl    = document.getElementById('auth-signup-error');
+        errEl.style.color = '#ff6b6b';
+        errEl.textContent = '';
+
+        // Client-side validation
+        if (username.length < 3 || username.length > 15)
+            return showError('auth-signup-error', 'Username must be 3–15 characters.');
+        if (!/^[a-z0-9_]+$/.test(username))
+            return showError('auth-signup-error', 'Only lowercase letters, numbers, and _ allowed.');
+        if (!country)  return showError('auth-signup-error', 'Please select your country.');
+        if (!email)    return showError('auth-signup-error', 'Please enter your email.');
+        if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email))
+            return showError('auth-signup-error', 'Please enter a valid email address.');
+        if (password.length < 8)
+            return showError('auth-signup-error', 'Password must be at least 8 characters.');
+
+        setAuthLoading('btn-signup','btn-signup-text', true, 'Checking username…');
+
+        // Tracks the Auth account created during this attempt, if any, so it
+        // can be rolled back if the rest of registration doesn't complete.
+        let cred = null;
+
+        try {
+            // STEP 1 — Username availability, checked BEFORE the email is
+            // touched at all.
+            let snap = await getDocs(query(collection(db, 'users'), where('name','==',username)));
+            if (!snap.empty) return showError('auth-signup-error', 'Username taken. Please choose another.');
+
+            // STEP 2 — Create the Firebase Auth account. From this point on
+            // the email is reserved — any failure below must roll this back.
+            setAuthLoading('btn-signup','btn-signup-text', true, 'Creating account…');
+            cred = await createUserWithEmailAndPassword(auth, email, password);
+
+            // STEP 3 — Re-check username right before saving the profile, to
+            // guard against the rare race where someone else grabbed it in
+            // the moment between step 1 and now.
+            snap = await getDocs(query(collection(db, 'users'), where('name','==',username)));
+            if (!snap.empty) throw { code: 'profile/username-taken-race' };
+
+            // STEP 4 — Save the public profile to Firestore (no password
+            // stored here). Registration only counts as complete once this
+            // succeeds.
+            await setDoc(doc(db, 'users', cred.user.uid), {
+                name: username, country, uid: cred.user.uid, created: Date.now()
+            });
+
+            // Everything succeeded — the email is now fully activated.
+            // Send email verification (non-blocking)
+            sendEmailVerification(cred.user).catch(() => {});
+
+            closeAuthModal();
+        } catch (e) {
+            // Registration did not fully complete. If we created an Auth
+            // account in this attempt, delete it so the email is freed up
+            // again instead of being stuck "already in use" with no profile.
+            if (cred && cred.user) {
+                try { await deleteUser(cred.user); }
+                catch (delErr) { console.warn('Rollback (deleteUser) failed:', delErr); }
+            }
+
+            const msg = {
+                'auth/email-already-in-use': 'This email is already registered. Please log in — if registration never finished last time, logging in will let you complete it.',
+                'auth/weak-password':         'Password must be at least 8 characters.',
+                'auth/invalid-email':         'Please enter a valid email address.',
+                'auth/too-many-requests':     'Too many attempts. Please try again later.',
+                'profile/username-taken-race': 'That username was just taken by someone else. Please choose another.',
+            }[e.code] || 'Signup failed. Please try again — your email has not been registered.';
+            showError('auth-signup-error', msg);
+            console.warn('Signup error:', e.code, e);
+        } finally {
+            setAuthLoading('btn-signup','btn-signup-text', false, 'CREATE ACCOUNT →');
+        }
+    }
+
+    // ── Forgot Password ───────────────────────────────────────────
+    async function doForgotPassword() {
+        const email = document.getElementById('auth-forgot-email').value.trim();
+        const msgEl = document.getElementById('auth-forgot-msg');
+        msgEl.style.color = '#ff6b6b';
+        msgEl.textContent = '';
+        if (!email) return (msgEl.textContent = 'Please enter your email address.');
+        const btn = document.getElementById('btn-forgot');
+        btn.disabled = true; btn.style.opacity = '.7'; btn.textContent = 'Sending…';
+        try {
+            await sendPasswordResetEmail(auth, email);
+            // Always show success (don't reveal if email exists — security best practice)
+            msgEl.style.color = '#4caf50';
+            msgEl.textContent = '✓ Reset link sent! Check your inbox (and spam folder).';
+            document.getElementById('auth-forgot-email').value = '';
+        } catch (e) {
+            // Don't leak whether email exists
+            msgEl.style.color = '#4caf50';
+            msgEl.textContent = '✓ If that email is registered, a reset link was sent.';
+        } finally {
+            btn.disabled = false; btn.style.opacity = '1'; btn.textContent = 'SEND RESET LINK';
+        }
+    }
+
+    // ── Social (Google / GitHub) Login ────────────────────────────
+    async function doSocialLogin(provider) {
+        const btnId = provider === 'google' ? 'btn-google' : 'btn-github';
+        const btn   = document.getElementById(btnId);
+        const origHTML = btn ? btn.innerHTML : '';
+        if (btn) { btn.disabled = true; btn.style.opacity = '.7'; btn.textContent = 'Opening…'; }
+
+        // Determine which error element to show (whichever tab is active)
+        const errElId = document.getElementById('form-login').style.display !== 'none'
+            ? 'auth-login-error' : 'auth-signup-error';
+
+        try {
+            let p;
+            if (provider === 'google') {
+                p = new GoogleAuthProvider();
+                p.setCustomParameters({ prompt: 'select_account' });
+            } else {
+                p = new GithubAuthProvider();
+            }
+            const result = await signInWithPopup(auth, p);
+            const user   = result.user;
+
+            // Check if a Firestore profile already exists
+            const userSnap = await getDoc(doc(db, 'users', user.uid));
+            if (!userSnap.exists()) {
+                // First OAuth login — ask for username + country
+                switchAuthTab('signup');
+                const emailField = document.getElementById('auth-signup-email');
+                if (emailField) { emailField.value = user.email || ''; emailField.disabled = true; }
+                window._pendingOAuthUser = user;
+                window._oauthSignupMode  = true;
+                const errEl = document.getElementById('auth-signup-error');
+                if (errEl) {
+                    errEl.style.color = '#e2b714';
+                    errEl.textContent = '✓ Signed in with ' + (provider === 'google' ? 'Google' : 'GitHub') + '! Now pick a username to finish.';
+                }
+            } else {
+                closeAuthModal();
+            }
+        } catch (e) {
+            console.warn('Social login error:', e.code, e.message);
+            if (e.code === 'auth/popup-closed-by-user' || e.code === 'auth/cancelled-popup-request') {
+                // User closed popup — silent
+            } else if (e.code === 'auth/popup-blocked') {
+                showError(errElId, 'Popup was blocked. Please allow popups for this site and try again.');
+            } else if (e.code === 'auth/unauthorized-domain') {
+                showError(errElId, 'This domain is not authorized. Add it in Firebase Console → Authentication → Authorized Domains.');
+            } else if (e.code === 'auth/account-exists-with-different-credential') {
+                showError(errElId, 'An account already exists with the same email. Try logging in with email/password instead.');
+            } else {
+                showError(errElId, (provider === 'github' ? 'GitHub' : 'Google') + ' sign-in failed. (' + (e.code || e.message) + ')');
+            }
+        } finally {
+            if (btn) { btn.disabled = false; btn.style.opacity = '1'; btn.innerHTML = origHTML; }
+        }
+    }
+
+    // Override doSignup to handle OAuth completion mode
+    const _origDoSignup = window.doSignup;
+    (function patchOAuthSignup() {
+        const originalDoSignup = doSignup;
+        window.doSignup = async function() {
+            if (!window._oauthSignupMode) return originalDoSignup();
+            const username = document.getElementById('auth-signup-username').value.trim().toLowerCase();
+            const country  = document.getElementById('auth-signup-country').value.trim();
+            const errEl    = document.getElementById('auth-signup-error');
+            errEl.style.color = '#ff6b6b';
+            errEl.textContent = '';
+            if (username.length < 3 || username.length > 15)
+                return showError('auth-signup-error', 'Username must be 3–15 characters.');
+            if (!/^[a-z0-9_]+$/.test(username))
+                return showError('auth-signup-error', 'Only lowercase letters, numbers, and _ allowed.');
+            if (!country) return showError('auth-signup-error', 'Please select your country.');
+
+            setAuthLoading('btn-signup','btn-signup-text', true, 'Saving profile…');
+            try {
+                const snap = await getDocs(query(collection(db, 'users'), where('name','==',username)));
+                if (!snap.empty) return showError('auth-signup-error', 'Username taken.');
+                const oUser = window._pendingOAuthUser || auth.currentUser;
+                await setDoc(doc(db, 'users', oUser.uid), {
+                    name: username, country, uid: oUser.uid, created: Date.now()
+                });
+                window._pendingOAuthUser = null;
+                window._oauthSignupMode  = false;
+                closeAuthModal();
+            } catch (e) {
+                showError('auth-signup-error', 'Failed to save profile. Please try again.');
+            } finally {
+                setAuthLoading('btn-signup','btn-signup-text', false, 'CREATE ACCOUNT →');
+            }
+        };
+    })();
+
+    // ── Sign Out ──────────────────────────────────────────────────
+    async function doSignOut() {
+        await signOut(auth);
+    }
+
+    // ── Expose ALL auth functions to global scope (required for onclick= in HTML) ──
+    window.openAuthModal       = openAuthModal;
+    window.closeAuthModal      = closeAuthModal;
+    window.switchAuthTab       = switchAuthTab;
+    window.showForgotPassword  = showForgotPassword;
+    window.togglePw            = togglePw;
+    window.updatePwStrength    = updatePwStrength;
+    window.validateUsernameField = validateUsernameField;
+    window.doLogin             = doLogin;
+    window.doSignup            = doSignup;
+    window.doForgotPassword    = doForgotPassword;
+    window.doSocialLogin       = doSocialLogin;
+    window.doSignOut           = doSignOut;
+
+
+window.openProfileModal = async function() {
+    const user = window._currentUser;
+    if (!user) {
+        openAuthModal('login');
+        return;
+    }
+
+    const modal = document.getElementById('profileModal');
+    modal.classList.add('open');
+    // Prevent scrolling on body
+    document.body.style.overflow = 'hidden';
+
+    // Show loading
+    document.getElementById('pm-loading').style.display = 'block';
+    document.getElementById('pm-content').style.display = 'none';
+
+    // Render avatar immediately (from localStorage cache)
+    _renderProfileAvatar(user.uid, user.name);
+
+    // ── Instagram-style crop picker ──────────────────────────────
+    // Inject crop modal styles once
+    if (!document.getElementById('pm-crop-styles')) {
+        const cropStyle = document.createElement('style');
+        cropStyle.id = 'pm-crop-styles';
+        cropStyle.textContent = `
+        #pm-crop-overlay {
+            position:fixed;inset:0;background:rgba(0,0,0,0.92);
+            z-index:9999;display:none;align-items:center;justify-content:center;flex-direction:column;
+        }
+        #pm-crop-overlay.open{display:flex;}
+        #pm-crop-box {
+            background:#111;border-radius:16px;padding:20px;
+            display:flex;flex-direction:column;align-items:center;gap:14px;
+            max-width:340px;width:90vw;
+            font-family:'Roboto Mono',monospace;
+            border:1px solid rgba(226,183,20,0.3);
+        }
+        #pm-crop-title{color:#e2b714;font-size:13px;letter-spacing:1px;font-weight:900;}
+        #pm-crop-hint{color:#666;font-size:11px;text-align:center;}
+        #pm-crop-viewport{
+            width:240px;height:240px;border-radius:50%;
+            overflow:hidden;position:relative;
+            border:3px solid #e2b714;
+            box-shadow:0 0 0 4px rgba(226,183,20,0.15);
+            cursor:grab;user-select:none;
+            background:#000;flex-shrink:0;
+        }
+        #pm-crop-viewport:active{cursor:grabbing;}
+        #pm-crop-img{
+            position:absolute;
+            transform-origin:0 0;
+            pointer-events:none;
+            image-rendering:auto;
+        }
+        #pm-crop-scale-row{display:flex;align-items:center;gap:10px;width:240px;}
+        #pm-crop-scale-row label{color:#888;font-size:10px;letter-spacing:.5px;white-space:nowrap;}
+        #pm-crop-scale{flex:1;accent-color:#e2b714;}
+        #pm-crop-actions{display:flex;gap:10px;}
+        .pm-crop-btn{
+            padding:8px 22px;border-radius:20px;font-family:'Roboto Mono',monospace;
+            font-size:12px;font-weight:900;letter-spacing:1px;cursor:pointer;border:none;
+        }
+        .pm-crop-btn.save{background:linear-gradient(135deg,#e2b714,#ff9900);color:#0a0a23;}
+        .pm-crop-btn.cancel{background:rgba(255,255,255,0.07);color:#888;border:1px solid rgba(255,255,255,0.12);}
+
+        /* ── Lightbox ── */
+        #pm-lightbox{
+            position:fixed;inset:0;background:rgba(0,0,0,0.92);
+            z-index:9998;display:none;align-items:center;justify-content:center;
+            cursor:zoom-out;
+        }
+        #pm-lightbox.open{display:flex;}
+        #pm-lightbox img{
+            max-width:min(90vw,500px);max-height:min(90vh,500px);
+            border-radius:50%;border:4px solid #e2b714;
+            box-shadow:0 0 60px rgba(226,183,20,0.4);
+            pointer-events:none;
+        }
+        `;
+        document.head.appendChild(cropStyle);
+    }
+
+    // Inject crop overlay DOM once
+    if (!document.getElementById('pm-crop-overlay')) {
+        document.body.insertAdjacentHTML('beforeend', `
+        <div id="pm-crop-overlay">
+          <div id="pm-crop-box">
+            <div id="pm-crop-title">✂ POSITION YOUR PHOTO</div>
+            <div id="pm-crop-hint">Drag to reposition · Scroll or use slider to zoom</div>
+            <div id="pm-crop-viewport"><img id="pm-crop-img" draggable="false"></div>
+            <div id="pm-crop-scale-row">
+              <label for="pm-crop-scale">ZOOM</label>
+              <input type="range" id="pm-crop-scale" min="1" max="3" step="0.01" value="1">
+            </div>
+            <div id="pm-crop-actions">
+              <button class="pm-crop-btn cancel" id="pm-crop-cancel">Cancel</button>
+              <button class="pm-crop-btn save" id="pm-crop-save">Save Photo</button>
+            </div>
+          </div>
+        </div>
+        <div id="pm-lightbox"><img id="pm-lightbox-img" src="" alt="Profile photo"></div>
+        `);
+    }
+
+    // ── Crop logic ────────────────────────────────────────────────
+    const cropOverlay  = document.getElementById('pm-crop-overlay');
+    const cropImg      = document.getElementById('pm-crop-img');
+    const cropVP       = document.getElementById('pm-crop-viewport');
+    const cropScale    = document.getElementById('pm-crop-scale');
+    const cropSaveBtn  = document.getElementById('pm-crop-save');
+    const cropCancelBtn= document.getElementById('pm-crop-cancel');
+
+    let _cropState = { x:0, y:0, scale:1, natW:0, natH:0 };
+
+    function _applyCropTransform() {
+        const { x, y, scale } = _cropState;
+        cropImg.style.transform = `translate(${x}px,${y}px) scale(${scale})`;
+    }
+
+    function _clampCrop() {
+        const { scale, natW, natH } = _cropState;
+        const vp = 240;
+        const imgW = natW * scale, imgH = natH * scale;
+        _cropState.x = Math.min(0, Math.max(_cropState.x, vp - imgW));
+        _cropState.y = Math.min(0, Math.max(_cropState.y, vp - imgH));
+    }
+
+    // Drag
+    let _dragging = false, _dx = 0, _dy = 0;
+    cropVP.addEventListener('mousedown', function(e) {
+        _dragging = true; _dx = e.clientX - _cropState.x; _dy = e.clientY - _cropState.y;
+        e.preventDefault();
+    });
+    document.addEventListener('mousemove', function(e) {
+        if (!_dragging) return;
+        _cropState.x = e.clientX - _dx; _cropState.y = e.clientY - _dy;
+        _clampCrop(); _applyCropTransform();
+    });
+    document.addEventListener('mouseup', function() { _dragging = false; });
+
+    // Touch drag
+    let _tx = 0, _ty = 0;
+    cropVP.addEventListener('touchstart', function(e) {
+        const t = e.touches[0];
+        _dragging = true; _tx = t.clientX - _cropState.x; _ty = t.clientY - _cropState.y;
+        e.preventDefault();
+    }, {passive:false});
+    cropVP.addEventListener('touchmove', function(e) {
+        if (!_dragging) return;
+        const t = e.touches[0];
+        _cropState.x = t.clientX - _tx; _cropState.y = t.clientY - _ty;
+        _clampCrop(); _applyCropTransform();
+        e.preventDefault();
+    }, {passive:false});
+    cropVP.addEventListener('touchend', function() { _dragging = false; });
+
+    // Scroll to zoom
+    cropVP.addEventListener('wheel', function(e) {
+        e.preventDefault();
+        const oldScale = _cropState.scale;
+        _cropState.scale = Math.max(1, Math.min(3, oldScale - e.deltaY * 0.005));
+        cropScale.value = _cropState.scale;
+        _clampCrop(); _applyCropTransform();
+    }, {passive:false});
+
+    // Slider zoom
+    cropScale.addEventListener('input', function() {
+        _cropState.scale = parseFloat(cropScale.value);
+        _clampCrop(); _applyCropTransform();
+    });
+
+    // Cancel
+    cropCancelBtn.addEventListener('click', function() {
+        cropOverlay.classList.remove('open');
+    });
+
+    // Save: render cropped circle to canvas
+    cropSaveBtn.addEventListener('click', function() {
+        const vp = 240;
+        const canvas = document.createElement('canvas');
+        canvas.width = vp; canvas.height = vp;
+        const ctx2 = canvas.getContext('2d');
+        ctx2.drawImage(
+            cropImg,
+            -_cropState.x / _cropState.scale,
+            -_cropState.y / _cropState.scale,
+            vp / _cropState.scale,
+            vp / _cropState.scale,
+            0, 0, vp, vp
+        );
+        const resized = canvas.toDataURL('image/jpeg', 0.88);
+        try {
+            localStorage.setItem('rt_avatar_' + user.uid, resized);
+        } catch(storageErr) {
+            window._profileAvatarSession = resized;
+        }
+        _renderProfileAvatar(user.uid, user.name);
+        updateAuthUI(true, user.name);
+        document.getElementById('pm-add-photo-label').textContent = '✓ PHOTO SAVED';
+        setTimeout(() => {
+            document.getElementById('pm-add-photo-label').textContent = '✎ CHANGE PHOTO';
+        }, 2000);
+        cropOverlay.classList.remove('open');
+    });
+
+    // ── File input — open crop picker (no size limit) ─────────────
+    const avatarInput = document.getElementById('pm-avatar-input');
+    avatarInput.onchange = function(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+        // No size limit — removed
+        const reader = new FileReader();
+        reader.onload = function(ev) {
+            const base64 = ev.target.result;
+            const img = new Image();
+            img.onload = function() {
+                _cropState.natW = img.naturalWidth;
+                _cropState.natH = img.naturalHeight;
+                _cropState.scale = 1;
+                cropScale.value = 1;
+                // Fit image inside 240px viewport initially
+                const vp = 240;
+                const fitScale = Math.max(vp / img.naturalWidth, vp / img.naturalHeight);
+                _cropState.scale = fitScale;
+                cropScale.min = fitScale.toFixed(3);
+                cropScale.value = fitScale;
+                cropImg.style.width = img.naturalWidth + 'px';
+                cropImg.style.height = img.naturalHeight + 'px';
+                cropImg.src = base64;
+                // Center initially
+                _cropState.x = (vp - img.naturalWidth * fitScale) / 2;
+                _cropState.y = (vp - img.naturalHeight * fitScale) / 2;
+                _applyCropTransform();
+                cropOverlay.classList.add('open');
+            };
+            img.src = base64;
+        };
+        reader.readAsDataURL(file);
+        // Reset input so same file can be re-selected
+        avatarInput.value = '';
+    };
+
+    // ── Lightbox: click avatar to view full ──────────────────────
+    const lightbox    = document.getElementById('pm-lightbox');
+    const lightboxImg = document.getElementById('pm-lightbox-img');
+    const avatarRing  = document.getElementById('pm-avatar-ring');
+
+    // We intercept click on avatar ring for lightbox (only when photo exists)
+    // Override the pm-avatar-wrap click to check photo first
+    const avatarWrap = avatarRing ? avatarRing.parentElement : null;
+    if (avatarWrap) {
+        // Remove old inline onclick
+        avatarWrap.removeAttribute('onclick');
+        avatarWrap.addEventListener('click', function(e) {
+            const saved = localStorage.getItem('rt_avatar_' + user.uid) || window._profileAvatarSession;
+            if (saved) {
+                // Show lightbox
+                lightboxImg.src = saved;
+                lightbox.classList.add('open');
+            } else {
+                // No photo yet — open file picker
+                document.getElementById('pm-avatar-input').click();
+            }
+        });
+    }
+
+    // Close lightbox on click anywhere
+    lightbox.addEventListener('click', function() {
+        lightbox.classList.remove('open');
+    });
+
+    // Lightbox: also allow changing photo via long-press or by clicking ✎ CHANGE PHOTO label
+    document.getElementById('pm-add-photo-label').addEventListener('click', function(e) {
+        e.stopPropagation();
+        document.getElementById('pm-avatar-input').click();
+    });
+
+    // Close on backdrop click
+    modal.onclick = function(e) { if (e.target === modal) closeProfileModal(); };
+
+    // Escape key
+    document._pmEscHandler = function(e) {
+        if (e.key === 'Escape') closeProfileModal();
+    };
+    document.addEventListener('keydown', document._pmEscHandler);
+
+    // Load stats from localStorage — zero Firestore reads for profile stats
+    try {
+        // ── All-time stats from the lightweight aggregate key ──────────────
+        const AGG_KEY = 'rt_agg_' + user.uid;
+        let agg = {};
+        try { agg = JSON.parse(localStorage.getItem(AGG_KEY) || '{}'); } catch(_e) { agg = {}; }
+
+        // ── Recent list (capped at 200) for the dashboard table ───────────
+        const LS_KEY = 'rt_scores_' + user.uid;
+        let recentList = [];
+        try { recentList = JSON.parse(localStorage.getItem(LS_KEY) || '[]'); } catch(_e) { recentList = []; }
+
+        // ── Back-fill aggregate from legacy recent list if aggregate is empty ──
+        // (first open after update — migrate existing data once)
+        if (!agg.count && recentList.length > 0) {
+            // Only count tests that meet the qualification criteria:
+            // time mode: duration >= 10s | words mode: wordCount >= 10 AND elapsedSecs >= 10 | quotes: elapsedSecs >= 10 AND words >= 10
+            const qualifiedList = recentList.filter(r => {
+                if (r.testDuration != null) {
+                    // time mode
+                    return r.testDuration >= 10;
+                } else if (r.mode === 'words') {
+                    return (r.wordCount || 0) >= 10; // no time gate for words
+                } else if (r.mode === 'quotes') {
+                    return (r.wordCount == null || r.wordCount >= 10); // no time gate for quotes
+                }
+                return true;
+            });
+            if (qualifiedList.length > 0) {
+                agg.count     = qualifiedList.length;
+                agg.wpmSum    = qualifiedList.reduce((s, r) => s + (r.wpm      || 0), 0);
+                agg.accSum    = qualifiedList.reduce((s, r) => s + (r.accuracy || 0), 0);
+                agg.bestWpm   = Math.max(...qualifiedList.map(r => r.wpm || 0));
+                agg.lowestWpm = Math.min(...qualifiedList.map(r => r.wpm || Infinity));
+                const consRaw = qualifiedList.filter(r => r.consistency != null && r.consistency > 0);
+                if (consRaw.length > 0) {
+                    agg.consSum   = consRaw.reduce((s, r) => s + r.consistency, 0);
+                    agg.consCount = consRaw.length;
+                }
+            }
+            try { localStorage.setItem(AGG_KEY, JSON.stringify(agg)); } catch(_e) {}
+        }
+
+        // ── Derive display values from aggregate ──────────────────────────
+        const totalTests = agg.count  || 0;
+        const bestWpm    = agg.bestWpm || 0;
+        const lowWpm     = agg.lowestWpm || 0;
+        const avgWpm     = totalTests > 0 ? Math.round(agg.wpmSum / totalTests) : 0;
+        const avgAcc     = totalTests > 0 ? Math.round(agg.accSum / totalTests) : 0;
+        const avgCons    = (agg.consCount > 0)
+            ? Math.round(agg.consSum / agg.consCount) : null;
+
+        // wpmValues kept minimal — only used for speed-bar "more than 1 test" gate
+        const wpmValues = totalTests > 0 ? [lowWpm, avgWpm, bestWpm] : [];
+
+        // Member since — stored locally on first test
+        const JOIN_KEY = 'rt_joined_' + user.uid;
+        if (!localStorage.getItem(JOIN_KEY) && recentList.length > 0) {
+            // Backfill from earliest score if available
+            const earliest = Math.min(...recentList.map(s => s.time || Date.now()));
+            localStorage.setItem(JOIN_KEY, earliest.toString());
+        } else if (!localStorage.getItem(JOIN_KEY)) {
+            localStorage.setItem(JOIN_KEY, Date.now().toString());
+        }
+        const createdTs = parseInt(localStorage.getItem(JOIN_KEY)) || null;
+        const memberSince = createdTs ? 'Member since ' + fmtDate(createdTs) : '';
+
+        // Country — from session only, no Firestore needed
+        const country = user.country || '';
+
+        // Rank badge based on best WPM
+        const rank = _getRankBadge(bestWpm);
+
+        // Recent scores sorted by date — show up to 200 (from recent list)
+        // Filter: words/quotes mode requires wordCount >= 10 only (no time gate)
+        const recentScores = recentList
+            .filter(r => {
+                if (r.mode === 'words')  return (r.wordCount || 0) >= 10;
+                if (r.mode === 'quotes') return (r.wordCount == null || r.wordCount >= 10);
+                return true; // time mode: show all
+            })
+            .slice()
+            .sort((a,b) => (b.time||0) - (a.time||0));
+
+        // ── Render ──
+        document.getElementById('pm-loading').style.display = 'none';
+        document.getElementById('pm-content').style.display = 'block';
+
+        document.getElementById('pm-username-display').textContent = user.name || '—';
+
+        // Country row
+        const _safeCountry = sanitizeStr(country);
+        const flagHtml = country
+            ? (COUNTRY_FLAGS[country]
+                ? `<img src="${COUNTRY_FLAGS[country]}" alt="${_safeCountry}" width="22" height="16" style="width:22px;height:16px;object-fit:contain;"> ${_safeCountry}`
+                : `🌍 ${_safeCountry}`)
+            : '<span style="color:#444">No country set</span>';
+        document.getElementById('pm-country-row').innerHTML = flagHtml;
+
+        document.getElementById('pm-member-since').textContent = memberSince;
+
+        // Rank badge
+        document.getElementById('pm-rank-badge').innerHTML =
+            `<span class="pm-rank-badge" style="background:${rank.bg};color:${rank.color};border:1px solid ${rank.color}40;">${rank.icon} ${rank.label}</span>`;
+
+        // ── Musk Score ──
+        _renderMuskScore(user.uid);
+
+        // Stats
+        document.getElementById('pm-avg-wpm').textContent  = avgWpm  || '—';
+        document.getElementById('pm-best-wpm').textContent = bestWpm || '—';
+        document.getElementById('pm-total-tests').textContent = totalTests || '0';
+        document.getElementById('pm-accuracy').textContent    = avgAcc ? avgAcc + '%' : '—';
+        document.getElementById('pm-consistency').textContent = avgCons != null ? avgCons + '%' : '—';
+
+        // Speed breakdown (only if has scores)
+        if (wpmValues.length > 1) {
+            document.getElementById('pm-speed-breakdown').style.display = 'grid';
+            document.getElementById('pm-low-wpm').textContent  = lowWpm;
+            document.getElementById('pm-avg-wpm2').textContent = avgWpm;
+            document.getElementById('pm-high-wpm').textContent = bestWpm;
+
+            // Speed bar: position avg within [low, high] range
+            const barWrap = document.getElementById('pm-speed-bar-wrap');
+            barWrap.style.display = 'block';
+            document.getElementById('pm-bar-low-label').textContent  = lowWpm + ' WPM';
+            document.getElementById('pm-bar-high-label').textContent = bestWpm + ' WPM';
+            document.getElementById('pm-bar-avg-label').textContent  = 'AVG ' + avgWpm + ' WPM';
+            const range = bestWpm - lowWpm;
+            const pct = range > 0 ? Math.round(((avgWpm - lowWpm) / range) * 100) : 50;
+            setTimeout(() => {
+                document.getElementById('pm-speed-bar').style.width = Math.max(5, Math.min(100, pct)) + '%';
+            }, 200);
+        }
+
+        // Recent tests
+        if (recentScores.length > 0) {
+            document.getElementById('pm-recent-divider').style.display = 'block';
+            document.getElementById('pm-recent-section').style.display = 'block';
+            const list = document.getElementById('pm-recent-list');
+            list.innerHTML = '';
+            recentScores.forEach(s => {
+                // -- Per-mode minimum thresholds (time >= 10s AND words >= 10) --
+                if (s.testDuration != null) {
+                    // time mode: skip tests shorter than 10 seconds
+                    if (s.testDuration < 10) return;
+                } else if (s.mode === 'words') {
+                    // words mode: only gate is wordCount >= 10 (no time minimum)
+                    if ((s.wordCount || 0) < 10) return;
+                } else if (s.mode === 'quotes') {
+                    // quotes mode: only gate is wordCount >= 10 (no time minimum)
+                    if (s.wordCount != null && s.wordCount < 10) return;
+                }
+
+                // -- Mode label formatting --
+                let modeLabel;
+                if (s.testDuration) {
+                    modeLabel = 'time ' + s.testDuration + 's';
+                } else if (s.mode === 'words') {
+                    modeLabel = 'words ' + (s.wordCount || '');
+                } else if (s.mode === 'quotes') {
+                    modeLabel = 'quote (' + (s.elapsedSecs || '?') + 's)';
+                } else {
+                    modeLabel = s.mode || '—';
+                }
+
+                const row = document.createElement('div');
+                row.className = 'pm-recent-row';
+                row.innerHTML = `
+                    <span style="color:#646669;">${sanitizeStr(modeLabel)}</span>
+                    <span>${sanitizeStr(s.wpm)} <span style="font-size:9px;color:#888">wpm</span></span>
+                    <span>${sanitizeStr(s.accuracy)}%</span>
+                    <span>${sanitizeStr(fmtDate(s.time))}</span>
+                `;
+                list.appendChild(row);
+            });
+        }
+
+    } catch(err) {
+        console.warn('Profile load error:', err);
+        document.getElementById('pm-loading').innerHTML =
+            '<span style="color:#ff6b6b;">Failed to load profile. Please try again.</span>';
+    }
+};
+
+
+function _renderProfileAvatar(uid, name) {
+    const ring = document.getElementById('pm-avatar-ring');
+    if (!ring) return;
+    const saved = (uid && localStorage.getItem('rt_avatar_' + uid))
+               || window._profileAvatarSession;
+    const label = document.getElementById('pm-add-photo-label');
+    if (saved) {
+        ring.innerHTML = `<img src="${saved}" alt="Profile photo">`;
+        if (label) label.textContent = '✎ CHANGE PHOTO';
+    } else {
+        const initial = sanitizeStr((name || '?')[0].toUpperCase());
+        ring.innerHTML = `<div class="pm-avatar-initial">${initial}</div>`;
+        if (label) label.textContent = '+ ADD PHOTO';
+    }
+}
+
+
+function _getRankBadge(bestWpm) {
+    if (bestWpm >= 120) return { label:'SUPERSONIC', icon:'🌌', bg:'rgba(138,43,226,0.15)', color:'#c084fc' };
+    if (bestWpm >= 90)  return { label:'ELITE PILOT', icon:'🚀', bg:'rgba(226,183,20,0.12)', color:'#ffd700' };
+    if (bestWpm >= 70)  return { label:'FAST TYPER', icon:'⚡', bg:'rgba(0,230,204,0.1)',   color:'#00e6cc' };
+    if (bestWpm >= 50)  return { label:'REGULAR',    icon:'🌠', bg:'rgba(59,130,246,0.12)', color:'#60a5fa' };
+    if (bestWpm >= 30)  return { label:'ROOKIE',     icon:'🌟', bg:'rgba(255,153,0,0.1)',   color:'#ff9900' };
+    return                       { label:'BEGINNER',  icon:'🐣', bg:'rgba(255,255,255,0.05)',color:'#888' };
+}
+
+var ELON_SESSION_SECS = 3600; // 60 Musk = 3600 seconds of typing time
+
+function _getElonState(uid) {
+    try { return JSON.parse(localStorage.getItem('rt_elon_' + uid) || '{}'); }
+    catch(e) { return {}; }
+}
+
+function _renderMuskScore(uid) {
+    const card = document.getElementById('pm-musk-card');
+    if (!card) return;
+
+    const MUSK_KEY  = 'rt_musk_' + uid;
+    const totalSecs = parseFloat(localStorage.getItem(MUSK_KEY) || '0');
+    const muskScore = Math.floor(totalSecs / 60);
+    const remainder = totalSecs % 60;
+    const muskPct   = Math.round((remainder / 60) * 100);
+
+    // ── Musk Score card ──────────────────────────────────────────
+    card.style.display = 'block';
+
+    const numEl   = document.getElementById('pm-musk-number');
+    const subEl   = document.getElementById('pm-musk-sub');
+    const barEl   = document.getElementById('pm-musk-bar');
+    const leftEl  = document.getElementById('pm-musk-prog-left');
+    const rightEl = document.getElementById('pm-musk-prog-right');
+
+    if (numEl) {
+        numEl.textContent = muskScore;
+        setTimeout(function() { numEl.classList.add('pop'); }, 100);
+        setTimeout(function() { numEl.classList.remove('pop'); }, 700);
+    }
+    if (subEl)   subEl.textContent   = Math.round(totalSecs) + ' total seconds typed';
+    if (leftEl)  leftEl.textContent  = Math.round(remainder) + 's this round';
+    if (rightEl) rightEl.textContent = 'next point at ' + (60 - Math.round(remainder)) + 's';
+    if (barEl) {
+        setTimeout(function() {
+            barEl.style.width = Math.max(2, Math.min(100, muskPct)) + '%';
+        }, 200);
+    }
+
+    const tt = document.getElementById('pm-musk-tooltip');
+    if (tt) {
+        tt.innerHTML = `
+            <strong>🚀 How Musk Score works</strong><br>
+            Every second you type adds up across all sessions.<br>
+            <strong>60 seconds typed = 1 Musk Score point.</strong><br><br>
+            <span class="tt-ex">Your total: ${Math.round(totalSecs)}s typed<br>
+            ${muskScore} × 60s = ${muskScore} point${muskScore !== 1 ? 's' : ''}<br>
+            ${Math.round(remainder)}s toward your next point</span>
+        `;
+    }
+
+    // ── Elon Score card (v4 — Musk-based session formula) ────────
+    const elonCard = document.getElementById('pm-elon-card');
+    if (elonCard) {
+        const elonState    = _getElonState(uid);
+        const elonScore    = elonState.elonScore || 0;   // locked, frozen mid-session
+        const prevSessScoreStored = elonState.prevSessScore || 0;
+        const session      = elonState.session;
+        const sessCount    = session ? session.count : 0;
+        const sessAvgWpm   = sessCount > 0 ? session.wpmSum / sessCount : 0;
+        const sessAvgAcc   = sessCount > 0 ? session.accSum / sessCount : 0;
+
+        // Progress within the current session, measured in Musk-seconds
+        const muskAtStart  = session ? (session.muskAtStart || 0) : 0;
+        const sessElapsed  = Math.max(0, totalSecs - muskAtStart);  // seconds into this session
+        const sessSecsLeft = Math.max(0, ELON_SESSION_SECS - sessElapsed);
+        const minsLeft     = Math.ceil(sessSecsLeft / 60);
+        const sessionPct   = Math.min(100, Math.round((sessElapsed / ELON_SESSION_SECS) * 100));
+
+        elonCard.style.display = 'block';
+
+        const elonNumEl   = document.getElementById('pm-elon-number');
+        const elonSubEl   = document.getElementById('pm-elon-sub');
+        const elonBarEl   = document.getElementById('pm-elon-bar');
+        const elonLeftEl  = document.getElementById('pm-elon-prog-left');
+        const elonRightEl = document.getElementById('pm-elon-prog-right');
+
+        if (elonNumEl) {
+            elonNumEl.textContent = elonScore.toFixed(2);
+            setTimeout(function() { elonNumEl.classList.add('pop'); }, 200);
+            setTimeout(function() { elonNumEl.classList.remove('pop'); }, 800);
+        }
+        if (elonSubEl) {
+            elonSubEl.textContent = sessCount > 0
+                ? 'session avg: ' + Math.round(sessAvgWpm) + ' WPM / ' + Math.round(sessAvgAcc) + '% acc'
+                : 'no tests in current session yet';
+        }
+        if (elonLeftEl)  elonLeftEl.textContent  = sessCount + ' test' + (sessCount !== 1 ? 's' : '') + ' this session';
+        if (elonRightEl) elonRightEl.textContent = 'score updates in ~' + minsLeft + ' Musk min';
+        if (elonBarEl) {
+            setTimeout(function() {
+                elonBarEl.style.width = Math.max(2, Math.min(100, sessionPct)) + '%';
+            }, 300);
+        }
+
+        const elonTT = document.getElementById('pm-elon-tooltip');
+        if (elonTT) {
+            // Preview: what the score WILL be if the session ended right now (tooltip only)
+            const previewSessScore = sessCount > 0 ? (sessAvgWpm + sessAvgAcc) / 100 : 0;
+            const previewImprov    = (sessCount > 0 && prevSessScoreStored > 0) ? Math.max(0, previewSessScore - prevSessScoreStored) : 0;
+            const previewFinal     = sessCount > 0 ? elonScore + previewSessScore + previewImprov : elonScore;
+            elonTT.innerHTML = `
+                <strong>⚡ How Elon Score works</strong><br>
+                Updates once per 60 Musk (60 min of typing time).<br>
+                <strong>Score = Prev + (avg WPM + avg Acc) ÷ 100 + Improvement</strong><br>
+                Improvement = max(0, This session score − Last session score)<br><br>
+                <span class="tt-ex">
+                  Locked score: <strong>${elonScore.toFixed(2)}</strong><br>
+                  Session tests: ${sessCount} | avg ${Math.round(sessAvgWpm)} WPM / ${Math.round(sessAvgAcc)}% acc<br>
+                  Last session score: ${prevSessScoreStored.toFixed(2)}<br>
+                  Preview (if session ended now): ${previewFinal.toFixed(2)}<br>
+                  Musk into session: ${Math.round(sessElapsed / 60)} / 60 min
+                </span>
+            `;
+        }
+    }
+}
+
+function closeProfileModal() {
+    window.location.href = '/';
+}
+window.closeProfileModal = closeProfileModal;
+
+        window.addEventListener('firebase-ready', function() {
+            if (window._currentUser) {
+                openProfileModal();
+            } else {
+                const pmLoading = document.getElementById('pm-loading');
+                if (pmLoading) pmLoading.style.display = 'none';
+                openAuthModal('login');
+            }
+        });
+</script>
+<script>
+var COUNTRY_FLAGS = {
+"Afghanistan":"https://flagcdn.com/w40/af.png",
+"Albania":"https://flagcdn.com/w40/al.png",
+"Algeria":"https://flagcdn.com/w40/dz.png",
+"Andorra":"https://flagcdn.com/w40/ad.png",
+"Angola":"https://flagcdn.com/w40/ao.png",
+"Antigua and Barbuda":"https://flagcdn.com/w40/ag.png",
+"Argentina":"https://flagcdn.com/w40/ar.png",
+"Armenia":"https://flagcdn.com/w40/am.png",
+"Australia":"https://flagcdn.com/w40/au.png",
+"Austria":"https://flagcdn.com/w40/at.png",
+"Azerbaijan":"https://flagcdn.com/w40/az.png",
+"Bahamas":"https://flagcdn.com/w40/bs.png",
+"Bahrain":"https://flagcdn.com/w40/bh.png",
+"Bangladesh":"https://flagcdn.com/w40/bd.png",
+"Barbados":"https://flagcdn.com/w40/bb.png",
+"Belarus":"https://flagcdn.com/w40/by.png",
+"Belgium":"https://flagcdn.com/w40/be.png",
+"Belize":"https://flagcdn.com/w40/bz.png",
+"Benin":"https://flagcdn.com/w40/bj.png",
+"Bhutan":"https://flagcdn.com/w40/bt.png",
+"Bolivia":"https://flagcdn.com/w40/bo.png",
+"Bosnia and Herzegovina":"https://flagcdn.com/w40/ba.png",
+"Botswana":"https://flagcdn.com/w40/bw.png",
+"Brazil":"https://flagcdn.com/w40/br.png",
+"Brunei":"https://flagcdn.com/w40/bn.png",
+"Bulgaria":"https://flagcdn.com/w40/bg.png",
+"Burkina Faso":"https://flagcdn.com/w40/bf.png",
+"Burundi":"https://flagcdn.com/w40/bi.png",
+"Cabo Verde":"https://flagcdn.com/w40/cv.png",
+"Cambodia":"https://flagcdn.com/w40/kh.png",
+"Cameroon":"https://flagcdn.com/w40/cm.png",
+"Canada":"https://flagcdn.com/w40/ca.png",
+"Central African Republic":"https://flagcdn.com/w40/cf.png",
+"Chad":"https://flagcdn.com/w40/td.png",
+"Chile":"https://flagcdn.com/w40/cl.png",
+"China":"https://flagcdn.com/w40/cn.png",
+"Colombia":"https://flagcdn.com/w40/co.png",
+"Comoros":"https://flagcdn.com/w40/km.png",
+"Congo":"https://flagcdn.com/w40/cg.png",
+"Costa Rica":"https://flagcdn.com/w40/cr.png",
+"Croatia":"https://flagcdn.com/w40/hr.png",
+"Cuba":"https://flagcdn.com/w40/cu.png",
+"Cyprus":"https://flagcdn.com/w40/cy.png",
+"Czech Republic":"https://flagcdn.com/w40/cz.png",
+"Denmark":"https://flagcdn.com/w40/dk.png",
+"Djibouti":"https://flagcdn.com/w40/dj.png",
+"Dominica":"https://flagcdn.com/w40/dm.png",
+"Dominican Republic":"https://flagcdn.com/w40/do.png",
+"Ecuador":"https://flagcdn.com/w40/ec.png",
+"Egypt":"https://flagcdn.com/w40/eg.png",
+"El Salvador":"https://flagcdn.com/w40/sv.png",
+"Equatorial Guinea":"https://flagcdn.com/w40/gq.png",
+"Eritrea":"https://flagcdn.com/w40/er.png",
+"Estonia":"https://flagcdn.com/w40/ee.png",
+"Eswatini":"https://flagcdn.com/w40/sz.png",
+"Ethiopia":"https://flagcdn.com/w40/et.png",
+"Fiji":"https://flagcdn.com/w40/fj.png",
+"Finland":"https://flagcdn.com/w40/fi.png",
+"France":"https://flagcdn.com/w40/fr.png",
+"Gabon":"https://flagcdn.com/w40/ga.png",
+"Gambia":"https://flagcdn.com/w40/gm.png",
+"Georgia":"https://flagcdn.com/w40/ge.png",
+"Germany":"https://flagcdn.com/w40/de.png",
+"Ghana":"https://flagcdn.com/w40/gh.png",
+"Greece":"https://flagcdn.com/w40/gr.png",
+"Grenada":"https://flagcdn.com/w40/gd.png",
+"Guatemala":"https://flagcdn.com/w40/gt.png",
+"Guinea":"https://flagcdn.com/w40/gn.png",
+"Guinea-Bissau":"https://flagcdn.com/w40/gw.png",
+"Guyana":"https://flagcdn.com/w40/gy.png",
+"Haiti":"https://flagcdn.com/w40/ht.png",
+"Honduras":"https://flagcdn.com/w40/hn.png",
+"Hungary":"https://flagcdn.com/w40/hu.png",
+"Iceland":"https://flagcdn.com/w40/is.png",
+"India":"https://flagcdn.com/w40/in.png",
+"Indonesia":"https://flagcdn.com/w40/id.png",
+"Iran":"https://flagcdn.com/w40/ir.png",
+"Iraq":"https://flagcdn.com/w40/iq.png",
+"Ireland":"https://flagcdn.com/w40/ie.png",
+"Israel":"https://flagcdn.com/w40/il.png",
+"Italy":"https://flagcdn.com/w40/it.png",
+"Jamaica":"https://flagcdn.com/w40/jm.png",
+"Japan":"https://flagcdn.com/w40/jp.png",
+"Jordan":"https://flagcdn.com/w40/jo.png",
+"Kazakhstan":"https://flagcdn.com/w40/kz.png",
+"Kenya":"https://flagcdn.com/w40/ke.png",
+"Kiribati":"https://flagcdn.com/w40/ki.png",
+"Kuwait":"https://flagcdn.com/w40/kw.png",
+"Kyrgyzstan":"https://flagcdn.com/w40/kg.png",
+"Laos":"https://flagcdn.com/w40/la.png",
+"Latvia":"https://flagcdn.com/w40/lv.png",
+"Lebanon":"https://flagcdn.com/w40/lb.png",
+"Lesotho":"https://flagcdn.com/w40/ls.png",
+"Liberia":"https://flagcdn.com/w40/lr.png",
+"Libya":"https://flagcdn.com/w40/ly.png",
+"Liechtenstein":"https://flagcdn.com/w40/li.png",
+"Lithuania":"https://flagcdn.com/w40/lt.png",
+"Luxembourg":"https://flagcdn.com/w40/lu.png",
+"Madagascar":"https://flagcdn.com/w40/mg.png",
+"Malawi":"https://flagcdn.com/w40/mw.png",
+"Malaysia":"https://flagcdn.com/w40/my.png",
+"Maldives":"https://flagcdn.com/w40/mv.png",
+"Mali":"https://flagcdn.com/w40/ml.png",
+"Malta":"https://flagcdn.com/w40/mt.png",
+"Marshall Islands":"https://flagcdn.com/w40/mh.png",
+"Mauritania":"https://flagcdn.com/w40/mr.png",
+"Mauritius":"https://flagcdn.com/w40/mu.png",
+"Mexico":"https://flagcdn.com/w40/mx.png",
+"Micronesia":"https://flagcdn.com/w40/fm.png",
+"Moldova":"https://flagcdn.com/w40/md.png",
+"Monaco":"https://flagcdn.com/w40/mc.png",
+"Mongolia":"https://flagcdn.com/w40/mn.png",
+"Montenegro":"https://flagcdn.com/w40/me.png",
+"Morocco":"https://flagcdn.com/w40/ma.png",
+"Mozambique":"https://flagcdn.com/w40/mz.png",
+"Myanmar":"https://flagcdn.com/w40/mm.png",
+"Namibia":"https://flagcdn.com/w40/na.png",
+"Nauru":"https://flagcdn.com/w40/nr.png",
+"Nepal":"https://flagcdn.com/w40/np.png",
+"Netherlands":"https://flagcdn.com/w40/nl.png",
+"New Zealand":"https://flagcdn.com/w40/nz.png",
+"Nicaragua":"https://flagcdn.com/w40/ni.png",
+"Niger":"https://flagcdn.com/w40/ne.png",
+"Nigeria":"https://flagcdn.com/w40/ng.png",
+"North Korea":"https://flagcdn.com/w40/kp.png",
+"North Macedonia":"https://flagcdn.com/w40/mk.png",
+"Norway":"https://flagcdn.com/w40/no.png",
+"Oman":"https://flagcdn.com/w40/om.png",
+"Pakistan":"https://flagcdn.com/w40/pk.png",
+"Palau":"https://flagcdn.com/w40/pw.png",
+"Palestine":"https://flagcdn.com/w40/ps.png",
+"Panama":"https://flagcdn.com/w40/pa.png",
+"Papua New Guinea":"https://flagcdn.com/w40/pg.png",
+"Paraguay":"https://flagcdn.com/w40/py.png",
+"Peru":"https://flagcdn.com/w40/pe.png",
+"Philippines":"https://flagcdn.com/w40/ph.png",
+"Poland":"https://flagcdn.com/w40/pl.png",
+"Portugal":"https://flagcdn.com/w40/pt.png",
+"Qatar":"https://flagcdn.com/w40/qa.png",
+"Romania":"https://flagcdn.com/w40/ro.png",
+"Russia":"https://flagcdn.com/w40/ru.png",
+"Rwanda":"https://flagcdn.com/w40/rw.png",
+"Saint Kitts and Nevis":"https://flagcdn.com/w40/kn.png",
+"Saint Lucia":"https://flagcdn.com/w40/lc.png",
+"Saint Vincent and the Grenadines":"https://flagcdn.com/w40/vc.png",
+"Samoa":"https://flagcdn.com/w40/ws.png",
+"San Marino":"https://flagcdn.com/w40/sm.png",
+"Sao Tome and Principe":"https://flagcdn.com/w40/st.png",
+"Saudi Arabia":"https://flagcdn.com/w40/sa.png",
+"Senegal":"https://flagcdn.com/w40/sn.png",
+"Serbia":"https://flagcdn.com/w40/rs.png",
+"Seychelles":"https://flagcdn.com/w40/sc.png",
+"Sierra Leone":"https://flagcdn.com/w40/sl.png",
+"Singapore":"https://flagcdn.com/w40/sg.png",
+"Slovakia":"https://flagcdn.com/w40/sk.png",
+"Slovenia":"https://flagcdn.com/w40/si.png",
+"Solomon Islands":"https://flagcdn.com/w40/sb.png",
+"Somalia":"https://flagcdn.com/w40/so.png",
+"South Africa":"https://flagcdn.com/w40/za.png",
+"South Korea":"https://flagcdn.com/w40/kr.png",
+"South Sudan":"https://flagcdn.com/w40/ss.png",
+"Spain":"https://flagcdn.com/w40/es.png",
+"Sri Lanka":"https://flagcdn.com/w40/lk.png",
+"Sudan":"https://flagcdn.com/w40/sd.png",
+"Suriname":"https://flagcdn.com/w40/sr.png",
+"Sweden":"https://flagcdn.com/w40/se.png",
+"Switzerland":"https://flagcdn.com/w40/ch.png",
+"Syria":"https://flagcdn.com/w40/sy.png",
+"Taiwan":"https://flagcdn.com/w40/tw.png",
+"Tajikistan":"https://flagcdn.com/w40/tj.png",
+"Tanzania":"https://flagcdn.com/w40/tz.png",
+"Thailand":"https://flagcdn.com/w40/th.png",
+"Timor-Leste":"https://flagcdn.com/w40/tl.png",
+"Togo":"https://flagcdn.com/w40/tg.png",
+"Tonga":"https://flagcdn.com/w40/to.png",
+"Trinidad and Tobago":"https://flagcdn.com/w40/tt.png",
+"Tunisia":"https://flagcdn.com/w40/tn.png",
+"Turkey":"https://flagcdn.com/w40/tr.png",
+"Turkmenistan":"https://flagcdn.com/w40/tm.png",
+"Tuvalu":"https://flagcdn.com/w40/tv.png",
+"Uganda":"https://flagcdn.com/w40/ug.png",
+"Ukraine":"https://flagcdn.com/w40/ua.png",
+"United Arab Emirates":"https://flagcdn.com/w40/ae.png",
+"United Kingdom":"https://flagcdn.com/w40/gb.png",
+"United States":"https://flagcdn.com/w40/us.png",
+"Uruguay":"https://flagcdn.com/w40/uy.png",
+"Uzbekistan":"https://flagcdn.com/w40/uz.png",
+"Vanuatu":"https://flagcdn.com/w40/vu.png",
+"Vatican City":"https://flagcdn.com/w40/va.png",
+"Venezuela":"https://flagcdn.com/w40/ve.png",
+"Vietnam":"https://flagcdn.com/w40/vn.png",
+"Yemen":"https://flagcdn.com/w40/ye.png",
+"Zambia":"https://flagcdn.com/w40/zm.png",
+"Zimbabwe":"https://flagcdn.com/w40/zw.png"
+};
+
+function getFlag(c) {
+    if (!c) return '';
+    const url = COUNTRY_FLAGS[c];
+    if (url) {
+        return `<img src="${url}" alt="" width="28" height="20" style="width:28px;height:20px;object-fit:contain;vertical-align:middle;">`;
+    }
+    return '🌍';
+}
+function fmtDate(ts) {
+    if (!ts) return '';
+    var d = new Date(ts);
+    return d.getDate() + ' ' + ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][d.getMonth()] + ' ' + d.getFullYear();
+}
+</script>
+<script>
+const ALL_COUNTRIES = ["Afghanistan","Albania","Algeria","Andorra","Angola","Antigua and Barbuda","Argentina","Armenia","Australia","Austria","Azerbaijan","Bahamas","Bahrain","Bangladesh","Barbados","Belarus","Belgium","Belize","Benin","Bhutan","Bolivia","Bosnia and Herzegovina","Botswana","Brazil","Brunei","Bulgaria","Burkina Faso","Burundi","Cabo Verde","Cambodia","Cameroon","Canada","Central African Republic","Chad","Chile","China","Colombia","Comoros","Congo","Costa Rica","Croatia","Cuba","Cyprus","Czech Republic","Denmark","Djibouti","Dominica","Dominican Republic","Ecuador","Egypt","El Salvador","Equatorial Guinea","Eritrea","Estonia","Eswatini","Ethiopia","Fiji","Finland","France","Gabon","Gambia","Georgia","Germany","Ghana","Greece","Grenada","Guatemala","Guinea","Guinea-Bissau","Guyana","Haiti","Honduras","Hungary","Iceland","India","Indonesia","Iran","Iraq","Ireland","Israel","Italy","Jamaica","Japan","Jordan","Kazakhstan","Kenya","Kiribati","Kuwait","Kyrgyzstan","Laos","Latvia","Lebanon","Lesotho","Liberia","Libya","Liechtenstein","Lithuania","Luxembourg","Madagascar","Malawi","Malaysia","Maldives","Mali","Malta","Marshall Islands","Mauritania","Mauritius","Mexico","Micronesia","Moldova","Monaco","Mongolia","Montenegro","Morocco","Mozambique","Myanmar","Namibia","Nauru","Nepal","Netherlands","New Zealand","Nicaragua","Niger","Nigeria","North Korea","North Macedonia","Norway","Oman","Pakistan","Palau","Palestine","Panama","Papua New Guinea","Paraguay","Peru","Philippines","Poland","Portugal","Qatar","Romania","Russia","Rwanda","Saint Kitts and Nevis","Saint Lucia","Saint Vincent and the Grenadines","Samoa","San Marino","Sao Tome and Principe","Saudi Arabia","Senegal","Serbia","Seychelles","Sierra Leone","Singapore","Slovakia","Slovenia","Solomon Islands","Somalia","South Africa","South Korea","South Sudan","Spain","Sri Lanka","Sudan","Suriname","Sweden","Switzerland","Syria","Taiwan","Tajikistan","Tanzania","Thailand","Timor-Leste","Togo","Tonga","Trinidad and Tobago","Tunisia","Turkey","Turkmenistan","Tuvalu","Uganda","Ukraine","United Arab Emirates","United Kingdom","United States","Uruguay","Uzbekistan","Vanuatu","Vatican City","Venezuela","Vietnam","Yemen","Zambia","Zimbabwe"];
+
+const COUNTRY_OPTION_STYLE = 'padding:9px 15px;font-size:13px;cursor:pointer;font-family:Roboto Mono,monospace;color:#d1d0c5;';
+
+function _buildCountryList(prefix, items) {
+    const list = document.getElementById(prefix+'-country-list');
+    if (!list) return;
+    list.innerHTML = items.map(c =>
+        `<div style="${COUNTRY_OPTION_STYLE}" onmouseover="this.style.background='rgba(226,183,20,0.12)';this.style.color='#e2b714'" onmouseout="this.style.background='';this.style.color='#d1d0c5'" onclick="selectCountry('${prefix}','${c.replace(/'/g,"&#39;")}')">${c}</div>`
+    ).join('');
+}
+function initCountryDrop(prefix) { _buildCountryList(prefix, ALL_COUNTRIES); }
+function toggleCountryDrop(prefix) {
+    const display = document.getElementById(prefix+'-country-display');
+    const drop    = document.getElementById(prefix+'-country-drop');
+    const search  = document.getElementById(prefix+'-country-search');
+    if (!display || !drop) return;
+    const isOpen = drop.style.display !== 'none';
+    document.querySelectorAll('[id$="-country-drop"]').forEach(d => { d.style.display='none'; });
+    if (!isOpen) {
+        drop.style.display = 'block';
+        display.style.borderColor = '#e2b714';
+        if (search) { search.value=''; _buildCountryList(prefix, ALL_COUNTRIES); setTimeout(()=>search.focus(),50); }
+    } else {
+        display.style.borderColor = 'rgba(226,183,20,0.3)';
+    }
+}
+function filterCountries(prefix) {
+    // PERF: debounce — only rebuild list after 120ms of no typing
+    clearTimeout(filterCountries._timer);
+    filterCountries._timer = setTimeout(() => {
+        const q = (document.getElementById(prefix+'-country-search')?.value||'').toLowerCase();
+        _buildCountryList(prefix, q ? ALL_COUNTRIES.filter(c => c.toLowerCase().includes(q)) : ALL_COUNTRIES);
+    }, 120);
+}
+function selectCountry(prefix, country) {
+    const hidden  = document.getElementById(prefix === 'idx' ? 'auth-signup-country' : prefix+'-signup-country');
+    const text    = document.getElementById(prefix+'-country-text');
+    const display = document.getElementById(prefix+'-country-display');
+    const drop    = document.getElementById(prefix+'-country-drop');
+    if (hidden)  hidden.value = country;
+    if (text)    { text.textContent = country; text.style.color = '#fff'; }
+    if (display) display.style.borderColor = 'rgba(226,183,20,0.3)';
+    if (drop)    drop.style.display = 'none';
+}
+document.addEventListener('click', e => {
+    if (!e.target.closest('[id$="-country-wrap"]') && !e.target.closest('[id$="-country-display"]')) {
+        document.querySelectorAll('[id$="-country-drop"]').forEach(d => { d.style.display='none'; });
+    }
+});
+// Init
+initCountryDrop('idx');
+</script>
+</body>
+</html>
