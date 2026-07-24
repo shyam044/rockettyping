@@ -34,38 +34,6 @@
     <noscript><link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=optional" rel="stylesheet"></noscript>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="responsive.css">
-    <style>
-
-/* ── Standalone page overrides: this is no longer a fixed-overlay
-   modal, it IS the page, so neutralize the overlay chrome and give
-   it sensible page margins instead. ── */
-#profileModal {
-    position: static !important;
-    inset: auto !important;
-    background: none !important;
-    backdrop-filter: none !important;
-    -webkit-backdrop-filter: none !important;
-    display: flex !important;
-    z-index: auto !important;
-    padding: 0 !important;
-    overflow: visible !important;
-}
-#profileModalBox {
-    width: 100% !important;
-    max-width: 720px !important;
-    max-height: none !important;
-    margin: 140px auto 60px !important;
-    border-radius: 20px !important;
-}
-#pm-scroll-body {
-    overflow: visible !important;
-    max-height: none !important;
-    padding-top: 24px !important;
-}
-@media (max-width: 600px) {
-    #profileModalBox { margin: 110px auto 40px !important; border-radius: 12px !important; }
-}
-    </style>
 </head>
 <body>
     <div id="app">
@@ -857,6 +825,40 @@
     </div><!-- end pm-scroll-body -->
   </div>
 </div>
+    <style>
+/* ── Standalone page overrides: this is no longer a fixed-overlay
+   modal, it IS the page, so neutralize the overlay chrome and give
+   it sensible page margins instead. Placed after the fragment's own
+   <style> blocks (and after its @media 720px rules) so these always
+   win, both by !important and by being last in source order. ── */
+#profileModal {
+    position: static !important;
+    inset: auto !important;
+    background: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    display: flex !important;
+    z-index: auto !important;
+    padding: 0 !important;
+    overflow: visible !important;
+}
+#profileModalBox {
+    width: 100% !important;
+    max-width: 720px !important;
+    max-height: none !important;
+    overflow: visible !important;
+    margin: 24px auto 60px !important;
+    border-radius: 20px !important;
+}
+#pm-scroll-body {
+    overflow: visible !important;
+    max-height: none !important;
+    padding-top: 24px !important;
+}
+@media (max-width: 600px) {
+    #profileModalBox { margin: 16px auto 40px !important; border-radius: 12px !important; }
+}
+    </style>
     <div id="authModal" role="dialog" aria-modal="true" aria-label="Sign in or create account"
          style="position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.88);
                 backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
@@ -1769,8 +1771,6 @@ window.openProfileModal = async function() {
 
     const modal = document.getElementById('profileModal');
     modal.classList.add('open');
-    // Prevent scrolling on body
-    document.body.style.overflow = 'hidden';
 
     // Show loading
     document.getElementById('pm-loading').style.display = 'block';
