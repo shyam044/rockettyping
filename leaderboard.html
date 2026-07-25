@@ -59,7 +59,47 @@
     max-width: 1000px !important;
     width: 95% !important;
     padding: 34px 32px !important;
-    margin: 24px auto 60px !important;
+    margin: 6px auto 40px !important;
+}
+/* ── Ad slots ── */
+.ad-slot {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+.ad-bottom-banner {
+    width: 728px;
+    max-width: 100%;
+    height: 90px;
+}
+.leaderboard-layout {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 20px;
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 0 16px;
+}
+.ad-rail {
+    width: 160px;
+    flex: 0 0 160px;
+    position: sticky;
+    top: 16px;
+}
+.ad-rail-left { height: 600px; }
+.ad-rail-right { height: 300px; }
+/* Side rails need real horizontal room: content (1000px) + 2×160px rails +
+   gaps only fits comfortably from ~1400px up. Below that, hide them rather
+   than squeeze/overlap the leaderboard card. */
+@media (max-width: 1400px) {
+    .ad-rail { display: none; }
+}
+/* 728px banners don't fit small/medium phones — hide instead of letting
+   them force horizontal scroll or clip. */
+@media (max-width: 767px) {
+    .ad-top-native, .ad-bottom-banner { display: none; }
 }
 .leaderboard-header-grid,
 .leaderboard-row { 
@@ -83,7 +123,7 @@
 .header-title { font-size: 34px !important; }
 .leaderboard-body { max-height: 520px !important; }
 @media (max-width: 600px) {
-    .leaderboard-modal { padding: 18px 14px !important; margin: 16px auto 40px !important; }
+    .leaderboard-modal { padding: 18px 14px !important; margin: 4px auto 30px !important; }
     .leaderboard-header-grid,
     .leaderboard-row {
         grid-template-columns: 50px 1fr 72px 68px 68px 82px !important;
@@ -160,19 +200,39 @@
     </script>
     <div id="app">
     <header id="main-header"
-        style="position:relative; max-width:1100px; margin:0 auto; padding:20px; display:flex; align-items:flex-start; justify-content:space-between; z-index:10;">
+        style="position:relative; max-width:1300px; margin:0 auto; padding:16px 16px 8px; display:flex; align-items:flex-start; justify-content:space-between; z-index:10;">
         <a href="/" style="cursor:pointer; display:flex; flex-direction:column; align-items:flex-start; text-decoration:none;">
             <img src="images/logo.png" alt="Rocket Typing" width="120" height="120" style="width:120px; margin-bottom:5px;" fetchpriority="high" loading="eager" decoding="sync" />
-            <div id="play-game">
-                <button onclick="window.location.href='/game'" class="play-game-btn">GAME</button>
-                <button onclick="window.location.href='/coding.html'" class="learn-type-btn">CODE</button>
-                <button onclick="window.location.href='/learn'" class="learn-type-btn">LEARN</button>
-            </div>
         </a>
+            <div class="ad-slot ad-bottom-banner" id="ad-bottom-banner">
+        <script>
+            atOptions = {
+                'key' : 'ec2cd2e3ac271efe174e656e9ef09deb',
+                'format' : 'iframe',
+                'height' : 90,
+                'width' : 728,
+                'params' : {}
+            };
+        </script>
+        <script src="https://www.highperformanceformat.com/ec2cd2e3ac271efe174e656e9ef09deb/invoke.js"></script>
+    </div>
         <div id="header-right-group" style="display:flex;align-items:center;gap:8px;z-index:35;position:relative;top:6px;">
             <div id="header-auth-btn" style="display:flex;align-items:center;"></div>
         </div>
     </header>
+    <div class="leaderboard-layout">
+    <aside class="ad-slot ad-rail ad-rail-left" id="ad-rail-left">
+        <script>
+            atOptions = {
+                'key' : 'f9fd656d91c4953d559c8174661c6df8',
+                'format' : 'iframe',
+                'height' : 600,
+                'width' : 160,
+                'params' : {}
+            };
+        </script>
+        <script src="https://www.highperformanceformat.com/f9fd656d91c4953d559c8174661c6df8/invoke.js"></script>
+    </aside>
     <main id="leaderboardPage" class="leaderboard-modal">
         <div class="leaderboard-header-cosmic">
             <div class="header-title">GLOBAL LEADERBOARD</div>
@@ -211,6 +271,20 @@
             <div id="leaderboard-body" class="leaderboard-body"></div>
         </div>
     </main>
+    <aside class="ad-slot ad-rail ad-rail-right" id="ad-rail-right">
+        <script>
+            atOptions = {
+                'key' : 'e3a304a061bb8b53fdbf045abe87c573',
+                'format' : 'iframe',
+                'height' : 300,
+                'width' : 160,
+                'params' : {}
+            };
+        </script>
+        <script src="https://www.highperformanceformat.com/e3a304a061bb8b53fdbf045abe87c573/invoke.js"></script>
+    </aside>
+    </div><!-- /.leaderboard-layout -->
+
     <div id="authModal" role="dialog" aria-modal="true" aria-label="Sign in or create account"
          style="position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.88);
                 backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
@@ -1833,5 +1907,7 @@ document.addEventListener('click', e => {
 // Init
 initCountryDrop('idx');
 </script>
+<!-- Social Bar ad — self-positions as a corner overlay, no container needed -->
+<script src="https://pl30277777.effectivecpmnetwork.com/7f/22/10/7f2210f14d8eecc91fc8f7de5c422435.js"></script>
 </body>
 </html>
