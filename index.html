@@ -3851,9 +3851,12 @@ if (!testActive && !testEnded && e.key.length === 1) {
         // is exactly what drags down CPM over time.
         //
         // FIX: don't request an ad for a slot until that slot is actually
-        // about to enter the viewport. One IntersectionObserver watches all
-        // four containers; each slot only ever loads once it's genuinely
+        // about to enter the viewport. One IntersectionObserver watches
+        // slots 2-4; each of those only ever loads once it's genuinely
         // about to be seen, so every served impression is a real viewable one.
+        //
+        // Ad #1 (typing-area-ad) gets its own, STRICTER observer below —
+        // see the note just above _typingAreaAdObserver for why.
         const _adSlotLoaders = {
             'container-typing-area-ad': () => loadDirectBannerAd('container-typing-area-ad', 'ec2cd2e3ac271efe174e656e9ef09deb', 728, 90),
             'container-ad-slot-2':      () => loadDirectBannerAd('container-ad-slot-2', 'c0570a980250971b0f952672ff8a136a', 300, 250),
@@ -3887,9 +3890,61 @@ if (!testActive && !testEnded && e.key.length === 1) {
             }
         }
 
+        // ── Ad #1 (typing-area-ad): stricter, scroll-gated loading ──────────
+        // This slot sits immediately below the typing test, so on plenty of
+        // screens its top edge already grazes the bottom of the viewport (or
+        // sits within the shared observer's 200px pre-load margin) the moment
+        // the page paints — before the user has scrolled at all. That fired
+        // the ad request on load / on every Retake, racking up served
+        // impressions nobody actually looked at (attention stays on the
+        // typing test above), which drags down CPM. Viewed impressions are
+        // worth more than served ones, so this slot must only ever load once
+        // the user has genuinely scrolled AND the slot is substantially
+        // (≥50%) on-screen — no pre-load margin, no "just grazing the edge"
+        // counts.
+        let _hasUserScrolled = false;
+        function _markUserScrolled() {
+            if (window.scrollY > 10 || document.documentElement.scrollTop > 10) {
+                _hasUserScrolled = true;
+                window.removeEventListener('scroll', _markUserScrolled);
+                _maybeLoadTypingAreaAd();
+            }
+        }
+        window.addEventListener('scroll', _markUserScrolled, { passive: true });
+
+        let _typingAreaAdIntersecting = false;
+        function _maybeLoadTypingAreaAd() {
+            const id = 'container-typing-area-ad';
+            if (_adSlotLoaded[id]) return;
+            if (!_hasUserScrolled) return;            // must be a real scroll, not just page geometry
+            if (!_typingAreaAdIntersecting) return;   // must actually be meaningfully on-screen
+            _adSlotLoaded[id] = true;
+            _adSlotLoaders[id]();
+        }
+
+        const _typingAreaAdObserver = ('IntersectionObserver' in window) ? new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+                _typingAreaAdIntersecting = entry.isIntersecting;
+                if (entry.isIntersecting) _maybeLoadTypingAreaAd();
+            });
+        }, { rootMargin: '0px', threshold: 0.5 }) : null;
+
+        function _observeTypingAreaAd() {
+            const el = document.getElementById('container-typing-area-ad');
+            if (!el) return;
+            if (_typingAreaAdObserver) {
+                _typingAreaAdObserver.observe(el);
+            } else {
+                // No IntersectionObserver support — fall back to the shared
+                // lazy-load behavior rather than never loading at all.
+                _observeAdSlot('container-typing-area-ad');
+            }
+        }
+
         // Registers all 4 slots for lazy loading. Called once on page init.
         function initAdLazyLoading() {
-            Object.keys(_adSlotLoaders).forEach(_observeAdSlot);
+            _observeTypingAreaAd();
+            ['container-ad-slot-2', 'container-ad-slot-3', 'container-ad-slot-4'].forEach(_observeAdSlot);
         }
 
         // Swaps in a brand-new result-screen ad. Called on page init, and
@@ -3902,25 +3957,21 @@ if (!testActive && !testEnded && e.key.length === 1) {
         }
 
         // Marks the typing-area banner (ad #1) as needing a fresh ad next time
-        // the user retakes the test — but does NOT force-load it blind. If the
-        // slot happens to be on-screen right now, load immediately (that's a
-        // genuine viewable impression). If it's scrolled out of view, leave it
-        // alone — the IntersectionObserver above will load it the moment the
-        // user actually scrolls back down to it, so we never serve an ad nobody
-        // is looking at.
+        // the user retakes the test — but does NOT force-load it blind.
+        // Previously this checked "any pixel of the slot overlaps the
+        // viewport" and loaded immediately if so — but since this slot sits
+        // right below the typing test, that overlap is often true the instant
+        // Retake is pressed, even though the user hasn't scrolled and isn't
+        // looking at it. That served an impression nobody viewed. Now it just
+        // marks the slot dirty and defers entirely to the same scroll-gated
+        // IntersectionObserver used on initial load — it only loads once the
+        // user has genuinely scrolled AND the slot is ≥50% on-screen.
         function refreshTypingAreaAd() {
             const id = 'container-typing-area-ad';
             _adSlotLoaded[id] = false; // mark dirty so it's eligible to reload
-            const el = document.getElementById(id);
-            if (!el) return;
-            const rect = el.getBoundingClientRect();
-            const isCurrentlyVisible = rect.bottom > 0 && rect.top < window.innerHeight;
-            if (isCurrentlyVisible) {
-                _adSlotLoaded[id] = true;
-                _adSlotLoaders[id]();
-            }
-            // else: left unloaded on purpose — the observer (still watching this
-            // element) will fire the loader itself once it scrolls into view.
+            _maybeLoadTypingAreaAd();  // loads immediately only if the user has
+                                        // already scrolled and it's still in view;
+                                        // otherwise the observer fires it later.
         }
 
         function resetTest() {
