@@ -38,20 +38,74 @@
 <body>
     <div id="app">
     <header id="main-header"
-        style="position:relative; max-width:1100px; margin:0 auto; padding:20px; display:flex; align-items:flex-start; justify-content:space-between; z-index:10;">
+        style="position:relative; max-width:1300px; margin:0 auto; padding:16px 16px 8px; display:flex; align-items:flex-start; justify-content:space-between; z-index:10;">
         <a href="/" style="cursor:pointer; display:flex; flex-direction:column; align-items:flex-start; text-decoration:none;">
             <img src="images/logo.png" alt="Rocket Typing" width="120" height="120" style="width:120px; margin-bottom:5px;" fetchpriority="high" loading="eager" decoding="sync" />
-            <div id="play-game">
-                <button onclick="window.location.href='/game'" class="play-game-btn">GAME</button>
-                <button onclick="window.location.href='/coding.html'" class="learn-type-btn">CODE</button>
-                <button onclick="window.location.href='/learn'" class="learn-type-btn">LEARN</button>
-            </div>
         </a>
+            <div class="ad-slot ad-bottom-banner" id="ad-bottom-banner">
+        <script>
+            atOptions = {
+                'key' : 'ec2cd2e3ac271efe174e656e9ef09deb',
+                'format' : 'iframe',
+                'height' : 90,
+                'width' : 728,
+                'params' : {}
+            };
+        </script>
+        <script src="https://www.highperformanceformat.com/ec2cd2e3ac271efe174e656e9ef09deb/invoke.js"></script>
+    </div>
         <div id="header-right-group" style="display:flex;align-items:center;gap:8px;z-index:35;position:relative;top:6px;">
             <div id="header-auth-btn" style="display:flex;align-items:center;"></div>
         </div>
     </header>
 <style>
+
+/* ── Ad slots (same pattern as leaderboard.html) ── */
+.ad-slot {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+.ad-bottom-banner {
+    width: 728px;
+    max-width: 100%;
+    height: 90px;
+}
+.profile-layout {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 20px;
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 0 16px;
+}
+.ad-rail {
+    width: 160px;
+    flex: 0 0 160px;
+    position: sticky;
+    top: 16px;
+}
+.ad-rail-left { height: 600px; }
+.ad-rail-right { height: 300px; }
+/* Side rails need real horizontal room: card (720px) + 2×160px rails +
+   gaps only fits comfortably from ~1400px up. Below that, hide them rather
+   than squeeze/overlap the profile card. */
+@media (max-width: 1400px) {
+    .ad-rail { display: none; }
+}
+/* 728px banners don't fit small/medium phones — hide instead of letting
+   them force horizontal scroll or clip. */
+@media (max-width: 767px) {
+    .ad-bottom-banner { display: none; }
+}
+/* The profile card fills the space between the rails (or the full
+   width once the rails are hidden below 1400px). */
+.profile-layout > #profileModal {
+    flex: 1 1 auto;
+    min-width: 0;
+}
 
 /* ── Profile Modal Overlay ── */
 #profileModal {
@@ -640,7 +694,20 @@
 
 </style>
 
-<div id="profileModal" role="dialog" aria-modal="true" aria-label="User Profile">
+<div class="profile-layout">
+<aside class="ad-slot ad-rail ad-rail-left" id="ad-rail-left">
+    <script>
+        atOptions = {
+            'key' : 'f9fd656d91c4953d559c8174661c6df8',
+            'format' : 'iframe',
+            'height' : 600,
+            'width' : 160,
+            'params' : {}
+        };
+    </script>
+    <script src="https://www.highperformanceformat.com/f9fd656d91c4953d559c8174661c6df8/invoke.js"></script>
+</aside>
+<div id="profileModal" aria-label="User Profile">
   <div id="profileModalBox">
     <!-- Banner with avatar (sticky at top, not scrolled) -->
     <div class="pm-banner">
@@ -825,6 +892,19 @@
     </div><!-- end pm-scroll-body -->
   </div>
 </div>
+<aside class="ad-slot ad-rail ad-rail-right" id="ad-rail-right">
+    <script>
+        atOptions = {
+            'key' : 'e3a304a061bb8b53fdbf045abe87c573',
+            'format' : 'iframe',
+            'height' : 300,
+            'width' : 160,
+            'params' : {}
+        };
+    </script>
+    <script src="https://www.highperformanceformat.com/e3a304a061bb8b53fdbf045abe87c573/invoke.js"></script>
+</aside>
+</div><!-- /.profile-layout -->
     <style>
 /* ── Standalone page overrides: this is no longer a fixed-overlay
    modal, it IS the page, so neutralize the overlay chrome and give
@@ -847,7 +927,7 @@
     max-width: 720px !important;
     max-height: none !important;
     overflow: visible !important;
-    margin: 24px auto 60px !important;
+    margin: 6px auto 40px !important;
     border-radius: 20px !important;
 }
 #pm-scroll-body {
@@ -856,7 +936,7 @@
     padding-top: 24px !important;
 }
 @media (max-width: 600px) {
-    #profileModalBox { margin: 16px auto 40px !important; border-radius: 12px !important; }
+    #profileModalBox { margin: 4px auto 30px !important; border-radius: 12px !important; }
 }
     </style>
     <div id="authModal" role="dialog" aria-modal="true" aria-label="Sign in or create account"
@@ -2036,15 +2116,6 @@ window.openProfileModal = async function() {
         e.stopPropagation();
         document.getElementById('pm-avatar-input').click();
     });
-
-    // Close on backdrop click
-    modal.onclick = function(e) { if (e.target === modal) closeProfileModal(); };
-
-    // Escape key
-    document._pmEscHandler = function(e) {
-        if (e.key === 'Escape') closeProfileModal();
-    };
-    document.addEventListener('keydown', document._pmEscHandler);
 
     // Load stats from localStorage — zero Firestore reads for profile stats
     try {
