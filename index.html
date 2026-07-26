@@ -301,9 +301,16 @@
          third-party connection) was being loaded on this page to render exactly
          one icon (the X/Twitter share glyph). Replaced with a 300-byte inline
          SVG at the point of use — same look, zero external requests. -->
-    <!-- Google Fonts: non-render-blocking async load — fixes LCP, FCP and CLS -->
-    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=optional" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=optional" rel="stylesheet"></noscript>
+    <!-- Google Fonts: non-render-blocking async load — fixes LCP, FCP and CLS.
+         display=swap (not optional): with `optional`, if the font isn't ready
+         within the ~100ms block window the browser locks in the fallback
+         (generic `monospace`, which renders as Courier New on most systems)
+         for the ENTIRE page view and never swaps to Roboto Mono even after
+         it finishes loading. `swap` still avoids any invisible-text block,
+         but swaps to Roboto Mono the moment it's ready instead of being
+         stuck on the fallback. -->
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet"></noscript>
     <!-- Analytics: async so never blocks rendering -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-136SVFZRDF"></script>
     <script>
