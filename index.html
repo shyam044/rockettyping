@@ -1016,6 +1016,125 @@
          the ad network's document.write() calls contained inside their
          own iframe instead of the main document — and rebuilds the ad
          fresh, in its own iframe, every time the user retakes the test. -->
+
+<!-- ═══════════════════════════════════════════════════════════════
+     THEME ENGINE — CSS custom properties + override rules.
+     Every rule below uses var(--rt-*) so switching a theme is just
+     updating these variables on <html> — no per-theme CSS needed.
+     Defaults here match the site's original "Rocket Gold" look exactly.
+═══════════════════════════════════════════════════════════════ -->
+<style id="rt-theme-vars">
+:root{
+    --rt-bg:#0a0a23; --rt-bg-rgb:10,10,35;
+    --rt-glow1:rgba(255,215,0,0.15); --rt-glow2:rgba(255,100,0,0.15);
+    --rt-panel-bg:rgba(10,10,35,0.85); --rt-panel-glow:rgba(255,215,0,0.3);
+    --rt-main:#e2b714; --rt-main-rgb:226,183,20;
+    --rt-main2:#ff9900; --rt-main2-rgb:255,153,0;
+    --rt-text:#ffffff; --rt-sub:#646669; --rt-error:#da3333;
+    --rt-caret:#00e6cc; --rt-caret-rgb:0,230,204;
+    --rt-bodytext:#ffd700;
+}
+html,body{background:var(--rt-bg) !important;color:var(--rt-bodytext) !important;}
+body{background-image:
+    radial-gradient(circle at 30% 20%, var(--rt-glow1) 0%, transparent 50%),
+    radial-gradient(circle at 70% 80%, var(--rt-glow2) 0%, transparent 50%) !important;}
+#app{background:var(--rt-panel-bg) !important;border-color:var(--rt-main2) !important;box-shadow:0 0 80px var(--rt-panel-glow) !important;}
+#test-config,#test-config button{color:var(--rt-main) !important;}
+#test-config button:hover{background:rgba(var(--rt-main-rgb),0.1) !important;}
+.difficulty-group{border-color:rgba(var(--rt-main-rgb),0.25) !important;box-shadow:0 0 20px rgba(var(--rt-main-rgb),0.15) !important;}
+.diff-btn,.qlen-btn{color:var(--rt-main) !important;}
+.diff-btn:hover,.qlen-btn:hover{background:rgba(var(--rt-main-rgb),0.25) !important;box-shadow:0 0 20px rgba(var(--rt-main-rgb),0.6) !important;}
+.diff-btn.active,.qlen-btn.active{background:linear-gradient(135deg,var(--rt-main),var(--rt-main2)) !important;color:var(--rt-bg) !important;box-shadow:0 0 30px var(--rt-caret),0 0 15px rgba(var(--rt-main2-rgb),0.8) !important;}
+#timer.highlight{color:var(--rt-main) !important;}
+#words .letter{color:var(--rt-sub) !important;}
+#words .letter.correct{color:var(--rt-text) !important;}
+#words .letter.incorrect{color:var(--rt-error) !important;}
+#words .active{border-bottom-color:var(--rt-caret) !important;}
+#caret{background:var(--rt-caret) !important;}
+.result-stats-panel .main-stat{background:rgba(var(--rt-main-rgb),0.1) !important;border-color:var(--rt-bodytext) !important;box-shadow:0 0 24px rgba(var(--rt-main-rgb),0.4) !important;}
+.result-stats-panel .main-stat .stat-value{color:var(--rt-text) !important;text-shadow:0 0 30px var(--rt-bodytext) !important;}
+.result-stats-panel .main-stat .stat-label{color:var(--rt-bodytext) !important;}
+.result-stats-panel .stat{border-color:rgba(var(--rt-caret-rgb),0.3) !important;}
+.result-stats-panel .stat .stat-label{color:var(--rt-caret) !important;}
+.tip-box{border-color:var(--rt-caret) !important;background:rgba(var(--rt-caret-rgb),0.1) !important;}
+.result-meta-box .rmb-value{color:var(--rt-main) !important;}
+#result #restart{background:linear-gradient(to right,var(--rt-bodytext),var(--rt-main2)) !important;color:var(--rt-bg) !important;}
+.share-button{color:var(--rt-caret) !important;border-color:var(--rt-caret) !important;}
+.share-button:hover{background:var(--rt-caret) !important;color:var(--rt-bg) !important;}
+#leaderboard-btn{background:rgba(var(--rt-main-rgb),0.12) !important;border-color:var(--rt-caret) !important;color:var(--rt-main) !important;}
+#leaderboard-btn:hover{background:rgba(var(--rt-main-rgb),0.28) !important;}
+footer a:hover{color:var(--rt-main) !important;}
+.play-game-btn,.learn-type-btn,#header-auth-btn button{background:linear-gradient(135deg,var(--rt-main),var(--rt-main2)) !important;color:var(--rt-bg) !important;}
+#btn-login,#btn-signup,#btn-forgot{background:linear-gradient(135deg,var(--rt-main),var(--rt-main2)) !important;color:var(--rt-bg) !important;}
+.km-musk-ring .km-score-num,.km-musk-ring .km-score-lbl,.km-score-tag{color:var(--rt-main) !important;}
+.km-musk-ring::before{background:conic-gradient(var(--rt-main) 0deg,var(--rt-main2) 90deg,var(--rt-main2) 150deg,rgba(var(--rt-main-rgb),0.15) 200deg,var(--rt-main) 360deg) !important;}
+
+/* ── Settings gear + panel (Color / Custom) ── */
+#rt-settings-btn{position:fixed;right:20px;bottom:20px;width:50px;height:50px;border-radius:50%;
+    background:linear-gradient(135deg,var(--rt-main),var(--rt-main2));border:2px solid rgba(255,255,255,0.18);
+    color:var(--rt-bg);font-size:21px;cursor:pointer;z-index:9990;box-shadow:0 4px 20px rgba(0,0,0,0.5);
+    transition:transform .2s;}
+#rt-settings-btn:hover{transform:scale(1.08) rotate(25deg);}
+#rt-settings-panel{display:none;position:fixed;right:20px;bottom:82px;width:310px;max-width:calc(100vw - 40px);
+    max-height:70vh;overflow-y:auto;background:#12122a;border:1px solid rgba(226,183,20,0.3);border-radius:16px;
+    padding:16px;z-index:9991;box-shadow:0 20px 60px rgba(0,0,0,0.65);font-family:'Roboto Mono',monospace;}
+#rt-settings-panel.open{display:block;}
+.rt-settings-tabs{display:flex;gap:8px;margin-bottom:14px;}
+.rt-settings-tab{flex:1;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#aaa;
+    padding:8px 4px;border-radius:8px;cursor:pointer;font-family:'Roboto Mono',monospace;font-size:12px;font-weight:900;letter-spacing:.5px;}
+.rt-settings-tab.active{background:var(--rt-main);color:var(--rt-bg);border-color:var(--rt-main);}
+.rt-settings-pane{display:none;}
+.rt-settings-pane.active{display:block;}
+#rt-theme-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px;}
+.rt-swatch{height:38px;border-radius:8px;cursor:pointer;border:2px solid rgba(255,255,255,0.12);transition:transform .15s,border-color .15s;}
+.rt-swatch:hover{transform:scale(1.08);border-color:#fff;}
+.rt-normal-btn{width:100%;padding:9px;border-radius:8px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.15);
+    color:#ddd;font-family:'Roboto Mono',monospace;font-size:12px;font-weight:700;letter-spacing:.5px;cursor:pointer;margin-bottom:4px;}
+.rt-normal-btn:hover{background:rgba(255,255,255,0.12);}
+#rt-custom-toggle{width:100%;padding:10px;border-radius:8px;background:linear-gradient(135deg,var(--rt-main),var(--rt-main2));
+    border:none;color:var(--rt-bg);font-family:'Roboto Mono',monospace;font-size:12px;font-weight:900;letter-spacing:.5px;cursor:pointer;margin:6px 0 10px;}
+#rt-custom-toggle.on{background:#2ecc71;}
+.rt-hint{font-size:11px;color:#888;line-height:1.5;margin:0;}
+.rt-hud-editable{outline:2px dashed var(--rt-main) !important;outline-offset:3px;}
+.rt-hud-handle{position:fixed;width:28px;height:28px;border-radius:7px;background:var(--rt-main);color:var(--rt-bg);
+    display:flex;align-items:center;justify-content:center;font-size:14px;cursor:grab;z-index:9992;
+    box-shadow:0 2px 10px rgba(0,0,0,0.5);touch-action:none;user-select:none;}
+.rt-hud-handle:active{cursor:grabbing;}
+.rt-hud-resize{position:fixed;width:24px;height:24px;border-radius:6px;background:var(--rt-caret);color:var(--rt-bg);
+    display:flex;align-items:center;justify-content:center;font-size:13px;cursor:nwse-resize;z-index:9992;
+    box-shadow:0 2px 10px rgba(0,0,0,0.5);touch-action:none;user-select:none;}
+#rt-save-layout-btn{width:100%;padding:10px;border-radius:8px;background:#2ecc71;border:none;color:#0a0a23;
+    font-family:'Roboto Mono',monospace;font-size:12px;font-weight:900;letter-spacing:.5px;cursor:pointer;margin-bottom:10px;}
+#rt-save-layout-btn:hover{filter:brightness(1.1);}
+#rt-save-toast{position:fixed;left:50%;bottom:90px;transform:translateX(-50%) translateY(20px);
+    background:#12122a;border:1px solid var(--rt-main);color:var(--rt-main);padding:10px 20px;border-radius:30px;
+    font-family:'Roboto Mono',monospace;font-size:13px;font-weight:700;letter-spacing:.5px;z-index:9995;
+    opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;box-shadow:0 8px 30px rgba(0,0,0,0.5);}
+#rt-save-toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+</style>
+<script>
+/* Apply any saved theme immediately (before first paint) so there's no
+   flash of the default palette for returning visitors. */
+(function(){
+    try{
+        var raw = localStorage.getItem('rt_theme');
+        if(!raw) return;
+        var t = JSON.parse(raw);
+        function h2r(hex){hex=hex.replace('#','');if(hex.length===3)hex=hex.split('').map(function(c){return c+c;}).join('');var n=parseInt(hex,16);return ((n>>16)&255)+','+((n>>8)&255)+','+(n&255);}
+        var r=document.documentElement.style;
+        r.setProperty('--rt-bg',t.bg); r.setProperty('--rt-bg-rgb',h2r(t.bg));
+        r.setProperty('--rt-glow1','rgba('+h2r(t.main)+',0.15)');
+        r.setProperty('--rt-glow2','rgba('+h2r(t.main2)+',0.15)');
+        r.setProperty('--rt-panel-bg','rgba('+h2r(t.bg)+',0.85)');
+        r.setProperty('--rt-panel-glow','rgba('+h2r(t.main)+',0.3)');
+        r.setProperty('--rt-main',t.main); r.setProperty('--rt-main-rgb',h2r(t.main));
+        r.setProperty('--rt-main2',t.main2); r.setProperty('--rt-main2-rgb',h2r(t.main2));
+        r.setProperty('--rt-text',t.text); r.setProperty('--rt-sub',t.sub); r.setProperty('--rt-error',t.error);
+        r.setProperty('--rt-caret',t.caret); r.setProperty('--rt-caret-rgb',h2r(t.caret));
+        r.setProperty('--rt-bodytext',t.bodytext);
+    }catch(e){}
+})();
+</script>
 </head>
 <body>
     <div id="app" role="main" aria-label="Rocket Typing speed test application">
@@ -6574,6 +6693,412 @@ function fmtDate(ts) {
     var d = new Date(ts);
     return d.getDate() + ' ' + ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][d.getMonth()] + ' ' + d.getFullYear();
 }
+</script>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     SETTINGS — Color Themes + Custom HUD layout (drag to reposition)
+     Gear button sits fixed bottom-right of the viewport.
+═══════════════════════════════════════════════════════════════ -->
+<script>
+(function(){
+'use strict';
+
+/* ── Theme presets ──────────────────────────────────────────────
+   Each theme only needs 6 colors — the CSS variables + override
+   rules in <head> do the rest. First entry is the site's ORIGINAL
+   palette; "NORMAL" always re-applies exactly this one. */
+var THEMES = [
+    { name:'Rocket Gold (Default)', bg:'#0a0a23', main:'#e2b714', main2:'#ff9900', text:'#ffffff', sub:'#646669', error:'#da3333', caret:'#00e6cc', bodytext:'#ffd700' },
+    { name:'Dracula',        bg:'#282a36', main:'#bd93f9', main2:'#ff79c6', text:'#f8f8f2', sub:'#6272a4', error:'#ff5555', caret:'#50fa7b', bodytext:'#f8f8f2' },
+    { name:'Nord',           bg:'#2e3440', main:'#88c0d0', main2:'#81a1c1', text:'#eceff4', sub:'#4c566a', error:'#bf616a', caret:'#a3be8c', bodytext:'#d8dee9' },
+    { name:'Gruvbox Dark',   bg:'#282828', main:'#fabd2f', main2:'#fe8019', text:'#ebdbb2', sub:'#928374', error:'#fb4934', caret:'#b8bb26', bodytext:'#ebdbb2' },
+    { name:'Gruvbox Light',  bg:'#fbf1c7', main:'#b57614', main2:'#d65d0e', text:'#3c3836', sub:'#a89984', error:'#9d0006', caret:'#79740e', bodytext:'#3c3836' },
+    { name:'Solarized Dark', bg:'#002b36', main:'#b58900', main2:'#cb4b16', text:'#93a1a1', sub:'#586e75', error:'#dc322f', caret:'#2aa198', bodytext:'#93a1a1' },
+    { name:'Solarized Light',bg:'#fdf6e3', main:'#b58900', main2:'#cb4b16', text:'#073642', sub:'#93a1a1', error:'#dc322f', caret:'#2aa198', bodytext:'#073642' },
+    { name:'Monokai',        bg:'#272822', main:'#e6db74', main2:'#fd971f', text:'#f8f8f2', sub:'#75715e', error:'#f92672', caret:'#a6e22e', bodytext:'#f8f8f2' },
+    { name:'Tokyo Night',    bg:'#1a1b26', main:'#7aa2f7', main2:'#bb9af7', text:'#c0caf5', sub:'#565f89', error:'#f7768e', caret:'#9ece6a', bodytext:'#c0caf5' },
+    { name:'Catppuccin Mocha',bg:'#1e1e2e', main:'#f9e2af', main2:'#fab387', text:'#cdd6f4', sub:'#6c7086', error:'#f38ba8', caret:'#a6e3a1', bodytext:'#cdd6f4' },
+    { name:'Catppuccin Latte',bg:'#eff1f5', main:'#df8e1d', main2:'#fe640b', text:'#4c4f69', sub:'#9ca0b0', error:'#d20f39', caret:'#40a02b', bodytext:'#4c4f69' },
+    { name:'One Dark',       bg:'#282c34', main:'#e5c07b', main2:'#d19a66', text:'#abb2bf', sub:'#5c6370', error:'#e06c75', caret:'#98c379', bodytext:'#abb2bf' },
+    { name:'Rosé Pine',      bg:'#191724', main:'#ebbcba', main2:'#f6c177', text:'#e0def4', sub:'#6e6a86', error:'#eb6f92', caret:'#9ccfd8', bodytext:'#e0def4' },
+    { name:'Ayu Dark',       bg:'#0a0e14', main:'#ffb454', main2:'#ff8f40', text:'#b3b1ad', sub:'#626a73', error:'#f07178', caret:'#aad94c', bodytext:'#b3b1ad' },
+    { name:'Ayu Light',      bg:'#fafafa', main:'#fa8d3e', main2:'#f2ae49', text:'#5c6166', sub:'#abb0b6', error:'#f51818', caret:'#86b300', bodytext:'#5c6166' },
+    { name:'Everforest',     bg:'#2d353b', main:'#dbbc7f', main2:'#e69875', text:'#d3c6aa', sub:'#7a8478', error:'#e67e80', caret:'#a7c080', bodytext:'#d3c6aa' },
+    { name:'Synthwave',      bg:'#262335', main:'#f97e72', main2:'#36f9f6', text:'#f6f6f6', sub:'#848bbd', error:'#fe4450', caret:'#ff8bd1', bodytext:'#f6f6f6' },
+    { name:'Cyberpunk',      bg:'#0d0221', main:'#00fff9', main2:'#ff2079', text:'#ffffff', sub:'#6f6ba1', error:'#ff003c', caret:'#f9c80e', bodytext:'#00fff9' },
+    { name:'Terminal Green', bg:'#001100', main:'#00ff41', main2:'#00cc33', text:'#ccffcc', sub:'#339933', error:'#ff3333', caret:'#66ff66', bodytext:'#00ff41' },
+    { name:'Ocean',          bg:'#0f2027', main:'#4fc3f7', main2:'#29b6f6', text:'#e1f5fe', sub:'#607d8b', error:'#ef5350', caret:'#26c6da', bodytext:'#4fc3f7' },
+    { name:'Sunset',         bg:'#1b1b2f', main:'#ff9a5a', main2:'#ff6f61', text:'#fff5eb', sub:'#9a8c98', error:'#e63946', caret:'#ffd97d', bodytext:'#ffd97d' },
+    { name:'Vampire',        bg:'#12070c', main:'#a4133c', main2:'#ff4d6d', text:'#ffe5ec', sub:'#8a4a58', error:'#ff758f', caret:'#c9184a', bodytext:'#ff8fa3' },
+    { name:'Bubblegum',      bg:'#2b1b2e', main:'#ff8fab', main2:'#ffc2d1', text:'#fff0f3', sub:'#a685e2', error:'#ff6b6b', caret:'#b8f2e6', bodytext:'#ffb3c6' },
+    { name:'Mint',           bg:'#10201c', main:'#52d1a4', main2:'#2ec4b6', text:'#eafff5', sub:'#4a7a68', error:'#ff6b6b', caret:'#a0f0d0', bodytext:'#52d1a4' },
+    { name:'Graphite Mono',  bg:'#1a1a1a', main:'#cfcfcf', main2:'#9e9e9e', text:'#f0f0f0', sub:'#6e6e6e', error:'#ff5555', caret:'#ffffff', bodytext:'#cfcfcf' },
+    { name:'Paper',          bg:'#f5f5f0', main:'#333333', main2:'#555555', text:'#1a1a1a', sub:'#9e9e9e', error:'#d32f2f', caret:'#1a73e8', bodytext:'#333333' },
+    { name:'Midnight Blue',  bg:'#0b1929', main:'#64b5f6', main2:'#42a5f5', text:'#e3f2fd', sub:'#546e7a', error:'#ef5350', caret:'#4fc3f7', bodytext:'#64b5f6' }
+];
+
+function h2r(hex){
+    hex = hex.replace('#','');
+    if (hex.length === 3) hex = hex.split('').map(function(c){ return c+c; }).join('');
+    var n = parseInt(hex,16);
+    return ((n>>16)&255)+','+((n>>8)&255)+','+(n&255);
+}
+
+function applyTheme(t, persist){
+    var r = document.documentElement.style;
+    r.setProperty('--rt-bg', t.bg); r.setProperty('--rt-bg-rgb', h2r(t.bg));
+    r.setProperty('--rt-glow1','rgba('+h2r(t.main)+',0.15)');
+    r.setProperty('--rt-glow2','rgba('+h2r(t.main2)+',0.15)');
+    r.setProperty('--rt-panel-bg','rgba('+h2r(t.bg)+',0.85)');
+    r.setProperty('--rt-panel-glow','rgba('+h2r(t.main)+',0.3)');
+    r.setProperty('--rt-main', t.main); r.setProperty('--rt-main-rgb', h2r(t.main));
+    r.setProperty('--rt-main2', t.main2); r.setProperty('--rt-main2-rgb', h2r(t.main2));
+    r.setProperty('--rt-text', t.text); r.setProperty('--rt-sub', t.sub); r.setProperty('--rt-error', t.error);
+    r.setProperty('--rt-caret', t.caret); r.setProperty('--rt-caret-rgb', h2r(t.caret));
+    r.setProperty('--rt-bodytext', t.bodytext);
+    if (persist !== false) { try { localStorage.setItem('rt_theme', JSON.stringify(t)); } catch(e){} }
+}
+
+/* ── HUD drag-to-reposition + resize ──────────────────────────────
+   Free Fire-style: grab ANY individual button/element (not grouped
+   containers) and drop it anywhere; grab its bottom-right dot to
+   resize it. Nothing is written to storage until the user presses
+   the visible "SAVE LAYOUT" button — dragging alone only previews. */
+var HUD_TARGETS = [
+    { key:'logo',        sel:'#main-header img[alt="Rocket Typing"]', label:'Logo' },
+    { key:'gameBtn',      sel:'#play-game button:nth-child(1)',        label:'GAME button' },
+    { key:'codeBtn',      sel:'#play-game button:nth-child(2)',        label:'CODE button' },
+    { key:'learnBtn',     sel:'#play-game button:nth-child(3)',        label:'LEARN button' },
+    { key:'sundayChamp',  sel:'#sunday-champ-nav',                     label:'Sunday Champ button' },
+    { key:'authBtn',      sel:'#header-auth-btn',                      label:'Login/Signup button' },
+    { key:'leaderboardBtn',sel:'#leaderboard-btn',                     label:'Leaderboard button' },
+    { key:'modeTime',     sel:'#test-config button[data-mode="time"]',   label:'Time button' },
+    { key:'modeWords',    sel:'#test-config button[data-mode="words"]',  label:'Words button' },
+    { key:'modeQuotes',   sel:'#test-config button[data-mode="quotes"]', label:'Quotes button' },
+    { key:'timer',        sel:'#timer',                                 label:'Timer' },
+    { key:'diffEasy',     sel:'.diff-btn[data-difficulty="easy"]',      label:'Easy button' },
+    { key:'diffMedium',   sel:'.diff-btn[data-difficulty="medium"]',    label:'Medium button' },
+    { key:'diffHard',     sel:'.diff-btn[data-difficulty="hard"]',      label:'Hard button' },
+    { key:'qlenShort',    sel:'.qlen-btn[data-qlen="short"]',           label:'Short button' },
+    { key:'qlenMedium',   sel:'.qlen-btn[data-qlen="medium"]',          label:'Medium (quote) button' },
+    { key:'qlenLong',     sel:'.qlen-btn[data-qlen="long"]',            label:'Long button' },
+    { key:'muskBadge',    sel:'#km-musk-badge',                        label:'Musk Score badge' },
+    { key:'elonBadge',    sel:'#km-elon-badge',                        label:'Elon Score badge' },
+    { key:'kmToggle',     sel:'#km-toggle-btn',                        label:'Keymap toggle button' },
+    { key:'kmSound',      sel:'#km-sound-btn',                         label:'Sound button' },
+    { key:'kmScene',      sel:'#km-scene',                             label:'Keymap' },
+    { key:'liveWpm',      sel:'#live-wpm-display',                     label:'Live WPM' }
+];
+var editMode  = false;
+var dragInfo  = null;
+var resizeInfo= null;
+var moveHandles = {};
+var resizeHandles = {};
+
+function getTargets(){
+    return HUD_TARGETS.map(function(t){ return { key:t.key, label:t.label, node:document.querySelector(t.sel) }; })
+                       .filter(function(t){ return !!t.node; });
+}
+
+function loadHudPositions(){
+    try { return JSON.parse(localStorage.getItem('rt_hud_pos') || '{}'); } catch(e){ return {}; }
+}
+
+function setNodeTransform(node, scale){
+    node.style.transformOrigin = 'top left';
+    // !important is required here: some elements (e.g. #live-wpm-display's
+    // "show" animation) have a CSS animation that also targets `transform`.
+    // CSS animations override a plain inline style for that same property,
+    // which silently snapped a resized element back to its default size
+    // the moment that animation ran (e.g. when a test starts). A plain
+    // inline declaration can't win against that — only !important can.
+    node.style.setProperty('transform', 'scale(' + (scale || 1) + ')', 'important');
+    node.dataset.rtScale = scale || 1;
+}
+
+/* Converts an element to free-floating position:fixed. The FIRST time this
+   runs on a given element, its exact original inline `style` attribute is
+   captured so resetHudPositions() can restore it byte-for-byte later —
+   several elements ship with a deliberate inline style in the HTML itself
+   (e.g. the leaderboard button's `position:static;top:auto;...`), and
+   blindly clearing individual properties on reset was wiping those out
+   too, which is what caused header/leaderboard buttons to visually
+   collapse after clicking "NORMAL". */
+function makeFixed(node){
+    if (node.dataset.rtOrigStyle === undefined) {
+        node.dataset.rtOrigStyle = node.getAttribute('style') || '';
+    }
+    node.style.position = 'fixed';
+    node.style.margin = '0';
+    node.style.right = 'auto'; node.style.bottom = 'auto';
+    node.style.zIndex = 500;
+}
+
+function applySavedHudPositions(){
+    var saved = loadHudPositions();
+    getTargets().forEach(function(t){
+        var pos = saved[t.key];
+        if (!pos) return;
+        makeFixed(t.node);
+        t.node.style.left = pos.leftPct + '%';
+        t.node.style.top  = pos.topPct + '%';
+        setNodeTransform(t.node, pos.scale || 1);
+    });
+}
+
+function resetHudPositions(){
+    try { localStorage.removeItem('rt_hud_pos'); } catch(e){}
+    getTargets().forEach(function(t){
+        var n = t.node;
+        if (n.dataset.rtOrigStyle !== undefined) {
+            if (n.dataset.rtOrigStyle === '') n.removeAttribute('style');
+            else n.setAttribute('style', n.dataset.rtOrigStyle);
+            delete n.dataset.rtOrigStyle;
+        }
+        delete n.dataset.rtScale;
+    });
+    if (editMode) positionAllHandles();
+    showToast('↺ Layout reset to normal');
+}
+
+/* Persists ONE element's current position + scale into localStorage,
+   merging into whatever's already saved (never wipes other elements'
+   saved spots). Called automatically the instant a drag/resize ends —
+   so a change is never lost even if the SAVE LAYOUT button is never
+   pressed — and again by that button, which re-confirms every element
+   currently placed and shows the toast as visible proof it worked. */
+function persistTarget(t){
+    var n = t.node;
+    if (getComputedStyle(n).position !== 'fixed') return;
+    var rect = n.getBoundingClientRect();
+    var scale = parseFloat(n.dataset.rtScale) || 1;
+    var saved = loadHudPositions();
+    saved[t.key] = {
+        leftPct: (rect.left / window.innerWidth) * 100,
+        topPct:  (rect.top  / window.innerHeight) * 100,
+        scale:   scale
+    };
+    try { localStorage.setItem('rt_hud_pos', JSON.stringify(saved)); } catch(e){}
+}
+
+function saveLayout(){
+    getTargets().forEach(function(t){ persistTarget(t); });
+    showToast('✓ Layout saved!');
+}
+
+/* ── Small confirmation toast so users can SEE that Save worked ── */
+function showToast(msg){
+    var t = document.getElementById('rt-save-toast');
+    if (!t) {
+        t = document.createElement('div');
+        t.id = 'rt-save-toast';
+        document.body.appendChild(t);
+    }
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(t._hideTimer);
+    t._hideTimer = setTimeout(function(){ t.classList.remove('show'); }, 2200);
+}
+
+function createMoveHandle(t){
+    var h = document.createElement('div');
+    h.className = 'rt-hud-handle';
+    h.textContent = '⠿';
+    h.title = 'Drag to move: ' + t.label;
+    document.body.appendChild(h);
+    h.addEventListener('pointerdown', function(e){ e.preventDefault(); e.stopPropagation(); startMove(t, e); });
+    return h;
+}
+function createResizeHandle(t){
+    var h = document.createElement('div');
+    h.className = 'rt-hud-resize';
+    h.textContent = '⤡';
+    h.title = 'Drag to resize: ' + t.label;
+    document.body.appendChild(h);
+    h.addEventListener('pointerdown', function(e){ e.preventDefault(); e.stopPropagation(); startResize(t, e); });
+    return h;
+}
+
+function startMove(t, e){
+    var rect = t.node.getBoundingClientRect();
+    makeFixed(t.node);
+    t.node.style.left = rect.left + 'px';
+    t.node.style.top  = rect.top + 'px';
+    if (!t.node.dataset.rtScale) setNodeTransform(t.node, 1);
+    dragInfo = { t: t, startX: e.clientX, startY: e.clientY, origLeft: rect.left, origTop: rect.top };
+}
+function startResize(t, e){
+    // Make sure it's already free-floating before scaling — lets you grab
+    // the resize dot first, without needing to move the element first.
+    var rect = t.node.getBoundingClientRect();
+    makeFixed(t.node);
+    if (!t.node.style.left) { t.node.style.left = rect.left + 'px'; t.node.style.top = rect.top + 'px'; }
+    var startScale = parseFloat(t.node.dataset.rtScale) || 1;
+    resizeInfo = { t: t, startX: e.clientX, startY: e.clientY, startScale: startScale };
+}
+
+function positionHandle(t){
+    var mh = moveHandles[t.key], rh = resizeHandles[t.key];
+    if (!t.node) return;
+    var rect = t.node.getBoundingClientRect();
+    if (mh) { mh.style.left = Math.max(0, rect.left - 12) + 'px'; mh.style.top = Math.max(0, rect.top - 12) + 'px'; }
+    if (rh) { rh.style.left = (rect.right - 12) + 'px'; rh.style.top = (rect.bottom - 12) + 'px'; }
+}
+function positionAllHandles(){ getTargets().forEach(positionHandle); }
+
+document.addEventListener('pointermove', function(e){
+    if (dragInfo) {
+        var n = dragInfo.t.node;
+        var dx = e.clientX - dragInfo.startX;
+        var dy = e.clientY - dragInfo.startY;
+        var newLeft = Math.max(-n.offsetWidth*0.3, Math.min(dragInfo.origLeft + dx, window.innerWidth - n.offsetWidth*0.5));
+        var newTop  = Math.max(0, Math.min(dragInfo.origTop + dy, window.innerHeight - 24));
+        n.style.left = newLeft + 'px';
+        n.style.top  = newTop + 'px';
+        positionHandle(dragInfo.t);
+    }
+    if (resizeInfo) {
+        var dx2 = e.clientX - resizeInfo.startX;
+        var dy2 = e.clientY - resizeInfo.startY;
+        var delta = (dx2 + dy2) / 2;
+        var newScale = Math.max(0.5, Math.min(3, resizeInfo.startScale + delta / 150));
+        setNodeTransform(resizeInfo.t.node, newScale);
+        positionHandle(resizeInfo.t);
+    }
+});
+document.addEventListener('pointerup', function(){
+    if (dragInfo)   { persistTarget(dragInfo.t);   dragInfo   = null; }
+    if (resizeInfo) { persistTarget(resizeInfo.t); resizeInfo = null; }
+});
+window.addEventListener('resize', function(){ if (editMode) positionAllHandles(); });
+
+
+/* While in edit mode, dragging/resizing a live button (GAME, EASY, the
+   keymap toggle, etc.) must move it — NOT also trigger its normal
+   click action. This blocks that click in the capture phase. */
+document.addEventListener('click', function(e){
+    if (!editMode) return;
+    var hit = getTargets().some(function(t){ return t.node === e.target || t.node.contains(e.target); });
+    var onHandle = e.target.classList && (e.target.classList.contains('rt-hud-handle') || e.target.classList.contains('rt-hud-resize'));
+    if (hit || onHandle) { e.stopPropagation(); e.preventDefault(); }
+}, true);
+
+function enterEditMode(){
+    editMode = true;
+    // Live WPM normally only shows once a test starts — force a "0" preview
+    // so it can be positioned/resized without needing to start typing.
+    var lw = document.getElementById('live-wpm-display');
+    if (lw && getComputedStyle(lw).display === 'none') {
+        lw.dataset.rtForcedPreview = '1';
+        lw.style.display = 'block';
+    }
+    getTargets().forEach(function(t){
+        t.node.classList.add('rt-hud-editable');
+        t.node.addEventListener('pointerdown', onNodePointerDown);
+        if (!moveHandles[t.key])   moveHandles[t.key]   = createMoveHandle(t);
+        if (!resizeHandles[t.key]) resizeHandles[t.key] = createResizeHandle(t);
+        moveHandles[t.key].style.display = 'flex';
+        resizeHandles[t.key].style.display = 'flex';
+        positionHandle(t);
+    });
+}
+function onNodePointerDown(e){
+    if (!editMode) return;
+    var t = getTargets().filter(function(x){ return x.node === e.currentTarget; })[0];
+    if (!t) return;
+    e.preventDefault();
+    startMove(t, e);
+}
+function exitEditMode(){
+    editMode = false;
+    getTargets().forEach(function(t){
+        t.node.classList.remove('rt-hud-editable');
+        t.node.removeEventListener('pointerdown', onNodePointerDown);
+    });
+    Object.keys(moveHandles).forEach(function(k){ if (moveHandles[k]) moveHandles[k].style.display = 'none'; });
+    Object.keys(resizeHandles).forEach(function(k){ if (resizeHandles[k]) resizeHandles[k].style.display = 'none'; });
+    var lw = document.getElementById('live-wpm-display');
+    if (lw && lw.dataset.rtForcedPreview === '1') {
+        var isActive = false;
+        try { isActive = !!testActive; } catch(e){}
+        if (!isActive) lw.style.display = 'none';
+        delete lw.dataset.rtForcedPreview;
+    }
+}
+
+/* ── Settings panel UI ─────────────────────────────────────────── */
+function buildPanel(){
+    var wrap = document.createElement('div');
+    wrap.innerHTML =
+        '<button id="rt-settings-btn" title="Settings">⚙</button>' +
+        '<div id="rt-settings-panel">' +
+            '<div class="rt-settings-tabs">' +
+                '<button class="rt-settings-tab active" data-tab="color">🎨 COLOR</button>' +
+                '<button class="rt-settings-tab" data-tab="custom">🖱 CUSTOM</button>' +
+            '</div>' +
+            '<div class="rt-settings-pane active" id="rt-tab-color">' +
+                '<button class="rt-normal-btn" id="rt-color-normal">↺ NORMAL (reset color)</button>' +
+                '<div id="rt-theme-grid"></div>' +
+            '</div>' +
+            '<div class="rt-settings-pane" id="rt-tab-custom">' +
+                '<button class="rt-normal-btn" id="rt-custom-normal">↺ NORMAL (reset layout)</button>' +
+                '<button id="rt-custom-toggle">ENABLE DRAG MODE</button>' +
+                '<button id="rt-save-layout-btn">💾 SAVE LAYOUT</button>' +
+                '<p class="rt-hint">Turn on drag mode. Touch/click any button or element directly and drag it anywhere. Grab its ⤡ corner dot to resize it. Nothing is kept until you press <strong>SAVE LAYOUT</strong>.</p>' +
+            '</div>' +
+        '</div>';
+    document.body.appendChild(wrap);
+
+    var grid = document.getElementById('rt-theme-grid');
+    THEMES.forEach(function(t){
+        var sw = document.createElement('div');
+        sw.className = 'rt-swatch';
+        sw.title = t.name;
+        sw.style.background = 'linear-gradient(135deg,' + t.main + ',' + t.main2 + ')';
+        sw.addEventListener('click', function(){ applyTheme(t); });
+        grid.appendChild(sw);
+    });
+
+    document.getElementById('rt-color-normal').addEventListener('click', function(){ applyTheme(THEMES[0]); });
+    document.getElementById('rt-custom-normal').addEventListener('click', resetHudPositions);
+    document.getElementById('rt-save-layout-btn').addEventListener('click', saveLayout);
+
+    var toggleBtn = document.getElementById('rt-custom-toggle');
+    toggleBtn.addEventListener('click', function(){
+        if (editMode) { exitEditMode(); toggleBtn.textContent = 'ENABLE DRAG MODE'; toggleBtn.classList.remove('on'); }
+        else          { enterEditMode(); toggleBtn.textContent = 'DISABLE DRAG MODE'; toggleBtn.classList.add('on'); }
+    });
+
+    document.querySelectorAll('.rt-settings-tab').forEach(function(tab){
+        tab.addEventListener('click', function(){
+            document.querySelectorAll('.rt-settings-tab').forEach(function(x){ x.classList.remove('active'); });
+            document.querySelectorAll('.rt-settings-pane').forEach(function(x){ x.classList.remove('active'); });
+            tab.classList.add('active');
+            document.getElementById('rt-tab-' + tab.dataset.tab).classList.add('active');
+        });
+    });
+
+    var gearBtn = document.getElementById('rt-settings-btn');
+    var panel   = document.getElementById('rt-settings-panel');
+    gearBtn.addEventListener('click', function(){ panel.classList.toggle('open'); });
+    document.addEventListener('click', function(e){
+        if (!panel.contains(e.target) && e.target !== gearBtn && panel.classList.contains('open')) {
+            panel.classList.remove('open');
+        }
+    });
+}
+
+function init(){
+    applySavedHudPositions();
+    buildPanel();
+}
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+} else {
+    init();
+}
+
+})();
 </script>
 
 </body>
