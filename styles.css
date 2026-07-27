@@ -1250,3 +1250,55 @@ footer a:hover { color: #e2b714; }
     display: block;
     min-height: 90px;
 }
+/* ═══════════════════════════════════════════════════════════════
+   THEME ENGINE — shared across index.html, leaderboard.html and
+   profile.html (all three link this stylesheet). Defaults below
+   match the site's original "Rocket Gold" look exactly. index.html
+   also defines these same variables inline (for a zero-flash
+   guarantee, since it loads this file asynchronously); leaderboard
+   and profile load this file synchronously so they don't need that
+   duplicate — these rules are their only source of truth.
+   ═══════════════════════════════════════════════════════════════ */
+:root{
+    --rt-bg:#0a0a23; --rt-bg-rgb:10,10,35;
+    --rt-glow1:rgba(255,215,0,0.15); --rt-glow2:rgba(255,100,0,0.15);
+    --rt-panel-bg:rgba(10,10,35,0.85); --rt-panel-glow:rgba(255,215,0,0.3);
+    --rt-main:#e2b714; --rt-main-rgb:226,183,20;
+    --rt-main2:#ff9900; --rt-main2-rgb:255,153,0;
+    --rt-text:#ffffff; --rt-sub:#646669; --rt-error:#da3333;
+    --rt-caret:#00e6cc; --rt-caret-rgb:0,230,204;
+    --rt-bodytext:#ffd700;
+}
+html,body{background:var(--rt-bg) !important;color:var(--rt-bodytext) !important;}
+
+/* ── Leaderboard page ── */
+.leaderboard-modal{background:linear-gradient(145deg,var(--rt-bg),rgba(var(--rt-main-rgb),0.15)) !important;border-color:var(--rt-caret) !important;box-shadow:0 0 80px rgba(var(--rt-caret-rgb),0.6),0 0 30px rgba(var(--rt-main-rgb),0.4) !important;}
+.header-title{color:var(--rt-bodytext) !important;text-shadow:0 0 30px var(--rt-bodytext) !important;}
+.total-stats{color:var(--rt-caret) !important;background:rgba(var(--rt-caret-rgb),0.1) !important;border-color:var(--rt-caret) !important;}
+.leaderboard-header-grid{color:var(--rt-bodytext) !important;border-bottom-color:var(--rt-caret) !important;background:rgba(var(--rt-main-rgb),0.08) !important;}
+.leaderboard-row:hover{background:rgba(var(--rt-main-rgb),0.12) !important;box-shadow:0 0 25px rgba(var(--rt-main-rgb),0.3) !important;}
+.leaderboard-row.top{background:var(--rt-caret) !important;color:var(--rt-bg) !important;box-shadow:0 0 30px rgba(var(--rt-caret-rgb),0.5) !important;}
+.leaderboard-row.you{border-color:var(--rt-caret) !important;background:rgba(var(--rt-caret-rgb),0.15) !important;}
+.leaderboard-time-tabs{border-color:rgba(var(--rt-main-rgb),0.3) !important;box-shadow:0 0 25px rgba(var(--rt-main-rgb),0.2) !important;}
+.time-tab{color:var(--rt-main) !important;}
+.time-tab:hover{background:rgba(var(--rt-main-rgb),0.3) !important;box-shadow:0 0 20px rgba(var(--rt-main-rgb),0.6) !important;}
+.time-tab.active{background:linear-gradient(135deg,var(--rt-main),var(--rt-main2)) !important;color:var(--rt-bg) !important;box-shadow:0 0 35px var(--rt-caret),0 0 20px rgba(var(--rt-main2-rgb),0.8) !important;}
+.lb-mode-tab.active{background:rgba(var(--rt-main-rgb),0.15) !important;border-color:var(--rt-bodytext) !important;color:var(--rt-bodytext) !important;}
+.register-prompt-banner{background:linear-gradient(135deg,rgba(var(--rt-main-rgb),0.15),rgba(var(--rt-caret-rgb),0.1)) !important;}
+
+/* ── Profile page ── */
+#profileModalBox{background:linear-gradient(145deg,var(--rt-bg),rgba(var(--rt-main-rgb),0.08)) !important;}
+.pm-banner{background:linear-gradient(135deg,var(--rt-bg) 0%,rgba(var(--rt-main-rgb),0.3) 40%,rgba(var(--rt-main2-rgb),0.3) 70%,var(--rt-bg) 100%) !important;}
+.pm-avatar-ring{border-color:var(--rt-main) !important;}
+.pm-avatar-initial{background:linear-gradient(135deg,var(--rt-main),var(--rt-main2)) !important;color:var(--rt-bg) !important;}
+.pm-add-photo-label{color:var(--rt-main) !important;}
+.pm-divider{background:linear-gradient(90deg,transparent,rgba(var(--rt-main-rgb),0.18),transparent) !important;}
+.pm-speed-bar-fill{background:linear-gradient(90deg,var(--rt-caret),var(--rt-main),var(--rt-main2)) !important;}
+.pm-musk-number{background:linear-gradient(135deg,var(--rt-bodytext) 30%,var(--rt-main2) 70%,var(--rt-main2)) !important;}
+.pm-musk-progress-fill{background:linear-gradient(90deg,var(--rt-main),var(--rt-main2),var(--rt-main2)) !important;}
+.pm-elon-fill{background:linear-gradient(90deg,var(--rt-caret),var(--rt-caret)) !important;}
+.pm-musk-tooltip strong,.pm-elon-tooltip strong{color:var(--rt-main) !important;}
+.pm-close-top{border-color:rgba(var(--rt-main-rgb),0.3) !important;color:var(--rt-main) !important;}
+.pm-recent-row span:nth-child(2){color:var(--rt-bodytext) !important;}
+.pm-recent-row span:nth-child(3){color:var(--rt-caret) !important;}
+.pm-rank-badge{color:var(--rt-main) !important;}
