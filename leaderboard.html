@@ -177,7 +177,33 @@
 .lb-mode-tab:hover:not(.active) { border-color: rgba(255,215,0,0.6); color: #ccc; }
 
     </style>
+<script>
+/* Apply any saved theme immediately (before first paint) so there's no
+   flash of the default palette for returning visitors. Same theme is
+   shared across index.html, leaderboard.html and profile.html via the
+   'rt_theme' localStorage key (all same-origin). */
+(function(){
+    try{
+        var raw = localStorage.getItem('rt_theme');
+        if(!raw) return;
+        var t = JSON.parse(raw);
+        function h2r(hex){hex=hex.replace('#','');if(hex.length===3)hex=hex.split('').map(function(c){return c+c;}).join('');var n=parseInt(hex,16);return ((n>>16)&255)+','+((n>>8)&255)+','+(n&255);}
+        var r=document.documentElement.style;
+        r.setProperty('--rt-bg',t.bg); r.setProperty('--rt-bg-rgb',h2r(t.bg));
+        r.setProperty('--rt-glow1','rgba('+h2r(t.main)+',0.15)');
+        r.setProperty('--rt-glow2','rgba('+h2r(t.main2)+',0.15)');
+        r.setProperty('--rt-panel-bg','rgba('+h2r(t.bg)+',0.85)');
+        r.setProperty('--rt-panel-glow','rgba('+h2r(t.main)+',0.3)');
+        r.setProperty('--rt-main',t.main); r.setProperty('--rt-main-rgb',h2r(t.main));
+        r.setProperty('--rt-main2',t.main2); r.setProperty('--rt-main2-rgb',h2r(t.main2));
+        r.setProperty('--rt-text',t.text); r.setProperty('--rt-sub',t.sub); r.setProperty('--rt-error',t.error);
+        r.setProperty('--rt-caret',t.caret); r.setProperty('--rt-caret-rgb',h2r(t.caret));
+        r.setProperty('--rt-bodytext',t.bodytext);
+    }catch(e){}
+})();
+</script>
 </head>
+
 <body>
     <script>
         var _confettiLoadPromise = null;
