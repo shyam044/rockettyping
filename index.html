@@ -1095,6 +1095,38 @@ footer a:hover{color:var(--rt-main) !important;}
     border:none;color:var(--rt-bg);font-family:'Roboto Mono',monospace;font-size:12px;font-weight:900;letter-spacing:.5px;cursor:pointer;margin:6px 0 10px;}
 #rt-custom-toggle.on{background:#2ecc71;}
 .rt-hint{font-size:11px;color:#888;line-height:1.5;margin:0;}
+#rt-custom-panel{
+    display:none;
+    flex-direction:column;
+    justify-content:space-between;
+    gap:14px;
+    margin-top:190px;
+    min-height:162px;
+    background:var(--rt-panel-bg);
+    border:2px solid var(--rt-main);
+    border-radius:16px;
+    padding:20px;
+    box-sizing:border-box;
+    position:relative;
+    z-index:15;
+}
+#rt-custom-panel.active{display:flex;}
+.rt-cp-row{
+    width:100%;padding:16px;border-radius:10px;border:2px solid var(--rt-main);
+    background:rgba(var(--rt-main-rgb),0.12);color:var(--rt-main);
+    font-family:'Roboto Mono',monospace;font-size:15px;font-weight:900;letter-spacing:1.5px;
+    cursor:pointer;text-align:center;transition:background .2s,transform .15s;
+}
+.rt-cp-row:hover{background:rgba(var(--rt-main-rgb),0.22);transform:scale(1.01);}
+.rt-cp-save{border-color:#2ecc71;color:#2ecc71;background:rgba(46,204,113,0.12);}
+.rt-cp-save:hover{background:rgba(46,204,113,0.22);}
+.rt-cp-row-nav{display:flex;align-items:center;justify-content:space-between;flex:1;}
+.rt-cp-nav-btn{
+    width:64px;height:64px;border-radius:12px;border:2px solid var(--rt-caret);
+    background:rgba(var(--rt-caret-rgb),0.12);color:var(--rt-caret);
+    font-size:24px;font-weight:900;cursor:pointer;transition:background .2s,transform .15s;
+}
+.rt-cp-nav-btn:hover{background:rgba(var(--rt-caret-rgb),0.25);transform:scale(1.06);}
 .rt-hud-editable{outline:2px dashed var(--rt-main) !important;outline-offset:3px;}
 .rt-hud-handle{position:fixed;width:28px;height:28px;border-radius:7px;background:var(--rt-main);color:var(--rt-bg);
     display:flex;align-items:center;justify-content:center;font-size:14px;cursor:grab;z-index:9992;
@@ -6794,6 +6826,8 @@ var dragInfo  = null;
 var resizeInfo= null;
 var moveHandles = {};
 var resizeHandles = {};
+var historyStack = [];
+var historyIndex = -1;
 
 function getTargets(){
     return HUD_TARGETS.map(function(t){ return { key:t.key, label:t.label, node:document.querySelector(t.sel) }; })
@@ -6858,6 +6892,7 @@ function resetHudPositions(){
         delete n.dataset.rtScale;
     });
     if (editMode) positionAllHandles();
+    pushHistory();
     showToast('↺ Layout reset to normal');
 }
 
@@ -6967,8 +7002,8 @@ document.addEventListener('pointermove', function(e){
     }
 });
 document.addEventListener('pointerup', function(){
-    if (dragInfo)   { persistTarget(dragInfo.t);   dragInfo   = null; }
-    if (resizeInfo) { persistTarget(resizeInfo.t); resizeInfo = null; }
+    if (dragInfo)   { persistTarget(dragInfo.t);   dragInfo   = null; pushHistory(); }
+    if (resizeInfo) { persistTarget(resizeInfo.t); resizeInfo = null; pushHistory(); }
 });
 window.addEventListener('resize', function(){ if (editMode) positionAllHandles(); });
 
@@ -6982,6 +7017,54 @@ document.addEventListener('click', function(e){
     var onHandle = e.target.classList && (e.target.classList.contains('rt-hud-handle') || e.target.classList.contains('rt-hud-resize'));
     if (hit || onHandle) { e.stopPropagation(); e.preventDefault(); }
 }, true);
+
+/* ── Undo / redo history for the current editing session ─────────
+   Snapshots only the elements currently customized (position:fixed).
+   Nothing here touches localStorage — SAVE LAYOUT is still the only
+   action that commits to storage. */
+function snapshotAll(){
+    var snap = {};
+    getTargets().forEach(function(t){
+        var n = t.node;
+        if (getComputedStyle(n).position === 'fixed') {
+            snap[t.key] = { left: n.style.left, top: n.style.top, scale: parseFloat(n.dataset.rtScale) || 1 };
+        }
+    });
+    return snap;
+}
+function pushHistory(){
+    historyStack = historyStack.slice(0, historyIndex + 1);
+    historyStack.push(snapshotAll());
+    historyIndex = historyStack.length - 1;
+}
+function applySnapshot(snap){
+    getTargets().forEach(function(t){
+        var n = t.node;
+        var s = snap[t.key];
+        if (s) {
+            makeFixed(n);
+            n.style.left = s.left;
+            n.style.top  = s.top;
+            setNodeTransform(n, s.scale);
+        } else if (n.dataset.rtOrigStyle !== undefined) {
+            if (n.dataset.rtOrigStyle === '') n.removeAttribute('style');
+            else n.setAttribute('style', n.dataset.rtOrigStyle);
+            delete n.dataset.rtOrigStyle;
+            delete n.dataset.rtScale;
+        }
+    });
+    if (editMode) positionAllHandles();
+}
+function historyBack(){
+    if (historyIndex <= 0) { showToast('Nothing earlier to undo'); return; }
+    historyIndex--;
+    applySnapshot(historyStack[historyIndex]);
+}
+function historyForward(){
+    if (historyIndex >= historyStack.length - 1) { showToast('Nothing later to redo'); return; }
+    historyIndex++;
+    applySnapshot(historyStack[historyIndex]);
+}
 
 function enterEditMode(){
     editMode = true;
@@ -7026,6 +7109,32 @@ function exitEditMode(){
     }
 }
 
+/* ── In-page Custom panel — replaces the typing paragraph area ────
+   Clicking CUSTOM in settings hides the corner popup entirely and
+   shows this 3-row panel (Reset Layout / ← Undo · Redo → / Save
+   Layout) right where the typing text normally sits. Drag mode turns
+   on automatically — there's no separate "enable" step. Pressing
+   SAVE LAYOUT is the only way back to the normal typing view. */
+function showCustomPanel(){
+    var words = document.getElementById('words');
+    var cp = document.getElementById('rt-custom-panel');
+    if (!words || !cp) return;
+    words.style.display = 'none';
+    cp.classList.add('active');
+    historyStack = [];
+    historyIndex = -1;
+    pushHistory();
+    enterEditMode();
+}
+function hideCustomPanelAndSave(){
+    saveLayout();
+    var words = document.getElementById('words');
+    var cp = document.getElementById('rt-custom-panel');
+    exitEditMode();
+    if (cp) cp.classList.remove('active');
+    if (words) words.style.display = '';
+}
+
 /* ── Settings panel UI ─────────────────────────────────────────── */
 function buildPanel(){
     var wrap = document.createElement('div');
@@ -7039,12 +7148,6 @@ function buildPanel(){
             '<div class="rt-settings-pane active" id="rt-tab-color">' +
                 '<button class="rt-normal-btn" id="rt-color-normal">↺ NORMAL (reset color)</button>' +
                 '<div id="rt-theme-grid"></div>' +
-            '</div>' +
-            '<div class="rt-settings-pane" id="rt-tab-custom">' +
-                '<button class="rt-normal-btn" id="rt-custom-normal">↺ NORMAL (reset layout)</button>' +
-                '<button id="rt-custom-toggle">ENABLE DRAG MODE</button>' +
-                '<button id="rt-save-layout-btn">💾 SAVE LAYOUT</button>' +
-                '<p class="rt-hint">Turn on drag mode. Touch/click any button or element directly and drag it anywhere. Grab its ⤡ corner dot to resize it. Nothing is kept until you press <strong>SAVE LAYOUT</strong>.</p>' +
             '</div>' +
         '</div>';
     document.body.appendChild(wrap);
@@ -7060,17 +7163,18 @@ function buildPanel(){
     });
 
     document.getElementById('rt-color-normal').addEventListener('click', function(){ applyTheme(THEMES[0]); });
-    document.getElementById('rt-custom-normal').addEventListener('click', resetHudPositions);
-    document.getElementById('rt-save-layout-btn').addEventListener('click', saveLayout);
 
-    var toggleBtn = document.getElementById('rt-custom-toggle');
-    toggleBtn.addEventListener('click', function(){
-        if (editMode) { exitEditMode(); toggleBtn.textContent = 'ENABLE DRAG MODE'; toggleBtn.classList.remove('on'); }
-        else          { enterEditMode(); toggleBtn.textContent = 'DISABLE DRAG MODE'; toggleBtn.classList.add('on'); }
-    });
+    var gearBtn = document.getElementById('rt-settings-btn');
+    var panel   = document.getElementById('rt-settings-panel');
 
     document.querySelectorAll('.rt-settings-tab').forEach(function(tab){
         tab.addEventListener('click', function(){
+            if (tab.dataset.tab === 'custom') {
+                // Custom mode lives in the typing area, not the corner popup.
+                panel.classList.remove('open');
+                showCustomPanel();
+                return;
+            }
             document.querySelectorAll('.rt-settings-tab').forEach(function(x){ x.classList.remove('active'); });
             document.querySelectorAll('.rt-settings-pane').forEach(function(x){ x.classList.remove('active'); });
             tab.classList.add('active');
@@ -7078,14 +7182,32 @@ function buildPanel(){
         });
     });
 
-    var gearBtn = document.getElementById('rt-settings-btn');
-    var panel   = document.getElementById('rt-settings-panel');
     gearBtn.addEventListener('click', function(){ panel.classList.toggle('open'); });
     document.addEventListener('click', function(e){
         if (!panel.contains(e.target) && e.target !== gearBtn && panel.classList.contains('open')) {
             panel.classList.remove('open');
         }
     });
+
+    /* In-page custom panel — inserted right after #words so it occupies
+       the exact same slot in the layout as the typing text. */
+    var words = document.getElementById('words');
+    if (words) {
+        words.insertAdjacentHTML('afterend',
+            '<div id="rt-custom-panel">' +
+                '<button class="rt-cp-row rt-cp-reset" id="rt-cp-reset-btn">RESET LAYOUT</button>' +
+                '<div class="rt-cp-row-nav">' +
+                    '<button class="rt-cp-nav-btn" id="rt-cp-back-btn" title="Undo">&laquo;</button>' +
+                    '<button class="rt-cp-nav-btn" id="rt-cp-fwd-btn" title="Redo">&raquo;</button>' +
+                '</div>' +
+                '<button class="rt-cp-row rt-cp-save" id="rt-cp-save-btn">SAVE LAYOUT</button>' +
+            '</div>'
+        );
+        document.getElementById('rt-cp-reset-btn').addEventListener('click', resetHudPositions);
+        document.getElementById('rt-cp-back-btn').addEventListener('click', historyBack);
+        document.getElementById('rt-cp-fwd-btn').addEventListener('click', historyForward);
+        document.getElementById('rt-cp-save-btn').addEventListener('click', hideCustomPanelAndSave);
+    }
 }
 
 function init(){
