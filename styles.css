@@ -1268,8 +1268,10 @@ footer a:hover { color: #e2b714; }
     --rt-text:#ffffff; --rt-sub:#646669; --rt-error:#da3333;
     --rt-caret:#00e6cc; --rt-caret-rgb:0,230,204;
     --rt-bodytext:#ffd700;
+    --rt-font:'Roboto Mono', monospace;
 }
 html,body{background:var(--rt-bg) !important;color:var(--rt-bodytext) !important;}
+body,button,input,textarea,select{font-family:var(--rt-font) !important;}
 
 /* ── Leaderboard page ── */
 .leaderboard-modal{background:linear-gradient(145deg,var(--rt-bg),rgba(var(--rt-main-rgb),0.15)) !important;border-color:var(--rt-caret) !important;box-shadow:0 0 80px rgba(var(--rt-caret-rgb),0.6),0 0 30px rgba(var(--rt-main-rgb),0.4) !important;}
