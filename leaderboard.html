@@ -200,6 +200,19 @@
         r.setProperty('--rt-caret',t.caret); r.setProperty('--rt-caret-rgb',h2r(t.caret));
         r.setProperty('--rt-bodytext',t.bodytext);
     }catch(e){}
+    try{
+        var rawFont = localStorage.getItem('rt_font');
+        if(rawFont){
+            var f = JSON.parse(rawFont);
+            document.documentElement.style.setProperty('--rt-font', "'"+f.family+"', "+(f.mono?'monospace':'sans-serif'));
+            if(f.google){
+                var link = document.createElement('link');
+                link.rel = 'stylesheet';
+                link.href = 'https://fonts.googleapis.com/css2?family='+f.google+'&display=swap';
+                document.head.appendChild(link);
+            }
+        }
+    }catch(e){}
 })();
 </script>
 </head>
