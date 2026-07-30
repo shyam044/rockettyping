@@ -87,6 +87,9 @@ img { max-width: 100%; }
     /* height = font-size(38) × line-height(1.5) × 3 rows, so overflow:hidden
        clips to exactly 3 rows here too (not slightly less than 3). */
     #words { font-size: 38px; height: 171px; }
+    /* Custom-layout panel (Reset/Undo-Redo/Save) must always be exactly
+       the same box #words occupies at this breakpoint. */
+    #rt-custom-panel { height: 171px; }
 }
 
 /* ════════════════════════════════════════════════════════════════
@@ -113,6 +116,7 @@ img { max-width: 100%; }
     #app               { max-width: 96%; padding: 16px; }
     /* height = font-size(32) × line-height(1.5) × 3 rows */
     #words             { font-size: 32px; height: 144px; }
+    #rt-custom-panel   { height: 144px; }
     #difficulty-container { right: 10px; }
     .diff-btn, .qlen-btn { padding: 9px 16px; font-size: 12.5px; }
 
@@ -263,6 +267,7 @@ img { max-width: 100%; }
         height: 126px;
         padding: 0 10px;
     }
+    #rt-custom-panel { margin-top: 10px; height: 126px; }
 
     /* Keymap scene: allow horizontal scroll */
     #km-scene {
@@ -335,6 +340,7 @@ img { max-width: 100%; }
 
     /* height = font-size(24) × line-height(1.4) × 3 rows */
     #words { font-size: 24px; line-height: 1.4; gap: 4px; height: 101px; }
+    #rt-custom-panel { height: 101px; }
 
     #timer { font-size: 30px; }
 
@@ -506,6 +512,9 @@ img { max-width: 100%; }
            Fixed height (not min-height) so it actually clips to 3 rows. */
         height: 90px;
     }
+    #rt-custom-panel { height: 90px; padding: 6px 10px; }
+    .rt-cp-row { font-size: 10px; padding: 4px 8px; }
+    .rt-cp-nav-btn { width: 34px; height: 34px; font-size: 14px; }
 
     /* Hide live WPM circle on very small screens */
     #live-wpm-display { display: none !important; }
@@ -590,6 +599,9 @@ img { max-width: 100%; }
 
     /* height = font-size(17) × line-height(1.5, inherited) × 3 rows */
     #words { font-size: 17px; height: 77px; }
+    #rt-custom-panel { height: 77px; padding: 4px 8px; gap: 4px; }
+    .rt-cp-row { font-size: 9px; padding: 3px 6px; }
+    .rt-cp-nav-btn { width: 28px; height: 28px; font-size: 12px; }
 
     .diff-btn, .qlen-btn { padding: 6px 8px; font-size: 9.5px; }
 
