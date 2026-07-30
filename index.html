@@ -1033,8 +1033,10 @@
     --rt-text:#ffffff; --rt-sub:#646669; --rt-error:#da3333;
     --rt-caret:#00e6cc; --rt-caret-rgb:0,230,204;
     --rt-bodytext:#ffd700;
+    --rt-font:'Roboto Mono', monospace;
 }
 html,body{background:var(--rt-bg) !important;color:var(--rt-bodytext) !important;}
+body,button,input,textarea,select{font-family:var(--rt-font) !important;}
 body{background-image:
     radial-gradient(circle at 30% 20%, var(--rt-glow1) 0%, transparent 50%),
     radial-gradient(circle at 70% 80%, var(--rt-glow2) 0%, transparent 50%) !important;}
@@ -1086,6 +1088,13 @@ footer a:hover{color:var(--rt-main) !important;}
 .rt-settings-pane{display:none;}
 .rt-settings-pane.active{display:block;}
 #rt-theme-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px;}
+.rt-search-box{
+    width:100%;box-sizing:border-box;padding:8px 10px;margin-top:8px;border-radius:8px;
+    background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.15);color:#eee;
+    font-family:'Roboto Mono',monospace;font-size:12px;outline:none;
+}
+.rt-search-box:focus{border-color:var(--rt-main);}
+.rt-search-box::placeholder{color:#777;}
 .rt-swatch{height:38px;border-radius:8px;cursor:pointer;border:2px solid rgba(255,255,255,0.12);transition:transform .15s,border-color .15s;}
 .rt-swatch:hover{transform:scale(1.08);border-color:#fff;}
 .rt-normal-btn{width:100%;padding:9px;border-radius:8px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.15);
@@ -1098,35 +1107,48 @@ footer a:hover{color:var(--rt-main) !important;}
 #rt-custom-panel{
     display:none;
     flex-direction:column;
-    justify-content:space-between;
-    gap:14px;
+    gap:6px;
     margin-top:190px;
-    min-height:162px;
+    /* Exactly the same box the 3-line typing paragraph occupies (#words is
+       height:162px) — not a minimum, the actual fixed height, so this panel
+       always fits in precisely the same space instead of growing taller. */
+    height:162px;
+    width:100%;
     background:var(--rt-panel-bg);
     border:2px solid var(--rt-main);
     border-radius:16px;
-    padding:20px;
+    padding:10px 16px;
     box-sizing:border-box;
     position:relative;
     z-index:15;
+    overflow:hidden;
 }
 #rt-custom-panel.active{display:flex;}
 .rt-cp-row{
-    width:100%;padding:16px;border-radius:10px;border:2px solid var(--rt-main);
-    background:rgba(var(--rt-main-rgb),0.12);color:var(--rt-main);
-    font-family:'Roboto Mono',monospace;font-size:15px;font-weight:900;letter-spacing:1.5px;
+    width:100%;padding:6px 14px;border-radius:8px;border:2px solid var(--rt-main);
+    background:rgba(var(--rt-main-rgb),0.12);color:var(--rt-main);flex-shrink:0;
+    font-family:'Roboto Mono',monospace;font-size:12px;font-weight:900;letter-spacing:1.2px;
     cursor:pointer;text-align:center;transition:background .2s,transform .15s;
+    display:flex;align-items:center;justify-content:center;
 }
 .rt-cp-row:hover{background:rgba(var(--rt-main-rgb),0.22);transform:scale(1.01);}
 .rt-cp-save{border-color:#2ecc71;color:#2ecc71;background:rgba(46,204,113,0.12);}
 .rt-cp-save:hover{background:rgba(46,204,113,0.22);}
-.rt-cp-row-nav{display:flex;align-items:center;justify-content:space-between;flex:1;}
+/* Fills whatever space is left between the fixed-size Reset/Save rows,
+   so the whole panel always adds up to exactly height:162px regardless
+   of small padding/border tweaks — no manual pixel math needed. */
+.rt-cp-row-nav{display:flex;align-items:center;justify-content:space-between;flex:1;min-height:0;}
 .rt-cp-nav-btn{
-    width:64px;height:64px;border-radius:12px;border:2px solid var(--rt-caret);
+    width:44px;height:44px;max-height:100%;border-radius:10px;border:2px solid var(--rt-caret);
     background:rgba(var(--rt-caret-rgb),0.12);color:var(--rt-caret);
-    font-size:24px;font-weight:900;cursor:pointer;transition:background .2s,transform .15s;
+    font-size:18px;font-weight:900;cursor:pointer;transition:background .2s,transform .15s;
+    display:flex;align-items:center;justify-content:center;flex-shrink:0;
 }
 .rt-cp-nav-btn:hover{background:rgba(var(--rt-caret-rgb),0.25);transform:scale(1.06);}
+#rt-font-list{display:flex;flex-direction:column;gap:6px;margin-top:10px;max-height:320px;overflow-y:auto;}
+.rt-font-row{width:100%;text-align:left;padding:10px 12px;border-radius:8px;background:rgba(255,255,255,0.05);
+    border:1px solid rgba(255,255,255,0.1);color:#ddd;font-size:14px;cursor:pointer;transition:background .15s,border-color .15s;}
+.rt-font-row:hover{background:rgba(var(--rt-main-rgb),0.15);border-color:var(--rt-main);}
 .rt-hud-editable{outline:2px dashed var(--rt-main) !important;outline-offset:3px;}
 .rt-hud-handle{position:fixed;width:28px;height:28px;border-radius:7px;background:var(--rt-main);color:var(--rt-bg);
     display:flex;align-items:center;justify-content:center;font-size:14px;cursor:grab;z-index:9992;
@@ -1164,6 +1186,19 @@ footer a:hover{color:var(--rt-main) !important;}
         r.setProperty('--rt-text',t.text); r.setProperty('--rt-sub',t.sub); r.setProperty('--rt-error',t.error);
         r.setProperty('--rt-caret',t.caret); r.setProperty('--rt-caret-rgb',h2r(t.caret));
         r.setProperty('--rt-bodytext',t.bodytext);
+    }catch(e){}
+    try{
+        var rawFont = localStorage.getItem('rt_font');
+        if(rawFont){
+            var f = JSON.parse(rawFont);
+            document.documentElement.style.setProperty('--rt-font', "'"+f.family+"', "+(f.mono?'monospace':'sans-serif'));
+            if(f.google){
+                var link = document.createElement('link');
+                link.rel = 'stylesheet';
+                link.href = 'https://fonts.googleapis.com/css2?family='+f.google+'&display=swap';
+                document.head.appendChild(link);
+            }
+        }
     }catch(e){}
 })();
 </script>
@@ -2406,12 +2441,19 @@ window.deleteUser = deleteUser;
         const wordsDiv = document.getElementById('words');
         const input = document.getElementById('input');
         document.body.addEventListener('click', (e) => {
-            if (!testActive && !e.target.closest('#difficulty-container') && !e.target.closest('#test-config') && !e.target.closest('#result') && !e.target.closest('#timer')) {
+            if (!testActive
+                && !e.target.closest('#difficulty-container')
+                && !e.target.closest('#test-config')
+                && !e.target.closest('#result')
+                && !e.target.closest('#timer')
+                && !e.target.closest('#rt-settings-panel')
+                && !e.target.closest('#rt-settings-btn')
+                && !e.target.closest('#rt-custom-panel')) {
                 input.focus();
             }
         });
         window.addEventListener('focus', () => {
-            if (!testActive) input.focus();
+            if (!testActive && !window._rtCustomModeActive) input.focus();
         });
         const timerDiv = document.getElementById('timer');
         const resultDiv = document.getElementById('result');
@@ -2870,6 +2912,11 @@ window.deleteUser = deleteUser;
         }
 
         function handleKeydown(e) {
+// Defense in depth: the real input is also disabled while the Custom
+// layout panel is open (see showCustomPanel), but this guarantees a test
+// can never start from a stray keystroke while arranging the layout.
+if (window._rtCustomModeActive) return;
+
 // ── Block modifier combos (Alt+*, Ctrl+*, Meta+*) — never type these ──
 if (e.altKey || e.ctrlKey || e.metaKey) return;
 
@@ -6766,7 +6813,25 @@ var THEMES = [
     { name:'Mint',           bg:'#10201c', main:'#52d1a4', main2:'#2ec4b6', text:'#eafff5', sub:'#4a7a68', error:'#ff6b6b', caret:'#a0f0d0', bodytext:'#52d1a4' },
     { name:'Graphite Mono',  bg:'#1a1a1a', main:'#cfcfcf', main2:'#9e9e9e', text:'#f0f0f0', sub:'#6e6e6e', error:'#ff5555', caret:'#ffffff', bodytext:'#cfcfcf' },
     { name:'Paper',          bg:'#f5f5f0', main:'#333333', main2:'#555555', text:'#1a1a1a', sub:'#9e9e9e', error:'#d32f2f', caret:'#1a73e8', bodytext:'#333333' },
-    { name:'Midnight Blue',  bg:'#0b1929', main:'#64b5f6', main2:'#42a5f5', text:'#e3f2fd', sub:'#546e7a', error:'#ef5350', caret:'#4fc3f7', bodytext:'#64b5f6' }
+    { name:'Midnight Blue',  bg:'#0b1929', main:'#64b5f6', main2:'#42a5f5', text:'#e3f2fd', sub:'#546e7a', error:'#ef5350', caret:'#4fc3f7', bodytext:'#64b5f6' },
+    { name:'Material Dark',  bg:'#212121', main:'#82aaff', main2:'#c792ea', text:'#eeffff', sub:'#616161', error:'#f07178', caret:'#c3e88d', bodytext:'#eeffff' },
+    { name:'Material Light', bg:'#fafafa', main:'#6182b8', main2:'#7c4dff', text:'#212121', sub:'#90a4ae', error:'#e53935', caret:'#91b859', bodytext:'#212121' },
+    { name:'GitHub Dark',    bg:'#0d1117', main:'#58a6ff', main2:'#bc8cff', text:'#c9d1d9', sub:'#8b949e', error:'#f85149', caret:'#56d364', bodytext:'#c9d1d9' },
+    { name:'GitHub Light',   bg:'#ffffff', main:'#0969da', main2:'#8250df', text:'#24292f', sub:'#6e7781', error:'#cf222e', caret:'#1a7f37', bodytext:'#24292f' },
+    { name:'Horizon',        bg:'#1c1e26', main:'#e95678', main2:'#fab795', text:'#d5d8da', sub:'#6c6f93', error:'#e95678', caret:'#29d398', bodytext:'#d5d8da' },
+    { name:'Palenight',      bg:'#292d3e', main:'#82aaff', main2:'#c792ea', text:'#a6accd', sub:'#676e95', error:'#f07178', caret:'#c3e88d', bodytext:'#a6accd' },
+    { name:'Night Owl',      bg:'#011627', main:'#82aaff', main2:'#c792ea', text:'#d6deeb', sub:'#4b6479', error:'#ef5350', caret:'#addb67', bodytext:'#d6deeb' },
+    { name:'Cobalt2',        bg:'#193549', main:'#ffc600', main2:'#ff9d00', text:'#ffffff', sub:'#5a9bd8', error:'#ff628c', caret:'#3ad900', bodytext:'#ffc600' },
+    { name:'Panda',          bg:'#292a2b', main:'#ffb86c', main2:'#ff75b5', text:'#e6e6e6', sub:'#676b79', error:'#ff4b82', caret:'#19f9d8', bodytext:'#e6e6e6' },
+    { name:'Shades of Purple',bg:'#2d2b55',main:'#fad000', main2:'#ff9d00', text:'#ffffff', sub:'#a599e9', error:'#ff628c', caret:'#9effff', bodytext:'#ffffff' },
+    { name:'Oceanic Next',   bg:'#1b2b34', main:'#6699cc', main2:'#c594c5', text:'#cdd3de', sub:'#65737e', error:'#ec5f67', caret:'#99c794', bodytext:'#cdd3de' },
+    { name:'Zenburn',        bg:'#3f3f3f', main:'#f0dfaf', main2:'#dfaf8f', text:'#dcdccc', sub:'#7f9f7f', error:'#cc9393', caret:'#93e0e3', bodytext:'#dcdccc' },
+    { name:'Tomorrow Night', bg:'#1d1f21', main:'#f0c674', main2:'#de935f', text:'#c5c8c6', sub:'#969896', error:'#cc6666', caret:'#b5bd68', bodytext:'#c5c8c6' },
+    { name:'High Contrast',  bg:'#000000', main:'#ffff00', main2:'#00ffff', text:'#ffffff', sub:'#808080', error:'#ff0000', caret:'#00ff00', bodytext:'#ffff00' },
+    { name:'Sepia',          bg:'#3b2f2f', main:'#d2b48c', main2:'#cd853f', text:'#f5deb3', sub:'#8b7355', error:'#cd5c5c', caret:'#daa520', bodytext:'#f5deb3' },
+    { name:'Coral Reef',     bg:'#0a2e36', main:'#ff7f6b', main2:'#ffb26b', text:'#e0f7fa', sub:'#4a7a80', error:'#ff5252', caret:'#4dd0e1', bodytext:'#ff7f6b' },
+    { name:'Lavender Dream', bg:'#1e1b2e', main:'#b4a7ff', main2:'#ff9edb', text:'#f0edff', sub:'#6b6088', error:'#ff7096', caret:'#a7ffeb', bodytext:'#b4a7ff' },
+    { name:'Rust',           bg:'#1a1210', main:'#d97757', main2:'#e8a87c', text:'#f2e9e4', sub:'#7a5c52', error:'#e63946', caret:'#d4a373', bodytext:'#d97757' }
 ];
 
 function h2r(hex){
@@ -6789,6 +6854,60 @@ function applyTheme(t, persist){
     r.setProperty('--rt-caret', t.caret); r.setProperty('--rt-caret-rgb', h2r(t.caret));
     r.setProperty('--rt-bodytext', t.bodytext);
     if (persist !== false) { try { localStorage.setItem('rt_theme', JSON.stringify(t)); } catch(e){} }
+}
+
+/* ── Font presets ────────────────────────────────────────────────
+   `google` is the Google Fonts family query param (weights included).
+   `mono` picks the generic fallback (monospace vs sans-serif) used
+   while the webfont itself is still loading. First entry is the
+   site's original font; "NORMAL" always re-applies exactly this one. */
+var FONTS = [
+    { name:'Roboto Mono (Default)', family:'Roboto Mono',      google:null,                              mono:true  },
+    { name:'Fira Code',             family:'Fira Code',        google:'Fira+Code:wght@400;700',          mono:true  },
+    { name:'JetBrains Mono',        family:'JetBrains Mono',   google:'JetBrains+Mono:wght@400;700',     mono:true  },
+    { name:'Source Code Pro',       family:'Source Code Pro',  google:'Source+Code+Pro:wght@400;700',    mono:true  },
+    { name:'IBM Plex Mono',         family:'IBM Plex Mono',    google:'IBM+Plex+Mono:wght@400;700',      mono:true  },
+    { name:'Space Mono',            family:'Space Mono',       google:'Space+Mono:wght@400;700',         mono:true  },
+    { name:'Ubuntu Mono',           family:'Ubuntu Mono',      google:'Ubuntu+Mono:wght@400;700',        mono:true  },
+    { name:'Inconsolata',           family:'Inconsolata',      google:'Inconsolata:wght@400;700',        mono:true  },
+    { name:'Courier Prime',         family:'Courier Prime',    google:'Courier+Prime:wght@400;700',      mono:true  },
+    { name:'Anonymous Pro',         family:'Anonymous Pro',    google:'Anonymous+Pro:wght@400;700',      mono:true  },
+    { name:'Red Hat Mono',         family:'Red Hat Mono',      google:'Red+Hat+Mono:wght@400;700',       mono:true  },
+    { name:'Major Mono Display',    family:'Major Mono Display',google:'Major+Mono+Display',             mono:true  },
+    { name:'Poppins',               family:'Poppins',          google:'Poppins:wght@400;700',            mono:false },
+    { name:'Lexend',                family:'Lexend',           google:'Lexend:wght@400;700',             mono:false },
+    { name:'Nunito',                family:'Nunito',           google:'Nunito:wght@400;700',             mono:false },
+    { name:'Comic Neue',            family:'Comic Neue',       google:'Comic+Neue:wght@400;700',         mono:false },
+    { name:'Merriweather',          family:'Merriweather',     google:'Merriweather:wght@400;700',       mono:false },
+    { name:'Fira Mono',             family:'Fira Mono',        google:'Fira+Mono:wght@400;700',          mono:true  },
+    { name:'DM Mono',               family:'DM Mono',          google:'DM+Mono:wght@400;500',            mono:true  },
+    { name:'Azeret Mono',           family:'Azeret Mono',      google:'Azeret+Mono:wght@400;700',        mono:true  },
+    { name:'Martian Mono',          family:'Martian Mono',     google:'Martian+Mono:wght@400;700',       mono:true  },
+    { name:'Spline Sans Mono',      family:'Spline Sans Mono', google:'Spline+Sans+Mono:wght@400;700',   mono:true  },
+    { name:'PT Mono',               family:'PT Mono',          google:'PT+Mono',                         mono:true  },
+    { name:'VT323 (Retro)',         family:'VT323',            google:'VT323',                           mono:true  },
+    { name:'Press Start 2P',        family:'Press Start 2P',   google:'Press+Start+2P',                  mono:true  },
+    { name:'Roboto Slab',           family:'Roboto Slab',      google:'Roboto+Slab:wght@400;700',        mono:false },
+    { name:'Playfair Display',      family:'Playfair Display', google:'Playfair+Display:wght@400;700',   mono:false },
+    { name:'Quicksand',             family:'Quicksand',        google:'Quicksand:wght@400;700',          mono:false },
+    { name:'Work Sans',             family:'Work Sans',        google:'Work+Sans:wght@400;700',          mono:false },
+    { name:'Caveat',                family:'Caveat',           google:'Caveat:wght@400;700',             mono:false },
+    { name:'Pacifico',              family:'Pacifico',         google:'Pacifico',                        mono:false },
+    { name:'Orbitron',              family:'Orbitron',         google:'Orbitron:wght@400;700',           mono:false }
+];
+var loadedFontLinks = {};
+function ensureFontLoaded(f){
+    if (!f.google || loadedFontLinks[f.family]) return;
+    var link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = 'https://fonts.googleapis.com/css2?family=' + f.google + '&display=swap';
+    document.head.appendChild(link);
+    loadedFontLinks[f.family] = true;
+}
+function applyFont(f, persist){
+    ensureFontLoaded(f);
+    document.documentElement.style.setProperty('--rt-font', "'" + f.family + "', " + (f.mono ? 'monospace' : 'sans-serif'));
+    if (persist !== false) { try { localStorage.setItem('rt_font', JSON.stringify(f)); } catch(e){} }
 }
 
 /* ── HUD drag-to-reposition + resize ──────────────────────────────
@@ -7125,6 +7244,12 @@ function showCustomPanel(){
     historyIndex = -1;
     pushHistory();
     enterEditMode();
+    // Belt-and-suspenders: a disabled input can't receive focus or keystrokes
+    // at all, so nothing typed while arranging the layout can ever leak into
+    // the typing engine and silently start a test.
+    window._rtCustomModeActive = true;
+    var typingInput = document.getElementById('input');
+    if (typingInput) { typingInput.blur(); typingInput.disabled = true; }
 }
 function hideCustomPanelAndSave(){
     saveLayout();
@@ -7133,6 +7258,9 @@ function hideCustomPanelAndSave(){
     exitEditMode();
     if (cp) cp.classList.remove('active');
     if (words) words.style.display = '';
+    window._rtCustomModeActive = false;
+    var typingInput = document.getElementById('input');
+    if (typingInput) typingInput.disabled = false;
 }
 
 /* ── Settings panel UI ─────────────────────────────────────────── */
@@ -7143,11 +7271,18 @@ function buildPanel(){
         '<div id="rt-settings-panel">' +
             '<div class="rt-settings-tabs">' +
                 '<button class="rt-settings-tab active" data-tab="color">🎨 COLOR</button>' +
+                '<button class="rt-settings-tab" data-tab="font">🔤 FONT</button>' +
                 '<button class="rt-settings-tab" data-tab="custom">🖱 CUSTOM</button>' +
             '</div>' +
             '<div class="rt-settings-pane active" id="rt-tab-color">' +
                 '<button class="rt-normal-btn" id="rt-color-normal">↺ NORMAL (reset color)</button>' +
+                '<input type="text" id="rt-theme-search" class="rt-search-box" placeholder="🔎 Search themes..." autocomplete="off">' +
                 '<div id="rt-theme-grid"></div>' +
+            '</div>' +
+            '<div class="rt-settings-pane" id="rt-tab-font">' +
+                '<button class="rt-normal-btn" id="rt-font-normal">↺ NORMAL (reset font)</button>' +
+                '<input type="text" id="rt-font-search" class="rt-search-box" placeholder="🔎 Search fonts..." autocomplete="off">' +
+                '<div id="rt-font-list"></div>' +
             '</div>' +
         '</div>';
     document.body.appendChild(wrap);
@@ -7157,12 +7292,59 @@ function buildPanel(){
         var sw = document.createElement('div');
         sw.className = 'rt-swatch';
         sw.title = t.name;
+        sw.dataset.name = t.name.toLowerCase();
         sw.style.background = 'linear-gradient(135deg,' + t.main + ',' + t.main2 + ')';
         sw.addEventListener('click', function(){ applyTheme(t); });
         grid.appendChild(sw);
     });
-
     document.getElementById('rt-color-normal').addEventListener('click', function(){ applyTheme(THEMES[0]); });
+
+    // Plain substring filter — nothing here is ever written back into the
+    // DOM as HTML (no innerHTML with the query text), so there's no XSS
+    // surface even though it's user-typed text.
+    document.getElementById('rt-theme-search').addEventListener('input', function(e){
+        var q = e.target.value.trim().toLowerCase();
+        grid.querySelectorAll('.rt-swatch').forEach(function(sw){
+            sw.style.display = sw.dataset.name.indexOf(q) !== -1 ? '' : 'none';
+        });
+    });
+
+    var fontList = document.getElementById('rt-font-list');
+    FONTS.forEach(function(f){
+        var row = document.createElement('button');
+        row.className = 'rt-font-row';
+        row.textContent = f.name;
+        row.dataset.name = f.name.toLowerCase();
+        row.addEventListener('click', function(){
+            ensureFontLoaded(f);
+            // Preview instantly using the fallback stack; swaps to the real
+            // webfont glyphs the moment it finishes loading.
+            row.style.fontFamily = "'" + f.family + "', " + (f.mono ? 'monospace' : 'sans-serif');
+            applyFont(f);
+        });
+        // Load lazily as each row scrolls into view rather than all 33 at once.
+        if ('IntersectionObserver' in window) {
+            var obs = new IntersectionObserver(function(entries){
+                entries.forEach(function(entry){
+                    if (entry.isIntersecting) {
+                        ensureFontLoaded(f);
+                        row.style.fontFamily = "'" + f.family + "', " + (f.mono ? 'monospace' : 'sans-serif');
+                        obs.disconnect();
+                    }
+                });
+            }, { root: fontList });
+            obs.observe(row);
+        }
+        fontList.appendChild(row);
+    });
+    document.getElementById('rt-font-normal').addEventListener('click', function(){ applyFont(FONTS[0]); });
+
+    document.getElementById('rt-font-search').addEventListener('input', function(e){
+        var q = e.target.value.trim().toLowerCase();
+        fontList.querySelectorAll('.rt-font-row').forEach(function(row){
+            row.style.display = row.dataset.name.indexOf(q) !== -1 ? '' : 'none';
+        });
+    });
 
     var gearBtn = document.getElementById('rt-settings-btn');
     var panel   = document.getElementById('rt-settings-panel');
