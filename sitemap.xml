@@ -70,41 +70,84 @@
 
   <url>
     <loc>https://www.rockettyping.com/blog/advanced-touch-typing-techniques</loc>
+    <lastmod>2026-07-30</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.80</priority>
 
     <image:image>
-        <image:loc>https://www.rockettyping.com/blog/images/advanced-touch-typing-benefits.webp</image:loc>
+        <image:loc>https://www.rockettyping.com/blog/images/advanced-touch-typing-techniques-images/advanced-touch-typing-benefits.webp</image:loc>
         <image:title>Advanced Touch Typing Benefits</image:title>
         <image:caption>Advanced touch typing improves typing speed, accuracy, consistency, focus, and muscle memory while reducing unnecessary finger movement through efficient keyboard techniques.</image:caption>
     </image:image>
 
     <image:image>
-        <image:loc>https://www.rockettyping.com/blog/images/touch-typing-finger-economy-home-row-technique.webp</image:loc>
+        <image:loc>https://www.rockettyping.com/blog/images/advanced-touch-typing-techniques-images/touch-typing-finger-economy-home-row-technique.webp</image:loc>
         <image:title>Finger Economy Home Row Technique</image:title>
         <image:caption>Proper finger economy in touch typing keeps fingers close to the home row, reducing unnecessary movement for faster, more accurate keystrokes.</image:caption>
     </image:image>
 
     <image:image>
-        <image:loc>https://www.rockettyping.com/blog/images/chunking-common-letter-groups-touch-typing.webp</image:loc>
+        <image:loc>https://www.rockettyping.com/blog/images/advanced-touch-typing-techniques-images/chunking-common-letter-groups-touch-typing.webp</image:loc>
         <image:title>Chunking Common Letter Groups for Touch Typing</image:title>
         <image:caption>Chunking groups common letter patterns such as th, ing, ion, and ally into single typing units to improve speed, rhythm, and accuracy.</image:caption>
     </image:image>
 
     <image:image>
-        <image:loc>https://www.rockettyping.com/blog/images/rolling-and-finger-substitution-touch-typing.webp</image:loc>
+        <image:loc>https://www.rockettyping.com/blog/images/advanced-touch-typing-techniques-images/rolling-and-finger-substitution-touch-typing.webp</image:loc>
         <image:title>Rolling and Finger Substitution Techniques</image:title>
         <image:caption>Rolling and finger substitution techniques help reduce awkward reaches by allowing nearby fingers to press consecutive keys in a smooth, efficient sequence.</image:caption>
     </image:image>
 
     <image:image>
-        <image:loc>https://www.rockettyping.com/blog/images/rhythm-timing-muscle-memory-typing-speed-training.webp</image:loc>
+        <image:loc>https://www.rockettyping.com/blog/images/advanced-touch-typing-techniques-images/rhythm-timing-muscle-memory-typing-speed-training.webp</image:loc>
         <image:title>Rhythm Timing and Muscle Memory Typing Training</image:title>
         <image:caption>Develop typing speed through rhythm, timing, and muscle memory by practicing high-frequency phrases at a steady pace to build consistent finger movements before increasing speed.</image:caption>
     </image:image>
 
 </url>
-  <url><loc>https://www.rockettyping.com/blog/best-keyboards-for-programmers</loc><changefreq>monthly</changefreq><priority>0.80</priority></url>
+  <url>
+    <loc>https://www.rockettyping.com/blog/best-keyboards-for-programmers</loc>
+    <lastmod>2026-07-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.80</priority>
+
+    <image:image>
+        <image:loc>https://www.rockettyping.com/blog/images/best-keyboards-for-programmers-images/programming-keyboard-guide.webp</image:loc>
+        <image:title>Programming Keyboard Guide</image:title>
+        <image:caption>What to look for in a programming keyboard: comfortable switches, solid stabilizers, an efficient layout, programmable layers, and ergonomic comfort for long coding sessions.</image:caption>
+    </image:image>
+
+    <image:image>
+        <image:loc>https://www.rockettyping.com/blog/images/best-keyboards-for-programmers-images/hot-swap-vs-built-in-switches-mechanical-keyboard.webp</image:loc>
+        <image:title>Hot-Swap vs Built-In Switches Mechanical Keyboard</image:title>
+        <image:caption>Hot-swap keyboards let programmers experiment with tactile, linear, or silent switches without soldering, while built-in switch boards offer a ready-to-use, consistent typing feel.</image:caption>
+    </image:image>
+
+    <image:image>
+        <image:loc>https://www.rockettyping.com/blog/images/best-keyboards-for-programmers-images/keyboard-layout-symbols-for-programmers-60-65-75-percent.webp</image:loc>
+        <image:title>Keyboard Layout Symbols for Programmers</image:title>
+        <image:caption>Programmers rely on fast access to braces, brackets, semicolons, and arrow keys, so choosing between 60%, 65%, and 75% layouts affects how much function-layering your coding workflow needs.</image:caption>
+    </image:image>
+
+    <image:image>
+        <image:loc>https://www.rockettyping.com/blog/images/best-keyboards-for-programmers-images/ergonomic-split-keyboard-tenting-wrist-rest.webp</image:loc>
+        <image:title>Ergonomic Split Keyboard Tenting and Wrist Rest</image:title>
+        <image:caption>Hand separation, tenting adjustment, and a natural tilt reduce strain during long coding sessions, especially when paired with a low-profile wrist rest and supportive posture.</image:caption>
+    </image:image>
+
+    <image:image>
+        <image:loc>https://www.rockettyping.com/blog/images/best-keyboards-for-programmers-images/tactile-vs-linear-switches-for-programmers.webp</image:loc>
+        <image:title>Tactile vs Linear Switches for Programmers</image:title>
+        <image:caption>Tactile switches like Cherry MX Browns give feedback without excess noise, while smooth linears like Cherry MX Reds suit programmers who want a rapid, quiet keypress.</image:caption>
+    </image:image>
+
+    <image:image>
+        <image:loc>https://www.rockettyping.com/blog/images/best-keyboards-for-programmers-images/wired-vs-wireless-keyboard-connectivity.webp</image:loc>
+        <image:title>Wired vs Wireless Keyboard Connectivity</image:title>
+        <image:caption>Wired keyboards offer the most reliable connection for heavy typing, while wireless models with Bluetooth and USB-C backup keep the desk clean and support switching between devices.</image:caption>
+    </image:image>
+
+</url>
   <url><loc>https://www.rockettyping.com/blog/best-keyboards-for-typing</loc><changefreq>monthly</changefreq><priority>0.80</priority></url>
   <url><loc>https://www.rockettyping.com/blog/best-quiet-keyboards-for-typing</loc><changefreq>monthly</changefreq><priority>0.80</priority></url>
   <url><loc>https://www.rockettyping.com/blog/best-typing-apps-and-tools</loc><changefreq>monthly</changefreq><priority>0.80</priority></url>
@@ -135,47 +178,48 @@
   
   <url>
     <loc>https://www.rockettyping.com/blog/touch-typing-guide</loc>
+    <lastmod>2026-07-30</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.80</priority>
 
     <image:image>
-        <image:loc>https://www.rockettyping.com/blog/images/touch-typing-home-row-finger-placement-beginners.webp</image:loc>
+        <image:loc>https://www.rockettyping.com/blog/images/touch-typing-guide-images/touch-typing-home-row-finger-placement-beginners.webp</image:loc>
         <image:title>Touch Typing Home Row Finger Placement</image:title>
         <image:caption>Beginner touch typing home row finger placement chart.</image:caption>
     </image:image>
 
     <image:image>
-        <image:loc>https://www.rockettyping.com/blog/images/touch-typing-finger-color-map-home-row.webp</image:loc>
+        <image:loc>https://www.rockettyping.com/blog/images/touch-typing-guide-images/touch-typing-finger-color-map-home-row.webp</image:loc>
         <image:title>Touch Typing Finger Color Map</image:title>
         <image:caption>Finger color mapping for the home row keys.</image:caption>
     </image:image>
 
     <image:image>
-        <image:loc>https://www.rockettyping.com/blog/images/touch-typing-left-hand-home-row-finger-placement.webp</image:loc>
+        <image:loc>https://www.rockettyping.com/blog/images/touch-typing-guide-images/touch-typing-left-hand-home-row-finger-placement.webp</image:loc>
         <image:title>Left Hand Home Row Placement</image:title>
         <image:caption>Correct left hand finger placement for touch typing.</image:caption>
     </image:image>
 
     <image:image>
-        <image:loc>https://www.rockettyping.com/blog/images/touch-typing-right-hand-home-row-finger-placement.webp</image:loc>
+        <image:loc>https://www.rockettyping.com/blog/images/touch-typing-guide-images/touch-typing-right-hand-home-row-finger-placement.webp</image:loc>
         <image:title>Right Hand Home Row Placement</image:title>
         <image:caption>Correct right hand finger placement for touch typing.</image:caption>
     </image:image>
 
     <image:image>
-        <image:loc>https://www.rockettyping.com/blog/images/top-row-qwerty-keyboard.webp</image:loc>
+        <image:loc>https://www.rockettyping.com/blog/images/touch-typing-guide-images/top-row-qwerty-keyboard.webp</image:loc>
         <image:title>Top Row QWERTY Keyboard</image:title>
         <image:caption>Top row keys on a QWERTY keyboard.</image:caption>
     </image:image>
 
     <image:image>
-        <image:loc>https://www.rockettyping.com/blog/images/bottom-row-zxcvbnm-keyboard.webp</image:loc>
+        <image:loc>https://www.rockettyping.com/blog/images/touch-typing-guide-images/bottom-row-zxcvbnm-keyboard.webp</image:loc>
         <image:title>Bottom Row Keyboard</image:title>
         <image:caption>Bottom row keys on a QWERTY keyboard.</image:caption>
     </image:image>
 
     <image:image>
-        <image:loc>https://www.rockettyping.com/blog/images/number-row-keyboard.webp</image:loc>
+        <image:loc>https://www.rockettyping.com/blog/images/touch-typing-guide-images/number-row-keyboard.webp</image:loc>
         <image:title>Number Row Keyboard</image:title>
         <image:caption>Number row keys used in touch typing.</image:caption>
     </image:image>
@@ -203,4 +247,3 @@
   <url><loc>https://www.rockettyping.com/blog/typing-websites-vs-other-platforms</loc><changefreq>monthly</changefreq><priority>0.80</priority></url>
 
 </urlset>
-
