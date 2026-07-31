@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>🏆 Sunday Championship – Rocket Typing</title>
     <meta name="description" content="Weekly Sunday typing championship. 60 seconds, one attempt, win ₹500!">
-    <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16.png">
-    <link rel="apple-touch-icon" href="/images/logo-192.png">
+    <link rel="icon" type="image/webp" sizes="32x32" href="/images/favicon-32.webp">
+    <link rel="icon" type="image/webp" sizes="16x16" href="/images/favicon-16.webp">
+    <link rel="apple-touch-icon" href="/images/logo-192.webp">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <!-- Google Fonts: loaded non-render-blocking via the preload+onload swap trick -->
@@ -44,7 +44,7 @@
         body::before {
             content: '';
             position: fixed; inset: 0;
-            background: url('https://rockettyping.vercel.app/images/stars-bg.png') repeat;
+            background: url('https://rockettyping.vercel.app/images/stars-bg.webp') repeat;
             opacity: 0.5; z-index: 0;
             animation: nebula 120s linear infinite;
             pointer-events: none;
@@ -232,7 +232,7 @@
 
     <nav id="topnav">
         <a href="/" class="back-link">← ROCKET TYPING</a>
-        <img src="images/logo.png" alt="Rocket Typing" class="site-logo">
+        <img src="images/logo.webp" alt="Rocket Typing" class="site-logo">
         <div id="topnav-user"></div>
     </nav>
 
@@ -1488,8 +1488,16 @@ async function tDoSignup(){
             if(!snap.empty) return tShowErr('t-signup-err','Username already taken. Choose another.');
             const u=window._tPendingOAuth;
             await setDoc(doc(db,'users',u.uid),{name:username,country,uid:u.uid,created:Date.now()});
+            // Instant UI update — see tRefreshScreenForAuthState for why this
+            // can't just wait on onAuthStateChanged to pick it up on its own.
+            window._currentUser={uid:u.uid,email:u.email,name:username,country};
+            window._userCurrency=getCurrencyForCountry(country);
+            updatePrizeStrings();
+            localStorage.setItem('rt_registered_name',username);
+            localStorage.setItem('rt_user_country',country);
             window._tPendingOAuth=null;
             closeAuthModal();
+            await tRefreshScreenForAuthState();
         } catch(e){
             tShowErr('t-signup-err','Failed to save profile. Please try again.');
             console.error('Profile save error:',e);
@@ -1526,7 +1534,21 @@ async function tDoSignup(){
         // STEP 4 — Save the profile. Registration only counts as complete once this succeeds.
         await setDoc(doc(db,'users',cred.user.uid),{name:username,country,uid:cred.user.uid,created:Date.now()});
         sendEmailVerification(cred.user).catch(()=>{});
+        // ── Instant UI update ──────────────────────────────────────
+        // onAuthStateChanged already fired once, back at STEP 2, the moment
+        // createUserWithEmailAndPassword resolved — and at that point this
+        // /users profile doc didn't exist yet, so it left the lobby showing
+        // the "you must log in" gate. Firebase only re-fires
+        // onAuthStateChanged on actual auth state transitions (not on
+        // Firestore writes), so without this the lobby would stay wrong
+        // until the next reload.
+        window._currentUser={uid:cred.user.uid,email:cred.user.email,name:username,country};
+        window._userCurrency=getCurrencyForCountry(country);
+        updatePrizeStrings();
+        localStorage.setItem('rt_registered_name',username);
+        localStorage.setItem('rt_user_country',country);
         closeAuthModal();
+        await tRefreshScreenForAuthState();
     } catch(e){
         // Registration did not fully complete — free up the email again.
         if(cred && cred.user){
@@ -1639,27 +1661,14 @@ function updateTopnavUI(){
     }
 }
 
-/* ── MAIN ENTRY POINT ── */
-onAuthStateChanged(auth, async(user)=>{
-    if(user){
-        try{
-            const userDoc=await getDoc(doc(db,'users',user.uid));
-            if(userDoc.exists()){
-                const udata=userDoc.data();
-                window._currentUser={uid:user.uid,email:user.email,name:udata.name,country:udata.country||''};
-                window._userCurrency=getCurrencyForCountry(udata.country||'');
-                updatePrizeStrings();
-                localStorage.setItem('rt_registered_name',udata.name);
-            } else {
-                window._currentUser=null;
-            }
-        } catch(e){console.error('User doc fetch error:',e);window._currentUser=null;}
-    } else {
-        window._currentUser=null;
-        window._userCurrency={code:'INR',symbol:'₹'};
-        localStorage.removeItem('rt_registered_name');
-    }
-
+/* Everything that needs to happen once we know the current auth state:
+   refresh the topnav, then pick the right screen. Used both by
+   onAuthStateChanged (page-load / auth-transition path) AND directly by
+   the signup handlers below, so the UI updates instantly the moment
+   registration finishes instead of waiting on an auth-state event that
+   has already fired (before this profile doc existed) and won't fire
+   again on its own. */
+async function tRefreshScreenForAuthState(){
     updateTopnavUI();
 
     if(!isSunday()){
@@ -1687,6 +1696,30 @@ onAuthStateChanged(auth, async(user)=>{
         if(hasPlayedThisSunday()){initPlayedScreen();}
         else{initLobbyScreen();}
     }
+}
+
+/* ── MAIN ENTRY POINT ── */
+onAuthStateChanged(auth, async(user)=>{
+    if(user){
+        try{
+            const userDoc=await getDoc(doc(db,'users',user.uid));
+            if(userDoc.exists()){
+                const udata=userDoc.data();
+                window._currentUser={uid:user.uid,email:user.email,name:udata.name,country:udata.country||''};
+                window._userCurrency=getCurrencyForCountry(udata.country||'');
+                updatePrizeStrings();
+                localStorage.setItem('rt_registered_name',udata.name);
+            } else {
+                window._currentUser=null;
+            }
+        } catch(e){console.error('User doc fetch error:',e);window._currentUser=null;}
+    } else {
+        window._currentUser=null;
+        window._userCurrency={code:'INR',symbol:'₹'};
+        localStorage.removeItem('rt_registered_name');
+    }
+
+    await tRefreshScreenForAuthState();
 });
 </script>
     <!-- Adsterra Native Banner -->
