@@ -17,14 +17,14 @@
   <meta property="og:description"
     content="Race AI opponents in a real-time typing game. Type fast to launch your rocket and win. Free to play!">
   <meta property="og:url" content="https://www.rockettyping.com/game.html">
-  <meta property="og:image" content="https://www.rockettyping.com/images/og-banner.png">
+  <meta property="og:image" content="https://www.rockettyping.com/images/og-banner.webp">
   <meta property="og:site_name" content="Rocket Typing">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Rocket Race – Typing Game | Rocket Typing">
   <meta name="twitter:description"
     content="Race AI opponents in a real-time typing game. Type fast to launch your rocket!">
-  <meta name="twitter:image" content="https://www.rockettyping.com/images/og-banner.png">
-  <link rel="icon" type="image/png" href="/images/logo.png">
+  <meta name="twitter:image" content="https://www.rockettyping.com/images/og-banner.webp">
+  <link rel="icon" type="image/webp" href="/images/logo.webp">
   <meta name="theme-color" content="#323437">
   <!-- Structured Data: SoftwareApplication + BreadcrumbList for rich results -->
   <script type="application/ld+json">
@@ -3664,7 +3664,7 @@
 
     </div>
 
-    <img id="logo" src="images/logo.png" alt="Rocket Typing Logo">
+    <img id="logo" src="images/logo.webp" alt="Rocket Typing Logo">
     <div id="race-track-scale-wrap">
     <div id="race-track">
       <button id="leaderboard-btn"
@@ -4087,10 +4087,46 @@
     //    running this actual site (bots, curl, scripts with a stolen key) ──
     firebase.appCheck().activate('6Lc-VFQtAAAAAKXHBKgK-v4XgeBU8HcZQMvZr9y6', true);
     const db = firebase.firestore(); const auth = firebase.auth();
+    // Shared "apply logged-in state" logic — sets the in-memory user object,
+    // syncs localStorage, and refreshes the header topnav. Used both by
+    // onAuthStateChanged (page-load / auth-transition path) AND directly by
+    // the signup handlers below (so the header updates instantly the moment
+    // registration finishes, instead of waiting on an auth-state event that
+    // has already fired and won't fire again on its own).
+    function gameApplyLoggedInState(uid, name, country) {
+      localStorage.setItem('rt_registered_name', name);
+      localStorage.setItem('rt_user_country', country || '');
+      window._gameUser = { uid, name, country };
+      window._currentUser = { uid, name, country };
+      const topnav = document.getElementById('game-topnav');
+      if (topnav) {
+        topnav.innerHTML = '<span id="game-topnav-username">👤 ' + sanitizeStr(name) + '</span>' +
+          '<button class="game-topnav-logout" id="game-topnav-logout">LOGOUT</button>';
+        document.getElementById('game-topnav-logout').addEventListener('click', () => auth.signOut());
+      }
+      const lbPrompt = document.getElementById('lb-register-prompt');
+      if (lbPrompt) lbPrompt.style.display = 'none';
+    }
+
+    // Called right after a signup/profile-save completes successfully.
+    // Does everything gameApplyLoggedInState does, PLUS: if the user
+    // triggered signup from the initial full-page gate (#username-screen) —
+    // rather than the mid-game "register to show your name" prompt — that
+    // gate is a separate element from the auth modal we just closed, so it
+    // needs to be hidden and the race started explicitly here, same as the
+    // page-load path in onAuthStateChanged above.
+    function gameFinishAuthUI(uid, name, country) {
+      gameApplyLoggedInState(uid, name, country);
+      if (usernameScreen && usernameScreen.style.display !== 'none') {
+        usernameScreen.style.display = 'none';
+        startGameWithName(name);
+        setTimeout(() => { showStartRaceOverlay(); }, 50);
+      }
+    }
+
     auth.onAuthStateChanged(async (user) => {
       const spinner = document.getElementById('auth-spinner');
       const gate = document.getElementById('auth-gate');
-      const topnav = document.getElementById('game-topnav');
       const lbPrompt = document.getElementById('lb-register-prompt');
 
       if (user) {
@@ -4099,16 +4135,7 @@
           if (userDoc.exists) {
             const name = userDoc.data().name;
             const country = userDoc.data().country || '';
-            localStorage.setItem('rt_registered_name', name);
-            localStorage.setItem('rt_user_country', country);   // ← FIX: store country for score saves
-            window._gameUser = { uid: user.uid, name, country };
-            window._currentUser = { uid: user.uid, name, country };
-            if (topnav) {
-              topnav.innerHTML = '<span id="game-topnav-username">👤 ' + sanitizeStr(name) + '</span>' +
-                '<button class="game-topnav-logout" id="game-topnav-logout">LOGOUT</button>';
-              document.getElementById('game-topnav-logout').addEventListener('click', () => auth.signOut());
-            }
-            if (lbPrompt) lbPrompt.style.display = 'none';
+            gameApplyLoggedInState(user.uid, name, country);
             // Logged in — hide the whole auth screen and show Start Race overlay
             usernameScreen.style.display = "none";
             startGameWithName(name);
@@ -4123,6 +4150,7 @@
       window._gameUser = null;
       window._currentUser = null;
       localStorage.removeItem('rt_registered_name');
+      const topnav = document.getElementById('game-topnav');
       if (topnav) topnav.innerHTML = '';
       if (spinner) spinner.style.display = 'none';
       if (gate) gate.style.display = 'flex';
@@ -6678,6 +6706,9 @@
           await db.collection('users').doc(u.uid).set({
             name: username, country, uid: u.uid, created: Date.now()
           });
+          // Instant UI update — see gameApplyLoggedInState for why this
+          // can't just wait on onAuthStateChanged to pick it up on its own.
+          gameFinishAuthUI(u.uid, username, country);
           window._gamePendingOAuth = null;
           closeAuthModal();
         } catch (e) {
@@ -6719,6 +6750,14 @@
         });
         // Send email verification
         cred.user.sendEmailVerification().catch(() => { });
+        // ── Instant UI update ──────────────────────────────────────
+        // onAuthStateChanged already fired once, back at STEP 2, the moment
+        // createUserWithEmailAndPassword resolved — and at that point this
+        // /users profile doc didn't exist yet, so it left the topnav empty
+        // / showing the login gate. Firebase only re-fires onAuthStateChanged
+        // on actual auth state transitions (not on Firestore writes), so
+        // without this the topnav would stay wrong until the next reload.
+        gameFinishAuthUI(cred.user.uid, username, country);
         closeAuthModal();
       } catch (e) {
         // Registration did not fully complete — free up the email again.
@@ -6878,200 +6917,200 @@
   </script>
   <script>
     const COUNTRY_FLAGS = {
-      "Afghanistan": "https://flagcdn.com/w40/af.png",
-      "Albania": "https://flagcdn.com/w40/al.png",
-      "Algeria": "https://flagcdn.com/w40/dz.png",
-      "Andorra": "https://flagcdn.com/w40/ad.png",
-      "Angola": "https://flagcdn.com/w40/ao.png",
-      "Antigua and Barbuda": "https://flagcdn.com/w40/ag.png",
-      "Argentina": "https://flagcdn.com/w40/ar.png",
-      "Armenia": "https://flagcdn.com/w40/am.png",
-      "Australia": "https://flagcdn.com/w40/au.png",
-      "Austria": "https://flagcdn.com/w40/at.png",
-      "Azerbaijan": "https://flagcdn.com/w40/az.png",
-      "Bahamas": "https://flagcdn.com/w40/bs.png",
-      "Bahrain": "https://flagcdn.com/w40/bh.png",
-      "Bangladesh": "https://flagcdn.com/w40/bd.png",
-      "Barbados": "https://flagcdn.com/w40/bb.png",
-      "Belarus": "https://flagcdn.com/w40/by.png",
-      "Belgium": "https://flagcdn.com/w40/be.png",
-      "Belize": "https://flagcdn.com/w40/bz.png",
-      "Benin": "https://flagcdn.com/w40/bj.png",
-      "Bhutan": "https://flagcdn.com/w40/bt.png",
-      "Bolivia": "https://flagcdn.com/w40/bo.png",
-      "Bosnia and Herzegovina": "https://flagcdn.com/w40/ba.png",
-      "Botswana": "https://flagcdn.com/w40/bw.png",
-      "Brazil": "https://flagcdn.com/w40/br.png",
-      "Brunei": "https://flagcdn.com/w40/bn.png",
-      "Bulgaria": "https://flagcdn.com/w40/bg.png",
-      "Burkina Faso": "https://flagcdn.com/w40/bf.png",
-      "Burundi": "https://flagcdn.com/w40/bi.png",
-      "Cabo Verde": "https://flagcdn.com/w40/cv.png",
-      "Cambodia": "https://flagcdn.com/w40/kh.png",
-      "Cameroon": "https://flagcdn.com/w40/cm.png",
-      "Canada": "https://flagcdn.com/w40/ca.png",
-      "Central African Republic": "https://flagcdn.com/w40/cf.png",
-      "Chad": "https://flagcdn.com/w40/td.png",
-      "Chile": "https://flagcdn.com/w40/cl.png",
-      "China": "https://flagcdn.com/w40/cn.png",
-      "Colombia": "https://flagcdn.com/w40/co.png",
-      "Comoros": "https://flagcdn.com/w40/km.png",
-      "Congo": "https://flagcdn.com/w40/cg.png",
-      "Costa Rica": "https://flagcdn.com/w40/cr.png",
-      "Croatia": "https://flagcdn.com/w40/hr.png",
-      "Cuba": "https://flagcdn.com/w40/cu.png",
-      "Cyprus": "https://flagcdn.com/w40/cy.png",
-      "Czech Republic": "https://flagcdn.com/w40/cz.png",
-      "Denmark": "https://flagcdn.com/w40/dk.png",
-      "Djibouti": "https://flagcdn.com/w40/dj.png",
-      "Dominica": "https://flagcdn.com/w40/dm.png",
-      "Dominican Republic": "https://flagcdn.com/w40/do.png",
-      "Ecuador": "https://flagcdn.com/w40/ec.png",
-      "Egypt": "https://flagcdn.com/w40/eg.png",
-      "El Salvador": "https://flagcdn.com/w40/sv.png",
-      "Equatorial Guinea": "https://flagcdn.com/w40/gq.png",
-      "Eritrea": "https://flagcdn.com/w40/er.png",
-      "Estonia": "https://flagcdn.com/w40/ee.png",
-      "Eswatini": "https://flagcdn.com/w40/sz.png",
-      "Ethiopia": "https://flagcdn.com/w40/et.png",
-      "Fiji": "https://flagcdn.com/w40/fj.png",
-      "Finland": "https://flagcdn.com/w40/fi.png",
-      "France": "https://flagcdn.com/w40/fr.png",
-      "Gabon": "https://flagcdn.com/w40/ga.png",
-      "Gambia": "https://flagcdn.com/w40/gm.png",
-      "Georgia": "https://flagcdn.com/w40/ge.png",
-      "Germany": "https://flagcdn.com/w40/de.png",
-      "Ghana": "https://flagcdn.com/w40/gh.png",
-      "Greece": "https://flagcdn.com/w40/gr.png",
-      "Grenada": "https://flagcdn.com/w40/gd.png",
-      "Guatemala": "https://flagcdn.com/w40/gt.png",
-      "Guinea": "https://flagcdn.com/w40/gn.png",
-      "Guinea-Bissau": "https://flagcdn.com/w40/gw.png",
-      "Guyana": "https://flagcdn.com/w40/gy.png",
-      "Haiti": "https://flagcdn.com/w40/ht.png",
-      "Honduras": "https://flagcdn.com/w40/hn.png",
-      "Hungary": "https://flagcdn.com/w40/hu.png",
-      "Iceland": "https://flagcdn.com/w40/is.png",
-      "India": "https://flagcdn.com/w40/in.png",
-      "Indonesia": "https://flagcdn.com/w40/id.png",
-      "Iran": "https://flagcdn.com/w40/ir.png",
-      "Iraq": "https://flagcdn.com/w40/iq.png",
-      "Ireland": "https://flagcdn.com/w40/ie.png",
-      "Israel": "https://flagcdn.com/w40/il.png",
-      "Italy": "https://flagcdn.com/w40/it.png",
-      "Jamaica": "https://flagcdn.com/w40/jm.png",
-      "Japan": "https://flagcdn.com/w40/jp.png",
-      "Jordan": "https://flagcdn.com/w40/jo.png",
-      "Kazakhstan": "https://flagcdn.com/w40/kz.png",
-      "Kenya": "https://flagcdn.com/w40/ke.png",
-      "Kiribati": "https://flagcdn.com/w40/ki.png",
-      "Kuwait": "https://flagcdn.com/w40/kw.png",
-      "Kyrgyzstan": "https://flagcdn.com/w40/kg.png",
-      "Laos": "https://flagcdn.com/w40/la.png",
-      "Latvia": "https://flagcdn.com/w40/lv.png",
-      "Lebanon": "https://flagcdn.com/w40/lb.png",
-      "Lesotho": "https://flagcdn.com/w40/ls.png",
-      "Liberia": "https://flagcdn.com/w40/lr.png",
-      "Libya": "https://flagcdn.com/w40/ly.png",
-      "Liechtenstein": "https://flagcdn.com/w40/li.png",
-      "Lithuania": "https://flagcdn.com/w40/lt.png",
-      "Luxembourg": "https://flagcdn.com/w40/lu.png",
-      "Madagascar": "https://flagcdn.com/w40/mg.png",
-      "Malawi": "https://flagcdn.com/w40/mw.png",
-      "Malaysia": "https://flagcdn.com/w40/my.png",
-      "Maldives": "https://flagcdn.com/w40/mv.png",
-      "Mali": "https://flagcdn.com/w40/ml.png",
-      "Malta": "https://flagcdn.com/w40/mt.png",
-      "Marshall Islands": "https://flagcdn.com/w40/mh.png",
-      "Mauritania": "https://flagcdn.com/w40/mr.png",
-      "Mauritius": "https://flagcdn.com/w40/mu.png",
-      "Mexico": "https://flagcdn.com/w40/mx.png",
-      "Micronesia": "https://flagcdn.com/w40/fm.png",
-      "Moldova": "https://flagcdn.com/w40/md.png",
-      "Monaco": "https://flagcdn.com/w40/mc.png",
-      "Mongolia": "https://flagcdn.com/w40/mn.png",
-      "Montenegro": "https://flagcdn.com/w40/me.png",
-      "Morocco": "https://flagcdn.com/w40/ma.png",
-      "Mozambique": "https://flagcdn.com/w40/mz.png",
-      "Myanmar": "https://flagcdn.com/w40/mm.png",
-      "Namibia": "https://flagcdn.com/w40/na.png",
-      "Nauru": "https://flagcdn.com/w40/nr.png",
-      "Nepal": "https://flagcdn.com/w40/np.png",
-      "Netherlands": "https://flagcdn.com/w40/nl.png",
-      "New Zealand": "https://flagcdn.com/w40/nz.png",
-      "Nicaragua": "https://flagcdn.com/w40/ni.png",
-      "Niger": "https://flagcdn.com/w40/ne.png",
-      "Nigeria": "https://flagcdn.com/w40/ng.png",
-      "North Korea": "https://flagcdn.com/w40/kp.png",
-      "North Macedonia": "https://flagcdn.com/w40/mk.png",
-      "Norway": "https://flagcdn.com/w40/no.png",
-      "Oman": "https://flagcdn.com/w40/om.png",
-      "Pakistan": "https://flagcdn.com/w40/pk.png",
-      "Palau": "https://flagcdn.com/w40/pw.png",
-      "Palestine": "https://flagcdn.com/w40/ps.png",
-      "Panama": "https://flagcdn.com/w40/pa.png",
-      "Papua New Guinea": "https://flagcdn.com/w40/pg.png",
-      "Paraguay": "https://flagcdn.com/w40/py.png",
-      "Peru": "https://flagcdn.com/w40/pe.png",
-      "Philippines": "https://flagcdn.com/w40/ph.png",
-      "Poland": "https://flagcdn.com/w40/pl.png",
-      "Portugal": "https://flagcdn.com/w40/pt.png",
-      "Qatar": "https://flagcdn.com/w40/qa.png",
-      "Romania": "https://flagcdn.com/w40/ro.png",
-      "Russia": "https://flagcdn.com/w40/ru.png",
-      "Rwanda": "https://flagcdn.com/w40/rw.png",
-      "Saint Kitts and Nevis": "https://flagcdn.com/w40/kn.png",
-      "Saint Lucia": "https://flagcdn.com/w40/lc.png",
-      "Saint Vincent and the Grenadines": "https://flagcdn.com/w40/vc.png",
-      "Samoa": "https://flagcdn.com/w40/ws.png",
-      "San Marino": "https://flagcdn.com/w40/sm.png",
-      "Sao Tome and Principe": "https://flagcdn.com/w40/st.png",
-      "Saudi Arabia": "https://flagcdn.com/w40/sa.png",
-      "Senegal": "https://flagcdn.com/w40/sn.png",
-      "Serbia": "https://flagcdn.com/w40/rs.png",
-      "Seychelles": "https://flagcdn.com/w40/sc.png",
-      "Sierra Leone": "https://flagcdn.com/w40/sl.png",
-      "Singapore": "https://flagcdn.com/w40/sg.png",
-      "Slovakia": "https://flagcdn.com/w40/sk.png",
-      "Slovenia": "https://flagcdn.com/w40/si.png",
-      "Solomon Islands": "https://flagcdn.com/w40/sb.png",
-      "Somalia": "https://flagcdn.com/w40/so.png",
-      "South Africa": "https://flagcdn.com/w40/za.png",
-      "South Korea": "https://flagcdn.com/w40/kr.png",
-      "South Sudan": "https://flagcdn.com/w40/ss.png",
-      "Spain": "https://flagcdn.com/w40/es.png",
-      "Sri Lanka": "https://flagcdn.com/w40/lk.png",
-      "Sudan": "https://flagcdn.com/w40/sd.png",
-      "Suriname": "https://flagcdn.com/w40/sr.png",
-      "Sweden": "https://flagcdn.com/w40/se.png",
-      "Switzerland": "https://flagcdn.com/w40/ch.png",
-      "Syria": "https://flagcdn.com/w40/sy.png",
-      "Taiwan": "https://flagcdn.com/w40/tw.png",
-      "Tajikistan": "https://flagcdn.com/w40/tj.png",
-      "Tanzania": "https://flagcdn.com/w40/tz.png",
-      "Thailand": "https://flagcdn.com/w40/th.png",
-      "Timor-Leste": "https://flagcdn.com/w40/tl.png",
-      "Togo": "https://flagcdn.com/w40/tg.png",
-      "Tonga": "https://flagcdn.com/w40/to.png",
-      "Trinidad and Tobago": "https://flagcdn.com/w40/tt.png",
-      "Tunisia": "https://flagcdn.com/w40/tn.png",
-      "Turkey": "https://flagcdn.com/w40/tr.png",
-      "Turkmenistan": "https://flagcdn.com/w40/tm.png",
-      "Tuvalu": "https://flagcdn.com/w40/tv.png",
-      "Uganda": "https://flagcdn.com/w40/ug.png",
-      "Ukraine": "https://flagcdn.com/w40/ua.png",
-      "United Arab Emirates": "https://flagcdn.com/w40/ae.png",
-      "United Kingdom": "https://flagcdn.com/w40/gb.png",
-      "United States": "https://flagcdn.com/w40/us.png",
-      "Uruguay": "https://flagcdn.com/w40/uy.png",
-      "Uzbekistan": "https://flagcdn.com/w40/uz.png",
-      "Vanuatu": "https://flagcdn.com/w40/vu.png",
-      "Vatican City": "https://flagcdn.com/w40/va.png",
-      "Venezuela": "https://flagcdn.com/w40/ve.png",
-      "Vietnam": "https://flagcdn.com/w40/vn.png",
-      "Yemen": "https://flagcdn.com/w40/ye.png",
-      "Zambia": "https://flagcdn.com/w40/zm.png",
-      "Zimbabwe": "https://flagcdn.com/w40/zw.png"
+      "Afghanistan": "https://flagcdn.com/w40/af.webp",
+      "Albania": "https://flagcdn.com/w40/al.webp",
+      "Algeria": "https://flagcdn.com/w40/dz.webp",
+      "Andorra": "https://flagcdn.com/w40/ad.webp",
+      "Angola": "https://flagcdn.com/w40/ao.webp",
+      "Antigua and Barbuda": "https://flagcdn.com/w40/ag.webp",
+      "Argentina": "https://flagcdn.com/w40/ar.webp",
+      "Armenia": "https://flagcdn.com/w40/am.webp",
+      "Australia": "https://flagcdn.com/w40/au.webp",
+      "Austria": "https://flagcdn.com/w40/at.webp",
+      "Azerbaijan": "https://flagcdn.com/w40/az.webp",
+      "Bahamas": "https://flagcdn.com/w40/bs.webp",
+      "Bahrain": "https://flagcdn.com/w40/bh.webp",
+      "Bangladesh": "https://flagcdn.com/w40/bd.webp",
+      "Barbados": "https://flagcdn.com/w40/bb.webp",
+      "Belarus": "https://flagcdn.com/w40/by.webp",
+      "Belgium": "https://flagcdn.com/w40/be.webp",
+      "Belize": "https://flagcdn.com/w40/bz.webp",
+      "Benin": "https://flagcdn.com/w40/bj.webp",
+      "Bhutan": "https://flagcdn.com/w40/bt.webp",
+      "Bolivia": "https://flagcdn.com/w40/bo.webp",
+      "Bosnia and Herzegovina": "https://flagcdn.com/w40/ba.webp",
+      "Botswana": "https://flagcdn.com/w40/bw.webp",
+      "Brazil": "https://flagcdn.com/w40/br.webp",
+      "Brunei": "https://flagcdn.com/w40/bn.webp",
+      "Bulgaria": "https://flagcdn.com/w40/bg.webp",
+      "Burkina Faso": "https://flagcdn.com/w40/bf.webp",
+      "Burundi": "https://flagcdn.com/w40/bi.webp",
+      "Cabo Verde": "https://flagcdn.com/w40/cv.webp",
+      "Cambodia": "https://flagcdn.com/w40/kh.webp",
+      "Cameroon": "https://flagcdn.com/w40/cm.webp",
+      "Canada": "https://flagcdn.com/w40/ca.webp",
+      "Central African Republic": "https://flagcdn.com/w40/cf.webp",
+      "Chad": "https://flagcdn.com/w40/td.webp",
+      "Chile": "https://flagcdn.com/w40/cl.webp",
+      "China": "https://flagcdn.com/w40/cn.webp",
+      "Colombia": "https://flagcdn.com/w40/co.webp",
+      "Comoros": "https://flagcdn.com/w40/km.webp",
+      "Congo": "https://flagcdn.com/w40/cg.webp",
+      "Costa Rica": "https://flagcdn.com/w40/cr.webp",
+      "Croatia": "https://flagcdn.com/w40/hr.webp",
+      "Cuba": "https://flagcdn.com/w40/cu.webp",
+      "Cyprus": "https://flagcdn.com/w40/cy.webp",
+      "Czech Republic": "https://flagcdn.com/w40/cz.webp",
+      "Denmark": "https://flagcdn.com/w40/dk.webp",
+      "Djibouti": "https://flagcdn.com/w40/dj.webp",
+      "Dominica": "https://flagcdn.com/w40/dm.webp",
+      "Dominican Republic": "https://flagcdn.com/w40/do.webp",
+      "Ecuador": "https://flagcdn.com/w40/ec.webp",
+      "Egypt": "https://flagcdn.com/w40/eg.webp",
+      "El Salvador": "https://flagcdn.com/w40/sv.webp",
+      "Equatorial Guinea": "https://flagcdn.com/w40/gq.webp",
+      "Eritrea": "https://flagcdn.com/w40/er.webp",
+      "Estonia": "https://flagcdn.com/w40/ee.webp",
+      "Eswatini": "https://flagcdn.com/w40/sz.webp",
+      "Ethiopia": "https://flagcdn.com/w40/et.webp",
+      "Fiji": "https://flagcdn.com/w40/fj.webp",
+      "Finland": "https://flagcdn.com/w40/fi.webp",
+      "France": "https://flagcdn.com/w40/fr.webp",
+      "Gabon": "https://flagcdn.com/w40/ga.webp",
+      "Gambia": "https://flagcdn.com/w40/gm.webp",
+      "Georgia": "https://flagcdn.com/w40/ge.webp",
+      "Germany": "https://flagcdn.com/w40/de.webp",
+      "Ghana": "https://flagcdn.com/w40/gh.webp",
+      "Greece": "https://flagcdn.com/w40/gr.webp",
+      "Grenada": "https://flagcdn.com/w40/gd.webp",
+      "Guatemala": "https://flagcdn.com/w40/gt.webp",
+      "Guinea": "https://flagcdn.com/w40/gn.webp",
+      "Guinea-Bissau": "https://flagcdn.com/w40/gw.webp",
+      "Guyana": "https://flagcdn.com/w40/gy.webp",
+      "Haiti": "https://flagcdn.com/w40/ht.webp",
+      "Honduras": "https://flagcdn.com/w40/hn.webp",
+      "Hungary": "https://flagcdn.com/w40/hu.webp",
+      "Iceland": "https://flagcdn.com/w40/is.webp",
+      "India": "https://flagcdn.com/w40/in.webp",
+      "Indonesia": "https://flagcdn.com/w40/id.webp",
+      "Iran": "https://flagcdn.com/w40/ir.webp",
+      "Iraq": "https://flagcdn.com/w40/iq.webp",
+      "Ireland": "https://flagcdn.com/w40/ie.webp",
+      "Israel": "https://flagcdn.com/w40/il.webp",
+      "Italy": "https://flagcdn.com/w40/it.webp",
+      "Jamaica": "https://flagcdn.com/w40/jm.webp",
+      "Japan": "https://flagcdn.com/w40/jp.webp",
+      "Jordan": "https://flagcdn.com/w40/jo.webp",
+      "Kazakhstan": "https://flagcdn.com/w40/kz.webp",
+      "Kenya": "https://flagcdn.com/w40/ke.webp",
+      "Kiribati": "https://flagcdn.com/w40/ki.webp",
+      "Kuwait": "https://flagcdn.com/w40/kw.webp",
+      "Kyrgyzstan": "https://flagcdn.com/w40/kg.webp",
+      "Laos": "https://flagcdn.com/w40/la.webp",
+      "Latvia": "https://flagcdn.com/w40/lv.webp",
+      "Lebanon": "https://flagcdn.com/w40/lb.webp",
+      "Lesotho": "https://flagcdn.com/w40/ls.webp",
+      "Liberia": "https://flagcdn.com/w40/lr.webp",
+      "Libya": "https://flagcdn.com/w40/ly.webp",
+      "Liechtenstein": "https://flagcdn.com/w40/li.webp",
+      "Lithuania": "https://flagcdn.com/w40/lt.webp",
+      "Luxembourg": "https://flagcdn.com/w40/lu.webp",
+      "Madagascar": "https://flagcdn.com/w40/mg.webp",
+      "Malawi": "https://flagcdn.com/w40/mw.webp",
+      "Malaysia": "https://flagcdn.com/w40/my.webp",
+      "Maldives": "https://flagcdn.com/w40/mv.webp",
+      "Mali": "https://flagcdn.com/w40/ml.webp",
+      "Malta": "https://flagcdn.com/w40/mt.webp",
+      "Marshall Islands": "https://flagcdn.com/w40/mh.webp",
+      "Mauritania": "https://flagcdn.com/w40/mr.webp",
+      "Mauritius": "https://flagcdn.com/w40/mu.webp",
+      "Mexico": "https://flagcdn.com/w40/mx.webp",
+      "Micronesia": "https://flagcdn.com/w40/fm.webp",
+      "Moldova": "https://flagcdn.com/w40/md.webp",
+      "Monaco": "https://flagcdn.com/w40/mc.webp",
+      "Mongolia": "https://flagcdn.com/w40/mn.webp",
+      "Montenegro": "https://flagcdn.com/w40/me.webp",
+      "Morocco": "https://flagcdn.com/w40/ma.webp",
+      "Mozambique": "https://flagcdn.com/w40/mz.webp",
+      "Myanmar": "https://flagcdn.com/w40/mm.webp",
+      "Namibia": "https://flagcdn.com/w40/na.webp",
+      "Nauru": "https://flagcdn.com/w40/nr.webp",
+      "Nepal": "https://flagcdn.com/w40/np.webp",
+      "Netherlands": "https://flagcdn.com/w40/nl.webp",
+      "New Zealand": "https://flagcdn.com/w40/nz.webp",
+      "Nicaragua": "https://flagcdn.com/w40/ni.webp",
+      "Niger": "https://flagcdn.com/w40/ne.webp",
+      "Nigeria": "https://flagcdn.com/w40/ng.webp",
+      "North Korea": "https://flagcdn.com/w40/kp.webp",
+      "North Macedonia": "https://flagcdn.com/w40/mk.webp",
+      "Norway": "https://flagcdn.com/w40/no.webp",
+      "Oman": "https://flagcdn.com/w40/om.webp",
+      "Pakistan": "https://flagcdn.com/w40/pk.webp",
+      "Palau": "https://flagcdn.com/w40/pw.webp",
+      "Palestine": "https://flagcdn.com/w40/ps.webp",
+      "Panama": "https://flagcdn.com/w40/pa.webp",
+      "Papua New Guinea": "https://flagcdn.com/w40/pg.webp",
+      "Paraguay": "https://flagcdn.com/w40/py.webp",
+      "Peru": "https://flagcdn.com/w40/pe.webp",
+      "Philippines": "https://flagcdn.com/w40/ph.webp",
+      "Poland": "https://flagcdn.com/w40/pl.webp",
+      "Portugal": "https://flagcdn.com/w40/pt.webp",
+      "Qatar": "https://flagcdn.com/w40/qa.webp",
+      "Romania": "https://flagcdn.com/w40/ro.webp",
+      "Russia": "https://flagcdn.com/w40/ru.webp",
+      "Rwanda": "https://flagcdn.com/w40/rw.webp",
+      "Saint Kitts and Nevis": "https://flagcdn.com/w40/kn.webp",
+      "Saint Lucia": "https://flagcdn.com/w40/lc.webp",
+      "Saint Vincent and the Grenadines": "https://flagcdn.com/w40/vc.webp",
+      "Samoa": "https://flagcdn.com/w40/ws.webp",
+      "San Marino": "https://flagcdn.com/w40/sm.webp",
+      "Sao Tome and Principe": "https://flagcdn.com/w40/st.webp",
+      "Saudi Arabia": "https://flagcdn.com/w40/sa.webp",
+      "Senegal": "https://flagcdn.com/w40/sn.webp",
+      "Serbia": "https://flagcdn.com/w40/rs.webp",
+      "Seychelles": "https://flagcdn.com/w40/sc.webp",
+      "Sierra Leone": "https://flagcdn.com/w40/sl.webp",
+      "Singapore": "https://flagcdn.com/w40/sg.webp",
+      "Slovakia": "https://flagcdn.com/w40/sk.webp",
+      "Slovenia": "https://flagcdn.com/w40/si.webp",
+      "Solomon Islands": "https://flagcdn.com/w40/sb.webp",
+      "Somalia": "https://flagcdn.com/w40/so.webp",
+      "South Africa": "https://flagcdn.com/w40/za.webp",
+      "South Korea": "https://flagcdn.com/w40/kr.webp",
+      "South Sudan": "https://flagcdn.com/w40/ss.webp",
+      "Spain": "https://flagcdn.com/w40/es.webp",
+      "Sri Lanka": "https://flagcdn.com/w40/lk.webp",
+      "Sudan": "https://flagcdn.com/w40/sd.webp",
+      "Suriname": "https://flagcdn.com/w40/sr.webp",
+      "Sweden": "https://flagcdn.com/w40/se.webp",
+      "Switzerland": "https://flagcdn.com/w40/ch.webp",
+      "Syria": "https://flagcdn.com/w40/sy.webp",
+      "Taiwan": "https://flagcdn.com/w40/tw.webp",
+      "Tajikistan": "https://flagcdn.com/w40/tj.webp",
+      "Tanzania": "https://flagcdn.com/w40/tz.webp",
+      "Thailand": "https://flagcdn.com/w40/th.webp",
+      "Timor-Leste": "https://flagcdn.com/w40/tl.webp",
+      "Togo": "https://flagcdn.com/w40/tg.webp",
+      "Tonga": "https://flagcdn.com/w40/to.webp",
+      "Trinidad and Tobago": "https://flagcdn.com/w40/tt.webp",
+      "Tunisia": "https://flagcdn.com/w40/tn.webp",
+      "Turkey": "https://flagcdn.com/w40/tr.webp",
+      "Turkmenistan": "https://flagcdn.com/w40/tm.webp",
+      "Tuvalu": "https://flagcdn.com/w40/tv.webp",
+      "Uganda": "https://flagcdn.com/w40/ug.webp",
+      "Ukraine": "https://flagcdn.com/w40/ua.webp",
+      "United Arab Emirates": "https://flagcdn.com/w40/ae.webp",
+      "United Kingdom": "https://flagcdn.com/w40/gb.webp",
+      "United States": "https://flagcdn.com/w40/us.webp",
+      "Uruguay": "https://flagcdn.com/w40/uy.webp",
+      "Uzbekistan": "https://flagcdn.com/w40/uz.webp",
+      "Vanuatu": "https://flagcdn.com/w40/vu.webp",
+      "Vatican City": "https://flagcdn.com/w40/va.webp",
+      "Venezuela": "https://flagcdn.com/w40/ve.webp",
+      "Vietnam": "https://flagcdn.com/w40/vn.webp",
+      "Yemen": "https://flagcdn.com/w40/ye.webp",
+      "Zambia": "https://flagcdn.com/w40/zm.webp",
+      "Zimbabwe": "https://flagcdn.com/w40/zw.webp"
     };
     function getFlag(c) { return COUNTRY_FLAGS[c] || '🌍'; }
     function fmtDate(ts) { if (!ts) return ''; const d = new Date(ts); return d.getDate() + ' ' + ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][d.getMonth()] + ' ' + d.getFullYear(); }
