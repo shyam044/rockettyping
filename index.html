@@ -5123,6 +5123,21 @@ function sanitizeStr(s) {
             // Send email verification (non-blocking)
             sendEmailVerification(cred.user).catch(() => {});
 
+            // ── Instant UI update ──────────────────────────────────────
+            // onAuthStateChanged already fired once, back at STEP 2, the
+            // moment createUserWithEmailAndPassword resolved — and at that
+            // point this /users profile doc didn't exist yet, so it left
+            // the header showing "LOGIN / SIGNUP". Firebase only re-fires
+            // onAuthStateChanged on actual auth state transitions (not on
+            // Firestore writes), so without this, the header would keep
+            // showing "LOGIN / SIGNUP" until the next full page reload.
+            // We already have every field we need in memory here, so we
+            // update state + header directly — no extra network round trip.
+            window._currentUser = { uid: cred.user.uid, email: cred.user.email, name: username, country };
+            localStorage.setItem('rt_user_country', country);
+            localStorage.setItem('rt_registered_name', username);
+            updateAuthUI(true, username);
+
             closeAuthModal();
         } catch (e) {
             // Registration did not fully complete. If we created an Auth
@@ -5253,6 +5268,14 @@ function sanitizeStr(s) {
                 await setDoc(doc(db, 'users', oUser.uid), {
                     name: username, country, uid: oUser.uid, created: Date.now()
                 });
+                // Instant UI update — same reasoning as doSignup() above:
+                // onAuthStateChanged already fired for this OAuth sign-in
+                // before this profile doc existed, so it won't fire again
+                // on its own now that the doc has been written.
+                window._currentUser = { uid: oUser.uid, email: oUser.email, name: username, country };
+                localStorage.setItem('rt_user_country', country);
+                localStorage.setItem('rt_registered_name', username);
+                updateAuthUI(true, username);
                 window._pendingOAuthUser = null;
                 window._oauthSignupMode  = false;
                 closeAuthModal();
