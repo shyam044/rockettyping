@@ -6259,12 +6259,12 @@
              transform="rotate(${(rnd() * 360).toFixed(0)} ${lx.toFixed(0)} ${ly.toFixed(0)})"/>`;
         }
         ds += `</g>`;
-        // Bright inner knot (slightly sharper than the outer cloud body)
+        // Bright inner knot (slightly sharper than the outer cloud body) —
+        // static now (no SMIL animate); one less continuous main-thread
+        // timer running while the player types.
         ds += `<ellipse cx="${n.x}" cy="${n.y}" rx="${n.rx * 0.14}" ry="${n.ry * 0.12}"
-           fill="${n.layers[2]}" opacity="0.22" filter="url(#nebBlurSoft)"
-           transform="rotate(${n.rot + 8} ${n.x} ${n.y})">
-          <animate attributeName="opacity" values="0.16;0.26;0.16" dur="${(6 + rnd() * 4).toFixed(1)}s" repeatCount="indefinite"/>
-        </ellipse>`;
+           fill="${n.layers[2]}" opacity="0.2" filter="url(#nebBlurSoft)"
+           transform="rotate(${n.rot + 8} ${n.x} ${n.y})"/>`;
         // Off-center hot spot (young star-forming region glow)
         const hx = n.x + (rnd() - 0.5) * n.rx * 0.4, hy = n.y + (rnd() - 0.5) * n.ry * 0.4;
         ds += `<ellipse cx="${hx.toFixed(0)}" cy="${hy.toFixed(0)}" rx="${n.rx * 0.09}" ry="${n.ry * 0.08}"
@@ -6298,9 +6298,10 @@
         </g>`;
         // Outer glow of the accretion disk
         ds += `<circle cx="${bx}" cy="${by}" r="${r * 3.1}" fill="url(#bh-glow)" opacity="0.55"/>`;
-        // Accretion disk — flattened ellipse viewed at an angle, swirling slowly
-        ds += `<g style="transform-origin:${bx}px ${by}px;">
-          <animateTransform attributeName="transform" type="rotate" from="0 ${bx} ${by}" to="360 ${bx} ${by}" dur="90s" repeatCount="indefinite"/>
+        // Accretion disk — flattened ellipse viewed at an angle. Static:
+        // it's filled with a symmetric radial gradient, so rotating it
+        // produced no visible change anyway — pure wasted animation cost.
+        ds += `<g>
           <ellipse cx="${bx}" cy="${by}" rx="${r * 2.7}" ry="${r * 0.72}" fill="url(#bh-disk)" opacity="0.85"/>
           <ellipse cx="${bx}" cy="${by}" rx="${r * 2.7}" ry="${r * 0.72}" fill="none" stroke="#fff4d8" stroke-width="1.4" opacity="0.5"/>
           <ellipse cx="${bx}" cy="${by}" rx="${r * 1.9}" ry="${r * 0.5}" fill="none" stroke="#ffb060" stroke-width="4" opacity="0.35"/>
@@ -6333,23 +6334,18 @@
       ══════════════════════════════════════════ */
       let ms = `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}">`;
 
-      // 200 medium stars with realistic colors and varied brightness
+      // 150 medium stars with realistic colors and varied brightness.
+      // NOTE: no per-star SMIL twinkle animation — with ~150 of these,
+      // animating each one continuously competes with keystroke handling
+      // on the main thread and was a real contributor to rough-feeling
+      // typing. A static, varied-brightness field still reads as a rich
+      // starfield.
       for (let i = 0; i < 150; i++) {
         const x = (rnd() * MID_VISIBLE_W).toFixed(1), y = (rnd() * H).toFixed(1);
         const r = (0.45 + rnd() * 1.05).toFixed(1);
         const op = (0.3 + rnd() * 0.6).toFixed(2);
         const c = starColor();
-        if (rnd() < 0.28) {
-          // Twinkle star
-          const peak = Math.min(1, parseFloat(op) + 0.38).toFixed(2);
-          const dur = (0.9 + rnd() * 2.2).toFixed(1);
-          const delay = (rnd() * 5).toFixed(1);
-          ms += `<circle cx="${x}" cy="${y}" r="${r}" fill="${c}" opacity="${op}">
-        <animate attributeName="opacity" values="${op};${peak};${op}" dur="${dur}s" begin="${delay}s" repeatCount="indefinite"/>
-      </circle>`;
-        } else {
-          ms += `<circle cx="${x}" cy="${y}" r="${r}" fill="${c}" opacity="${op}"/>`;
-        }
+        ms += `<circle cx="${x}" cy="${y}" r="${r}" fill="${c}" opacity="${op}"/>`;
       }
 
       // Star clusters (4 dense groupings) + 1 globular cluster — randomized
@@ -6430,22 +6426,15 @@
       </filter>
     </defs>`;
 
-      // 75 foreground stars — bigger, brighter, more saturated
+      // 55 foreground stars — bigger, brighter, more saturated. Static
+      // (no SMIL twinkle) — same reasoning as the mid layer: continuous
+      // per-star animation timers compete with keystroke handling.
       for (let i = 0; i < 55; i++) {
         const x = (rnd() * NEAR_VISIBLE_W).toFixed(1), y = (rnd() * H).toFixed(1);
         const r = (0.7 + rnd() * 1.6).toFixed(1);
         const op = (0.55 + rnd() * 0.4).toFixed(2);
         const c = starColor();
-        if (rnd() < 0.35) {
-          const peak = Math.min(1, parseFloat(op) + 0.3).toFixed(2);
-          const dur = (0.7 + rnd() * 1.8).toFixed(1);
-          const delay = (rnd() * 4).toFixed(1);
-          ns += `<circle cx="${x}" cy="${y}" r="${r}" fill="${c}" opacity="${op}">
-        <animate attributeName="opacity" values="${op};${peak};${op}" dur="${dur}s" begin="${delay}s" repeatCount="indefinite"/>
-      </circle>`;
-        } else {
-          ns += `<circle cx="${x}" cy="${y}" r="${r}" fill="${c}" opacity="${op}"/>`;
-        }
+        ns += `<circle cx="${x}" cy="${y}" r="${r}" fill="${c}" opacity="${op}"/>`;
       }
 
       // ── 10 bright showcase stars with diffraction spikes and halos —
@@ -6504,13 +6493,6 @@
         // Core — bright saturated center with a crisp white pinpoint
         ns += `<circle cx="${bs.x}" cy="${bs.y}" r="${bs.sz}" fill="${bs.c}" opacity="0.9"/>`;
         ns += `<circle cx="${bs.x}" cy="${bs.y}" r="${bs.sz * 0.45}" fill="#fff" opacity="1"/>`;
-
-        // Gentle breathing glow — subtle, no separate visible ring
-        const dur2 = (2.5 + rnd() * 3).toFixed(1);
-        const del2 = (rnd() * 4).toFixed(1);
-        ns += `<circle cx="${bs.x}" cy="${bs.y}" r="${gl * 1.4}" fill="url(#${gid})" opacity="0">
-      <animate attributeName="opacity" values="0;0.5;0" dur="${dur2}s" begin="${del2}s" repeatCount="indefinite"/>
-    </circle>`;
       });
 
       // ── Dark nebula cloud (blocks background — foreground opacity patch) ──
@@ -6559,6 +6541,12 @@
       // Spread asteroids across the belt's real visible width (parallax
       // 1.3x means it's onscreen up to ~6600px, not the full 8000px canvas
       // — this keeps every rock reachable). Count varies each build.
+      // NOTE: asteroids are fully static (no SMIL animate/animateTransform).
+      // Continuous SMIL animations run on the main thread in most browsers
+      // and were competing with keystroke handling for CPU time — a big
+      // contributor to the typing-scroll feeling rough. A random one-time
+      // rotation angle + varied size/craters/opacity still reads as a rich,
+      // living belt without costing anything per frame.
       const count = 20 + Math.floor(rnd() * 8);
       const BELT_VISIBLE_W = 6500;
       for (let i = 0; i < count; i++) {
@@ -6567,17 +6555,10 @@
         const size = 6 + rnd() * 20; // radius
         const depth = size > 18 ? 'near' : (size > 11 ? 'mid' : 'far');
         const opacity = depth === 'near' ? 0.95 : depth === 'mid' ? 0.75 : 0.5;
-        const spin = (14 + rnd() * 26).toFixed(1);
-        const dir = rnd() < 0.5 ? 1 : -1;
-        const driftY = (6 + rnd() * 10).toFixed(0);
-        const driftDur = (5 + rnd() * 6).toFixed(1);
+        const angle = Math.round(rnd() * 360);
 
-        as += `<g transform="translate(${x.toFixed(0)},${y.toFixed(0)})" opacity="${opacity}">
-      <animateTransform attributeName="transform" type="translate" additive="sum"
-        values="0,0; 0,${driftY}; 0,0; 0,-${driftY}; 0,0" dur="${driftDur}s" repeatCount="indefinite" begin="${(rnd()*4).toFixed(1)}s"/>
-      <g>
-        <animateTransform attributeName="transform" type="rotate" from="0" to="${360 * dir}" dur="${spin}s" repeatCount="indefinite"/>
-        <path d="${rockPath(size)}" fill="url(#ast-base)" stroke="#1a1614" stroke-width="${(size * 0.06).toFixed(1)}"/>`;
+        as += `<g transform="translate(${x.toFixed(0)},${y.toFixed(0)}) rotate(${angle})" opacity="${opacity}">
+      <path d="${rockPath(size)}" fill="url(#ast-base)" stroke="#1a1614" stroke-width="${(size * 0.06).toFixed(1)}"/>`;
 
         // Craters — small dark pits for texture/realism
         const craters = 2 + Math.floor(rnd() * 3);
@@ -6588,7 +6569,7 @@
           as += `<circle cx="${cx}" cy="${cy}" r="${cr}" fill="#241f1c" opacity="0.55"/>`;
           as += `<circle cx="${(cx - cr * 0.25).toFixed(1)}" cy="${(cy - cr * 0.25).toFixed(1)}" r="${(cr * 0.4).toFixed(1)}" fill="#8a8078" opacity="0.25"/>`;
         }
-        as += `</g></g>`;
+        as += `</g>`;
       }
       document.getElementById('space-asteroids').innerHTML = as;
       document.getElementById('space-asteroids').dataset.built = '1';
