@@ -193,6 +193,92 @@
       flex-shrink: 0;
     }
 
+    /* ── Cinematic vignette — darkens corners, adds a faint cold rim-light
+       so the track reads as a deep 3D window into space rather than a flat
+       scrolling strip. Pure CSS, one static layer, no runtime cost. ── */
+    #race-track::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: 15;
+      pointer-events: none;
+      background:
+        radial-gradient(ellipse at center, rgba(0, 0, 0, 0) 55%, rgba(0, 4, 10, 0.55) 100%),
+        linear-gradient(180deg, rgba(120, 160, 220, 0.05) 0%, rgba(0, 0, 0, 0) 12%, rgba(0, 0, 0, 0) 88%, rgba(120, 160, 220, 0.04) 100%);
+    }
+
+    /* ── Foreground ambient dust — tiny drifting motes for constant depth
+       & life on screen, visible even before a race starts. CSS-only,
+       transform/opacity animated (GPU compositable, no layout cost). ── */
+    #space-dust {
+      position: absolute;
+      inset: 0;
+      z-index: 3;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .rt-mote {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      border-radius: 50%;
+      background: #dfe8ff;
+      opacity: 0;
+      animation: rt-mote-drift linear infinite;
+      will-change: transform, opacity;
+    }
+
+    @keyframes rt-mote-drift {
+      0% {
+        transform: translate(0, 0);
+        opacity: 0;
+      }
+
+      8% {
+        opacity: 0.55;
+      }
+
+      50% {
+        opacity: 0.35;
+      }
+
+      92% {
+        opacity: 0.5;
+      }
+
+      100% {
+        transform: translate(-60px, 26px);
+        opacity: 0;
+      }
+    }
+
+    /* ── Hyperspace flash — brief bright streak wash triggered at race
+       launch for a cinematic "jump to lightspeed" payoff ── */
+    #race-track.rt-warp-flash::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: 16;
+      pointer-events: none;
+      background: radial-gradient(ellipse at center, rgba(226, 240, 255, 0.85) 0%, rgba(180, 210, 255, 0.25) 35%, rgba(0, 0, 0, 0) 70%);
+      animation: rt-warp-flash-anim 0.7s ease-out forwards;
+    }
+
+    @keyframes rt-warp-flash-anim {
+      0% {
+        opacity: 0;
+      }
+
+      15% {
+        opacity: 1;
+      }
+
+      100% {
+        opacity: 0;
+      }
+    }
+
     /* ── Parallax space layers ── */
     #space-deep {
       position: absolute;
@@ -225,6 +311,82 @@
       z-index: 2;
       transition: transform 0.08s linear;
       will-change: transform;
+    }
+
+    /* ── Foreground asteroid belt — closest layer, fastest parallax so
+       rocks appear to whip past the rocket as it speeds along ── */
+    #space-asteroids {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 8000px;
+      height: 100%;
+      z-index: 3;
+      pointer-events: none;
+      transition: transform 0.06s linear;
+      will-change: transform;
+    }
+
+    /* ── Comet streaks — occasional bright trails crossing the track ── */
+    #space-comets {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 4;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .rt-comet {
+      position: absolute;
+      top: -6%;
+      left: -10%;
+      width: 3px;
+      height: 3px;
+      border-radius: 50%;
+      background: #fff;
+      box-shadow: 0 0 6px 1px rgba(255, 255, 255, 0.9);
+      opacity: 0;
+      z-index: 4;
+      pointer-events: none;
+      animation: rt-comet-fly linear infinite;
+      --tx: 1180px;
+      --ty: 480px;
+      --ang: 22deg;
+    }
+
+    .rt-comet::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      right: 100%;
+      width: 90px;
+      height: 1.5px;
+      background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(200, 220, 255, 0.75) 100%);
+      transform: translateY(-50%) rotate(var(--ang));
+      transform-origin: right center;
+    }
+
+    @keyframes rt-comet-fly {
+      0% {
+        transform: translate(0, 0);
+        opacity: 0;
+      }
+
+      3% {
+        opacity: 1;
+      }
+
+      92% {
+        opacity: 1;
+      }
+
+      100% {
+        transform: translate(var(--tx), var(--ty));
+        opacity: 0;
+      }
     }
 
     @keyframes twinkle {
@@ -569,7 +731,7 @@
       height: 88px;
       overflow-x: visible;
       white-space: nowrap;
-      transition: transform 0.09s cubic-bezier(0.23, 1, 0.32, 1);
+      transition: transform 0.125s cubic-bezier(0.445, 0.05, 0.55, 0.95);
       letter-spacing: 0.02em;
       /* GPU layer — prevents full-page repaint on every translateX update */
       will-change: transform;
@@ -733,9 +895,12 @@
       transition: width 0.08s linear !important;
     }
 
-    /* PERF: during race, words container scrolls with a subtle smooth — feels glassy */
+    /* PERF: during race, words container scrolls with a subtle smooth — feels glassy.
+       125ms + ease-in-out-sine matches MonkeyType's real scrollTape() implementation
+       (jQuery .animate() at 125ms with the default 'swing' easing, which is
+       mathematically the same curve as ease-in-out-sine). */
     body.race-active #words {
-      transition: transform 0.08s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+      transition: transform 0.125s cubic-bezier(0.445, 0.05, 0.55, 0.95) !important;
     }
 
     /* Scanline on typing zone */
@@ -3681,6 +3846,22 @@
       <div id="space-deep"></div>
       <div id="space-mid"></div>
       <div id="space-bg"></div>
+      <div id="space-asteroids"></div>
+      <div id="space-comets"></div>
+      <div id="space-dust">
+        <div class="rt-mote" style="top:8%;left:12%;animation-duration:14s;animation-delay:0s;"></div>
+        <div class="rt-mote" style="top:22%;left:78%;animation-duration:11s;animation-delay:1.2s;"></div>
+        <div class="rt-mote" style="top:35%;left:40%;animation-duration:16s;animation-delay:2.5s;"></div>
+        <div class="rt-mote" style="top:60%;left:88%;animation-duration:13s;animation-delay:0.6s;width:1.5px;height:1.5px;"></div>
+        <div class="rt-mote" style="top:75%;left:20%;animation-duration:12s;animation-delay:3.4s;"></div>
+        <div class="rt-mote" style="top:15%;left:55%;animation-duration:18s;animation-delay:5s;width:1.5px;height:1.5px;"></div>
+        <div class="rt-mote" style="top:48%;left:8%;animation-duration:10s;animation-delay:1.8s;"></div>
+        <div class="rt-mote" style="top:85%;left:65%;animation-duration:15s;animation-delay:4.1s;"></div>
+        <div class="rt-mote" style="top:30%;left:92%;animation-duration:12.5s;animation-delay:2.9s;width:1.5px;height:1.5px;"></div>
+        <div class="rt-mote" style="top:65%;left:35%;animation-duration:17s;animation-delay:0.3s;"></div>
+        <div class="rt-mote" style="top:5%;left:70%;animation-duration:13.5s;animation-delay:3.7s;"></div>
+        <div class="rt-mote" style="top:92%;left:45%;animation-duration:14.5s;animation-delay:1.5s;width:1.5px;height:1.5px;"></div>
+      </div>
       <div id="finish-line"></div>
       <div id="finish-text">FINISH</div>
       <div id="race-wpm-hud">
@@ -4311,7 +4492,7 @@
     // ── Cached DOM element references (set once in initCachedEls) ──
     let _elLiveWpm, _elLiveAcc, _elLiveWord, _elProgFill,
       _elBigWpm, _elBigAcc, _elFinishLine, _elFinishText,
-      _elSpaceDeep, _elSpaceMid, _elSpaceBg, _elRaceTrack,
+      _elSpaceDeep, _elSpaceMid, _elSpaceBg, _elSpaceAsteroids, _elRaceTrack,
       _elTypingStage;
     let _elOppRockets = [];
     let _rhythmDots = [];       // cached NodeList → Array
@@ -4328,6 +4509,7 @@
       _elSpaceDeep = document.getElementById('space-deep');
       _elSpaceMid = document.getElementById('space-mid');
       _elSpaceBg = document.getElementById('space-bg');
+      _elSpaceAsteroids = document.getElementById('space-asteroids');
       _elRaceTrack = document.getElementById('race-track');
       _elTypingStage = document.getElementById('typing-stage');
       _elOppRockets = ['opp-rocket1', 'opp-rocket2', 'opp-rocket3', 'opp-rocket4']
@@ -4393,6 +4575,7 @@
       // Background position and space-bg — batched here to keep keydown path clear
       if (_elRaceTrack) _elRaceTrack.style.backgroundPosition = `-${worldOffset}px 0px`;
       if (_elSpaceBg) _elSpaceBg.style.transform = `translateX(-${worldOffset}px)`;
+      if (_elSpaceAsteroids) _elSpaceAsteroids.style.transform = `translateX(-${worldOffset * 1.3}px)`;
     }
 
     /* ============================================================ PILOT BUILDER ============================================================ */
@@ -5694,6 +5877,7 @@
       sounds.ambient.pause(); sounds.ambient.currentTime = 0;
       stopEngineSound();
       testActive = false; clearInterval(elapsedInterval); elapsedInterval = null; clearInterval(opponentInterval); opponentInterval = null; clearInterval(playerMomentumInterval); playerMomentumInterval = null; clearInterval(liveWpmInterval); liveWpmInterval = null; document.body.classList.remove('race-active');
+      stopCometField();
       const _raceElapsedMs = startTime ? (Date.now() - startTime) : 0;
       const playerFinished = playerProgress >= TRACK_WIDTH;
       const playerFinishMs = playerFinished ? _raceElapsedMs : Infinity;
@@ -5923,6 +6107,40 @@
       const W = 8000, H = 420;
       const rnd = Math.random.bind(Math);
 
+      // ── Real on-screen reach of each parallax layer (worldOffset can hit
+      //    ~4380px; layer shift = worldOffset × its multiplier; viewport
+      //    is 920px wide). Placing content only within these ranges means
+      //    every element generated is guaranteed to actually be seen at
+      //    some point in the race — no wasted detail. ──
+      const DEEP_VISIBLE_W = 1300;   // multiplier 0.08
+      const MID_VISIBLE_W = 2700;    // multiplier 0.4
+      const NEAR_VISIBLE_W = 5300;   // multiplier 1
+
+      // ── Scatter `count` points inside [xMin,xMax]×[yMin,yMax] with a
+      //    soft minimum-distance constraint, so repeated calls (one per
+      //    race) always produce a fresh, evenly-spread, non-clumped
+      //    layout instead of everything landing in the same spot. ──
+      function placeSpaced(count, xMin, xMax, yMin, yMax, minDist) {
+        const pts = [];
+        for (let i = 0; i < count; i++) {
+          let best = null, bestScore = -1;
+          const tries = 12;
+          for (let t = 0; t < tries; t++) {
+            const cand = { x: xMin + rnd() * (xMax - xMin), y: yMin + rnd() * (yMax - yMin) };
+            let minSeen = Infinity;
+            for (const p of pts) {
+              const d = Math.hypot(cand.x - p.x, cand.y - p.y);
+              if (d < minSeen) minSeen = d;
+            }
+            if (pts.length === 0) minSeen = Infinity;
+            if (minSeen >= minDist) { best = cand; break; }
+            if (minSeen > bestScore) { bestScore = minSeen; best = cand; }
+          }
+          pts.push(best);
+        }
+        return pts;
+      }
+
       /* ── Spectral star color (realistic distribution) ── */
       function starColor() {
         const r = rnd();
@@ -5958,100 +6176,150 @@
       <stop offset="60%" stop-color="#111c2c" stop-opacity="0.65"/>
       <stop offset="100%" stop-color="#0a1020" stop-opacity="0"/>
     </linearGradient>
+    <filter id="nebBlur" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="9"/>
+    </filter>
+    <filter id="nebBlurSoft" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="4"/>
+    </filter>
+    <radialGradient id="bh-disk" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#fff8e0"/>
+      <stop offset="18%" stop-color="#ffd27a"/>
+      <stop offset="40%" stop-color="#ff9d4d"/>
+      <stop offset="65%" stop-color="#c8502a"/>
+      <stop offset="100%" stop-color="#5a1a20" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="bh-glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffe8b0" stop-opacity="0.9"/>
+      <stop offset="60%" stop-color="#ff9050" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#ff9050" stop-opacity="0"/>
+    </radialGradient>
   </defs>`;
       // Main Milky Way band - tilted slightly
-      ds += `<ellipse cx="${W * 0.5}" cy="${H * 0.5}" rx="${W * 0.54}" ry="${H * 0.24}" fill="url(#mw1)" opacity="0.7" transform="rotate(-3 ${W * 0.5} ${H * 0.5})"/>`;
+      ds += `<ellipse cx="${DEEP_VISIBLE_W * 0.5}" cy="${H * 0.5}" rx="${DEEP_VISIBLE_W * 0.72}" ry="${H * 0.26}" fill="url(#mw1)" opacity="0.7" transform="rotate(-3 ${DEEP_VISIBLE_W * 0.5} ${H * 0.5})"/>`;
       // Secondary density band
-      ds += `<ellipse cx="${W * 0.45}" cy="${H * 0.44}" rx="${W * 0.4}" ry="${H * 0.14}" fill="url(#mw2)" opacity="0.55" transform="rotate(-2 ${W * 0.5} ${H * 0.5})"/>`;
-      // Bright core bulge region around 60% of track
-      ds += `<ellipse cx="${W * 0.62}" cy="${H * 0.48}" rx="${W * 0.12}" ry="${H * 0.18}" fill="#1a2030" opacity="0.45"/>`;
-      ds += `<ellipse cx="${W * 0.62}" cy="${H * 0.48}" rx="${W * 0.06}" ry="${H * 0.10}" fill="#1e2638" opacity="0.4"/>`;
+      ds += `<ellipse cx="${DEEP_VISIBLE_W * 0.45}" cy="${H * 0.44}" rx="${DEEP_VISIBLE_W * 0.55}" ry="${H * 0.15}" fill="url(#mw2)" opacity="0.55" transform="rotate(-2 ${DEEP_VISIBLE_W * 0.5} ${H * 0.5})"/>`;
+      // Bright core bulge region, randomized each build
+      const bulgeX = DEEP_VISIBLE_W * (0.35 + rnd() * 0.4);
+      ds += `<ellipse cx="${bulgeX}" cy="${H * 0.48}" rx="${DEEP_VISIBLE_W * 0.16}" ry="${H * 0.18}" fill="#1a2030" opacity="0.45"/>`;
+      ds += `<ellipse cx="${bulgeX}" cy="${H * 0.48}" rx="${DEEP_VISIBLE_W * 0.08}" ry="${H * 0.10}" fill="#1e2638" opacity="0.4"/>`;
 
-      // ── Nebulae (5 distinct, spread across width) ──
-      const nebulae = [
-        // Blue Reflection Nebula
-        {
-          x: 440, y: 185, rx: 240, ry: 130, rot: -16,
-          layers: ['#0a2a8a', '#0a3898', '#1248a8', '#183aaa'],
-          tendrils: [[420, 80, 480, 140], [360, 230, 410, 200]]
-        },
-        // Red/Magenta Emission Nebula
-        {
-          x: 1020, y: 215, rx: 280, ry: 115, rot: 14,
-          layers: ['#720a28', '#8a1232', '#a01a3a', '#b82040'],
-          tendrils: [[1080, 120, 1040, 160], [980, 300, 1000, 260]]
-        },
-        // Teal/Aqua Nebula
-        {
-          x: 1640, y: 165, rx: 220, ry: 175, rot: -9,
-          layers: ['#0a4a3a', '#0a5c4a', '#107060', '#1a7868'],
-          tendrils: [[1700, 60, 1660, 110], [1590, 280, 1620, 240]]
-        },
-        // Purple/Violet Nebula
-        {
-          x: 2220, y: 225, rx: 260, ry: 120, rot: 24,
-          layers: ['#3c0a6a', '#4e0a78', '#5e1480', '#6a1a88'],
-          tendrils: [[2280, 100, 2240, 155], [2160, 320, 2190, 280]]
-        },
-        // Amber/Orange Nebula
-        {
-          x: 2820, y: 180, rx: 230, ry: 155, rot: -14,
-          layers: ['#5a2808', '#6e3208', '#7e3e0a', '#8c4810'],
-          tendrils: [[2880, 60, 2840, 115], [2760, 300, 2790, 255]]
-        },
+      // ── Nebulae (5 distinct color themes, randomly placed & sized each
+      //    build so the deep field never looks the same twice) ──
+      const nebulaPalettes = [
+        ['#0a2a8a', '#0a3898', '#1248a8', '#183aaa'],  // Blue Reflection
+        ['#720a28', '#8a1232', '#a01a3a', '#b82040'],  // Red/Magenta Emission
+        ['#0a4a3a', '#0a5c4a', '#107060', '#1a7868'],  // Teal/Aqua
+        ['#3c0a6a', '#4e0a78', '#5e1480', '#6a1a88'],  // Purple/Violet
+        ['#5a2808', '#6e3208', '#7e3e0a', '#8c4810'],  // Amber/Orange
       ];
+      const nebSpots = placeSpaced(5, 140, DEEP_VISIBLE_W - 100, 90, 330, 220);
+      function randTendril(cx, cy) {
+        const a1 = rnd() * Math.PI * 2, d1 = 70 + rnd() * 50;
+        const a2 = a1 + Math.PI + (rnd() * 0.8 - 0.4), d2 = 60 + rnd() * 60;
+        return [
+          Math.round(cx + Math.cos(a1) * d1 * 1.4), Math.round(cy + Math.sin(a1) * d1),
+          Math.round(cx + Math.cos(a1) * d1 * 0.5), Math.round(cy + Math.sin(a1) * d1 * 0.4)
+        ].concat([
+          Math.round(cx + Math.cos(a2) * d2 * 1.4), Math.round(cy + Math.sin(a2) * d2),
+          Math.round(cx + Math.cos(a2) * d2 * 0.5), Math.round(cy + Math.sin(a2) * d2 * 0.4)
+        ]);
+      }
+      const nebulae = nebulaPalettes.map((layers, i) => {
+        const [tx1, ty1, tx2, ty2, tx3, ty3, tx4, ty4] = randTendril(nebSpots[i].x, nebSpots[i].y);
+        return {
+          x: Math.round(nebSpots[i].x), y: Math.round(nebSpots[i].y),
+          rx: Math.round(190 + rnd() * 90), ry: Math.round(95 + rnd() * 80),
+          rot: Math.round(rnd() * 60 - 30),
+          layers,
+          tendrils: [[tx1, ty1, tx2, ty2], [tx3, ty3, tx4, ty4]]
+        };
+      });
 
       nebulae.forEach(n => {
+        ds += `<g filter="url(#nebBlur)">`;
         // Build nebula with concentric ellipses + secondary "wisps"
         n.layers.forEach((col, li) => {
           const scales = [1.0, 0.72, 0.48, 0.26];
-          const opacs = [0.07, 0.10, 0.12, 0.11];
+          const opacs = [0.10, 0.14, 0.16, 0.15];
           ds += `<ellipse cx="${n.x}" cy="${n.y}" rx="${n.rx * scales[li]}" ry="${n.ry * scales[li]}"
              fill="${col}" opacity="${opacs[li]}"
              transform="rotate(${n.rot} ${n.x} ${n.y})"/>`;
         });
-        // Bright inner knot
+        // Extra billowing lobes for an organic, cloud-like silhouette rather
+        // than a plain ellipse (several offset puffs at varied sizes)
+        for (let i = 0; i < 6; i++) {
+          const ang = rnd() * Math.PI * 2;
+          const dist = rnd() * n.rx * 0.55;
+          const lx = n.x + Math.cos(ang) * dist, ly = n.y + Math.sin(ang) * dist * (n.ry / n.rx);
+          const lr = n.rx * (0.22 + rnd() * 0.3);
+          const col = n.layers[Math.floor(rnd() * n.layers.length)];
+          ds += `<ellipse cx="${lx.toFixed(0)}" cy="${ly.toFixed(0)}" rx="${lr.toFixed(0)}" ry="${(lr * (0.55 + rnd() * 0.3)).toFixed(0)}"
+             fill="${col}" opacity="${(0.06 + rnd() * 0.07).toFixed(2)}"
+             transform="rotate(${(rnd() * 360).toFixed(0)} ${lx.toFixed(0)} ${ly.toFixed(0)})"/>`;
+        }
+        ds += `</g>`;
+        // Bright inner knot (slightly sharper than the outer cloud body)
         ds += `<ellipse cx="${n.x}" cy="${n.y}" rx="${n.rx * 0.14}" ry="${n.ry * 0.12}"
-           fill="${n.layers[2]}" opacity="0.18"
-           transform="rotate(${n.rot + 8} ${n.x} ${n.y})"/>`;
-        // Off-center hot spot
+           fill="${n.layers[2]}" opacity="0.22" filter="url(#nebBlurSoft)"
+           transform="rotate(${n.rot + 8} ${n.x} ${n.y})">
+          <animate attributeName="opacity" values="0.16;0.26;0.16" dur="${(6 + rnd() * 4).toFixed(1)}s" repeatCount="indefinite"/>
+        </ellipse>`;
+        // Off-center hot spot (young star-forming region glow)
         const hx = n.x + (rnd() - 0.5) * n.rx * 0.4, hy = n.y + (rnd() - 0.5) * n.ry * 0.4;
         ds += `<ellipse cx="${hx.toFixed(0)}" cy="${hy.toFixed(0)}" rx="${n.rx * 0.09}" ry="${n.ry * 0.08}"
-           fill="${n.layers[3]}" opacity="0.16"/>`;
-        // Nebula tendrils (thin wispy arms)
+           fill="${n.layers[3]}" opacity="0.2" filter="url(#nebBlurSoft)"/>`;
+        ds += `<circle cx="${hx.toFixed(0)}" cy="${hy.toFixed(0)}" r="1.6" fill="#fff" opacity="0.55"/>`;
+        // Nebula tendrils (thin wispy arms), softened
+        ds += `<g filter="url(#nebBlurSoft)">`;
         n.tendrils.forEach(([x1, y1, x2, y2]) => {
           ds += `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}"
-             stroke="${n.layers[1]}" stroke-width="${2 + rnd() * 3}" opacity="0.055"
+             stroke="${n.layers[1]}" stroke-width="${3 + rnd() * 4}" opacity="0.09"
              stroke-linecap="round"/>`;
         });
+        ds += `</g>`;
+        // A few tiny embedded stars glinting through the cloud
+        for (let i = 0; i < 8; i++) {
+          const sx = n.x + (rnd() - 0.5) * n.rx * 1.3, sy = n.y + (rnd() - 0.5) * n.ry * 1.3;
+          ds += `<circle cx="${sx.toFixed(0)}" cy="${sy.toFixed(0)}" r="${(0.4 + rnd() * 0.6).toFixed(1)}" fill="#fff" opacity="${(0.3 + rnd() * 0.4).toFixed(2)}"/>`;
+        }
       });
 
-      // ── Distant Galaxies (faint smudges) ──
-      const galaxies = [
-        { x: 185, y: 75, rx: 22, ry: 7, rot: 35 }, { x: 640, y: 320, rx: 18, ry: 5, rot: -20 },
-        { x: 830, y: 68, rx: 25, ry: 8, rot: 55 }, { x: 1180, y: 350, rx: 16, ry: 6, rot: 10 },
-        { x: 1420, y: 92, rx: 20, ry: 7, rot: -40 }, { x: 1750, y: 285, rx: 24, ry: 6, rot: 25 },
-        { x: 1960, y: 55, rx: 18, ry: 5, rot: 65 }, { x: 2080, y: 365, rx: 22, ry: 7, rot: -15 },
-        { x: 2340, y: 120, rx: 26, ry: 8, rot: 45 }, { x: 2560, y: 315, rx: 17, ry: 5, rot: -30 },
-        { x: 2810, y: 85, rx: 20, ry: 7, rot: 20 }, { x: 3050, y: 355, rx: 23, ry: 6, rot: -50 },
-        { x: 480, y: 155, rx: 14, ry: 5, rot: 75 }, { x: 1310, y: 198, rx: 12, ry: 4, rot: -10 },
-        { x: 2680, y: 200, rx: 15, ry: 5, rot: 38 },
-      ];
-      galaxies.forEach(g => {
-        const bright = 0.09 + rnd() * 0.11;
-        ds += `<ellipse cx="${g.x}" cy="${g.y}" rx="${g.rx}" ry="${g.ry}"
-           fill="#b8c8e0" opacity="${bright.toFixed(2)}"
-           transform="rotate(${g.rot} ${g.x} ${g.y})"/>`;
-        ds += `<ellipse cx="${g.x}" cy="${g.y}" rx="${g.rx * 0.45}" ry="${g.ry * 0.6}"
-           fill="#d8e4f0" opacity="${(bright * 0.75).toFixed(2)}"
-           transform="rotate(${g.rot} ${g.x} ${g.y})"/>`;
-        // Nucleus bright spot
-        ds += `<circle cx="${g.x}" cy="${g.y}" r="1.2" fill="#eef4ff" opacity="${(bright * 0.9).toFixed(2)}"/>`;
-      });
+      // ── Distant supermassive black hole (fixed, far-layer parallax so it
+      //     looms majestically in the background for most of the race) ──
+      (function drawBlackHole() {
+        const r = 42 + rnd() * 10; // event-horizon radius
+        const bx = Math.round(r * 3.4 + 40 + rnd() * (DEEP_VISIBLE_W - 2 * (r * 3.4 + 40)));
+        const by = Math.round(r * 1.55 + 40 + rnd() * (H - 2 * (r * 1.55 + 40)));
+        // Gravitational lensing halo — background light bent around the hole
+        ds += `<g filter="url(#nebBlurSoft)">
+          <ellipse cx="${bx}" cy="${by}" rx="${r * 3.4}" ry="${r * 1.55}" fill="none" stroke="#dfe8ff" stroke-width="3" opacity="0.10"/>
+          <ellipse cx="${bx}" cy="${by}" rx="${r * 2.6}" ry="${r * 1.15}" fill="none" stroke="#eef3ff" stroke-width="2.2" opacity="0.14"/>
+        </g>`;
+        // Outer glow of the accretion disk
+        ds += `<circle cx="${bx}" cy="${by}" r="${r * 3.1}" fill="url(#bh-glow)" opacity="0.55"/>`;
+        // Accretion disk — flattened ellipse viewed at an angle, swirling slowly
+        ds += `<g style="transform-origin:${bx}px ${by}px;">
+          <animateTransform attributeName="transform" type="rotate" from="0 ${bx} ${by}" to="360 ${bx} ${by}" dur="90s" repeatCount="indefinite"/>
+          <ellipse cx="${bx}" cy="${by}" rx="${r * 2.7}" ry="${r * 0.72}" fill="url(#bh-disk)" opacity="0.85"/>
+          <ellipse cx="${bx}" cy="${by}" rx="${r * 2.7}" ry="${r * 0.72}" fill="none" stroke="#fff4d8" stroke-width="1.4" opacity="0.5"/>
+          <ellipse cx="${bx}" cy="${by}" rx="${r * 1.9}" ry="${r * 0.5}" fill="none" stroke="#ffb060" stroke-width="4" opacity="0.35"/>
+        </g>`;
+        // Photon ring — thin bright ring hugging the event horizon
+        ds += `<circle cx="${bx}" cy="${by}" r="${r * 1.04}" fill="none" stroke="#fff2d0" stroke-width="1.6" opacity="0.75"/>`;
+        // A sliver of lensed disk light peeking over the top of the horizon
+        ds += `<path d="M ${bx - r * 1.02},${by} A ${r * 1.02} ${r * 0.3} 0 0 1 ${bx + r * 1.02},${by}"
+           fill="none" stroke="#ffe6b0" stroke-width="2.4" opacity="0.55"/>`;
+        // Event horizon — the black core, blocking everything behind it
+        ds += `<circle cx="${bx}" cy="${by}" r="${r}" fill="#000000"/>`;
+        ds += `<circle cx="${bx}" cy="${by}" r="${r}" fill="none" stroke="#050208" stroke-width="6" opacity="0.6"/>`;
+      })();
 
-      // ── Far micro-stars (300 — tiny, deep background) ──
-      for (let i = 0; i < 300; i++) {
-        const x = (rnd() * W).toFixed(1), y = (rnd() * H).toFixed(1);
+      // ── Far micro-stars (380 — tiny, deep background), confined to the
+      //     layer's real visible width for a dense, fully-utilized deep
+      //     field instead of scattering a third of them out of view. ──
+      for (let i = 0; i < 260; i++) {
+        const x = (rnd() * DEEP_VISIBLE_W).toFixed(1), y = (rnd() * H).toFixed(1);
         const r = (0.28 + rnd() * 0.55).toFixed(1);
         const op = (0.18 + rnd() * 0.45).toFixed(2);
         ds += `<circle cx="${x}" cy="${y}" r="${r}" fill="${starColor()}" opacity="${op}"/>`;
@@ -6066,8 +6334,8 @@
       let ms = `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}">`;
 
       // 200 medium stars with realistic colors and varied brightness
-      for (let i = 0; i < 200; i++) {
-        const x = (rnd() * W).toFixed(1), y = (rnd() * H).toFixed(1);
+      for (let i = 0; i < 150; i++) {
+        const x = (rnd() * MID_VISIBLE_W).toFixed(1), y = (rnd() * H).toFixed(1);
         const r = (0.45 + rnd() * 1.05).toFixed(1);
         const op = (0.3 + rnd() * 0.6).toFixed(2);
         const c = starColor();
@@ -6084,13 +6352,14 @@
         }
       }
 
-      // Star clusters (4 dense groupings)
-      const clusters = [
-        { cx: 680, cy: 190, n: 28, spread: 48, c: '#e8f0ff' },
-        { cx: 1540, cy: 290, n: 24, spread: 42, c: '#fff4e0' },
-        { cx: 2280, cy: 115, n: 32, spread: 52, c: '#f0e8ff' },
-        { cx: 2950, cy: 300, n: 22, spread: 40, c: '#e8f8e8' },
-      ];
+      // Star clusters (4 dense groupings) + 1 globular cluster — randomized
+      // positions each build, spaced apart so they never clump together
+      const clusterSpots = placeSpaced(5, 120, MID_VISIBLE_W - 120, 70, 350, 380);
+      const clusterColors = ['#e8f0ff', '#fff4e0', '#f0e8ff', '#e8f8e8'];
+      const clusters = clusterColors.map((c, i) => ({
+        cx: Math.round(clusterSpots[i].x), cy: Math.round(clusterSpots[i].y),
+        n: 20 + Math.floor(rnd() * 16), spread: 36 + rnd() * 20, c
+      }));
       clusters.forEach(cl => {
         // Cluster nebulosity glow
         ms += `<circle cx="${cl.cx}" cy="${cl.cy}" r="${cl.spread * 1.2}" fill="${cl.c}" opacity="0.04"/>`;
@@ -6106,8 +6375,8 @@
         }
       });
 
-      // Globular cluster (dense spherical cluster) — one dramatic one mid-track
-      const gc = { cx: 1380, cy: 135, n: 55, spread: 32 };
+      // Globular cluster (dense spherical cluster) — one dramatic one, randomized
+      const gc = { cx: Math.round(clusterSpots[4].x), cy: Math.round(clusterSpots[4].y), n: 45 + Math.floor(rnd() * 20), spread: 26 + rnd() * 12 };
       ms += `<circle cx="${gc.cx}" cy="${gc.cy}" r="${gc.spread * 1.5}" fill="#fff8e0" opacity="0.05"/>`;
       ms += `<circle cx="${gc.cx}" cy="${gc.cy}" r="${gc.spread * 0.8}" fill="#fffce8" opacity="0.06"/>`;
       ms += `<circle cx="${gc.cx}" cy="${gc.cy}" r="${gc.spread * 0.3}" fill="white" opacity="0.08"/>`;
@@ -6121,17 +6390,49 @@
         ms += `<circle cx="${x}" cy="${y}" r="${r}" fill="#fff8e0" opacity="${op}"/>`;
       }
 
+      // ── Distant ringed planet — drifts past mid-race for variety and a
+      //     "wow" moment; randomized position, spaced away from clusters ──
+      (function drawRingedPlanet() {
+        const spot = placeSpaced(1, 150, MID_VISIBLE_W - 150, 60, 360, 0)[0];
+        const px = Math.round(spot.x), py = Math.round(spot.y), pr = 26 + rnd() * 14;
+        ms += `<defs>
+      <radialGradient id="rp-body" cx="35%" cy="30%" r="75%">
+        <stop offset="0%" stop-color="#f0d9a8"/>
+        <stop offset="45%" stop-color="#caa668"/>
+        <stop offset="100%" stop-color="#7a5c34"/>
+      </radialGradient>
+    </defs>`;
+        // Soft atmospheric glow
+        ms += `<circle cx="${px}" cy="${py}" r="${pr * 2.1}" fill="#e8c888" opacity="0.06"/>`;
+        // Ring — back half (behind the planet body)
+        ms += `<ellipse cx="${px}" cy="${py}" rx="${pr * 2.05}" ry="${pr * 0.42}" fill="none" stroke="#d8c090" stroke-width="${pr * 0.16}" opacity="0.35"/>`;
+        ms += `<ellipse cx="${px}" cy="${py}" rx="${pr * 1.8}" ry="${pr * 0.36}" fill="none" stroke="#c8a868" stroke-width="${pr * 0.07}" opacity="0.4"/>`;
+        // Planet sphere with terminator shading
+        ms += `<circle cx="${px}" cy="${py}" r="${pr}" fill="url(#rp-body)"/>`;
+        ms += `<circle cx="${px}" cy="${py}" r="${pr}" fill="#3a2c14" opacity="0.28" clip-path="inset(0 0 0 55%)"/>`;
+        // Ring — front half (in front of the planet body)
+        ms += `<path d="M ${px - pr * 2.05},${py} A ${pr * 2.05} ${pr * 0.42} 0 0 0 ${px + pr * 2.05},${py}"
+           fill="none" stroke="#f0dca8" stroke-width="${pr * 0.16}" opacity="0.55"/>`;
+        ms += `<path d="M ${px - pr * 1.5},${py} A ${pr * 1.5} ${pr * 0.3} 0 0 0 ${px + pr * 1.5},${py}"
+           fill="none" stroke="#8a6c3c" stroke-width="${pr * 0.05}" opacity="0.4"/>`;
+      })();
+
       ms += `</svg>`;
       document.getElementById('space-mid').innerHTML = ms;
 
       /* ══════════════════════════════════════════
          LAYER 2 — NEAR (space-bg): Bright foreground stars with glow & spikes
       ══════════════════════════════════════════ */
-      let ns = `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}">`;
+      let ns = `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}">
+    <defs>
+      <filter id="nsBlurSoft" x="-80%" y="-80%" width="260%" height="260%">
+        <feGaussianBlur stdDeviation="1.1"/>
+      </filter>
+    </defs>`;
 
       // 75 foreground stars — bigger, brighter, more saturated
-      for (let i = 0; i < 75; i++) {
-        const x = (rnd() * W).toFixed(1), y = (rnd() * H).toFixed(1);
+      for (let i = 0; i < 55; i++) {
+        const x = (rnd() * NEAR_VISIBLE_W).toFixed(1), y = (rnd() * H).toFixed(1);
         const r = (0.7 + rnd() * 1.6).toFixed(1);
         const op = (0.55 + rnd() * 0.4).toFixed(2);
         const c = starColor();
@@ -6147,67 +6448,195 @@
         }
       }
 
-      // ── 10 bright showcase stars with diffraction spikes and halos ──
-      const brightStars = [
-        { x: 185, y: 80, sz: 2.0, c: '#ecf0ff' }, // Blue-white A-type
-        { x: 490, y: 340, sz: 1.8, c: '#ffe8a0' }, // Yellow G-type
-        { x: 820, y: 110, sz: 2.2, c: '#ffffff' }, // Pure white
-        { x: 1130, y: 370, sz: 1.7, c: '#ffca72' }, // Orange K-type
-        { x: 1480, y: 65, sz: 2.1, c: '#c4d4ff' }, // B-type blue-white
-        { x: 1790, y: 295, sz: 1.9, c: '#fff8e8' }, // F-type
-        { x: 2060, y: 88, sz: 2.3, c: '#ffffff' }, // White
-        { x: 2390, y: 320, sz: 1.8, c: '#ffe8a0' }, // Yellow
-        { x: 2720, y: 140, sz: 2.0, c: '#ff9878' }, // M-type red-orange (rare!)
-        { x: 3010, y: 360, sz: 2.1, c: '#c4d4ff' }, // Blue-white
+      // ── 10 bright showcase stars with diffraction spikes and halos —
+      //     randomized position each build, spread across the layer's full
+      //     visible width so they're never clustered in the same spot ──
+      const starTypes = [
+        { sz: 2.0, c: '#ecf0ff' }, // Blue-white A-type
+        { sz: 1.8, c: '#ffe8a0' }, // Yellow G-type
+        { sz: 2.2, c: '#ffffff' }, // Pure white
+        { sz: 1.7, c: '#ffca72' }, // Orange K-type
+        { sz: 2.1, c: '#c4d4ff' }, // B-type blue-white
+        { sz: 1.9, c: '#fff8e8' }, // F-type
+        { sz: 2.3, c: '#ffffff' }, // White
+        { sz: 1.8, c: '#ffe8a0' }, // Yellow
+        { sz: 2.0, c: '#ff9878' }, // M-type red-orange (rare!)
+        { sz: 2.1, c: '#c4d4ff' }, // Blue-white
       ];
+      const brightSpots = placeSpaced(10, 100, NEAR_VISIBLE_W - 100, 55, 370, 420);
+      const brightStars = starTypes.map((t, i) => ({ x: Math.round(brightSpots[i].x), y: Math.round(brightSpots[i].y), sz: t.sz, c: t.c }));
 
-      brightStars.forEach(bs => {
-        const sl = 9 + bs.sz * 3.5; // spike length
-        const gl = bs.sz * 5.5;   // glow radius
-        // Outer halo (soft atmospheric scatter)
-        ns += `<circle cx="${bs.x}" cy="${bs.y}" r="${gl * 2.8}" fill="${bs.c}" opacity="0.04"/>`;
-        ns += `<circle cx="${bs.x}" cy="${bs.y}" r="${gl * 1.8}" fill="${bs.c}" opacity="0.07"/>`;
-        ns += `<circle cx="${bs.x}" cy="${bs.y}" r="${gl}" fill="${bs.c}" opacity="0.14"/>`;
-        // Diffraction spike — horizontal (main)
-        ns += `<line x1="${bs.x - sl}" y1="${bs.y}" x2="${bs.x + sl}" y2="${bs.y}"
-           stroke="${bs.c}" stroke-width="0.6" opacity="0.45"
-           stroke-linecap="round"/>`;
-        // Diffraction spike — vertical (main)
-        ns += `<line x1="${bs.x}" y1="${bs.y - sl}" x2="${bs.x}" y2="${bs.y + sl}"
-           stroke="${bs.c}" stroke-width="0.6" opacity="0.45"
-           stroke-linecap="round"/>`;
-        // Diagonal spikes (weaker, 45°)
-        const ds2 = sl * 0.62;
-        ns += `<line x1="${bs.x - ds2}" y1="${bs.y - ds2}" x2="${bs.x + ds2}" y2="${bs.y + ds2}"
-           stroke="${bs.c}" stroke-width="0.35" opacity="0.22"/>`;
-        ns += `<line x1="${bs.x + ds2}" y1="${bs.y - ds2}" x2="${bs.x - ds2}" y2="${bs.y + ds2}"
-           stroke="${bs.c}" stroke-width="0.35" opacity="0.22"/>`;
-        // Spike fade rings (artifact rings from telescope optics)
-        ns += `<circle cx="${bs.x}" cy="${bs.y}" r="${gl * 0.55}" fill="none"
-           stroke="${bs.c}" stroke-width="0.4" opacity="0.12"/>`;
-        // Core — bright saturated center
-        ns += `<circle cx="${bs.x}" cy="${bs.y}" r="${bs.sz}" fill="${bs.c}" opacity="0.95"/>`;
-        ns += `<circle cx="${bs.x}" cy="${bs.y}" r="${bs.sz * 0.5}" fill="white" opacity="1"/>`;
-        // Animated glow pulse
-        const dur2 = (1.8 + rnd() * 2.5).toFixed(1);
+      brightStars.forEach((bs, bi) => {
+        const gid = `bstar-glow-${bi}`, sid = `bstar-spike-${bi}`;
+        const sl = 7 + bs.sz * 4;   // spike length
+        const gl = bs.sz * 4.2;    // glow radius
+
+        // Smooth radial glow — a single gradient fill, no banding rings
+        ns += `<defs>
+      <radialGradient id="${gid}" cx="50%" cy="50%" r="50%">
+        <stop offset="0%" stop-color="${bs.c}" stop-opacity="0.55"/>
+        <stop offset="22%" stop-color="${bs.c}" stop-opacity="0.22"/>
+        <stop offset="55%" stop-color="${bs.c}" stop-opacity="0.07"/>
+        <stop offset="100%" stop-color="${bs.c}" stop-opacity="0"/>
+      </radialGradient>
+      <linearGradient id="${sid}" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="${bs.c}" stop-opacity="0"/>
+        <stop offset="46%" stop-color="${bs.c}" stop-opacity="0.5"/>
+        <stop offset="50%" stop-color="#fff" stop-opacity="0.85"/>
+        <stop offset="54%" stop-color="${bs.c}" stop-opacity="0.5"/>
+        <stop offset="100%" stop-color="${bs.c}" stop-opacity="0"/>
+      </linearGradient>
+    </defs>`;
+
+        // Glow halo — one soft gradient disc, blurred so it dissolves into
+        // the sky instead of showing hard concentric edges
+        ns += `<circle cx="${bs.x}" cy="${bs.y}" r="${gl * 2.2}" fill="url(#${gid})" filter="url(#nsBlurSoft)"/>`;
+
+        // Diffraction spikes — thin, tapered (bright at the star, fading to
+        // nothing at the tips) and softly blurred, like a real telescope flare
+        ns += `<g filter="url(#nsBlurSoft)" opacity="0.55" transform="translate(${bs.x} ${bs.y})">
+      <rect x="${-sl}" y="${-0.35 * bs.sz}" width="${sl * 2}" height="${0.7 * bs.sz}" fill="url(#${sid})"/>
+      <rect x="${-sl}" y="${-0.35 * bs.sz}" width="${sl * 2}" height="${0.7 * bs.sz}" fill="url(#${sid})" transform="rotate(90)"/>
+      <rect x="${-sl * 0.55}" y="${-0.22 * bs.sz}" width="${sl * 1.1}" height="${0.44 * bs.sz}" fill="url(#${sid})" transform="rotate(45)" opacity="0.6"/>
+      <rect x="${-sl * 0.55}" y="${-0.22 * bs.sz}" width="${sl * 1.1}" height="${0.44 * bs.sz}" fill="url(#${sid})" transform="rotate(-45)" opacity="0.6"/>
+    </g>`;
+
+        // Core — bright saturated center with a crisp white pinpoint
+        ns += `<circle cx="${bs.x}" cy="${bs.y}" r="${bs.sz}" fill="${bs.c}" opacity="0.9"/>`;
+        ns += `<circle cx="${bs.x}" cy="${bs.y}" r="${bs.sz * 0.45}" fill="#fff" opacity="1"/>`;
+
+        // Gentle breathing glow — subtle, no separate visible ring
+        const dur2 = (2.5 + rnd() * 3).toFixed(1);
         const del2 = (rnd() * 4).toFixed(1);
-        ns += `<circle cx="${bs.x}" cy="${bs.y}" r="${gl * 1.8}" fill="${bs.c}" opacity="0.05">
-      <animate attributeName="opacity" values="0.03;0.13;0.03" dur="${dur2}s" begin="${del2}s" repeatCount="indefinite"/>
+        ns += `<circle cx="${bs.x}" cy="${bs.y}" r="${gl * 1.4}" fill="url(#${gid})" opacity="0">
+      <animate attributeName="opacity" values="0;0.5;0" dur="${dur2}s" begin="${del2}s" repeatCount="indefinite"/>
     </circle>`;
       });
 
       // ── Dark nebula cloud (blocks background — foreground opacity patch) ──
-      ns += `<ellipse cx="${W * 0.38}" cy="${H * 0.3}" rx="180" ry="90" fill="#000306" opacity="0.3" transform="rotate(-12 ${W * 0.38} ${H * 0.3})"/>`;
-      ns += `<ellipse cx="${W * 0.38}" cy="${H * 0.3}" rx="110" ry="55" fill="#000204" opacity="0.25" transform="rotate(-12 ${W * 0.38} ${H * 0.3})"/>`;
-      ns += `<ellipse cx="${W * 0.74}" cy="${H * 0.7}" rx="145" ry="72" fill="#000204" opacity="0.25" transform="rotate(8 ${W * 0.74} ${H * 0.7})"/>`;
+      const dn1x = NEAR_VISIBLE_W * (0.25 + rnd() * 0.2), dn1y = H * (0.2 + rnd() * 0.25);
+      const dn2x = NEAR_VISIBLE_W * (0.62 + rnd() * 0.25), dn2y = H * (0.55 + rnd() * 0.3);
+      ns += `<ellipse cx="${dn1x.toFixed(0)}" cy="${dn1y.toFixed(0)}" rx="180" ry="90" fill="#000306" opacity="0.3" transform="rotate(-12 ${dn1x.toFixed(0)} ${dn1y.toFixed(0)})"/>`;
+      ns += `<ellipse cx="${dn1x.toFixed(0)}" cy="${dn1y.toFixed(0)}" rx="110" ry="55" fill="#000204" opacity="0.25" transform="rotate(-12 ${dn1x.toFixed(0)} ${dn1y.toFixed(0)})"/>`;
+      ns += `<ellipse cx="${dn2x.toFixed(0)}" cy="${dn2y.toFixed(0)}" rx="145" ry="72" fill="#000204" opacity="0.25" transform="rotate(8 ${dn2x.toFixed(0)} ${dn2y.toFixed(0)})"/>`;
 
       ns += `</svg>`;
       document.getElementById('space-bg').innerHTML = ns;
       document.getElementById('space-bg').dataset.built = '1';
     }
 
+    /* ══════════════════════════════════════════
+       FOREGROUND ASTEROID BELT — closest parallax layer.
+       Procedural cratered rocks that slowly tumble in place while the
+       whole layer scrolls past faster than the stars, so they read as
+       nearby debris whipping by the rocket during the race.
+    ══════════════════════════════════════════ */
+    function buildAsteroidField() {
+      const W = 8000, H = 420;
+      const rnd = Math.random.bind(Math);
+      let as = `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}">
+    <defs>
+      <radialGradient id="ast-base" cx="35%" cy="30%" r="75%">
+        <stop offset="0%" stop-color="#9a8f82"/>
+        <stop offset="45%" stop-color="#6b6058"/>
+        <stop offset="100%" stop-color="#2c2724"/>
+      </radialGradient>
+    </defs>`;
+
+      // Irregular rock silhouette generator — jittered polygon around a circle
+      function rockPath(r) {
+        const pts = 9 + Math.floor(rnd() * 4);
+        let d = '';
+        for (let i = 0; i < pts; i++) {
+          const ang = (i / pts) * Math.PI * 2;
+          const rr = r * (0.72 + rnd() * 0.4);
+          const x = (Math.cos(ang) * rr).toFixed(1), y = (Math.sin(ang) * rr).toFixed(1);
+          d += (i === 0 ? `M ${x},${y} ` : `L ${x},${y} `);
+        }
+        return d + 'Z';
+      }
+
+      // Spread asteroids across the belt's real visible width (parallax
+      // 1.3x means it's onscreen up to ~6600px, not the full 8000px canvas
+      // — this keeps every rock reachable). Count varies each build.
+      const count = 20 + Math.floor(rnd() * 8);
+      const BELT_VISIBLE_W = 6500;
+      for (let i = 0; i < count; i++) {
+        const x = 100 + (BELT_VISIBLE_W / count) * i + rnd() * (BELT_VISIBLE_W / count) * 0.85;
+        const y = 25 + rnd() * (H - 50);
+        const size = 6 + rnd() * 20; // radius
+        const depth = size > 18 ? 'near' : (size > 11 ? 'mid' : 'far');
+        const opacity = depth === 'near' ? 0.95 : depth === 'mid' ? 0.75 : 0.5;
+        const spin = (14 + rnd() * 26).toFixed(1);
+        const dir = rnd() < 0.5 ? 1 : -1;
+        const driftY = (6 + rnd() * 10).toFixed(0);
+        const driftDur = (5 + rnd() * 6).toFixed(1);
+
+        as += `<g transform="translate(${x.toFixed(0)},${y.toFixed(0)})" opacity="${opacity}">
+      <animateTransform attributeName="transform" type="translate" additive="sum"
+        values="0,0; 0,${driftY}; 0,0; 0,-${driftY}; 0,0" dur="${driftDur}s" repeatCount="indefinite" begin="${(rnd()*4).toFixed(1)}s"/>
+      <g>
+        <animateTransform attributeName="transform" type="rotate" from="0" to="${360 * dir}" dur="${spin}s" repeatCount="indefinite"/>
+        <path d="${rockPath(size)}" fill="url(#ast-base)" stroke="#1a1614" stroke-width="${(size * 0.06).toFixed(1)}"/>`;
+
+        // Craters — small dark pits for texture/realism
+        const craters = 2 + Math.floor(rnd() * 3);
+        for (let c = 0; c < craters; c++) {
+          const cang = rnd() * Math.PI * 2, cdist = rnd() * size * 0.5;
+          const cx = (Math.cos(cang) * cdist).toFixed(1), cy = (Math.sin(cang) * cdist).toFixed(1);
+          const cr = (size * (0.12 + rnd() * 0.16)).toFixed(1);
+          as += `<circle cx="${cx}" cy="${cy}" r="${cr}" fill="#241f1c" opacity="0.55"/>`;
+          as += `<circle cx="${(cx - cr * 0.25).toFixed(1)}" cy="${(cy - cr * 0.25).toFixed(1)}" r="${(cr * 0.4).toFixed(1)}" fill="#8a8078" opacity="0.25"/>`;
+        }
+        as += `</g></g>`;
+      }
+      document.getElementById('space-asteroids').innerHTML = as;
+      document.getElementById('space-asteroids').dataset.built = '1';
+    }
+
+    /* ── Occasional comet streaks crossing the track for extra "wow" ── */
+    let _cometIv = null;
+    function spawnComet() {
+      const layer = document.getElementById('space-comets');
+      if (!layer) return;
+      const el = document.createElement('div');
+      el.className = 'rt-comet';
+      const dur = 2.2 + Math.random() * 1.8;
+
+      // Randomize travel: steepness, left↔right direction, and distance,
+      // so streaks cut across the sky at a different angle every time
+      // instead of always the same diagonal.
+      const angleDeg = 12 + Math.random() * 58; // steepness below horizontal
+      const goingRight = Math.random() < 0.5;
+      const dist = 1150 + Math.random() * 350;
+      const rad = angleDeg * Math.PI / 180;
+      const tx = Math.cos(rad) * dist * (goingRight ? 1 : -1);
+      const ty = Math.sin(rad) * dist;
+      const tailAng = goingRight ? angleDeg : 180 - angleDeg;
+
+      const topStart = -8 + Math.random() * 45; // % down the track to start
+      const leftStart = goingRight ? (-12 + Math.random() * 10) : (102 + Math.random() * 10);
+
+      el.style.top = topStart + '%';
+      el.style.left = leftStart + '%';
+      el.style.setProperty('--tx', tx.toFixed(0) + 'px');
+      el.style.setProperty('--ty', ty.toFixed(0) + 'px');
+      el.style.setProperty('--ang', tailAng.toFixed(1) + 'deg');
+      el.style.animationDuration = dur.toFixed(2) + 's';
+      layer.appendChild(el);
+      setTimeout(() => el.remove(), dur * 1000 + 200);
+    }
+    function startCometField() {
+      if (_cometIv) return;
+      spawnComet();
+      _cometIv = setInterval(() => { if (Math.random() < 0.7) spawnComet(); }, 3200);
+    }
+    function stopCometField() {
+      if (_cometIv) { clearInterval(_cometIv); _cometIv = null; }
+    }
+
     function resetRace() {
-      raceStarted = false; raceFinished = false; document.body.classList.remove('race-active'); stopEngineSound(); const avg = getSessionWPM(), base = Math.max(35, avg);
+      raceStarted = false; raceFinished = false; document.body.classList.remove('race-active'); stopEngineSound(); stopCometField(); const avg = getSessionWPM(), base = Math.max(35, avg);
       opponentWPMs = [base + 8, base + 1, Math.max(10, base - 3), Math.max(10, base - 15)].sort(() => Math.random() - 0.5);
       // Initialise variable-speed state: current speed = target, staggered first change
       opponentCurrentWPMs = [...opponentWPMs];
@@ -6228,15 +6657,22 @@
       // Reset big WPM display
       const bw = document.getElementById('race-wpm-number'); if (bw) { bw.textContent = '—'; bw.className = ''; }
       const ba = document.getElementById('race-wpm-acc'); if (ba) ba.textContent = '';
-      if (!document.getElementById('space-bg').dataset.built) { buildSpaceBackground(); }
+      // Rebuilt fresh every race reset — random nebula/planet/asteroid/star
+      // layout each time instead of a fixed one-time scene. Deferred to
+      // just after this frame paints so the click that triggered a
+      // restart doesn't feel like it freezes.
       worldOffset = 0; updateAllVisuals();
+      requestAnimationFrame(() => {
+        buildSpaceBackground();
+        buildAsteroidField();
+      });
     }
     let _countdownIv = null;
     let _countdownActive = false;
     function showRaceCountdown(cb) {
       if (_countdownActive) return; // prevent double-start
       _countdownActive = true;
-      leaderboardBtn.style.display = "none"; const ov = document.getElementById("race-start-overlay"), tx = document.getElementById("race-start-text"); ov.style.display = "flex"; tx.textContent = "Finding pilots..."; playSound('startIgnition'); setTimeout(() => { let count = 3; _countdownIv = setInterval(() => { tx.textContent = count; playSound('countdown'); count--; if (count === 0) { clearInterval(_countdownIv); _countdownIv = null; setTimeout(() => { tx.textContent = "LET'S GO!"; playSound('startIgnition'); sounds.ambient.currentTime = 0; sounds.ambient.play().catch(() => { }); }, 800); setTimeout(() => { _countdownActive = false; ov.style.display = "none"; raceStarted = true; testActive = true; startTime = Date.now(); elapsedInterval = setInterval(updateElapsed, 1000); opponentInterval = setInterval(updateOpponentProgress, 50); playerMomentumInterval = setInterval(_updatePlayerMomentum, 50); caret.style.opacity = '1'; document.body.classList.add('race-active'); startLiveHud(); startEngineSound(); cb(); }, 1600); } }, 950); }, 800);
+      leaderboardBtn.style.display = "none"; const ov = document.getElementById("race-start-overlay"), tx = document.getElementById("race-start-text"); ov.style.display = "flex"; tx.textContent = "Finding pilots..."; playSound('startIgnition'); setTimeout(() => { let count = 3; _countdownIv = setInterval(() => { tx.textContent = count; playSound('countdown'); count--; if (count === 0) { clearInterval(_countdownIv); _countdownIv = null; setTimeout(() => { tx.textContent = "LET'S GO!"; playSound('startIgnition'); sounds.ambient.currentTime = 0; sounds.ambient.play().catch(() => { }); }, 800); setTimeout(() => { _countdownActive = false; ov.style.display = "none"; raceStarted = true; testActive = true; startTime = Date.now(); elapsedInterval = setInterval(updateElapsed, 1000); opponentInterval = setInterval(updateOpponentProgress, 50); playerMomentumInterval = setInterval(_updatePlayerMomentum, 50); caret.style.opacity = '1'; document.body.classList.add('race-active'); startLiveHud(); startEngineSound(); startCometField(); if (_elRaceTrack) { _elRaceTrack.classList.remove('rt-warp-flash'); void _elRaceTrack.offsetWidth; _elRaceTrack.classList.add('rt-warp-flash'); } cb(); }, 1600); } }, 950); }, 800);
     }
     /* ── Page Visibility API — pause ALL intervals when tab is hidden ──
        Prevents stacked timers and wasted CPU when user switches tabs */
