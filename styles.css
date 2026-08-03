@@ -197,16 +197,10 @@ body::before {
 }
 
 #words {
-    font-size: 36px;
-    text-align: left;
-
     /* Compress the typing area */
     width: 100%;
     max-width: 1300px;      /* Adjust between 1000–1300px */
     margin: 190px auto 0;   /* Center horizontally */
-
-    line-height: 1.5;
-    padding: 0 40px;        /* More breathing room */
 
     user-select: none;
     position: relative;
@@ -215,16 +209,31 @@ body::before {
 
     transition: opacity 0.25s ease;
 
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-
     scrollbar-width: none;
     -ms-overflow-style: none;
 
     transform: translateZ(0);
     will-change: transform;
     contain: layout style paint;
+}
+
+/* #words-track holds the actual word/letter spans + caret and carries all the
+   flex layout that used to live on #words directly. Keeping #words itself as a
+   plain fixed-size clipping box means single-line "tape" mode can transform
+   #words-track (translateX) to glide text left with zero risk of that
+   transform affecting #words' own box, scroll position, or triggering the
+   drift/overflow issues a padding- or scrollLeft-based approach on the
+   viewport itself would have. */
+#words-track {
+    font-size: 36px;
+    text-align: left;
+    line-height: 1.5;
+    padding: 0 40px;        /* More breathing room */
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    min-height: 100%;
 }
 
 /* PERF FIX: pause the letter colour transition entirely while typing.
@@ -245,6 +254,18 @@ body.typing-active #words .letter {
 #words .letter.incorrect { color: #da3333; }
 #words .letter.extra { color: #7e2a33; }
 #words .active { border-bottom: 2px solid #00e6cc; }
+
+/* Single-line "tape" mode: #words-track's transform is driven entirely by the
+   JS tween in app-core.js (_tween/_tapeTween), which mirrors MonkeyType's
+   actual scrollTape() algorithm — a stop-and-retarget animation at 125ms with
+   ease-in-out-sine. NO CSS transition here: a passive `transition: transform`
+   running at the same time as the JS rAF loop would double-animate every
+   frame's already-eased value, which is what caused the previous rough/laggy
+   feel, not smoothness. */
+#words-track.tape-track {
+    flex-wrap: nowrap;
+    will-change: transform;
+}
 
 #caret {
     position: absolute;
