@@ -2222,6 +2222,28 @@ if (!testActive && !testEnded && e.key.length === 1) {
             });
         });
 
+        // FONT-SWAP FIX: Roboto Mono loads asynchronously (display=swap). Until
+        // it's actually ready, letters render in the fallback "monospace" font,
+        // which has different character widths — so every word/letter
+        // offsetLeft measured before the swap (including the caret's position
+        // and, in single-line tape mode, #words-track's transform) is based on
+        // the WRONG font metrics. When the real font swaps in, the words
+        // reflow to their true widths but nothing was telling the caret/track
+        // to re-check — leaving a visible gap between the caret and the text.
+        // This is barely noticeable on localhost (font is cached, loads near-
+        // instantly) but clearly visible on a real deployment, where
+        // downloading it from Google Fonts takes real network time — exactly
+        // the gap being reported. document.fonts.ready resolves the moment
+        // every font requested by this page's CSS has finished loading (or
+        // failed), i.e. exactly the swap moment we need to react to.
+        if (document.fonts && document.fonts.ready) {
+            document.fonts.ready.then(function() {
+                rowsCacheInvalid = true;
+                applyLineMode(config.lineMode);
+                scheduleCaretUpdate();
+            });
+        }
+
         // Single/Two line modes set an explicit pixel height derived from the
         // CURRENT breakpoint's measured row height. If the viewport is resized
         // across a responsive breakpoint (font-size/row-height changes), re-measure
