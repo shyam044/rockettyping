@@ -547,14 +547,22 @@
     text-shadow: 0 0 12px rgba(226,183,20,0.6);
 }
 
-/* The big number */
+/* The big number.
+   NOTE: this used to be a gradient-text effect via background-clip:text +
+   -webkit-text-fill-color:transparent. That combination is fragile — if a
+   deployment's CDN/minifier strips or ignores background-clip:text while
+   -webkit-text-fill-color:transparent still applies (this does happen in
+   real production environments), the text itself becomes invisible while
+   the element's background renders as a plain opaque rectangle behind it —
+   exactly the "solid yellow block instead of a number" bug. The Elon Score
+   number right below uses a plain solid `color` and has never had this
+   problem, so this now matches that same reliable approach. */
 .pm-musk-number {
     font-size: 56px; font-weight: 900;
-    background: linear-gradient(135deg, #ffd700 30%, #ff9900 70%, #ff6600);
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-    background-clip: text;
+    color: #ffd700;
     line-height: 1; letter-spacing: -2px;
     display: block;
+    text-shadow: 0 0 30px rgba(255,165,0,0.5);
     filter: drop-shadow(0 0 14px rgba(255,165,0,0.5));
     transition: transform .35s cubic-bezier(0.34,1.56,0.64,1);
 }
