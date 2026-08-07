@@ -24,7 +24,7 @@
   <meta name="twitter:description"
     content="Race AI opponents in a real-time typing game. Type fast to launch your rocket!">
   <meta name="twitter:image" content="https://www.rockettyping.com/images/og-banner.webp">
-  <link rel="icon" type="image/webp" href="/images/logo.webp">
+  <link rel="icon" type="image/webp" href="/images/rocket-typing-logo.webp">
   <meta name="theme-color" content="#323437">
   <!-- Structured Data: SoftwareApplication + BreadcrumbList for rich results -->
   <script type="application/ld+json">
@@ -3829,7 +3829,7 @@
 
     </div>
 
-    <img id="logo" src="images/logo.webp" alt="Rocket Typing Logo">
+    <img id="logo" src="images/rocket-typing-logo.webp" alt="Rocket Typing Logo">
     <div id="race-track-scale-wrap">
     <div id="race-track">
       <button id="leaderboard-btn"
@@ -4471,7 +4471,7 @@
       startGameWithName("Guest");
       setTimeout(() => { showStartRaceOverlay(); }, 50);
     };
-    function startGameWithName(name) { document.querySelector("#player-lane .name").textContent = name.toUpperCase(); resetRace(); }
+    function startGameWithName(name) { document.querySelector("#player-lane .name").textContent = "You"; resetRace(); }
 
     /* ============================================================ GAME CONSTANTS & STATE ============================================================ */
     const TRACK_WIDTH = 4800, CENTER = 420, SCROLL_CENTER = 425, STEP = 4;
@@ -6287,30 +6287,32 @@
 
       // ── Distant supermassive black hole (fixed, far-layer parallax so it
       //     looms majestically in the background for most of the race) ──
+      let bhBy = 0, bhR = 0; // shared with the ringed-planet placement below
       (function drawBlackHole() {
-        const r = 42 + rnd() * 10; // event-horizon radius
+        // Free to land almost anywhere vertically — the previous version
+        // constrained this to a cramped ~45px band to dodge the ringed
+        // planet, which is exactly why it looked like it always appeared
+        // "in the same place." Real randomness now; the ringed planet
+        // below reads this hole's actual position and dodges around it
+        // dynamically instead of both objects being squeezed into fixed
+        // bands.
+        const r = 38 + rnd() * 8; // event-horizon radius
         const bx = Math.round(r * 3.4 + 40 + rnd() * (DEEP_VISIBLE_W - 2 * (r * 3.4 + 40)));
-        const by = Math.round(r * 1.55 + 40 + rnd() * (H - 2 * (r * 1.55 + 40)));
-        // Gravitational lensing halo — background light bent around the hole
-        ds += `<g filter="url(#nebBlurSoft)">
-          <ellipse cx="${bx}" cy="${by}" rx="${r * 3.4}" ry="${r * 1.55}" fill="none" stroke="#dfe8ff" stroke-width="3" opacity="0.10"/>
-          <ellipse cx="${bx}" cy="${by}" rx="${r * 2.6}" ry="${r * 1.15}" fill="none" stroke="#eef3ff" stroke-width="2.2" opacity="0.14"/>
-        </g>`;
-        // Outer glow of the accretion disk
-        ds += `<circle cx="${bx}" cy="${by}" r="${r * 3.1}" fill="url(#bh-glow)" opacity="0.55"/>`;
-        // Accretion disk — flattened ellipse viewed at an angle. Static:
-        // it's filled with a symmetric radial gradient, so rotating it
-        // produced no visible change anyway — pure wasted animation cost.
-        ds += `<g>
-          <ellipse cx="${bx}" cy="${by}" rx="${r * 2.7}" ry="${r * 0.72}" fill="url(#bh-disk)" opacity="0.85"/>
-          <ellipse cx="${bx}" cy="${by}" rx="${r * 2.7}" ry="${r * 0.72}" fill="none" stroke="#fff4d8" stroke-width="1.4" opacity="0.5"/>
-          <ellipse cx="${bx}" cy="${by}" rx="${r * 1.9}" ry="${r * 0.5}" fill="none" stroke="#ffb060" stroke-width="4" opacity="0.35"/>
-        </g>`;
-        // Photon ring — thin bright ring hugging the event horizon
+        const byMargin = r * 2.1 + 20;
+        const by = Math.round(byMargin + rnd() * (H - 2 * byMargin));
+        bhBy = by; bhR = r;
+        // Soft outer glow — a plain circular halo (no hole in the middle),
+        // reads as ambient light around the hole, not a second ring-shaped
+        // object. Deliberately no wide lensing-halo or accretion-disk
+        // ellipses here — those were 2.5-3.4x the event horizon's width
+        // and read as a Saturn-style ring fused onto the black hole,
+        // which is exactly what looked wrong.
+        ds += `<circle cx="${bx}" cy="${by}" r="${r * 2.1}" fill="url(#bh-glow)" opacity="0.4"/>`;
+        // Tight accretion glow — hugs close to the event horizon so it
+        // reads as the hole's own light, not a separate ringed object
+        ds += `<ellipse cx="${bx}" cy="${by}" rx="${r * 1.32}" ry="${r * 0.4}" fill="url(#bh-disk)" opacity="0.7"/>`;
+        // Photon ring — thin bright ring right at the horizon's edge
         ds += `<circle cx="${bx}" cy="${by}" r="${r * 1.04}" fill="none" stroke="#fff2d0" stroke-width="1.6" opacity="0.75"/>`;
-        // A sliver of lensed disk light peeking over the top of the horizon
-        ds += `<path d="M ${bx - r * 1.02},${by} A ${r * 1.02} ${r * 0.3} 0 0 1 ${bx + r * 1.02},${by}"
-           fill="none" stroke="#ffe6b0" stroke-width="2.4" opacity="0.55"/>`;
         // Event horizon — the black core, blocking everything behind it
         ds += `<circle cx="${bx}" cy="${by}" r="${r}" fill="#000000"/>`;
         ds += `<circle cx="${bx}" cy="${by}" r="${r}" fill="none" stroke="#050208" stroke-width="6" opacity="0.6"/>`;
@@ -6387,10 +6389,30 @@
       }
 
       // ── Distant ringed planet — drifts past mid-race for variety and a
-      //     "wow" moment; randomized position, spaced away from clusters ──
+      //     "wow" moment. Placement: roll a fully random position (full
+      //     range, not a cramped band) and check it's actually clear of
+      //     the black hole; reroll if not. This keeps genuine randomness
+      //     for the vast majority of rolls (most positions don't need to
+      //     dodge anything) while guaranteeing no overlap. ──
       (function drawRingedPlanet() {
-        const spot = placeSpaced(1, 150, MID_VISIBLE_W - 150, 60, 360, 0)[0];
-        const px = Math.round(spot.x), py = Math.round(spot.y), pr = 26 + rnd() * 14;
+        const bhExtent = bhR * 2.1;
+        const safetyMargin = 20;
+        let px, py, pr, rpExtent, safe = false;
+        for (let attempt = 0; attempt < 40; attempt++) {
+          px = Math.round(150 + rnd() * (MID_VISIBLE_W - 300));
+          py = Math.round(40 + rnd() * (H - 80));
+          pr = 22 + rnd() * 10;
+          rpExtent = pr * 2.1;
+          if (Math.abs(bhBy - py) >= bhExtent + rpExtent + safetyMargin) { safe = true; break; }
+        }
+        if (!safe) {
+          // Verified-safe fallback for the rare case all 40 rolls landed
+          // too close: shrink the planet and pin it to whichever edge is
+          // farthest from the black hole — always geometrically clear.
+          pr = 14; rpExtent = pr * 2.1;
+          py = Math.round(bhBy > H / 2 ? rpExtent + 10 : H - rpExtent - 10);
+          px = Math.round(150 + rnd() * (MID_VISIBLE_W - 300));
+        }
         ms += `<defs>
       <radialGradient id="rp-body" cx="35%" cy="30%" r="75%">
         <stop offset="0%" stop-color="#f0d9a8"/>
@@ -6616,7 +6638,26 @@
       if (_cometIv) { clearInterval(_cometIv); _cometIv = null; }
     }
 
+    /* ── Randomize which row (1st–5th) the player's rocket sits in each
+       race, instead of it always being pinned to the bottom/5th row.
+       Lanes are absolutely positioned via a fixed `top` per element, so
+       this just reassigns those five top values — no DOM reordering,
+       so nothing that references opp-lane1..4 by id breaks. ── */
+    function randomizeLaneRows() {
+      const rowTops = [20, 90, 160, 230, 310];
+      for (let i = rowTops.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        const tmp = rowTops[i]; rowTops[i] = rowTops[j]; rowTops[j] = tmp;
+      }
+      const laneIds = ['opp-lane1', 'opp-lane2', 'opp-lane3', 'opp-lane4', 'player-lane'];
+      laneIds.forEach((id, i) => {
+        const el = document.getElementById(id);
+        if (el) { el.style.top = rowTops[i] + 'px'; el.style.bottom = 'auto'; }
+      });
+    }
+
     function resetRace() {
+      randomizeLaneRows();
       raceStarted = false; raceFinished = false; document.body.classList.remove('race-active'); stopEngineSound(); stopCometField(); const avg = getSessionWPM(), base = Math.max(35, avg);
       opponentWPMs = [base + 8, base + 1, Math.max(10, base - 3), Math.max(10, base - 15)].sort(() => Math.random() - 0.5);
       // Initialise variable-speed state: current speed = target, staggered first change
