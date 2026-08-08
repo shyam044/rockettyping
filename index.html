@@ -1396,9 +1396,9 @@ footer a:hover{color:var(--rt-main) !important;}
         <!-- ── Keyboard + Mouse ── -->
         <div id="km-kb-outer">
             <button id="km-sound-btn" onclick="kmSoundToggle()" title="Toggle keyboard sound">
-                <span id="km-sound-icon">🔊</span>
+                <span id="km-sound-icon">🔇</span>
                 <span> SOUND </span>
-                <span id="km-sound-pill" class="km-pill on">ON</span>
+                <span id="km-sound-pill" class="km-pill off">OFF</span>
             </button>
         <div id="km-kb-col">
             <div id="km-kb"><!-- Keys injected by JS --></div>
@@ -2593,7 +2593,7 @@ function handleMouseUp(){
 }
 
 /* ── Sound Engine ───────────────────────────────────────────── */
-var soundOn = true;
+var soundOn = false; /* default OFF */
 var _audioCtx = null;
 function _getAudioCtx(){
     if(!_audioCtx){ try{ _audioCtx = new (window.AudioContext||window.webkitAudioContext)(); }catch(e){} }
@@ -2655,11 +2655,14 @@ function kmInit(){
         }
     }catch(e){}
     try{
-        if(localStorage.getItem('rt_keysound')==='0'){
-            soundOn=false;
+        /* Default is OFF. Only switch to ON if the user explicitly turned
+           it on in a previous visit (saved value === '1'). Any other value
+           (missing, or '0') leaves it off, matching the markup's default. */
+        if(localStorage.getItem('rt_keysound')==='1'){
+            soundOn=true;
             var si=document.getElementById('km-sound-icon'), sp=document.getElementById('km-sound-pill');
-            if(si) si.textContent='🔇';
-            if(sp){sp.textContent='OFF';sp.className='km-pill off';}
+            if(si) si.textContent='🔊';
+            if(sp){sp.textContent='ON';sp.className='km-pill on';}
         }
     }catch(e){}
 
