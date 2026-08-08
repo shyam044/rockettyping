@@ -232,6 +232,14 @@ body::before {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
+    /* FIX: without this, the default align-content ("normal", which behaves
+       like "stretch" for a multi-line flex container) stretches each wrapped
+       row to fill the whole fixed height of #words. That's invisible when
+       the word list happens to fill exactly 3 rows, but when it only fills
+       1 or 2 rows the row(s) get spread out with a big gap between them
+       and/or pushed down away from the top of the box instead of packing
+       against it like the manual 1/2-line settings do. */
+    align-content: flex-start;
     gap: 6px;
     min-height: 100%;
 }
