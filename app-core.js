@@ -562,6 +562,7 @@ let config = {
             state.raf = requestAnimationFrame(step);
         }
         const _vScrollTween = _makeTween();  // drives #words.scrollTop (modes 2/3)
+        const _tapeTween = _makeTween();     // drives #words-track translateX (mode 1)
 
         // === Line-display mode: 1 (single "tape" line), 2, or 3 (default) ===
         // Mode 1 lays words out on a single non-wrapping row on #words-track and
@@ -601,83 +602,59 @@ let config = {
                 _tapeAnchorX = Math.round(viewportW * 0.5);
                 wordsTrack.style.paddingLeft = _tapeAnchorX + 'px';
                 wordsTrack.style.transform = 'translateX(0px)';
-                _tapeCurrentX = 0;
-                _tapeFollowLastT = 0;
-                _startTapeFollow();
+                _tapeTween.current = 0;
+                _tapeTween.from = 0;
+                _tapeTween.to = 0;
+                if (_tapeTween.raf) { cancelAnimationFrame(_tapeTween.raf); _tapeTween.raf = null; }
             } else if (mode === 2) {
                 el.style.height = (rowH * 2) + 'px';
                 wordsTrack.style.paddingLeft = '';
                 wordsTrack.style.transform = '';
-                _stopTapeFollow();
+                if (_tapeTween.raf) { cancelAnimationFrame(_tapeTween.raf); _tapeTween.raf = null; }
             } else {
                 el.style.height = '';
                 wordsTrack.style.paddingLeft = '';
                 wordsTrack.style.transform = '';
-                _stopTapeFollow();
+                if (_tapeTween.raf) { cancelAnimationFrame(_tapeTween.raf); _tapeTween.raf = null; }
             }
             scheduleCaretUpdate();
         }
 
-        // === Continuous tape-mode follow loop ==============================
-        // Runs every frame (not just on keystroke) while single-line tape mode
-        // is active. Each frame it re-reads the CURRENT target position fresh
-        // from the DOM (activeWordEl/currentLetterIndex — whatever they are
-        // *right now*, not a snapshot from when a keystroke fired) and moves
-        // #words-track a fraction of the remaining distance toward it, using
-        // frame-rate-independent exponential smoothing.
-        //
-        // This replaced an earlier version that used a discrete "stop, then
-        // tween to new target over 125ms" approach on every keystroke — which
-        // is literally what MonkeyType's own scrollTape() does. That's a
-        // legitimate, verified-from-their-source technique, but it restarts
-        // the easing curve's slow-start phase on every single keystroke at
-        // normal typing cadence, which reads as jittery rather than fluid —
-        // this is a known, acknowledged issue with MonkeyType's own tape mode,
-        // not something specific to this codebase. A continuous per-frame
-        // convergence has no "restart" moments at all: the target can change
-        // every frame and the visual position just keeps smoothly closing the
-        // gap, so typing fast, slow, or irregularly all look equally fluid.
-        let _tapeFollowRAF = null;
-        let _tapeCurrentX = 0;
-        let _tapeFollowLastT = 0;
-        function _tapeFollowStep(now) {
-            if (config.lineMode !== 1) { _tapeFollowRAF = null; return; }
-            if (activeWordEl && activeLetterSpansArr.length) {
-                const letters = activeLetterSpansArr;
-                const wordLength = words[currentWordIndex] ? words[currentWordIndex].length : 0;
-                let target, after = false;
-                if (currentLetterIndex < wordLength) {
-                    target = letters[currentLetterIndex];
-                } else {
-                    target = letters[letters.length - 1];
-                    after = true;
-                }
-                if (target) {
-                    const wLeft = activeWordEl.offsetLeft;
-                    const tLeft = target.offsetLeft;
-                    const tW = after ? target.offsetWidth : 0;
-                    const targetX = Math.max(0, (wLeft + tLeft + tW) - _tapeAnchorX);
-                    const dtMs = _tapeFollowLastT ? Math.min(now - _tapeFollowLastT, 100) : 16.7;
-                    _tapeFollowLastT = now;
-                    // Exponential ("critically damped") smoothing — frame-rate
-                    // independent: ~63% of the remaining distance closes every
-                    // TAU ms, regardless of the actual frame interval.
-                    const TAU = 45;
-                    const factor = 1 - Math.exp(-dtMs / TAU);
-                    _tapeCurrentX += (targetX - _tapeCurrentX) * factor;
-                    if (Math.abs(targetX - _tapeCurrentX) < 0.3) _tapeCurrentX = targetX;
-                    wordsTrack.style.transform = 'translateX(-' + _tapeCurrentX + 'px)';
-                }
+        // === Tape-mode retarget (MonkeyType's actual scrollTape() technique) ===
+        // Called once per keystroke (from _updateCaretNow) rather than every
+        // animation frame. Computes where the current letter needs to be, then
+        // hands it to the shared _tween() helper — the SAME stop-and-retarget
+        // tween used for vertical line-scroll — with a 125ms duration and
+        // ease-in-out-sine easing. Because _tween() always starts the new leg
+        // from state.current (wherever the track visually is right this
+        // instant, mid-flight or not), this is an exact match for jQuery's
+        // `.stop(true, false).animate({marginLeft: ...}, 125)` that MonkeyType
+        // itself calls on every keystroke — verified against their real
+        // source (frontend/src/ts/test/test-ui.ts, scrollTape()). jQuery's
+        // default 'swing' easing is mathematically ease-in-out-sine, so this
+        // reproduces both the timing and the curve exactly, not just the
+        // general idea of "smoothing" — which is what the previous continuous
+        // per-frame version missed despite being smooth in its own right.
+        function _updateTapeTarget() {
+            if (config.lineMode !== 1) return;
+            if (!(activeWordEl && activeLetterSpansArr.length)) return;
+            const letters = activeLetterSpansArr;
+            const wordLength = words[currentWordIndex] ? words[currentWordIndex].length : 0;
+            let target, after = false;
+            if (currentLetterIndex < wordLength) {
+                target = letters[currentLetterIndex];
+            } else {
+                target = letters[letters.length - 1];
+                after = true;
             }
-            _tapeFollowRAF = requestAnimationFrame(_tapeFollowStep);
-        }
-        function _startTapeFollow() {
-            if (_tapeFollowRAF) return;
-            _tapeFollowLastT = 0;
-            _tapeFollowRAF = requestAnimationFrame(_tapeFollowStep);
-        }
-        function _stopTapeFollow() {
-            if (_tapeFollowRAF) { cancelAnimationFrame(_tapeFollowRAF); _tapeFollowRAF = null; }
+            if (!target) return;
+            const wLeft = activeWordEl.offsetLeft;
+            const tLeft = target.offsetLeft;
+            const tW = after ? target.offsetWidth : 0;
+            const targetX = Math.max(0, (wLeft + tLeft + tW) - _tapeAnchorX);
+            _tween(_tapeTween, targetX, 125, function (v) {
+                wordsTrack.style.transform = 'translateX(-' + v + 'px)';
+            }, _easeInOutSine);
         }
 
 
@@ -773,18 +750,11 @@ let config = {
             if (cachedRows.length >= 2) rowH = cachedRows[1] - cachedRows[0];
 
             if (config.lineMode === 1) {
-                // ── Single-line "tape" mode: track position is now driven by a
-                // continuous per-frame follow loop (_tapeFollowStep, started by
-                // applyLineMode) rather than being retargeted here on every
-                // keystroke. A discrete "stop-and-retarget" tween — even one that
-                // exactly matches MonkeyType's own algorithm — restarts its ease
-                // curve's slow-start phase on every keystroke at normal typing
-                // cadence, which reads as jittery rather than fluid (this is a
-                // documented, known complaint about MonkeyType's own tape mode
-                // for the same reason). A continuous frame-by-frame convergence
-                // toward whatever the current target is doesn't have that
-                // restart artifact at all, so nothing to do here — the follow
-                // loop reads currentLetterIndex/activeWordEl itself every frame.
+                // ── Single-line "tape" mode: retarget the stop-and-retarget
+                // tween exactly the way MonkeyType's own scrollTape() does —
+                // once per keystroke, from wherever the track visually is
+                // right now. See _updateTapeTarget() above.
+                _updateTapeTarget();
             } else {
                 // BUG FIX: this used to compare against wordsDiv.clientHeight (the #words
                 // box's CSS height). Because that height doesn't divide evenly into whole
@@ -2166,9 +2136,10 @@ if (!testActive && !testEnded && e.key.length === 1) {
             if (wordsTrack !== wordsDiv) {
                 wordsTrack.style.transform = (config.lineMode === 1) ? 'translateX(0px)' : '';
             }
-            _tapeCurrentX = 0;
-            _tapeFollowLastT = 0;
-            if (config.lineMode === 1) _startTapeFollow();
+            _tapeTween.current = 0;
+            _tapeTween.from = 0;
+            _tapeTween.to = 0;
+            if (_tapeTween.raf) { cancelAnimationFrame(_tapeTween.raf); _tapeTween.raf = null; }
             timerDiv.style.display = 'block';
 
             wordsDiv.style.opacity = 0;
