@@ -1036,18 +1036,18 @@
      THEME ENGINE — CSS custom properties + override rules.
      Every rule below uses var(--rt-*) so switching a theme is just
      updating these variables on <html> — no per-theme CSS needed.
-     Defaults here match the site's original "Rocket Gold" look exactly.
+     Defaults here match the site's default "GitHub Dark" theme.
 ═══════════════════════════════════════════════════════════════ -->
 <style id="rt-theme-vars">
 :root{
-    --rt-bg:#0a0a23; --rt-bg-rgb:10,10,35;
-    --rt-glow1:rgba(255,215,0,0.15); --rt-glow2:rgba(255,100,0,0.15);
-    --rt-panel-bg:rgba(10,10,35,0.85); --rt-panel-glow:rgba(255,215,0,0.3);
-    --rt-main:#e2b714; --rt-main-rgb:226,183,20;
-    --rt-main2:#ff9900; --rt-main2-rgb:255,153,0;
-    --rt-text:#ffffff; --rt-sub:#646669; --rt-error:#da3333;
-    --rt-caret:#00e6cc; --rt-caret-rgb:0,230,204;
-    --rt-bodytext:#ffd700;
+    --rt-bg:#0d1117; --rt-bg-rgb:13,17,23;
+    --rt-glow1:rgba(88,166,255,0.15); --rt-glow2:rgba(188,140,255,0.15);
+    --rt-panel-bg:rgba(13,17,23,0.85); --rt-panel-glow:rgba(88,166,255,0.3);
+    --rt-main:#58a6ff; --rt-main-rgb:88,166,255;
+    --rt-main2:#bc8cff; --rt-main2-rgb:188,140,255;
+    --rt-text:#c9d1d9; --rt-sub:#8b949e; --rt-error:#f85149;
+    --rt-caret:#56d364; --rt-caret-rgb:86,211,100;
+    --rt-bodytext:#c9d1d9;
     --rt-font:'Roboto Mono', monospace;
 }
 html,body{background:var(--rt-bg) !important;color:var(--rt-bodytext) !important;}
@@ -2933,10 +2933,10 @@ function fmtDate(ts) {
 
 /* ── Theme presets ──────────────────────────────────────────────
    Each theme only needs 6 colors — the CSS variables + override
-   rules in <head> do the rest. First entry is the site's ORIGINAL
-   palette; "NORMAL" always re-applies exactly this one. */
+   rules in <head> do the rest. First entry is the site's DEFAULT
+   palette (GitHub Dark); "NORMAL" always re-applies exactly this one. */
 var THEMES = [
-    { name:'Rocket Gold (Default)', bg:'#0a0a23', main:'#e2b714', main2:'#ff9900', text:'#ffffff', sub:'#646669', error:'#da3333', caret:'#00e6cc', bodytext:'#ffd700' },
+    { name:'GitHub Dark (Default)', bg:'#0d1117', main:'#58a6ff', main2:'#bc8cff', text:'#c9d1d9', sub:'#8b949e', error:'#f85149', caret:'#56d364', bodytext:'#c9d1d9' },
     { name:'Dracula',        bg:'#282a36', main:'#bd93f9', main2:'#ff79c6', text:'#f8f8f2', sub:'#6272a4', error:'#ff5555', caret:'#50fa7b', bodytext:'#f8f8f2' },
     { name:'Nord',           bg:'#2e3440', main:'#88c0d0', main2:'#81a1c1', text:'#eceff4', sub:'#4c566a', error:'#bf616a', caret:'#a3be8c', bodytext:'#d8dee9' },
     { name:'Gruvbox Dark',   bg:'#282828', main:'#fabd2f', main2:'#fe8019', text:'#ebdbb2', sub:'#928374', error:'#fb4934', caret:'#b8bb26', bodytext:'#ebdbb2' },
@@ -2965,7 +2965,7 @@ var THEMES = [
     { name:'Midnight Blue',  bg:'#0b1929', main:'#64b5f6', main2:'#42a5f5', text:'#e3f2fd', sub:'#546e7a', error:'#ef5350', caret:'#4fc3f7', bodytext:'#64b5f6' },
     { name:'Material Dark',  bg:'#212121', main:'#82aaff', main2:'#c792ea', text:'#eeffff', sub:'#616161', error:'#f07178', caret:'#c3e88d', bodytext:'#eeffff' },
     { name:'Material Light', bg:'#fafafa', main:'#6182b8', main2:'#7c4dff', text:'#212121', sub:'#90a4ae', error:'#e53935', caret:'#91b859', bodytext:'#212121' },
-    { name:'GitHub Dark',    bg:'#0d1117', main:'#58a6ff', main2:'#bc8cff', text:'#c9d1d9', sub:'#8b949e', error:'#f85149', caret:'#56d364', bodytext:'#c9d1d9' },
+    { name:'Rocket Gold',    bg:'#0a0a23', main:'#e2b714', main2:'#ff9900', text:'#ffffff', sub:'#646669', error:'#da3333', caret:'#00e6cc', bodytext:'#ffd700' },
     { name:'GitHub Light',   bg:'#ffffff', main:'#0969da', main2:'#8250df', text:'#24292f', sub:'#6e7781', error:'#cf222e', caret:'#1a7f37', bodytext:'#24292f' },
     { name:'Horizon',        bg:'#1c1e26', main:'#e95678', main2:'#fab795', text:'#d5d8da', sub:'#6c6f93', error:'#e95678', caret:'#29d398', bodytext:'#d5d8da' },
     { name:'Palenight',      bg:'#292d3e', main:'#82aaff', main2:'#c792ea', text:'#a6accd', sub:'#676e95', error:'#f07178', caret:'#c3e88d', bodytext:'#a6accd' },
