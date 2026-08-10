@@ -95,20 +95,13 @@ img { max-width: 100%; }
 
 /* ════════════════════════════════════════════════════════════════
    LARGE DESKTOP / LAPTOP (901px – 1400px)
-   BUG FIX: #play-game uses gap:910px in styles.css which only fits
-   at the 1400px max-width of #app. At any smaller viewport the
-   LEARN TO TYPE button overflows off-screen.  We scale the gap
-   using CSS clamp() so both buttons are always visible.
+   #play-game's base rule (styles.css) already uses gap:0 — the
+   buttons are meant to sit flush together as one joined group, so
+   no override is needed here. (A previous version of this file had
+   a clamp()-based gap override compensating for an old base gap of
+   910px; that base value is long gone, so the override was stale and
+   was spreading GAME/CODE/LEARN apart with a huge gap instead.)
    ════════════════════════════════════════════════════════════════ */
-@media (min-width: 901px) and (max-width: 1400px) {
-    #play-game {
-        /* clamp(min, preferred, max)
-           Preferred = viewport width minus the space taken by the logo
-           offset (130px), both button widths (~350px combined), and the
-           header-right-group (~230px). Anything left is the gap.        */
-        gap: clamp(12px, calc(100vw - 710px), 880px) !important;
-    }
-}
 
 /* ════════════════════════════════════════════════════════════════
    SMALL LAPTOP / LARGE TABLET  (≤1024px)
@@ -122,15 +115,38 @@ img { max-width: 100%; }
     #difficulty-container { right: 10px; }
     .diff-btn, .qlen-btn { padding: 9px 16px; font-size: 12.5px; }
 
-    /* ── FIX: 901–1024px dead zone ──────────────────────────────
-       Previously nothing scaled the keymap/score badges until
-       ≤900px, but the full-size keyboard (~450px) + full-size
-       score panel (~384px) don't both fit in #app at these widths.
-       Because body has overflow-x:hidden, the overflow was silently
-       clipped (keys on the right edge invisible) instead of shrinking.
-       This adds an intermediate step so nothing gets cut off. ── */
+    /* ── FIX: score badges vs. keymap collision ──────────────────
+       The desktop layout puts the score badges and the keymap side
+       by side in a CSS grid, with a small translateX() nudge on the
+       Elon badge for visual polish. That nudge is purely cosmetic —
+       it shifts pixels without reserving any extra space — so on
+       viewport widths in between the hand-tuned desktop breakpoints,
+       the ring's pixels can visually spill into the keymap's column
+       and overlap it ("collapse into the keymap").
+       Fix: from here down (≤1024px — small laptop, tablet, and
+       phone), stack the badges centered ABOVE the keymap instead of
+       beside it. This is the same layout already used at ≤600px;
+       widening it to the whole tablet/small-laptop range removes the
+       collision risk entirely instead of tuning more offsets that
+       would only work for one specific screen size. ── */
     #km-scene { overflow-x: auto; }
-    #km-elon-badge { transform: translateX(20px) !important; }
+
+    #km-outer-row {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center;
+        gap: 12px;
+    }
+    #km-scores-panel {
+        flex-direction: row !important;
+        justify-content: center !important;
+        padding-left: 0 !important;
+        padding-bottom: 0 !important;
+        align-self: center;
+        width: 100%;
+        gap: 16px;
+    }
+    #km-elon-badge { transform: none !important; }
 
     .km-score-ring  { width: 120px; height: 120px; }
     .km-score-inner { width: 110px; height: 110px; }
@@ -138,8 +154,6 @@ img { max-width: 100%; }
     .km-score-emoji { font-size: 21px; }
     .km-score-lbl   { font-size: 11px; letter-spacing: 1.5px; }
     .km-score-tag   { font-size: 9px; }
-
-    #km-scores-panel { padding-left: 24px; gap: 14px; }
 }
 
 /* ════════════════════════════════════════════════════════════════
@@ -298,9 +312,10 @@ img { max-width: 100%; }
         margin-left: 16px !important;
     }
 
-    /* ── Score badges: scale down to 110px rings ── */
-    #km-elon-badge { transform: translateX(16px) !important; }
-
+    /* ── Score badges: scale down to 110px rings ──
+       (the stacked, centered layout and transform:none for the Elon
+       badge are already set by the ≤1024px block above and apply
+       here too — only the ring sizing needs to keep shrinking) ── */
     .km-score-ring  { width: 110px; height: 110px; }
     .km-score-inner { width: 100px; height: 100px; }
     .km-score-num   { font-size: 34px; }
@@ -308,7 +323,7 @@ img { max-width: 100%; }
     .km-score-lbl   { font-size: 10px; letter-spacing: 1.5px; }
     .km-score-tag   { font-size: 9px; }
 
-    #km-scores-panel { gap: 10px; padding-left: 6px; }
+    #km-scores-panel { gap: 10px; }
 
     /* ── Musk gain chip ── */
     .musk-gain-chip { font-size: 22px; padding: 5px 14px; }
@@ -421,27 +436,9 @@ img { max-width: 100%; }
     /* Footer */
     footer { font-size: 11px; padding: 14px 10px 8px; }
 
-    /* ── Score badges: collapse to centred row above keyboard ── */
-    #km-outer-row {
-        display: flex !important;
-        flex-direction: column !important;
-        align-items: center;
-        gap: 12px;
-    }
-
-    #km-scores-panel {
-        flex-direction: row !important;
-        justify-content: center !important;
-        padding-left: 0 !important;
-        padding-bottom: 0 !important;
-        align-self: center;
-        width: 100%;
-        gap: 16px;
-    }
-
-    /* Kill desktop translate — badges centred by flexbox */
-    #km-elon-badge { transform: none !important; }
-
+    /* ── Score badges: shrink rings further for phones
+       (stacked/centered layout and transform:none already apply
+       from the ≤1024px block above) ── */
     .km-score-ring  { width: 90px; height: 90px; }
     .km-score-inner { width: 80px; height: 80px; }
     .km-score-num   { font-size: 26px; }
