@@ -2723,13 +2723,6 @@
     </div>
   </div>
 
-  <!-- In-content ad unit — placed above the About section -->
-  <div style="width:100%;max-width:920px;margin:0 auto;display:flex;justify-content:center;overflow:hidden;">
-    <script async="async" data-cfasync="false"
-      src="https://pl30277778.effectivecpmnetwork.com/42f27a48e35d8fefd79d32771cdb9094/invoke.js"></script>
-    <div id="container-42f27a48e35d8fefd79d32771cdb9094"></div>
-  </div>
-
   <!-- ══ SEO CONTENT SECTION — crawlable text about the game ══ -->
   <section id="seo-about" aria-label="About Rocket Race"
     style="position:relative;z-index:10;max-width:920px;margin:0 auto 70px;padding:28px 24px 16px;background:rgba(10,13,22,0.85);border:1px solid rgba(226,183,20,0.12);border-radius:14px;color:#999;font-family:'Roboto Mono',monospace;font-size:13px;line-height:1.75;">
@@ -2863,9 +2856,9 @@
     });
 
     /* ============================================================ SOUNDS ============================================================ */
-    const sounds = { ambient: new Audio('sounds/space-ambient.mp3'), boost: new Audio('sounds/rocket-boost.mp3'), countdown: new Audio('sounds/countdown-beep.mp3'), startIgnition: new Audio('sounds/race-start.mp3'), win: new Audio('sounds/win-fanfare.mp3'), lose: new Audio('sounds/lose-sound.mp3'), finish: new Audio('sounds/finish-whoosh.mp3') };
+    const sounds = { ambient: new Audio('sounds/space-ambient.mp3'), boost: new Audio('sounds/rocket-boost.mp3'), countdown: new Audio('sounds/countdown-beep.mp3'), startIgnition: new Audio('sounds/race-start.mp3'), win: new Audio('sounds/win-fanfare.mp3'), lose: new Audio('sounds/lose-sound.mp3') };
     Object.values(sounds).forEach(s => { s.preload = 'auto'; s.volume = 0.65; });
-    sounds.ambient.loop = true; sounds.ambient.volume = 0.25; sounds.boost.volume = 0.85; sounds.win.volume = 0.95; sounds.lose.volume = 0.75; sounds.finish.volume = 0.85;
+    sounds.ambient.loop = true; sounds.ambient.volume = 0.25; sounds.boost.volume = 0.85; sounds.win.volume = 0.95; sounds.lose.volume = 0.75;
 
     /* ── Web Audio context for synthesized typing sounds ── */
     let _audioCtx = null;
@@ -3813,7 +3806,7 @@
         _visualDirty = true;
         _scheduleRender();
       }
-      if (playerProgress >= TRACK_WIDTH) { playSound('finish'); endRace(); }
+      if (playerProgress >= TRACK_WIDTH) { endRace(); }
     }
 
     /* Legacy alias kept for call sites that use updatePlayerPosition directly */
@@ -3911,7 +3904,7 @@
         if (oppBeatsPlayer) rank++;
       }
       const sfx = ['ST', 'ND', 'RD', 'TH', 'TH'], emj = ['🥇', '🥈', '🥉', '4️⃣', '5️⃣'], clr = ['#ffd700', '#c8c8c8', '#cd7f32', '#aaaaaa', '#888888'], msg = ['🚀 You launched past every rival!', '⚡ Just off the top — insane speed!', '🏅 Top 3 podium finish — great run!', '💪 Solid race. Close to the podium!', '🔥 Keep training, pilot — the stars await!'];
-      if (rank === 1) playSound('win'); else if (rank <= 3) playSound('finish'); else playSound('lose');
+      if (rank === 1) playSound('win'); else playSound('lose');
       const stats = calculateStats();
       // Use Firebase Auth identity — never trust localStorage alone for Firestore writes
       const _authUser = auth.currentUser;
