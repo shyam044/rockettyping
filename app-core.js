@@ -621,12 +621,15 @@ let config = {
         }
 
         // === Tape-mode retarget (MonkeyType's actual scrollTape() technique) ===
-        // Called once per keystroke (from _updateCaretNow) rather than every
-        // animation frame. Computes where the current letter needs to be, then
-        // hands it to the shared _tween() helper — the SAME stop-and-retarget
-        // tween used for vertical line-scroll — with a 125ms duration and
-        // ease-in-out-sine easing. Because _tween() always starts the new leg
-        // from state.current (wherever the track visually is right this
+        // Called once per keystroke (from _updateCaretNow, which passes in the
+        // wordLeft/targetLeft/targetWidth it already read for its own caret
+        // positioning — this function used to re-read those same offsetLeft/
+        // offsetWidth properties itself, forcing a second synchronous layout
+        // pass for no reason). Computes where the current letter needs to be,
+        // then hands it to the shared _tween() helper — the SAME stop-and-
+        // retarget tween used for vertical line-scroll — with a 125ms duration
+        // and ease-in-out-sine easing. Because _tween() always starts the new
+        // leg from state.current (wherever the track visually is right this
         // instant, mid-flight or not), this is an exact match for jQuery's
         // `.stop(true, false).animate({marginLeft: ...}, 125)` that MonkeyType
         // itself calls on every keystroke — verified against their real
@@ -635,23 +638,9 @@ let config = {
         // reproduces both the timing and the curve exactly, not just the
         // general idea of "smoothing" — which is what the previous continuous
         // per-frame version missed despite being smooth in its own right.
-        function _updateTapeTarget() {
+        function _updateTapeTarget(wordLeft, tLeft, tW) {
             if (config.lineMode !== 1) return;
-            if (!(activeWordEl && activeLetterSpansArr.length)) return;
-            const letters = activeLetterSpansArr;
-            const wordLength = words[currentWordIndex] ? words[currentWordIndex].length : 0;
-            let target, after = false;
-            if (currentLetterIndex < wordLength) {
-                target = letters[currentLetterIndex];
-            } else {
-                target = letters[letters.length - 1];
-                after = true;
-            }
-            if (!target) return;
-            const wLeft = activeWordEl.offsetLeft;
-            const tLeft = target.offsetLeft;
-            const tW = after ? target.offsetWidth : 0;
-            const targetX = Math.max(0, (wLeft + tLeft + tW) - _tapeAnchorX);
+            const targetX = Math.max(0, (wordLeft + tLeft + tW) - _tapeAnchorX);
             _tween(_tapeTween, targetX, 125, function (v) {
                 wordsTrack.style.transform = 'translateX(-' + v + 'px)';
             }, _easeInOutSine);
@@ -716,7 +705,15 @@ let config = {
             if (!target) return;
 
             // === Batched layout reads — touch offsetTop/offsetLeft only once per frame ===
-            rebuildRowsCache();
+            // Skip this in tape mode: it exists purely to support the row-scroll
+            // geometry used by the 2/3-line modes below (cachedRows/rowTopToIndex),
+            // which tape mode's branch never reads. Running it anyway forced an
+            // extra synchronous layout reflow (offsetTop on up to 60 elements) on
+            // every keystroke — worst of all on space, since moveToNextWord() marks
+            // the cache invalid on every word completion, so the reflow landed at
+            // the exact moment the space-triggered tween was starting, causing that
+            // specific movement to visibly hitch compared to mid-word letters.
+            if (config.lineMode !== 1) rebuildRowsCache();
 
             const wordLeft   = activeWord.offsetLeft;
             const wordTop    = activeWord.offsetTop;
@@ -754,7 +751,7 @@ let config = {
                 // tween exactly the way MonkeyType's own scrollTape() does —
                 // once per keystroke, from wherever the track visually is
                 // right now. See _updateTapeTarget() above.
-                _updateTapeTarget();
+                _updateTapeTarget(wordLeft, targetLeft, targetW);
             } else {
                 // BUG FIX: this used to compare against wordsDiv.clientHeight (the #words
                 // box's CSS height). Because that height doesn't divide evenly into whole
@@ -865,6 +862,21 @@ if (!testActive && !testEnded && e.key.length === 1) {
         document.getElementById("difficulty-container").style.display = "none";
         document.getElementById("leaderboard-btn").style.display = "none";
         document.getElementById("play-game").style.display = "none";
+
+        // Strip the timer's background pill while typing — only the bare
+        // number should show. The pill comes back automatically next time
+        // resetTest() runs (new test / idle state), which already re-adds
+        // 'highlight' for the pre-typing display.
+        timerDiv.classList.remove('highlight');
+
+        // Switch words/quotes counter to MonkeyType's "current/total" format
+        // (e.g. 1/5) right as typing starts. Before typing, it shows just the
+        // plain total (e.g. 5) — set by resetTest().
+        if (config.mode === 'words') {
+            timerDiv.textContent = (currentWordIndex + 1) + '/' + config.words;
+        } else if (config.mode === 'quotes') {
+            timerDiv.textContent = (currentWordIndex + 1) + '/' + words.length;
+        }
     }, 0);
 }
             if (!testActive) return;
@@ -993,11 +1005,11 @@ if (!testActive && !testEnded && e.key.length === 1) {
                 // Word complete, wait for space
             }
             if (config.mode === 'words' && currentWordIndex === config.words - 1 && currentLetterIndex === words[currentWordIndex].length) {
-                timerDiv.textContent = 0;
+                timerDiv.textContent = config.words + '/' + config.words;
                 endTest();
             }
             if (config.mode === 'quotes' && currentWordIndex === words.length - 1 && currentLetterIndex === words[currentWordIndex].length) {
-                timerDiv.textContent = 0;
+                timerDiv.textContent = words.length + '/' + words.length;
                 endTest();
             }
         }
@@ -1020,9 +1032,9 @@ if (!testActive && !testEnded && e.key.length === 1) {
                 }
 
                 if (config.mode === 'words') {
-                    timerDiv.textContent = config.words - currentWordIndex;
+                    timerDiv.textContent = (currentWordIndex + 1) + '/' + config.words;
                 } else if (config.mode === 'quotes') {
-                    timerDiv.textContent = words.length - currentWordIndex;
+                    timerDiv.textContent = (currentWordIndex + 1) + '/' + words.length;
                 }
                 currentLetterIndex = 0;
                 extendWordsIfNeeded();
