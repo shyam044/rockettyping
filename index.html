@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="google-site-verification" content="IxHYF5DnOA0nfCdL0ORaFJaMq0izQ-62vqvoDlCUJjs" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <title>Rocket Typing – Free Typing Speed Test | WPM Typing Test Online</title>
+   <title>Typing Test | Typing Speed Test | Online Typing - RocketTyping.com</title>
     <meta name="description"
         content="Take a free typing speed test online and improve your WPM instantly. Rocket Typing offers typing practice, touch typing lessons, typing games, beginner to advanced tests, and a global leaderboard. No signup required.">
     <meta name="keywords"
@@ -1180,6 +1180,26 @@ footer a:hover{color:var(--rt-main) !important;}
 .rt-hud-resize{position:fixed;width:24px;height:24px;border-radius:6px;background:var(--rt-caret);color:var(--rt-bg);
     display:flex;align-items:center;justify-content:center;font-size:13px;cursor:nwse-resize;z-index:9992;
     box-shadow:0 2px 10px rgba(0,0,0,0.5);touch-action:none;user-select:none;}
+/* Live WPM-only third handle: opens the shape picker instead of dragging. */
+.rt-hud-shape{position:fixed;width:24px;height:24px;border-radius:6px;background:var(--rt-main2);color:var(--rt-bg);
+    display:flex;align-items:center;justify-content:center;font-size:13px;cursor:pointer;z-index:9992;
+    box-shadow:0 2px 10px rgba(0,0,0,0.5);touch-action:none;user-select:none;}
+#rt-wpm-shape-popup{position:fixed;display:none;flex-direction:column;gap:4px;background:#12122a;
+    border:1px solid var(--rt-main);border-radius:10px;padding:8px;z-index:9996;
+    box-shadow:0 12px 40px rgba(0,0,0,0.6);min-width:170px;}
+#rt-wpm-shape-popup.open{display:flex;}
+.rt-wpm-shape-opt{display:flex;align-items:center;gap:10px;background:none;border:1px solid transparent;
+    border-radius:6px;padding:7px 9px;color:var(--rt-text);font-family:'Roboto Mono',monospace;font-size:12px;
+    cursor:pointer;text-align:left;}
+.rt-wpm-shape-opt:hover{background:rgba(var(--rt-main-rgb),0.15);}
+.rt-wpm-shape-opt.active{border-color:var(--rt-main);background:rgba(var(--rt-main-rgb),0.15);}
+.rt-wpm-shape-preview{display:inline-block;width:16px;height:16px;flex-shrink:0;background:var(--rt-main);}
+.rt-wpm-shape-preview-number{width:10px;height:16px;background:none;border-bottom:3px solid var(--rt-main);}
+.rt-wpm-shape-preview-circle{border-radius:50%;}
+.rt-wpm-shape-preview-square{border-radius:3px;}
+.rt-wpm-shape-preview-rectangle{width:22px;height:12px;border-radius:3px;}
+.rt-wpm-shape-preview-triangle{width:0;height:0;background:none;border-left:8px solid transparent;
+    border-right:8px solid transparent;border-bottom:14px solid var(--rt-main);}
 #rt-save-layout-btn{width:100%;padding:10px;border-radius:8px;background:#2ecc71;border:none;color:#0a0a23;
     font-family:'Roboto Mono',monospace;font-size:12px;font-weight:900;letter-spacing:.5px;cursor:pointer;margin-bottom:10px;}
 #rt-save-layout-btn:hover{filter:brightness(1.1);}
@@ -1255,7 +1275,7 @@ footer a:hover{color:var(--rt-main) !important;}
 </div>
 
     <!-- Live WPM — absolutely positioned between logo and typing text, never shifts layout -->
-    <div id="live-wpm-display" style="display:none;">
+    <div id="live-wpm-display" class="rt-wpm-number" style="display:none;">
         <div class="live-wpm-circle">
             <div class="live-wpm-ring"></div>
             <div class="live-wpm-inner">
@@ -3094,6 +3114,7 @@ var dragInfo  = null;
 var resizeInfo= null;
 var moveHandles = {};
 var resizeHandles = {};
+var shapeHandles = {};
 var historyStack = [];
 var historyIndex = -1;
 
@@ -3222,6 +3243,84 @@ function createResizeHandle(t){
     return h;
 }
 
+/* ── Live WPM shape picker ─────────────────────────────────────────
+   A third handle that only exists for the 'liveWpm' HUD target. Unlike
+   the move/resize handles, clicking it doesn't drag anything — it opens
+   a small popup offering Number (default, MonkeyType-style bare digit)
+   plus Circle/Square/Rectangle/Triangle. Selection is just a class on
+   #live-wpm-display (see the .rt-wpm-* CSS rules), so switching is an
+   instant, layout-cheap class swap — no new elements, no reflow-heavy
+   work, nothing that runs while a test is active. */
+var LIVE_WPM_SHAPES = ['number', 'circle', 'square', 'rectangle', 'triangle'];
+var LIVE_WPM_SHAPE_LABELS = { number: 'Number (Default)', circle: 'Circle', square: 'Square', rectangle: 'Rectangle', triangle: 'Triangle' };
+
+function applyLiveWpmShape(shape, persist){
+    var el = document.getElementById('live-wpm-display');
+    if (!el || LIVE_WPM_SHAPES.indexOf(shape) === -1) return;
+    LIVE_WPM_SHAPES.forEach(function(s){ el.classList.remove('rt-wpm-' + s); });
+    el.classList.add('rt-wpm-' + shape);
+    if (persist !== false) { try { localStorage.setItem('rt_live_wpm_shape', shape); } catch(e){} }
+}
+function getSavedLiveWpmShape(){
+    try { return localStorage.getItem('rt_live_wpm_shape') || 'number'; } catch(e){ return 'number'; }
+}
+
+var wpmShapePopupEl = null;
+function ensureShapePopup(){
+    if (wpmShapePopupEl) return wpmShapePopupEl;
+    var p = document.createElement('div');
+    p.id = 'rt-wpm-shape-popup';
+    p.innerHTML = LIVE_WPM_SHAPES.map(function(s){
+        return '<button type="button" class="rt-wpm-shape-opt" data-shape="' + s + '">' +
+                   '<span class="rt-wpm-shape-preview rt-wpm-shape-preview-' + s + '"></span>' +
+                   LIVE_WPM_SHAPE_LABELS[s] +
+               '</button>';
+    }).join('');
+    document.body.appendChild(p);
+    p.querySelectorAll('.rt-wpm-shape-opt').forEach(function(btn){
+        btn.addEventListener('click', function(e){
+            e.preventDefault(); e.stopPropagation();
+            applyLiveWpmShape(btn.dataset.shape);
+            markShapeActive(btn.dataset.shape);
+            p.classList.remove('open');
+        });
+    });
+    wpmShapePopupEl = p;
+    return p;
+}
+function markShapeActive(shape){
+    if (!wpmShapePopupEl) return;
+    wpmShapePopupEl.querySelectorAll('.rt-wpm-shape-opt').forEach(function(btn){
+        btn.classList.toggle('active', btn.dataset.shape === shape);
+    });
+}
+function toggleShapePopup(anchorEl){
+    var p = ensureShapePopup();
+    if (p.classList.contains('open')) { p.classList.remove('open'); return; }
+    markShapeActive(getSavedLiveWpmShape());
+    var rect = anchorEl.getBoundingClientRect();
+    p.style.left = Math.max(4, Math.min(rect.left, window.innerWidth - 190)) + 'px';
+    p.style.top  = (rect.bottom + 6) + 'px';
+    p.classList.add('open');
+}
+document.addEventListener('pointerdown', function(e){
+    if (!wpmShapePopupEl || !wpmShapePopupEl.classList.contains('open')) return;
+    if (wpmShapePopupEl.contains(e.target)) return;
+    if (e.target.classList && e.target.classList.contains('rt-hud-shape')) return;
+    wpmShapePopupEl.classList.remove('open');
+});
+
+function createShapeHandle(t){
+    var h = document.createElement('div');
+    h.className = 'rt-hud-shape';
+    h.textContent = '◈';
+    h.title = 'Change Live WPM shape';
+    document.body.appendChild(h);
+    h.addEventListener('pointerdown', function(e){ e.preventDefault(); e.stopPropagation(); });
+    h.addEventListener('click', function(e){ e.preventDefault(); e.stopPropagation(); toggleShapePopup(h); });
+    return h;
+}
+
 function startMove(t, e){
     var rect = t.node.getBoundingClientRect();
     makeFixed(t.node);
@@ -3241,11 +3340,12 @@ function startResize(t, e){
 }
 
 function positionHandle(t){
-    var mh = moveHandles[t.key], rh = resizeHandles[t.key];
+    var mh = moveHandles[t.key], rh = resizeHandles[t.key], sh = shapeHandles[t.key];
     if (!t.node) return;
     var rect = t.node.getBoundingClientRect();
     if (mh) { mh.style.left = Math.max(0, rect.left - 12) + 'px'; mh.style.top = Math.max(0, rect.top - 12) + 'px'; }
     if (rh) { rh.style.left = (rect.right - 12) + 'px'; rh.style.top = (rect.bottom - 12) + 'px'; }
+    if (sh) { sh.style.left = (rect.right - 12) + 'px'; sh.style.top = Math.max(0, rect.top - 12) + 'px'; }
 }
 function positionAllHandles(){ getTargets().forEach(positionHandle); }
 
@@ -3350,6 +3450,10 @@ function enterEditMode(){
         if (!resizeHandles[t.key]) resizeHandles[t.key] = createResizeHandle(t);
         moveHandles[t.key].style.display = 'flex';
         resizeHandles[t.key].style.display = 'flex';
+        if (t.key === 'liveWpm') {
+            if (!shapeHandles[t.key]) shapeHandles[t.key] = createShapeHandle(t);
+            shapeHandles[t.key].style.display = 'flex';
+        }
         positionHandle(t);
     });
 }
@@ -3368,6 +3472,8 @@ function exitEditMode(){
     });
     Object.keys(moveHandles).forEach(function(k){ if (moveHandles[k]) moveHandles[k].style.display = 'none'; });
     Object.keys(resizeHandles).forEach(function(k){ if (resizeHandles[k]) resizeHandles[k].style.display = 'none'; });
+    Object.keys(shapeHandles).forEach(function(k){ if (shapeHandles[k]) shapeHandles[k].style.display = 'none'; });
+    if (wpmShapePopupEl) wpmShapePopupEl.classList.remove('open');
     var lw = document.getElementById('live-wpm-display');
     if (lw && lw.dataset.rtForcedPreview === '1') {
         var isActive = false;
@@ -3409,7 +3515,7 @@ function hideCustomPanelAndSave(){
     if (words) words.style.display = '';
     window._rtCustomModeActive = false;
     var typingInput = document.getElementById('input');
-    if (typingInput) typingInput.disabled = false;
+    if (typingInput) { typingInput.disabled = false; typingInput.focus(); }
 }
 
 /* ── Settings panel UI ─────────────────────────────────────────── */
@@ -3563,6 +3669,7 @@ function buildPanel(){
 
 function init(){
     applySavedHudPositions();
+    applyLiveWpmShape(getSavedLiveWpmShape(), false);
     buildPanel();
 }
 if (document.readyState === 'loading') {
