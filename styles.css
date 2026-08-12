@@ -135,15 +135,66 @@ body::before {
     font-size: 48px;
     font-weight: bold;
     letter-spacing: 2px;
-    color: #ff4c4c;
+    /* Themed instead of a hardcoded red — this color was previously always
+       masked by .highlight (which forces its own themed color), so it was
+       never actually visible until .highlight got removed while typing.
+       Making the base color match .highlight's means removing the pill
+       background while typing no longer also changes the number's color. */
+    color: var(--rt-main);
     z-index: 30;
 }
 
 #timer.highlight {
     background: rgba(255,255,255,0.08);
-    color: #e2b714;
+    color: var(--rt-main);
     padding: 5px 15px;
     border-radius: 6px;
+}
+
+/* While typing: the number readout moves to sit directly above the LEFT
+   EDGE of the typing area itself (#words) — not near the logo. #words is
+   centered via `width:100%; max-width:1300px; margin:190px auto 0;`; giving
+   #timer that exact same width/max-width/margin-auto scheme means its left
+   edge tracks #words' left edge exactly at every viewport width, instead of
+   a guessed fixed pixel value. The 40px left padding matches #words-track's
+   own inner padding, so the NUMBER aligns with where the word text itself
+   starts, not just the outer box edge. Live WPM's centered top-of-page spot
+   (set below) is unaffected — only the counter's position was wrong. */
+body.test-running #timer {
+    top: 145px;
+    left: 20px;
+    right: 20px;
+    width: auto;
+    max-width: 1300px;
+    margin: 0 auto;
+    transform: none;
+    text-align: left;
+    padding-left: 40px;
+    box-sizing: border-box;
+    font-size: 32px;
+}
+/* Live WPM is centered via display:flex + justify-content, NOT translateX —
+   the old `left: calc(50% - 48px)` trick assumed a fixed 96px-wide circle,
+   but the default "number" shape is a variable-width WPM value (e.g. "7" vs
+   "127" are very different widths), so a fixed offset would sit off-center
+   most of the time. flex centering handles any content width automatically.
+   `!important` is required on display: JS sets `style.display='block'`
+   inline (via classList 'show' at the same moment), and a plain stylesheet
+   rule can't win against an inline style — only !important can.
+
+   Positioned high (top:20px) so a 150px-tall number fits entirely within
+   the space already vacated by the hidden GAME/CODE/LEARN and mode buttons
+   during typing (that gap runs from ~15px down to #words' 190px start) —
+   this does NOT touch #words' or the keymap's position at all. */
+body.test-running #live-wpm-display {
+    display: flex !important;
+    justify-content: center;
+    left: 20px;
+    right: 20px;
+    top: 20px;
+    max-width: 1300px;
+    margin: 0 auto;
+    box-sizing: border-box;
 }
 
 #difficulty-container {
@@ -1152,16 +1203,17 @@ footer a:hover { color: #e2b714; }
     align-items: center;
     justify-content: center;
     background: radial-gradient(circle at 38% 32%,
-        rgba(226, 183, 20, 0.22) 0%,
-        rgba(226, 183, 20, 0.06) 55%,
-        rgba(10, 10, 35, 0.82) 100%);
+        rgba(var(--rt-main-rgb), 0.22) 0%,
+        rgba(var(--rt-main-rgb), 0.06) 55%,
+        rgba(var(--rt-bg-rgb), 0.82) 100%);
     box-shadow:
-        0 0 0 2px rgba(226, 183, 20, 0.55),
-        0 0 18px rgba(226, 183, 20, 0.35),
-        0 0 48px rgba(226, 183, 20, 0.15),
-        inset 0 0 20px rgba(226, 183, 20, 0.07);
+        0 0 0 2px rgba(var(--rt-main-rgb), 0.55),
+        0 0 18px rgba(var(--rt-main-rgb), 0.35),
+        0 0 48px rgba(var(--rt-main-rgb), 0.15),
+        inset 0 0 20px rgba(var(--rt-main-rgb), 0.07);
     animation: livewpm-breathe 2.4s ease-in-out infinite;
     cursor: default;
+    transition: border-radius 0.2s ease, width 0.2s ease, height 0.2s ease;
 }
 
 /* spinning arc ring */
@@ -1170,8 +1222,8 @@ footer a:hover { color: #e2b714; }
     inset: -4px;
     border-radius: 50%;
     border: 2.5px solid transparent;
-    border-top-color: #e2b714;
-    border-right-color: rgba(226, 183, 20, 0.45);
+    border-top-color: var(--rt-main);
+    border-right-color: rgba(var(--rt-main-rgb), 0.45);
     animation: livewpm-spin 2s linear infinite;
 }
 
@@ -1189,13 +1241,13 @@ footer a:hover { color: #e2b714; }
     font-family: 'Roboto Mono', monospace;
     font-size: 28px;
     font-weight: 900;
-    color: #ffd700;
+    color: var(--rt-main);
     letter-spacing: -1px;
     text-shadow:
-        0 0 12px rgba(255, 215, 0, 0.8),
-        0 0 28px rgba(226, 183, 20, 0.5);
+        0 0 12px rgba(var(--rt-main-rgb), 0.8),
+        0 0 28px rgba(var(--rt-main-rgb), 0.5);
     display: block;
-    transition: color 0.3s ease;
+    transition: color 0.3s ease, font-size 0.2s ease;
     min-width: 44px;
     text-align: center;
 }
@@ -1204,11 +1256,59 @@ footer a:hover { color: #e2b714; }
     font-family: 'Roboto Mono', monospace;
     font-size: 9px;
     font-weight: 700;
-    color: rgba(226, 183, 20, 0.7);
+    color: rgba(var(--rt-main-rgb), 0.7);
     letter-spacing: 2.5px;
     text-transform: uppercase;
     display: block;
 }
+
+/* ── Live WPM shape variants ──────────────────────────────────────
+   Default is "number" — matches MonkeyType: no ring/box at all, just
+   a big bare themed number. The other four (circle/square/rectangle/
+   triangle) are opt-in via the shape picker (edit-mode ◈ handle on
+   Live WPM) and reuse the same ring/box structure with a different
+   outline. Selection is purely a class on #live-wpm-display, so
+   switching is instant with no layout/JS cost beyond the class swap. */
+#live-wpm-display.rt-wpm-number .live-wpm-circle {
+    width: auto; height: auto;
+    background: none; box-shadow: none; animation: none;
+    border-radius: 0;
+}
+#live-wpm-display.rt-wpm-number .live-wpm-ring,
+#live-wpm-display.rt-wpm-number .live-wpm-label {
+    display: none;
+}
+#live-wpm-display.rt-wpm-number .live-wpm-number {
+    font-size: 150px;
+    line-height: 1;
+    min-width: 0;
+}
+
+#live-wpm-display.rt-wpm-square .live-wpm-circle,
+#live-wpm-display.rt-wpm-square .live-wpm-ring {
+    border-radius: 14px;
+}
+
+#live-wpm-display.rt-wpm-rectangle .live-wpm-circle {
+    width: 148px;
+    height: 74px;
+    border-radius: 12px;
+}
+#live-wpm-display.rt-wpm-rectangle .live-wpm-ring {
+    border-radius: 12px;
+}
+
+#live-wpm-display.rt-wpm-triangle .live-wpm-circle {
+    width: 108px;
+    height: 108px;
+    border-radius: 0;
+    clip-path: polygon(50% 4%, 4% 96%, 96% 96%);
+    background: linear-gradient(180deg,
+        rgba(var(--rt-main-rgb), 0.20) 0%,
+        rgba(var(--rt-bg-rgb), 0.85) 100%);
+}
+#live-wpm-display.rt-wpm-triangle .live-wpm-ring { display: none; }
+#live-wpm-display.rt-wpm-triangle .live-wpm-inner { padding-top: 22px; }
 
 /* "LIVE" badge pill below circle */
 
