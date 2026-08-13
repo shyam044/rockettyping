@@ -257,7 +257,7 @@
             min-height:100%;
         }
         /* Matches styles.css exactly — see that file for the full rationale
-           (JS-driven tween mirroring MonkeyType's real scrollTape() algorithm;
+           (JS-driven tween mirroring scrollTape() algorithm;
            deliberately NO CSS transition here). */
         #words-track.tape-track{
             flex-wrap:nowrap;
@@ -1331,7 +1331,7 @@ footer a:hover{color:var(--rt-main) !important;}
                 </button>
             </div>
         </div>
-        <!-- Tab+Enter restart hint (MonkeyType-style) -->
+        <!-- Tab+Enter restart hint  -->
         <div id="tab-redo-hint" style="
             display:none;
             position:fixed;
@@ -1482,9 +1482,9 @@ footer a:hover{color:var(--rt-main) !important;}
             <!-- Graph + vertical legend side-by-side -->
             <div class="chart-with-legend">
                 <canvas id="rocket-chart"></canvas>
-                <!-- Legend hidden — shown as tooltip on hover/touch like MonkeyType -->
+                <!-- Legend hidden — shown as tooltip on hover/touch -->
             </div>
-            <!-- Hover tooltip (MonkeyType style) -->
+            <!-- Hover tooltip  -->
             <div id="chart-tooltip" style="display:none; position:absolute; background:rgba(0,0,0,0.88); border:1px solid rgba(255,255,255,0.12); border-radius:8px; padding:10px 14px; pointer-events:none; z-index:100; font-family:'Roboto Mono',monospace; font-size:12px; width:80px; box-shadow:0 4px 20px rgba(0,0,0,0.5);">
                 <div id="chart-tooltip-sec" style="color:rgba(255,255,255,0.55); font-size:11px; margin-bottom:7px; letter-spacing:0.5px;"></div>
                 <div id="chart-tooltip-errors" style="display:flex; align-items:center; gap:8px; margin-bottom:4px;">
@@ -3246,7 +3246,7 @@ function createResizeHandle(t){
 /* ── Live WPM shape picker ─────────────────────────────────────────
    A third handle that only exists for the 'liveWpm' HUD target. Unlike
    the move/resize handles, clicking it doesn't drag anything — it opens
-   a small popup offering Number (default, MonkeyType-style bare digit)
+   a small popup offering Number (default, bare digit)
    plus Circle/Square/Rectangle/Triangle. Selection is just a class on
    #live-wpm-display (see the .rt-wpm-* CSS rules), so switching is an
    instant, layout-cheap class swap — no new elements, no reflow-heavy
