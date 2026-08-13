@@ -81,6 +81,64 @@
   <script>window.dataLayer = window.dataLayer || []; function gtag() { dataLayer.push(arguments); } gtag('js', new Date()); gtag('config', 'G-136SVFZRDF');</script>
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8311353174841359"
     crossorigin="anonymous"></script>
+  <script>
+    /* ── Lazy ad loading ──
+       Ad scripts don't fetch/execute until their slot is actually about
+       to scroll into view (IntersectionObserver, 200px lookahead so
+       nothing pops in late), falling back to "after window load" on
+       browsers without IntersectionObserver. This keeps third-party ad
+       requests off the critical rendering path entirely — they can't
+       delay First Paint, LCP, or add to TBT/INP, since none of this runs
+       until the browser already has spare capacity.
+
+       Adsterra's invoke.js reads a single shared global (`atOptions`) at
+       execute time. When two or more slots are visible at once (e.g. the
+       top banner + both side rails on a wide screen), their
+       IntersectionObserver callbacks can fire in the same tick — if each
+       just fired off its own atOptions + invoke.js pair immediately, the
+       later slot's atOptions would overwrite the earlier one's before its
+       invoke.js actually runs, and both would render with the wrong (or
+       broken) options. So loads go through a one-at-a-time queue: only
+       one atOptions/invoke.js pair is ever in flight, and the next queued
+       slot only starts once the current one has finished loading. */
+    var _adsterraQueue = [];
+    var _adsterraLoading = false;
+    function _adsterraProcessQueue() {
+      if (_adsterraLoading || !_adsterraQueue.length) return;
+      _adsterraLoading = true;
+      var job = _adsterraQueue.shift();
+      var el = document.getElementById(job.containerId);
+      if (!el) { _adsterraLoading = false; _adsterraProcessQueue(); return; }
+      var s1 = document.createElement('script');
+      s1.text = 'atOptions = ' + JSON.stringify(job.opts) + ';';
+      el.appendChild(s1);
+      var s2 = document.createElement('script');
+      s2.src = 'https://www.highperformanceformat.com/' + job.opts.key + '/invoke.js';
+      var advance = function () { _adsterraLoading = false; _adsterraProcessQueue(); };
+      s2.onload = advance;
+      s2.onerror = advance;
+      el.appendChild(s2);
+    }
+    function _lazyLoadAdsterra(containerId, opts) {
+      var el = document.getElementById(containerId);
+      if (!el) return;
+      var queued = false;
+      function enqueue() {
+        if (queued) return;
+        queued = true;
+        _adsterraQueue.push({ containerId: containerId, opts: opts });
+        _adsterraProcessQueue();
+      }
+      if ('IntersectionObserver' in window) {
+        var io = new IntersectionObserver(function (entries) {
+          entries.forEach(function (e) { if (e.isIntersecting) { enqueue(); io.disconnect(); } });
+        }, { rootMargin: '200px' });
+        io.observe(el);
+      } else {
+        window.addEventListener('load', enqueue, { once: true });
+      }
+    }
+  </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
@@ -1822,20 +1880,8 @@
 <body>
   <div id="app">
     <div id="top-banner-ad" style="width:100%;height:50px;display:flex;justify-content:center;align-items:flex-start;flex-shrink:0;overflow:hidden;">
-<script>
-  atOptions = {
-    'key' : 'e8642ebc1588f7663a0e84f1c8058052',
-    'format' : 'iframe',
-    'height' : 50,
-    'width' : 320,
-    'params' : {}
-  };
-</script>
-<script src="https://www.highperformanceformat.com/e8642ebc1588f7663a0e84f1c8058052/invoke.js"></script>
-
-
-
     </div>
+    <script>_lazyLoadAdsterra('top-banner-ad', { key: 'e8642ebc1588f7663a0e84f1c8058052', format: 'iframe', height: 50, width: 320, params: {} });</script>
     <!-- Visually hidden H1 for SEO — screen readers and Googlebot see this -->
     <h1 style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;">Rocket
       Race – Free Online Typing Speed Game | Rocket Typing</h1>
@@ -2487,37 +2533,12 @@
     <div id="game-topnav"></div>
 
     <!-- ══ SIDE AD RAILS — 160x600 vertical banner (same zone both sides) ══ -->
-    <div class="ad-rail ad-rail-left">
-      <script>
-        atOptions = {
-          'key': 'e3a304a061bb8b53fdbf045abe87c573',
-          'format': 'iframe',
-          'height': 300,
-          'width': 160,
-          'params': {}
-        };
-      </script>
-      <script src="https://www.highperformanceformat.com/e3a304a061bb8b53fdbf045abe87c573/invoke.js"></script>
-
+    <div id="ad-rail-left" class="ad-rail ad-rail-left">
     </div>
-    <div class="ad-rail ad-rail-right">
-<script>
-  atOptions = {
-    'key' : 'f9fd656d91c4953d559c8174661c6df8',
-    'format' : 'iframe',
-    'height' : 600,
-    'width' : 160,
-    'params' : {}
-  };
-</script>
-<script src="https://www.highperformanceformat.com/f9fd656d91c4953d559c8174661c6df8/invoke.js"></script>
-
-
-
-
-
-
+    <script>_lazyLoadAdsterra('ad-rail-left', { key: 'e3a304a061bb8b53fdbf045abe87c573', format: 'iframe', height: 300, width: 160, params: {} });</script>
+    <div id="ad-rail-right" class="ad-rail ad-rail-right">
     </div>
+    <script>_lazyLoadAdsterra('ad-rail-right', { key: 'f9fd656d91c4953d559c8174661c6df8', format: 'iframe', height: 600, width: 160, params: {} });</script>
 
     <img id="logo" src="images/rocket-typing-logo.webp" alt="Rocket Typing Logo">
     <div id="race-track-scale-wrap">
@@ -2745,11 +2766,34 @@
     </p>
     <!-- In-content horizontal ad unit -->
     <div style="text-align:center;margin-top:8px;">
-      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-8311353174841359" data-ad-slot="5317025689"
+      <ins id="seo-ad-slot" class="adsbygoogle" style="display:block" data-ad-client="ca-pub-8311353174841359" data-ad-slot="5317025689"
         data-ad-format="horizontal" data-full-width-responsive="true"></ins>
-      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
     </div>
   </section>
+  <script>
+    /* Lazy-load the two AdSense slots — the result-ad pushes only once the
+       result panel actually shows (right when the race ends, not at page
+       load while it's hidden); the in-content SEO ad pushes only once it's
+       about to scroll into view, since it sits below the fold. */
+    (function () {
+      var seoAd = document.getElementById('seo-ad-slot');
+      if (seoAd && 'IntersectionObserver' in window) {
+        var io = new IntersectionObserver(function (entries) {
+          entries.forEach(function (e) {
+            if (e.isIntersecting) {
+              try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch (err) { }
+              io.disconnect();
+            }
+          });
+        }, { rootMargin: '200px' });
+        io.observe(seoAd);
+      } else if (seoAd) {
+        window.addEventListener('load', function () {
+          try { (adsbygoogle = window.adsbygoogle || []).push({}); } catch (err) { }
+        }, { once: true });
+      }
+    })();
+  </script>
 
   <!-- ══ PAUSE MODAL ══ -->
   <div id="pause-modal">
