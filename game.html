@@ -945,7 +945,7 @@
     #caret {
       position: absolute;
       background: #00e6cc;
-      /* Spring-like cubic-bezier: fast start, overshoots slightly, settles — like Monkeytype */
+      /* Spring-like cubic-bezier: fast start, overshoots slightly, settles  */
       transition: transform 0.06s cubic-bezier(0.34, 1.56, 0.64, 1), height 0.06s ease;
       width: 3px;
       border-radius: 3px;
@@ -1031,7 +1031,7 @@
     }
 
     /* PERF: during race, words container scrolls with a subtle smooth — feels glassy.
-       125ms + ease-in-out-sine matches MonkeyType's real scrollTape() implementation
+       125ms + ease-in-out-sine matches real scrollTape() implementation
        (jQuery .animate() at 125ms with the default 'swing' easing, which is
        mathematically the same curve as ease-in-out-sine). */
     body.race-active #words {
