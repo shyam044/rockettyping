@@ -17,6 +17,7 @@ body {
     /* Prevent font-swap CLS: match fallback metrics to Roboto Mono */
     font-size-adjust: 0.5;
 }
+
 /* PERF FIX: "test-running" hides all distraction elements in ONE CSS rule.
    Setting style.display on N elements from JS triggers N separate style
    recalculations. A single class toggle is 1 recalc. */
@@ -316,7 +317,7 @@ body.typing-active #words .letter {
 #words .active { border-bottom: 2px solid #00e6cc; }
 
 /* Single-line "tape" mode: #words-track's transform is driven entirely by the
-   JS tween in app-core.js (_tween/_tapeTween), which mirrors MonkeyType's
+   JS tween in app-core.js (_tween/_tapeTween), which mirrors 
    actual scrollTape() algorithm — a stop-and-retarget animation at 125ms with
    ease-in-out-sine. NO CSS transition here: a passive `transition: transform`
    running at the same time as the JS rAF loop would double-animate every
@@ -561,7 +562,7 @@ width: 60%;                       /* full width now */
     flex: 0 0 auto;
 }
 
-/* MonkeyType-style meta info boxes */
+/*  meta info boxes */
 .result-meta-box {
     display: flex;
     flex-direction: column;
@@ -1262,7 +1263,7 @@ footer a:hover { color: #e2b714; }
 }
 
 /* ── Live WPM shape variants ──────────────────────────────────────
-   Default is "number" — matches MonkeyType: no ring/box at all, just
+   Default is "number" — matches no ring/box at all, just
    a big bare themed number. The other four (circle/square/rectangle/
    triangle) are opt-in via the shape picker (edit-mode ◈ handle on
    Live WPM) and reuse the same ring/box structure with a different
