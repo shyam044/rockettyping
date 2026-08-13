@@ -17,7 +17,6 @@ body {
     /* Prevent font-swap CLS: match fallback metrics to Roboto Mono */
     font-size-adjust: 0.5;
 }
-
 /* PERF FIX: "test-running" hides all distraction elements in ONE CSS rule.
    Setting style.display on N elements from JS triggers N separate style
    recalculations. A single class toggle is 1 recalc. */
