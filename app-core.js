@@ -74,7 +74,6 @@ let config = {
             ) || Array.from(qlenButtons).find(b => b.dataset.qlen === 'medium');
             if (activeQlenBtn) activeQlenBtn.classList.add('active');
         }
-
         // Call it once after resetTest()
         initDifficultyButtons();
         initQuoteLengthButtons();
