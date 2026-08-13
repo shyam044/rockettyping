@@ -74,6 +74,7 @@ let config = {
             ) || Array.from(qlenButtons).find(b => b.dataset.qlen === 'medium');
             if (activeQlenBtn) activeQlenBtn.classList.add('active');
         }
+
         // Call it once after resetTest()
         initDifficultyButtons();
         initQuoteLengthButtons();
@@ -510,7 +511,7 @@ let config = {
         }
 
         // === Smooth scroll/tape animator ==================================
-        // A tiny reusable rAF tween. This deliberately mirrors what MonkeyType's
+        // A tiny reusable rAF tween. This deliberately mirrors 
         // ACTUAL tape-mode implementation does (confirmed from their real source,
         // frontend/src/ts/test/test-ui.ts, function scrollTape()): on every
         // keystroke they call jQuery's `.stop(true, false).animate({marginLeft: ...},
@@ -522,7 +523,7 @@ let config = {
         // GPU-composited and never triggers layout; margin-left does — this is a
         // known perf quirk of their actual implementation that we don't need to
         // copy). A prior version of this code used a passive CSS `transition` and
-        // just set the target value directly — that is NOT what MonkeyType does,
+        // just set the target value directly ,
         // and evidently didn't feel the same; this version restores the
         // JS-driven stop-and-retarget tween, which is the verified real technique.
         function _easeOutCubic(t) { return 1 - Math.pow(1 - t, 3); }
@@ -566,7 +567,7 @@ let config = {
         // === Line-display mode: 1 (single "tape" line), 2, or 3 (default) ===
         // Mode 1 lays words out on a single non-wrapping row on #words-track and
         // horizontally transforms that track so the active word stays centered —
-        // MonkeyType's "tape mode". Modes 2/3 keep the existing wrapped
+        //"tape mode". Modes 2/3 keep the existing wrapped
         // multi-line layout, just with a shorter viewport and an earlier
         // scroll-up trigger for mode 2.
         // Shared horizontal anchor (px) for tape mode — the fixed point where the
@@ -591,7 +592,7 @@ let config = {
             if (mode === 1) {
                 el.style.height = rowH + 'px';
                 // Pre-position the text so word 1 / letter 1 starts AT the center
-                // anchor from the very first keystroke (MonkeyType tape behavior) —
+                // anchor from the very first keystroke ( tape behavior) —
                 // without this, text starts flush at the left edge and only the
                 // caret would appear to move until typing reaches the anchor point.
                 // This is applied to #words-track's padding, not #words itself, so
@@ -619,7 +620,7 @@ let config = {
             scheduleCaretUpdate();
         }
 
-        // === Tape-mode retarget (MonkeyType's actual scrollTape() technique) ===
+        // === Tape-mode retarget ( actual scrollTape() technique) ===
         // Called once per keystroke (from _updateCaretNow, which passes in the
         // wordLeft/targetLeft/targetWidth it already read for its own caret
         // positioning — this function used to re-read those same offsetLeft/
@@ -630,7 +631,7 @@ let config = {
         // and ease-in-out-sine easing. Because _tween() always starts the new
         // leg from state.current (wherever the track visually is right this
         // instant, mid-flight or not), this is an exact match for jQuery's
-        // `.stop(true, false).animate({marginLeft: ...}, 125)` that MonkeyType
+        // `.stop(true, false).animate({marginLeft: ...}, 125)` that
         // itself calls on every keystroke — verified against their real
         // source (frontend/src/ts/test/test-ui.ts, scrollTape()). jQuery's
         // default 'swing' easing is mathematically ease-in-out-sine, so this
@@ -724,7 +725,7 @@ let config = {
             const x = wordLeft + targetLeft + targetW;
             const y = wordTop  + targetTop;
 
-            // In single-line "tape" mode, MonkeyType keeps the caret perfectly
+            // In single-line "tape" mode, keeps the caret perfectly
             // still — only the text glides underneath it. The track's transform
             // (set below) is what brings the correct letter to this fixed anchor
             // point; the caret itself never needs to move at all. Using the raw
@@ -747,7 +748,7 @@ let config = {
 
             if (config.lineMode === 1) {
                 // ── Single-line "tape" mode: retarget the stop-and-retarget
-                // tween exactly the way MonkeyType's own scrollTape() does —
+                // tween exactly the way own scrollTape() does —
                 // once per keystroke, from wherever the track visually is
                 // right now. See _updateTapeTarget() above.
                 _updateTapeTarget(wordLeft, targetLeft, targetW);
@@ -756,10 +757,10 @@ let config = {
                 // box's CSS height). Because that height doesn't divide evenly into whole
                 // rows at every breakpoint, the box was effectively showing ~2.9-3.1 rows
                 // instead of exactly 3 — which pushed the scroll trigger to fire after the
-                // 3RD row instead of the 2nd, unlike MonkeyType.
+                // 3RD row instead of the 2nd.
                 //
                 // FIX: work in row counts instead of pixels. visibleRowIdx is which visible
-                // row (0 = top row currently on screen) the active word sits on. MonkeyType
+                // row (0 = top row currently on screen) the active word sits on.
                 // scrolls up by one row the moment the active word reaches the LAST visible
                 // row — i.e. right after the 2nd-to-last row is finished. In 2-line mode
                 // that's row idx 1; in 3-line mode (default) that's row idx 2.
@@ -780,7 +781,7 @@ let config = {
 
             // Caret lives directly under #words (never under #words-track), so
             // single-line tape mode's track transform can never affect its
-            // on-screen position — only the words move, exactly like MonkeyType.
+            // on-screen position — only the words move.
             if (!wordsDiv.contains(caret) || wordsTrack.contains(caret)) {
                 wordsDiv.appendChild(caret);
             }
@@ -795,7 +796,7 @@ if (window._rtCustomModeActive) return;
 // ── Block modifier combos (Alt+*, Ctrl+*, Meta+*) — never type these ──
 if (e.altKey || e.ctrlKey || e.metaKey) return;
 
-// ── Tab → show "tab + enter to restart" hint (MonkeyType-style) ──
+// ── Tab → show "tab + enter to restart" hint ──
 if (e.key === 'Tab') {
     e.preventDefault();
     var hint = document.getElementById('tab-redo-hint');
@@ -868,7 +869,7 @@ if (!testActive && !testEnded && e.key.length === 1) {
         // 'highlight' for the pre-typing display.
         timerDiv.classList.remove('highlight');
 
-        // Switch words/quotes counter to MonkeyType's "current/total" format
+        // Switch words/quotes counter to "current/total" format
         // (e.g. 1/5) right as typing starts. Before typing, it shows just the
         // plain total (e.g. 5) — set by resetTest().
         if (config.mode === 'words') {
@@ -1202,7 +1203,7 @@ if (!testActive && !testEnded && e.key.length === 1) {
             const rawWpm = Math.round(totalKeystrokes / 5 / elapsedMinutes);
 
             // ── Accuracy ────────────────────────────────────────────────────────────
-            // MonkeyType formula: correct / (correct + incorrect)
+            //  formula: correct / (correct + incorrect)
             // incorrectChars = wrong letters + extra letters + missed letters
             //   — early-space keystrokes are NOT a separate error; only the MISSED
             //     letters of the skipped word are counted (tracked in missedChars).
@@ -1215,7 +1216,6 @@ if (!testActive && !testEnded && e.key.length === 1) {
                 : 100;
 
             // ── Consistency ─────────────────────────────────────────────────────────
-            // MonkeyType method:
             //   1. Bucket all keystrokes into 1-second windows → per-second raw WPM
             //   2. Drop zero-keystroke seconds (idle gaps)
             //   3. Trim the first and last second (ramp-up / tail artefacts)
@@ -1244,7 +1244,6 @@ if (!testActive && !testEnded && e.key.length === 1) {
                     const variance = rawWpms.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / rawWpms.length;
                     const std = Math.sqrt(variance);
                     const covPercent = mean > 0 ? (std / mean) * 100 : 0;
-                    // MonkeyType: linear formula (not exponential)
                     consistency = Math.max(1, Math.round(100 - covPercent));
                 }
             }
@@ -1729,7 +1728,7 @@ if (!testActive && !testEnded && e.key.length === 1) {
 
             requestAnimationFrame(frame);
 
-            // ── MonkeyType-style hover tooltip ──────────────────────
+            //  hover tooltip ──────────────────────
             (function attachChartTooltip() {
                 const tooltip    = document.getElementById('chart-tooltip');
                 const chartPanel = canvas.closest('.result-chart-panel') || canvas.parentElement;
