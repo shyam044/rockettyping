@@ -53,7 +53,6 @@ let config = {
             );
             if (activeBtn) activeBtn.classList.add('active');
         }
-
         // ==================== QUOTE LENGTH BUTTONS (Short / Medium / Long) ====================
         function initQuoteLengthButtons() {
             const qlenButtons = document.querySelectorAll('.qlen-btn');
