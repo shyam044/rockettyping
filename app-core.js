@@ -4,7 +4,9 @@ let config = {
             words: 50,
             difficulty: 'easy',
             quoteLength: 'medium',
-            lineMode: 3
+            lineMode: 3,
+            zenMode: false,      // Own (free typing) — never persisted/restored
+            notesActive: false   // Paste/Upload-derived Quotes test — never persisted/restored
         };
         let currentLeaderboardDuration = 15;
         const savedConfig = JSON.parse(localStorage.getItem('typingTestConfig')) || {};
@@ -131,6 +133,9 @@ let config = {
             if (!testActive
                 && !e.target.closest('#difficulty-container')
                 && !e.target.closest('#test-config')
+                && !e.target.closest('#notes-submenu')
+                && !e.target.closest('#notes-modal')
+                && !e.target.closest('#notes-ocr-overlay')
                 && !e.target.closest('#result')
                 && !e.target.closest('#timer')
                 && !e.target.closest('#rt-settings-panel')
@@ -147,9 +152,22 @@ let config = {
         const restartBtn = document.getElementById('restart');
         document.querySelectorAll('.mode').forEach(btn => {
             btn.addEventListener('click', () => {
+                if (btn.dataset.mode === 'notes') {
+                    document.querySelectorAll('.mode').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    toggleNotesSubmenu(true);
+                    return;
+                }
+                toggleNotesSubmenu(false);
+                setNotesUiActive(false);
                 document.querySelectorAll('.mode').forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
                 config.mode = btn.dataset.mode;
+                // Leaving Notes entirely — clear any Own/Paste/Upload state so it
+                // can't leak into a normal Time/Words/Quotes test.
+                config.zenMode = false;
+                config.notesActive = false;
+                window._customNotesText = null;
                 saveConfig();
                 /* Ensure the quotes database is loading the instant the user shows
                    intent to use Quotes mode — a no-op if it's already loaded/loading. */
@@ -161,13 +179,87 @@ let config = {
             });
         });
 
+        /* ── Notes submenu (Own / Upload / Paste) ──────────────────────── */
+        /* Keymap + Musk/Elon scores are irrelevant for the whole Notes flow
+           (option cards, Own, Paste, Upload) — hidden for all of it via one
+           flag, with !important in the CSS so it reliably overrides the
+           normal typing engine's own independent keymap/score visibility
+           logic, which runs at the same time for Paste/Upload (real Quotes-
+           engine tests under the hood). */
+        function setNotesUiActive(active) {
+            var appEl = document.getElementById('app');
+            if (appEl) appEl.classList.toggle('rt-notes-active', !!active);
+        }
+
+        function toggleNotesSubmenu(show) {
+            var el = document.getElementById('notes-submenu');
+            if (el) el.classList.toggle('open', !!show);
+            // While the 3 option cards are showing, none of the normal test
+            // chrome (counter, difficulty picker, typing area) is relevant yet
+            // — nothing has been chosen. Hide it entirely, matching the layout
+            // for this screen; resetTest() brings the right pieces back once
+            // an option is actually picked.
+            var wordsEl = document.getElementById('words');
+            var timerEl = document.getElementById('timer');
+            var diffEl  = document.getElementById('difficulty-container');
+            if (show) {
+                if (wordsEl) wordsEl.style.display = 'none';
+                if (timerEl) timerEl.style.display = 'none';
+                if (diffEl)  diffEl.style.display  = 'none';
+                setNotesUiActive(true);
+            }
+        }
+
+        /* ── Own: free typing, no target text at all ─────────────────────
+           Reuses the SAME #words/#words-track rendering engine, caret, and
+           smooth-scroll tween as Time/Words/Quotes — not a separate system —
+           so the feel (and the results screen) is genuinely identical, not
+           just similar. The only difference: each "word" starts as an empty
+           string instead of a pre-picked target, so typed characters are
+           created as you go (via typeLetter()'s existing "extra character"
+           path — see _appendWordLetters/extendWordsIfNeeded/_updateCaretNow
+           for the zen-specific branches that make this work). */
+        function startZenMode() {
+            toggleNotesSubmenu(false);
+            setNotesUiActive(false);
+            config.mode = 'zen';
+            config.zenMode = true;
+            config.notesActive = false;
+            window._customNotesText = null;
+            toggleDifficultyVsQuoteLengthUI();
+            resetTest();
+        }
+
+        function startNotesQuotesTest(text) {
+            var cleaned = (text || '').trim();
+            if (!cleaned) return;
+            // Cap length so a huge pasted article can't turn into a huge one-shot
+            // DOM render — the same protection words/time mode already apply via
+            // their own lazy-batch generation.
+            var allWords = cleaned.split(/\s+/).filter(Boolean);
+            var capped = allWords.length > 500;
+            if (capped) allWords = allWords.slice(0, 500);
+            window._customNotesText = allWords.join(' ');
+            setNotesUiActive(false);
+            config.mode = 'quotes';
+            config.zenMode = false;
+            config.notesActive = true;
+            toggleDifficultyVsQuoteLengthUI();
+            resetTest();
+            if (capped) showRtToast('Long text — using the first 500 words to keep things fast.');
+        }
+
         /* Show the Short/Medium/Long selector in Quotes mode, and the
-           Easy/Medium/Hard selector in Time/Words mode. */
+           Easy/Medium/Hard selector in Time/Words mode. Neither applies to a
+           Notes-derived test (Own/Paste/Upload) since its text is fixed. */
         function toggleDifficultyVsQuoteLengthUI() {
             const diffGroup = document.getElementById('difficulty-group');
             const qlenGroup = document.getElementById('quote-length-group');
             if (!diffGroup || !qlenGroup) return;
-            if (config.mode === 'quotes') {
+            if (config.zenMode || config.notesActive) {
+                diffGroup.style.display = 'none';
+                qlenGroup.style.display = 'none';
+            } else if (config.mode === 'quotes') {
                 diffGroup.style.display = 'none';
                 qlenGroup.style.display = 'flex';
             } else {
@@ -175,6 +267,154 @@ let config = {
                 qlenGroup.style.display = 'none';
             }
         }
+
+        /* ── Notes: modal (shared by Paste and Upload) ─────────────────── */
+        var notesModalMode = 'paste'; // 'paste' | 'upload' — only changes the heading text
+        function openNotesModal(mode, prefillText) {
+            notesModalMode = mode || 'paste';
+            var modal = document.getElementById('notes-modal');
+            var title = document.getElementById('notes-modal-title');
+            var sub   = document.getElementById('notes-modal-sub');
+            var ta    = document.getElementById('notes-modal-textarea');
+            var hint  = document.getElementById('notes-modal-hint');
+            if (!modal || !ta) return;
+            if (notesModalMode === 'upload') {
+                if (title) title.textContent = 'Review scanned text';
+                if (sub) sub.textContent = 'Here\'s what we could read from your photo — fix anything that looks wrong, then start typing.';
+            } else {
+                if (title) title.textContent = 'Paste your text';
+                if (sub) sub.textContent = 'Paste or type anything below, then start typing it out. Free, no sign-up needed.';
+            }
+            ta.value = prefillText || '';
+            if (hint) hint.textContent = '';
+            modal.classList.add('open');
+            setTimeout(function(){ ta.focus(); }, 0);
+        }
+        function closeNotesModal() {
+            var modal = document.getElementById('notes-modal');
+            if (modal) modal.classList.remove('open');
+        }
+        function cancelNotesModal() {
+            closeNotesModal();
+            // Abandoning Paste/Upload (not proceeding to a test) — return to
+            // the 3-card picker rather than leaving the user on what would
+            // otherwise look like a blank screen with nothing to pick from.
+            toggleNotesSubmenu(true);
+        }
+        var notesOwnBtn    = document.getElementById('notes-own-btn');
+        var notesUploadBtn = document.getElementById('notes-upload-btn');
+        var notesPasteBtn  = document.getElementById('notes-paste-btn');
+        var notesFileInput = document.getElementById('notes-upload-input');
+        if (notesOwnBtn)    notesOwnBtn.addEventListener('click', startZenMode);
+        if (notesPasteBtn)  notesPasteBtn.addEventListener('click', function(){ toggleNotesSubmenu(false); openNotesModal('paste', ''); });
+        if (notesUploadBtn) notesUploadBtn.addEventListener('click', function(){ toggleNotesSubmenu(false); if (notesFileInput) notesFileInput.click(); });
+        if (notesFileInput) notesFileInput.addEventListener('change', function(e){
+            var file = e.target.files && e.target.files[0];
+            e.target.value = ''; // allow re-selecting the same file next time
+            if (file) handleNotesImageUpload(file);
+        });
+
+        var notesModalCloseBtn   = document.getElementById('notes-modal-close');
+        var notesModalCancelBtn  = document.getElementById('notes-modal-cancel');
+        var notesModalStartBtn   = document.getElementById('notes-modal-start');
+        if (notesModalCloseBtn)  notesModalCloseBtn.addEventListener('click', cancelNotesModal);
+        if (notesModalCancelBtn) notesModalCancelBtn.addEventListener('click', cancelNotesModal);
+        if (notesModalStartBtn)  notesModalStartBtn.addEventListener('click', function(){
+            var ta = document.getElementById('notes-modal-textarea');
+            var hint = document.getElementById('notes-modal-hint');
+            var text = ta ? ta.value.trim() : '';
+            if (!text) {
+                if (hint) hint.textContent = 'Add some text first.';
+                return;
+            }
+            toggleNotesSubmenu(false);
+            closeNotesModal();
+            startNotesQuotesTest(text);
+        });
+        var notesModalEl = document.getElementById('notes-modal');
+        if (notesModalEl) notesModalEl.addEventListener('click', function(e){
+            if (e.target === notesModalEl) cancelNotesModal(); // click outside the box cancels
+        });
+
+        /* ── Notes: Upload → OCR (Tesseract.js, free & runs entirely in the
+           browser — no server, no API key, no cost). Loaded lazily from a CDN
+           only the moment Upload is actually used, so it has zero effect on
+           initial page load for everyone else. ── */
+        function ensureOcrLibLoaded(cb, errCb) {
+            if (window.Tesseract) { cb(); return; }
+            var s = document.createElement('script');
+            s.src = 'https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js';
+            s.async = true;
+            s.onload = cb;
+            s.onerror = errCb;
+            document.head.appendChild(s);
+        }
+        function setOcrOverlay(show, label) {
+            var ov = document.getElementById('notes-ocr-overlay');
+            var lb = document.getElementById('notes-ocr-label');
+            if (lb && label) lb.textContent = label;
+            if (ov) ov.classList.toggle('open', !!show);
+        }
+        function handleNotesImageUpload(file) {
+            setOcrOverlay(true, 'Loading text scanner…');
+            ensureOcrLibLoaded(function(){
+                setOcrOverlay(true, 'Scanning image for text…');
+                runOcrOnFile(file);
+            }, function(){
+                setOcrOverlay(false);
+                toggleNotesSubmenu(true);
+                showRtToast('Could not load the text scanner. Check your connection and try again, or paste the text instead.');
+            });
+        }
+        function runOcrOnFile(file) {
+            var worker;
+            Tesseract.createWorker('eng')
+                .then(function(w){
+                    worker = w;
+                    return worker.recognize(file);
+                })
+                .then(function(result){
+                    if (worker) worker.terminate();
+                    setOcrOverlay(false);
+                    var text = (result && result.data && result.data.text || '').trim();
+                    if (!text) {
+                        toggleNotesSubmenu(true);
+                        showRtToast('No text found in that image. Try a clearer photo, or paste the text instead.');
+                        return;
+                    }
+                    openNotesModal('upload', text);
+                })
+                .catch(function(){
+                    if (worker) { try { worker.terminate(); } catch(e){} }
+                    setOcrOverlay(false);
+                    toggleNotesSubmenu(true);
+                    showRtToast('Could not read text from that image. Try a clearer photo, or paste the text instead.');
+                });
+        }
+
+        /* ── Own (Zen) mode: manual end — Finish button or Escape.
+           Calls the SAME endTest() Time/Words/Quotes use — since Own now
+           reuses the real engine, this reuses the real results screen too,
+           not a separate lookalike one. ── */
+        var zenFinishBtn = document.getElementById('zen-finish-btn');
+        if (zenFinishBtn) zenFinishBtn.addEventListener('click', function(){
+            if (config.zenMode && testActive) endTest();
+        });
+        document.addEventListener('keydown', function(e){
+            if (e.key === 'Escape' && config.zenMode && testActive) endTest();
+        });
+
+        /* ── Small generic toast, reused for Notes notices/errors ── */
+        var _rtToastTimer = null;
+        function showRtToast(message) {
+            var t = document.getElementById('rt-generic-toast');
+            if (!t) return;
+            t.textContent = message;
+            t.classList.add('show');
+            clearTimeout(_rtToastTimer);
+            _rtToastTimer = setTimeout(function(){ t.classList.remove('show'); }, 4000);
+        }
+
         input.addEventListener('keydown', handleKeydown);
         restartBtn.addEventListener('click', resetTest);
 
@@ -400,7 +640,23 @@ let config = {
         function generateWords() {
             words = [];
 
+            if (config.mode === 'zen') {
+                // Own (free typing): a single empty "word" to start — there is
+                // no target text at all. extendWordsIfNeeded() keeps adding
+                // more empty words on demand as the user types past each one.
+                words = [''];
+                return;
+            }
+
             if (config.mode === 'quotes') {
+                if (window._customNotesText) {
+                    // Notes: Paste/Upload — same engine as Quotes mode, just sourced
+                    // from the user's own text instead of the quotes bank.
+                    words = window._customNotesText.split(' ');
+                    activeQuoteAuthor = '';
+                    setQuoteAuthor('');
+                    return;
+                }
                 const quoteObj = randomItem(getQuotesPool());
                 /* Support both object form { text, author } and legacy plain strings */
                 const quoteText = (typeof quoteObj === 'object' && quoteObj.text) ? quoteObj.text : String(quoteObj);
@@ -445,12 +701,7 @@ let config = {
                     wordSpan.classList.add('active');
                     activeWordEl = wordSpan;
                 }
-                word.split('').forEach((letter) => {
-                    const letterSpan = document.createElement('span');
-                    letterSpan.classList.add('letter');
-                    letterSpan.textContent = letter;
-                    wordSpan.appendChild(letterSpan);
-                });
+                _appendWordLetters(word, wordSpan);
                 frag.appendChild(wordSpan);
                 wordElsCache[i] = wordSpan;
             });
@@ -511,21 +762,17 @@ let config = {
         }
 
         // === Smooth scroll/tape animator ==================================
-        // A tiny reusable rAF tween. This deliberately mirrors 
-        // ACTUAL tape-mode implementation does (confirmed from their real source,
-        // frontend/src/ts/test/test-ui.ts, function scrollTape()): on every
-        // keystroke they call jQuery's `.stop(true, false).animate({marginLeft: ...},
-        // 125)` — i.e. stop the in-flight animation exactly where it visually is
-        // (not jump to its end), then tween from THAT point to the new target over
-        // 125ms with 'swing' easing (mathematically ease-in-out-sine). We do the
-        // exact same thing here with a plain rAF loop instead of jQuery, driving a
-        // CSS `transform` instead of their `margin-left` (transform is
-        // GPU-composited and never triggers layout; margin-left does — this is a
-        // known perf quirk of their actual implementation that we don't need to
-        // copy). A prior version of this code used a passive CSS `transition` and
-        // just set the target value directly ,
-        // and evidently didn't feel the same; this version restores the
-        // JS-driven stop-and-retarget tween, which is the verified real technique.
+        // A tiny reusable rAF tween, driving single-line "tape mode": on every
+        // keystroke, stop the in-flight animation exactly where it visually is
+        // (not jump to its end), then tween from THAT point to the new target
+        // over 125ms with 'swing' easing (mathematically ease-in-out-sine).
+        // This is a well-known stop-and-retarget technique. We use a plain rAF
+        // loop driving a CSS `transform` (GPU-composited, never triggers
+        // layout) rather than animating `margin-left` (which does trigger
+        // layout on every frame). A prior version of this code used a passive
+        // CSS `transition` and just set the target value directly — that
+        // produces a noticeably less smooth result at typing speed; this
+        // version uses the JS-driven stop-and-retarget tween instead.
         function _easeOutCubic(t) { return 1 - Math.pow(1 - t, 3); }
         function _easeInOutSine(t) { return -(Math.cos(Math.PI * t) - 1) / 2; }
         function _makeTween() { return { current: 0, from: 0, to: 0, start: 0, duration: 0, raf: null }; }
@@ -567,7 +814,7 @@ let config = {
         // === Line-display mode: 1 (single "tape" line), 2, or 3 (default) ===
         // Mode 1 lays words out on a single non-wrapping row on #words-track and
         // horizontally transforms that track so the active word stays centered —
-        //"tape mode". Modes 2/3 keep the existing wrapped
+        // single-line "tape mode". Modes 2/3 keep the existing wrapped
         // multi-line layout, just with a shorter viewport and an earlier
         // scroll-up trigger for mode 2.
         // Shared horizontal anchor (px) for tape mode — the fixed point where the
@@ -592,7 +839,7 @@ let config = {
             if (mode === 1) {
                 el.style.height = rowH + 'px';
                 // Pre-position the text so word 1 / letter 1 starts AT the center
-                // anchor from the very first keystroke ( tape behavior) —
+                // anchor from the very first keystroke —
                 // without this, text starts flush at the left edge and only the
                 // caret would appear to move until typing reaches the anchor point.
                 // This is applied to #words-track's padding, not #words itself, so
@@ -620,7 +867,7 @@ let config = {
             scheduleCaretUpdate();
         }
 
-        // === Tape-mode retarget ( actual scrollTape() technique) ===
+        // === Tape-mode retarget (stop-and-retarget scroll technique) ===
         // Called once per keystroke (from _updateCaretNow, which passes in the
         // wordLeft/targetLeft/targetWidth it already read for its own caret
         // positioning — this function used to re-read those same offsetLeft/
@@ -630,13 +877,11 @@ let config = {
         // retarget tween used for vertical line-scroll — with a 125ms duration
         // and ease-in-out-sine easing. Because _tween() always starts the new
         // leg from state.current (wherever the track visually is right this
-        // instant, mid-flight or not), this is an exact match for jQuery's
-        // `.stop(true, false).animate({marginLeft: ...}, 125)` that
-        // itself calls on every keystroke — verified against their real
-        // source (frontend/src/ts/test/test-ui.ts, scrollTape()). jQuery's
-        // default 'swing' easing is mathematically ease-in-out-sine, so this
-        // reproduces both the timing and the curve exactly, not just the
-        // general idea of "smoothing" — which is what the previous continuous
+        // instant, mid-flight or not), this reproduces jQuery's well-known
+        // `.stop(true, false).animate({marginLeft: ...}, 125)` pattern exactly.
+        // jQuery's default 'swing' easing is mathematically ease-in-out-sine,
+        // so this reproduces both the timing and the curve, not just the
+        // general idea of "smoothing" — which is what an earlier continuous
         // per-frame version missed despite being smooth in its own right.
         function _updateTapeTarget(wordLeft, tLeft, tW) {
             if (config.lineMode !== 1) return;
@@ -694,15 +939,23 @@ let config = {
 
             let target;
             let after = false;
+            // Zen only: a brand-new word with nothing typed into it yet has zero
+            // letter spans (by design — zen never pre-renders target letters,
+            // they're created as typed, unlike the other modes which always
+            // have the full target word rendered upfront). There's no span to
+            // anchor to, so fall back to the word container's own start
+            // position instead. Never true for Time/Words/Quotes.
+            const useWordStart = letters.length === 0;
 
-            if (currentLetterIndex < wordLength) {
-                target = letters[currentLetterIndex];
-            } else {
-                target = letters[letters.length - 1];
-                after = true;
+            if (!useWordStart) {
+                if (currentLetterIndex < wordLength) {
+                    target = letters[currentLetterIndex];
+                } else {
+                    target = letters[letters.length - 1];
+                    after = true;
+                }
+                if (!target) return;
             }
-
-            if (!target) return;
 
             // === Batched layout reads — touch offsetTop/offsetLeft only once per frame ===
             // Skip this in tape mode: it exists purely to support the row-scroll
@@ -715,17 +968,29 @@ let config = {
             // specific movement to visibly hitch compared to mid-word letters.
             if (config.lineMode !== 1) rebuildRowsCache();
 
-            const wordLeft   = activeWord.offsetLeft;
-            const wordTop    = activeWord.offsetTop;
-            const targetLeft = target.offsetLeft;
-            const targetTop  = target.offsetTop;
-            const targetW    = after ? target.offsetWidth : 0;
-            const targetH    = target.offsetHeight;
+            let rowH = 60; // safe fallback: 36px × 1.5 line-height + 6px flex gap
+            if (cachedRows.length >= 2) rowH = cachedRows[1] - cachedRows[0];
+
+            const wordLeft = activeWord.offsetLeft;
+            const wordTop  = activeWord.offsetTop;
+            let targetLeft, targetTop, targetW, targetH;
+            if (useWordStart) {
+                targetLeft = 0; targetTop = 0; targetW = 0;
+                // An empty div can collapse to 0 height depending on the
+                // browser/font — rowH is a real measured row height (or a
+                // sane computed fallback), always non-zero.
+                targetH = activeWord.offsetHeight || rowH;
+            } else {
+                targetLeft = target.offsetLeft;
+                targetTop  = target.offsetTop;
+                targetW    = after ? target.offsetWidth : 0;
+                targetH    = target.offsetHeight;
+            }
 
             const x = wordLeft + targetLeft + targetW;
             const y = wordTop  + targetTop;
 
-            // In single-line "tape" mode, keeps the caret perfectly
+            // In single-line "tape" mode, the caret stays perfectly
             // still — only the text glides underneath it. The track's transform
             // (set below) is what brings the correct letter to this fixed anchor
             // point; the caret itself never needs to move at all. Using the raw
@@ -743,12 +1008,9 @@ let config = {
             //
             // New approach: use raw offsetTop geometry. No row cache needed for scrolling.
             // Works correctly for 10 words or 10,000,000 words.
-            let rowH = 60; // safe fallback: 36px × 1.5 line-height + 6px flex gap
-            if (cachedRows.length >= 2) rowH = cachedRows[1] - cachedRows[0];
-
             if (config.lineMode === 1) {
                 // ── Single-line "tape" mode: retarget the stop-and-retarget
-                // tween exactly the way own scrollTape() does —
+                // tween exactly the way a stop-and-retarget scrollTape() implementation does —
                 // once per keystroke, from wherever the track visually is
                 // right now. See _updateTapeTarget() above.
                 _updateTapeTarget(wordLeft, targetLeft, targetW);
@@ -760,17 +1022,27 @@ let config = {
                 // 3RD row instead of the 2nd.
                 //
                 // FIX: work in row counts instead of pixels. visibleRowIdx is which visible
-                // row (0 = top row currently on screen) the active word sits on.
-                // scrolls up by one row the moment the active word reaches the LAST visible
+                // row (0 = top row currently on screen) the CARET (not the word) sits on.
+                // This scrolls up by one row the moment the caret reaches the LAST visible
                 // row — i.e. right after the 2nd-to-last row is finished. In 2-line mode
                 // that's row idx 1; in 3-line mode (default) that's row idx 2.
+                //
+                // BUG FIX 2: this used to measure from `wordTop` (the WORD's own start
+                // position) instead of `y` (the CARET's actual position). Those match for
+                // ordinary words, but a single word long enough to wrap across multiple
+                // rows on its own (e.g. a long pasted word, or holding a key in Own mode)
+                // keeps the same wordTop for its entire duration — so the trigger never
+                // fired while typing deeper into it, and the caret silently dropped into
+                // row 3 instead of the view scrolling up to keep it pinned at row 2. `y`
+                // reflects the letter actually being typed, including any wrap within the
+                // word itself, so this is correct for both cases.
                 const currentScrollTop = wordsDiv.scrollTop;
                 const scrollTrigger = (config.lineMode === 2) ? 1 : 2;
-                const visibleRowIdx = Math.round((wordTop - currentScrollTop) / rowH);
+                const visibleRowIdx = Math.round((y - currentScrollTop) / rowH);
                 if (visibleRowIdx >= scrollTrigger) {
-                    const targetTop = Math.max(0, wordTop - rowH);
+                    const scrollTargetTop = Math.max(0, y - rowH);
                     _vScrollTween.current = currentScrollTop;
-                    _tween(_vScrollTween, targetTop, 125, function (v) {
+                    _tween(_vScrollTween, scrollTargetTop, 125, function (v) {
                         wordsDiv.scrollTop = v;
                     }, _easeInOutSine);
                 }
@@ -796,7 +1068,7 @@ if (window._rtCustomModeActive) return;
 // ── Block modifier combos (Alt+*, Ctrl+*, Meta+*) — never type these ──
 if (e.altKey || e.ctrlKey || e.metaKey) return;
 
-// ── Tab → show "tab + enter to restart" hint ──
+// ── Tab → show "tab + enter to restart" hint (familiar-style) ──
 if (e.key === 'Tab') {
     e.preventDefault();
     var hint = document.getElementById('tab-redo-hint');
@@ -862,6 +1134,7 @@ if (!testActive && !testEnded && e.key.length === 1) {
         document.getElementById("difficulty-container").style.display = "none";
         document.getElementById("leaderboard-btn").style.display = "none";
         document.getElementById("play-game").style.display = "none";
+        toggleNotesSubmenu(false);
 
         // Strip the timer's background pill while typing — only the bare
         // number should show. The pill comes back automatically next time
@@ -869,7 +1142,7 @@ if (!testActive && !testEnded && e.key.length === 1) {
         // 'highlight' for the pre-typing display.
         timerDiv.classList.remove('highlight');
 
-        // Switch words/quotes counter to "current/total" format
+        // Switch words/quotes counter to a "current/total" format
         // (e.g. 1/5) right as typing starts. Before typing, it shows just the
         // plain total (e.g. 5) — set by resetTest().
         if (config.mode === 'words') {
@@ -962,7 +1235,19 @@ if (!testActive && !testEnded && e.key.length === 1) {
                 wordObj.extra.push(key);
                 // PERF: use cached activeWordEl
                 const extraSpan = document.createElement('span');
-                extraSpan.classList.add('letter', 'extra');
+                if (config.mode === 'zen') {
+                    // Every zen keystroke lands here (target words are always
+                    // empty) — count it toward WPM like a normal correct
+                    // keystroke, and render it as normal typed text, not the
+                    // 'extra' class's error-red (nothing is being overtyped
+                    // here, this IS the typing).
+                    extraSpan.classList.add('letter', 'correct');
+                    correctKeystrokes++;
+                    correctChars++;
+                    correctTimestamps.push(Date.now());
+                } else {
+                    extraSpan.classList.add('letter', 'extra');
+                }
                 extraSpan.textContent = key;
                 activeWordEl.appendChild(extraSpan);
                 // Keep letter spans cache in sync
@@ -986,6 +1271,10 @@ if (!testActive && !testEnded && e.key.length === 1) {
                     wordObj.extra.pop();
                     if (lettersSpans[lastIndex]) lettersSpans[lastIndex].remove();
                     activeLetterSpansArr.splice(lastIndex, 1); // sync cache
+                    if (config.mode === 'zen') {
+                        correctKeystrokes = Math.max(0, correctKeystrokes - 1);
+                        correctChars = Math.max(0, correctChars - 1);
+                    }
                 } else if (wordObj.correct[lastIndex]) {
                     correctKeystrokes = Math.max(0, correctKeystrokes - 1);
                     correctChars = Math.max(0, correctChars - 1);
@@ -1015,6 +1304,11 @@ if (!testActive && !testEnded && e.key.length === 1) {
         }
         function moveToNextWord() {
             spaces++;
+            // Zen: make sure a next (empty) word already exists before the
+            // boundary check below — otherwise the very first space press
+            // would find words.length still at 1 and fall into the
+            // end-of-test branch instead of advancing.
+            if (config.mode === 'zen') extendWordsIfNeeded();
             if (currentWordIndex < words.length - 1) {
                 // PERF: update cached active word reference
                 if (activeWordEl) activeWordEl.classList.remove('active');
@@ -1046,7 +1340,50 @@ if (!testActive && !testEnded && e.key.length === 1) {
                 }
             }
         }
+        // Builds one or more `.word` div(s) + their letter spans, shared by the
+        // initial renderWords() and this incremental extend path so both always
+        // stay in sync (including the zen-specific empty-word handling below).
+        function _appendWordLetters(word, wordSpan) {
+            if (config.mode === 'zen' && word === '') {
+                // A brand-new zen word starts with zero letters by design —
+                // characters are created as typed (see typeLetter()'s "extra"
+                // branch), never pre-rendered like a real target word. No
+                // placeholder span is inserted here (that would desync
+                // currentLetterIndex from activeLetterSpansArr); the caret
+                // handles this empty-word case directly in _updateCaretNow().
+                return;
+            }
+            word.split('').forEach(function (letter) {
+                const letterSpan = document.createElement('span');
+                letterSpan.classList.add('letter');
+                letterSpan.textContent = letter;
+                wordSpan.appendChild(letterSpan);
+            });
+        }
+        function _buildWordNodes(wordList, outCache) {
+            const frag = document.createDocumentFragment();
+            wordList.forEach(function (word) {
+                const wordSpan = document.createElement('div');
+                wordSpan.classList.add('word');
+                _appendWordLetters(word, wordSpan);
+                frag.appendChild(wordSpan);
+                if (outCache) outCache.push(wordSpan);
+            });
+            return frag;
+        }
+
         function extendWordsIfNeeded() {
+            if (config.mode === 'zen') {
+                // Keep a small buffer of empty "words" ready so moveToNextWord()
+                // never runs out and hits its end-of-test branch — Own has no
+                // fixed length, it only ends via the Finish button or Escape.
+                if (words.length - currentWordIndex > 2) return;
+                const newZenWords = [''];
+                words = words.concat(newZenWords);
+                wordsTrack.appendChild(_buildWordNodes(newZenWords, wordElsCache));
+                rowsCacheInvalid = true;
+                return;
+            }
             if (config.mode !== 'time' && config.mode !== 'words') return;
             // For words mode: stop extending once we have reached the total target count
             if (config.mode === 'words' && words.length >= config.words) return;
@@ -1064,23 +1401,6 @@ if (!testActive && !testEnded && e.key.length === 1) {
                 }
                 // Extend the logical array immediately (needed for boundary checks)
                 words = words.concat(newWords);
-
-                function _buildWordNodes(wordList, outCache) {
-                    const frag = document.createDocumentFragment();
-                    wordList.forEach(function(word) {
-                        const wordSpan = document.createElement('div');
-                        wordSpan.classList.add('word');
-                        word.split('').forEach(function(letter) {
-                            const letterSpan = document.createElement('span');
-                            letterSpan.classList.add('letter');
-                            letterSpan.textContent = letter;
-                            wordSpan.appendChild(letterSpan);
-                        });
-                        frag.appendChild(wordSpan);
-                        if (outCache) outCache.push(wordSpan);
-                    });
-                    return frag;
-                }
 
                 if (config.mode === 'words') {
                     // Words mode: add DOM elements SYNCHRONOUSLY — they must be available
@@ -1120,13 +1440,20 @@ if (!testActive && !testEnded && e.key.length === 1) {
                 }
             }, 300);
 
-            if (config.mode === 'time') {
+            if (config.mode === 'time' || config.mode === 'zen') {
                 timerInterval = setInterval(updateTimer, 1000);
             }
             /* Quotes mode: no ticking interval needed — the word countdown
                (see moveToNextWord) updates the display as the user types. */
         }
         function updateTimer() {
+            if (config.mode === 'zen') {
+                // Own (free typing): count UP, no target, never auto-ends —
+                // only the Finish button or Escape end it.
+                const elapsedZen = Math.floor((Date.now() - startTime) / 1000);
+                timerDiv.textContent = formatTime(elapsedZen);
+                return;
+            }
             if (config.mode !== 'time') return;
             const elapsed = Math.floor((Date.now() - startTime) / 1000);
             const remaining = config.time - elapsed;
@@ -1145,6 +1472,8 @@ if (!testActive && !testEnded && e.key.length === 1) {
             testActive = false;
             testEnded  = true;   // ← lock out the "start on keypress" path until resetTest() clears this
             input.blur();
+            var zenBtnEnd = document.getElementById('zen-finish-btn');
+            if (zenBtnEnd) zenBtnEnd.classList.remove('show');
 
             // Show Musk & Elon score badges again when test ends
             var kmScoresPanelEnd = document.getElementById('km-scores-panel');
@@ -1203,7 +1532,7 @@ if (!testActive && !testEnded && e.key.length === 1) {
             const rawWpm = Math.round(totalKeystrokes / 5 / elapsedMinutes);
 
             // ── Accuracy ────────────────────────────────────────────────────────────
-            //  formula: correct / (correct + incorrect)
+            // Standard accuracy formula: correct / (correct + incorrect)
             // incorrectChars = wrong letters + extra letters + missed letters
             //   — early-space keystrokes are NOT a separate error; only the MISSED
             //     letters of the skipped word are counted (tracked in missedChars).
@@ -1216,6 +1545,7 @@ if (!testActive && !testEnded && e.key.length === 1) {
                 : 100;
 
             // ── Consistency ─────────────────────────────────────────────────────────
+            // Standard method:
             //   1. Bucket all keystrokes into 1-second windows → per-second raw WPM
             //   2. Drop zero-keystroke seconds (idle gaps)
             //   3. Trim the first and last second (ramp-up / tail artefacts)
@@ -1244,6 +1574,7 @@ if (!testActive && !testEnded && e.key.length === 1) {
                     const variance = rawWpms.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / rawWpms.length;
                     const std = Math.sqrt(variance);
                     const covPercent = mean > 0 ? (std / mean) * 100 : 0;
+                    // Linear formula (not exponential)
                     consistency = Math.max(1, Math.round(100 - covPercent));
                 }
             }
@@ -1317,7 +1648,9 @@ if (!testActive && !testEnded && e.key.length === 1) {
             const modeLabels = { time: 'time', words: 'words', quotes: 'quotes' };
             const modeLabel = modeLabels[config.mode] || config.mode;
             let modeDisplay = modeLabel;
-            if (config.mode === 'time') modeDisplay = 'time ' + config.time;
+            if (config.zenMode) modeDisplay = 'own (zen)';
+            else if (config.notesActive) modeDisplay = 'notes';
+            else if (config.mode === 'time') modeDisplay = 'time ' + config.time;
             else if (config.mode === 'words') modeDisplay = 'words ' + config.words;
 
             const modEl = document.getElementById('result-mode-display');
@@ -1369,7 +1702,7 @@ if (!testActive && !testEnded && e.key.length === 1) {
             // SECURITY: wpm/accuracy are NOT passed as params — saveScore recalculates
             // them from closure variables (correctKeystrokes, startTime) that are `let`
             // declarations and therefore inaccessible from the browser console.
-            if (config.mode === 'time') {
+            if (config.mode === 'time' && !config.zenMode) {
                 saveScore(registeredName || 'guest', config.time);
             }
 
@@ -1728,7 +2061,7 @@ if (!testActive && !testEnded && e.key.length === 1) {
 
             requestAnimationFrame(frame);
 
-            //  hover tooltip ──────────────────────
+            // ── familiar-style hover tooltip ──────────────────────
             (function attachChartTooltip() {
                 const tooltip    = document.getElementById('chart-tooltip');
                 const chartPanel = canvas.closest('.result-chart-panel') || canvas.parentElement;
@@ -1886,166 +2219,6 @@ if (!testActive && !testEnded && e.key.length === 1) {
             // how tall the ad network's actual creative renders.
         }
 
-        // ============================================================
-        //  DIRECT BANNER AD LOADER (safe, reusable)
-        //  For ad-network scripts that read their config off a global
-        //  `atOptions` object and typically use document.write() to
-        //  inject the ad markup (highperformanceformat.com / Adsterra
-        //  "Banner" format). document.write() only works correctly
-        //  during a document's initial parse — calling it into an
-        //  iframe that's already finished loading gets silently
-        //  blocked/wiped by the browser, which is why ads went blank.
-        //  Using srcdoc gives the ad script tags a real initial parse,
-        //  identical to the original static embed, just isolated in
-        //  its own document so repeated calls can't collide or leak.
-        // ============================================================
-        //  NOTE: the closing body/html tags inside the srcdoc string below
-        //  are deliberately written with a backslash (<\/body><\/html>) —
-        //  same reasoning as the <\/script> escaping already used elsewhere
-        //  in this file. Local dev tools like VS Code's Live Server inject
-        //  their live-reload script by doing a naive text search for a
-        //  literal closing-tag substring in the raw file and splicing code
-        //  in right before it. That search cannot tell a real page's
-        //  closing tag from one sitting inside a JS string — if it matches
-        //  the one in this string, it splices its script into the middle
-        //  of this string literal, breaking the whole enclosing <script>
-        //  block for everything after it. The escaped form is functionally
-        //  identical once parsed at runtime, but doesn't match that search.
-        function loadDirectBannerAd(containerElId, adKey, width, height) {
-            var container = document.getElementById(containerElId);
-            if (!container) return;
-
-            container.innerHTML = '';
-
-            var iframe = document.createElement('iframe');
-            iframe.setAttribute('scrolling', 'no');
-            iframe.setAttribute('frameborder', '0');
-            iframe.style.cssText = 'display:block; width:' + width + 'px; max-width:100%; height:' + height + 'px; border:0; overflow:hidden; margin:0 auto;';
-
-            // Cache-bust: without this, the browser can silently serve the
-            // exact same cached invoke.js response (same embedded ad
-            // markup) on every reload instead of asking the ad server for
-            // a new one. A unique query string per call forces a real
-            // network round-trip every time.
-            var cacheBust = Date.now() + Math.random().toString(36).slice(2);
-
-            iframe.srcdoc =
-                '<!DOCTYPE html><html><head><style>html,body{margin:0;padding:0;background:transparent;display:flex;justify-content:center;align-items:center;overflow:hidden;}</style></head><body>' +
-                '<script>atOptions={"key":"' + adKey + '","format":"iframe","height":' + height + ',"width":' + width + ',"params":{}};<\/script>' +
-                '<script src="https://www.highperformanceformat.com/' + adKey + '/invoke.js?_=' + cacheBust + '"><\/script>' +
-                '<\/body><\/html>';
-
-            container.appendChild(iframe);
-        }
-
-        // ── VIEWABILITY-BASED LAZY LOADING for the 4 ad slots below the typing
-        // test (typing-area-ad, ad-slot-2, ad-slot-3, ad-slot-4) ──
-        //
-        // PROBLEM this fixes: these slots used to fire their ad request the
-        // instant the page loaded (or, for ad #1, the instant the user hit
-        // Retake) — no matter whether the slot was actually on-screen. Every
-        // one of those requests counts as a "served" impression to the ad
-        // network, but if the user never scrolls down to actually see it,
-        // it's never a "viewed" impression. A high served-but-unviewed ratio
-        // is exactly what drags down CPM over time.
-        //
-        // FIX: don't request an ad for a slot until that slot is actually
-        // about to enter the viewport. One IntersectionObserver watches
-        // slots 2-4; each of those only ever loads once it's genuinely
-        // about to be seen, so every served impression is a real viewable one.
-        //
-        // Ad #1 (typing-area-ad) gets its own, STRICTER observer below —
-        // see the note just above _typingAreaAdObserver for why.
-        const _adSlotLoaders = {
-            'container-typing-area-ad': () => loadDirectBannerAd('container-typing-area-ad', 'ec2cd2e3ac271efe174e656e9ef09deb', 728, 90),
-            'container-ad-slot-2':      () => loadDirectBannerAd('container-ad-slot-2', 'c0570a980250971b0f952672ff8a136a', 300, 250),
-            'container-ad-slot-3':      () => loadDirectBannerAd('container-ad-slot-3', 'e8642ebc1588f7663a0e84f1c8058052', 320, 50),
-            'container-ad-slot-4':      () => loadDirectBannerAd('container-ad-slot-4', '95b624fbbcc4571e53cd5d3a062f9758', 468, 60),
-        };
-        const _adSlotLoaded = { 'container-typing-area-ad': false, 'container-ad-slot-2': false, 'container-ad-slot-3': false, 'container-ad-slot-4': false };
-
-        const _adLazyObserver = ('IntersectionObserver' in window) ? new IntersectionObserver((entries) => {
-            entries.forEach((entry) => {
-                if (!entry.isIntersecting) return;
-                const id = entry.target.id;
-                if (_adSlotLoaded[id]) return; // already loaded, and not marked dirty — nothing to do
-                _adSlotLoaded[id] = true;
-                _adSlotLoaders[id]();
-            });
-            // Start loading ~200px before the slot actually reaches the viewport, so
-            // the ad has finished its network round-trip by the time it's visible —
-            // still a real viewable impression, just without a blank flash on arrival.
-        }, { rootMargin: '200px 0px', threshold: 0.01 }) : null;
-
-        function _observeAdSlot(containerId) {
-            const el = document.getElementById(containerId);
-            if (!el) return;
-            if (_adLazyObserver) {
-                _adLazyObserver.observe(el);
-            } else {
-                // No IntersectionObserver support (very old browser) — fall back
-                // to loading immediately rather than never loading at all.
-                if (!_adSlotLoaded[containerId]) { _adSlotLoaded[containerId] = true; _adSlotLoaders[containerId](); }
-            }
-        }
-
-        // ── Ad #1 (typing-area-ad): stricter, scroll-gated loading ──────────
-        // This slot sits immediately below the typing test, so on plenty of
-        // screens its top edge already grazes the bottom of the viewport (or
-        // sits within the shared observer's 200px pre-load margin) the moment
-        // the page paints — before the user has scrolled at all. That fired
-        // the ad request on load / on every Retake, racking up served
-        // impressions nobody actually looked at (attention stays on the
-        // typing test above), which drags down CPM. Viewed impressions are
-        // worth more than served ones, so this slot must only ever load once
-        // the user has genuinely scrolled AND the slot is substantially
-        // (≥50%) on-screen — no pre-load margin, no "just grazing the edge"
-        // counts.
-        let _hasUserScrolled = false;
-        function _markUserScrolled() {
-            if (window.scrollY > 10 || document.documentElement.scrollTop > 10) {
-                _hasUserScrolled = true;
-                window.removeEventListener('scroll', _markUserScrolled);
-                _maybeLoadTypingAreaAd();
-            }
-        }
-        window.addEventListener('scroll', _markUserScrolled, { passive: true });
-
-        let _typingAreaAdIntersecting = false;
-        function _maybeLoadTypingAreaAd() {
-            const id = 'container-typing-area-ad';
-            if (_adSlotLoaded[id]) return;
-            if (!_hasUserScrolled) return;            // must be a real scroll, not just page geometry
-            if (!_typingAreaAdIntersecting) return;   // must actually be meaningfully on-screen
-            _adSlotLoaded[id] = true;
-            _adSlotLoaders[id]();
-        }
-
-        const _typingAreaAdObserver = ('IntersectionObserver' in window) ? new IntersectionObserver((entries) => {
-            entries.forEach((entry) => {
-                _typingAreaAdIntersecting = entry.isIntersecting;
-                if (entry.isIntersecting) _maybeLoadTypingAreaAd();
-            });
-        }, { rootMargin: '0px', threshold: 0.5 }) : null;
-
-        function _observeTypingAreaAd() {
-            const el = document.getElementById('container-typing-area-ad');
-            if (!el) return;
-            if (_typingAreaAdObserver) {
-                _typingAreaAdObserver.observe(el);
-            } else {
-                // No IntersectionObserver support — fall back to the shared
-                // lazy-load behavior rather than never loading at all.
-                _observeAdSlot('container-typing-area-ad');
-            }
-        }
-
-        // Registers all 4 slots for lazy loading. Called once on page init.
-        function initAdLazyLoading() {
-            _observeTypingAreaAd();
-            ['container-ad-slot-2', 'container-ad-slot-3', 'container-ad-slot-4'].forEach(_observeAdSlot);
-        }
-
         // Swaps in a brand-new result-screen ad. Called on page init, and
         // again from resetTest() every time the user leaves a finished
         // result screen (Retake Test / Tab+Enter / Enter) — so the fresh
@@ -2055,30 +2228,11 @@ if (!testActive && !testEnded && e.key.length === 1) {
             loadNativeBannerAd('result-ad', '42f27a48e35d8fefd79d32771cdb9094');
         }
 
-        // Marks the typing-area banner (ad #1) as needing a fresh ad next time
-        // the user retakes the test — but does NOT force-load it blind.
-        // Previously this checked "any pixel of the slot overlaps the
-        // viewport" and loaded immediately if so — but since this slot sits
-        // right below the typing test, that overlap is often true the instant
-        // Retake is pressed, even though the user hasn't scrolled and isn't
-        // looking at it. That served an impression nobody viewed. Now it just
-        // marks the slot dirty and defers entirely to the same scroll-gated
-        // IntersectionObserver used on initial load — it only loads once the
-        // user has genuinely scrolled AND the slot is ≥50% on-screen.
-        function refreshTypingAreaAd() {
-            const id = 'container-typing-area-ad';
-            _adSlotLoaded[id] = false; // mark dirty so it's eligible to reload
-            _maybeLoadTypingAreaAd();  // loads immediately only if the user has
-                                        // already scrolled and it's still in view;
-                                        // otherwise the observer fires it later.
-        }
-
         function resetTest() {
             // Leaving a finished result screen → line up a fresh ad for next time.
             if (window._resultAdShown) {
                 window._resultAdShown = false;
                 refreshResultAd();
-                refreshTypingAreaAd();
             }
             // ── Live WPM: stop updater, hide circle, restore Sunday Champ ──
             if (window._liveWpmInterval) { clearInterval(window._liveWpmInterval); window._liveWpmInterval = null; }
@@ -2157,13 +2311,21 @@ if (!testActive && !testEnded && e.key.length === 1) {
             input.value = '';
             input.focus();
 
-            if (config.mode === 'time' || config.mode === 'words' || config.mode === 'quotes') generateWords();
+            if (config.mode === 'time' || config.mode === 'words' || config.mode === 'quotes' || config.mode === 'zen') generateWords();
 
             /* Show/hide author attribution based on mode */
             if (config.mode !== 'quotes') setQuoteAuthor('');
 
             timerDiv.classList.remove('highlight');
-            if (config.mode === 'time') {
+            if (config.mode === 'zen') {
+                // Own (free typing): no fixed target, just a 0:00 placeholder
+                // until typing starts. All the actual session teardown
+                // (intervals, test-running class, hidden header buttons) is
+                // already handled by the generic restoration above — Own runs
+                // through the exact same reset path as every other mode now.
+                timerDiv.textContent = formatTime(0);
+                timerDiv.classList.add('highlight');
+            } else if (config.mode === 'time') {
                 timerDiv.textContent = formatTime(config.time);
                 timerDiv.classList.add('highlight');
             } else if (config.mode === 'words') {
@@ -2174,17 +2336,18 @@ if (!testActive && !testEnded && e.key.length === 1) {
                 timerDiv.classList.add('highlight');
             }
 
+            // The Finish button itself only appears once typing starts (see the
+            // typing-start block) and hides again when the test ends — not here,
+            // since there's nothing to finish yet while still idle.
+            var zenBtnHide = document.getElementById('zen-finish-btn');
+            if (zenBtnHide) zenBtnHide.classList.remove('show');
+
             renderWords();
             rowsCacheInvalid = true;   // ← ensure cache is fresh after full reset
         }
         resetTest();
         applyLineMode(config.lineMode);
         refreshResultAd();
-        // All 4 below-the-test ad slots (typing-area-ad, ad-slot-2, ad-slot-3,
-        // ad-slot-4) now load lazily — only once each is actually about to be
-        // visible — instead of firing every ad request the instant the page
-        // loads. See initAdLazyLoading() / IntersectionObserver setup above.
-        initAdLazyLoading();
 
         // CARET FIX: styles.css loads asynchronously (media="print" trick), so when
         // resetTest() runs on page load, styles.css hasn't applied yet.
