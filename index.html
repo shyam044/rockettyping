@@ -257,7 +257,7 @@
             min-height:100%;
         }
         /* Matches styles.css exactly — see that file for the full rationale
-           (JS-driven tween using a stop-and-retarget scrollTape()-style algorithm;
+           (JS-driven tween mirroring scrollTape() algorithm;
            deliberately NO CSS transition here). */
         #words-track.tape-track{
             flex-wrap:nowrap;
@@ -598,18 +598,6 @@
     opacity: 0;
     pointer-events: none;
     transform: translateX(-12px);
-}
-
-/* Keymap (including its own ON/OFF toggle button) + Musk/Elon scores are
-   irrelevant while choosing between the 3 Notes cards — nothing has been
-   picked yet. !important so this reliably wins over the normal typing
-   engine's own independent visibility logic. Removed again the instant any
-   card is picked (see setNotesUiActive(false) at each card's click handler)
-   — unlike the picker screen, once Own/Paste/Upload is actually chosen the
-   keymap and scores are relevant again, same as any other test. */
-#app.rt-notes-active #km-wrap,
-#app.rt-notes-active #km-scores-panel {
-    display: none !important;
 }
 
 .km-score-badge {
@@ -1108,59 +1096,6 @@ footer a:hover{color:var(--rt-main) !important;}
     max-height:70vh;overflow-y:auto;background:#12122a;border:1px solid rgba(226,183,20,0.3);border-radius:16px;
     padding:16px;z-index:9991;box-shadow:0 20px 60px rgba(0,0,0,0.65);font-family:'Roboto Mono',monospace;}
 #rt-settings-panel.open{display:block;}
-
-/* ── Notes: paste / review modal ── */
-#notes-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.82);backdrop-filter:blur(4px);
-    -webkit-backdrop-filter:blur(4px);align-items:center;justify-content:center;z-index:9994;padding:20px;
-    box-sizing:border-box;}
-#notes-modal.open{display:flex;}
-#notes-modal-box{background:linear-gradient(145deg,#12122a,#1a1a35);border:1px solid rgba(var(--rt-main-rgb),0.3);
-    border-radius:18px;padding:28px;width:100%;max-width:560px;max-height:90vh;overflow-y:auto;
-    position:relative;box-sizing:border-box;box-shadow:0 25px 80px rgba(0,0,0,0.7);}
-#notes-modal-close{position:absolute;top:12px;right:14px;background:none;border:none;color:#8a8a9a;font-size:20px;
-    cursor:pointer;line-height:1;padding:4px 8px;border-radius:4px;}
-#notes-modal-close:hover{color:var(--rt-main);}
-#notes-modal-title{margin:0 0 6px;color:var(--rt-main);font-family:'Roboto Mono',monospace;font-size:19px;}
-#notes-modal-sub{margin:0 0 14px;color:#9a9aa8;font-size:13px;line-height:1.5;}
-#notes-modal-textarea{width:100%;min-height:220px;max-height:44vh;box-sizing:border-box;background:rgba(255,255,255,0.04);
-    border:1px solid rgba(255,255,255,0.12);border-radius:10px;color:var(--rt-text);font-family:'Roboto Mono',monospace;
-    font-size:14px;line-height:1.6;padding:12px;resize:vertical;}
-#notes-modal-textarea:focus{outline:none;border-color:var(--rt-main);}
-#notes-modal-hint{min-height:18px;margin-top:6px;font-size:12px;color:#e2857a;}
-#notes-modal-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:14px;}
-#notes-modal-actions button{font-family:'Roboto Mono',monospace;font-size:13px;padding:9px 18px;border-radius:8px;
-    cursor:pointer;font-weight:700;}
-#notes-modal-cancel{background:none;border:1px solid rgba(255,255,255,0.15);color:#aaa;}
-#notes-modal-cancel:hover{border-color:#fff;color:#fff;}
-#notes-modal-start{background:var(--rt-main);border:1px solid var(--rt-main);color:var(--rt-bg);}
-#notes-modal-start:hover{filter:brightness(1.1);}
-#notes-modal-start:disabled{opacity:0.5;cursor:not-allowed;filter:none;}
-
-/* ── Notes: OCR processing overlay ── */
-#notes-ocr-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);align-items:center;
-    justify-content:center;z-index:9995;}
-#notes-ocr-overlay.open{display:flex;}
-#notes-ocr-box{display:flex;flex-direction:column;align-items:center;gap:14px;}
-#notes-ocr-spinner{width:44px;height:44px;border-radius:50%;border:4px solid rgba(var(--rt-main-rgb),0.2);
-    border-top-color:var(--rt-main);animation:rt-ocr-spin 0.9s linear infinite;}
-@keyframes rt-ocr-spin{to{transform:rotate(360deg);}}
-#notes-ocr-label{color:var(--rt-text);font-family:'Roboto Mono',monospace;font-size:14px;}
-
-/* ── Generic toast (Notes feature notices/errors) ── */
-#rt-generic-toast{display:none;position:fixed;bottom:26px;left:50%;transform:translateX(-50%) translateY(10px);
-    background:#1a1a2e;border:1px solid rgba(var(--rt-main-rgb),0.4);color:var(--rt-text);font-family:'Roboto Mono',monospace;
-    font-size:13px;padding:12px 20px;border-radius:10px;z-index:9997;box-shadow:0 12px 40px rgba(0,0,0,0.5);
-    max-width:min(90vw,420px);text-align:center;opacity:0;transition:opacity .2s ease, transform .2s ease;}
-#rt-generic-toast.show{display:block;opacity:1;transform:translateX(-50%) translateY(0);}
-
-/* ── Own (Zen) mode: Finish button ── */
-#zen-finish-btn{display:none;position:fixed;bottom:26px;left:50%;transform:translateX(-50%);
-    background:var(--rt-main);color:var(--rt-bg);border:none;font-family:'Roboto Mono',monospace;
-    font-weight:700;font-size:13px;padding:10px 22px;border-radius:24px;cursor:pointer;z-index:120;
-    box-shadow:0 8px 24px rgba(0,0,0,0.4);}
-#zen-finish-btn.show{display:block;}
-#zen-finish-btn:hover{filter:brightness(1.1);}
-
 .rt-settings-tabs{display:flex;gap:8px;margin-bottom:14px;}
 .rt-settings-tab{flex:1;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#aaa;
     padding:8px 4px;border-radius:8px;cursor:pointer;font-family:'Roboto Mono',monospace;font-size:12px;font-weight:900;letter-spacing:.5px;}
@@ -1365,26 +1300,9 @@ footer a:hover{color:var(--rt-main) !important;}
             <button class="mode active" data-mode="time">⏰ Time</button>
             <button class="mode" data-mode="words">🎯 Words</button>
             <button class="mode" data-mode="quotes">💬 Quotes</button>
-            <button class="mode" data-mode="notes">📝 Notes</button>
         </div>
-        <div id="notes-submenu">
-            <button type="button" class="notes-card" id="notes-own-btn" title="Type freely for as long as you like, no target text or time limit">
-                <span class="notes-card-icon">🧘</span>
-                <span class="notes-card-label">Own</span>
-            </button>
-            <button type="button" class="notes-card" id="notes-upload-btn" title="Upload a photo of text to type it out">
-                <span class="notes-card-icon">📷</span>
-                <span class="notes-card-label">Upload</span>
-            </button>
-            <button type="button" class="notes-card" id="notes-paste-btn" title="Paste any text or paragraph to type it out">
-                <span class="notes-card-icon">📋</span>
-                <span class="notes-card-label">Paste</span>
-            </button>
-        </div>
-        <input type="file" id="notes-upload-input" accept="image/*" style="display:none;">
         <div id="timer">30</div>
         <div id="difficulty-container">
-
 
             <div class="difficulty-group" id="difficulty-group">
                 <button class="diff-btn active" data-difficulty="easy"
@@ -1413,7 +1331,7 @@ footer a:hover{color:var(--rt-main) !important;}
                 </button>
             </div>
         </div>
-        <!-- Tab+Enter restart hint (familiar-style) -->
+        <!-- Tab+Enter restart hint  -->
         <div id="tab-redo-hint" style="
             display:none;
             position:fixed;
@@ -1566,7 +1484,7 @@ footer a:hover{color:var(--rt-main) !important;}
                 <canvas id="rocket-chart"></canvas>
                 <!-- Legend hidden — shown as tooltip on hover/touch -->
             </div>
-            <!-- Hover tooltip -->
+            <!-- Hover tooltip  -->
             <div id="chart-tooltip" style="display:none; position:absolute; background:rgba(0,0,0,0.88); border:1px solid rgba(255,255,255,0.12); border-radius:8px; padding:10px 14px; pointer-events:none; z-index:100; font-family:'Roboto Mono',monospace; font-size:12px; width:80px; box-shadow:0 4px 20px rgba(0,0,0,0.5);">
                 <div id="chart-tooltip-sec" style="color:rgba(255,255,255,0.55); font-size:11px; margin-bottom:7px; letter-spacing:0.5px;"></div>
                 <div id="chart-tooltip-errors" style="display:flex; align-items:center; gap:8px; margin-bottom:4px;">
@@ -1953,39 +1871,6 @@ footer a:hover{color:var(--rt-main) !important;}
     </div>
 
 <!-- Leaderboard modal markup is lazy-loaded from leaderboard.html (see loadFragment()) -->
-
-    <!-- ── Notes: paste / review text modal ──────────────────────────────
-         Used directly by "Paste" (empty textarea) and by "Upload" (same
-         modal, pre-filled with the OCR result so the user can fix any
-         misreads before typing). One shared code path either way. -->
-    <div id="notes-modal" role="dialog" aria-modal="true" aria-label="Add your own text to type">
-        <div id="notes-modal-box">
-            <button type="button" id="notes-modal-close" aria-label="Close">✕</button>
-            <h3 id="notes-modal-title">Paste your text</h3>
-            <p id="notes-modal-sub">Paste or type anything below, then start typing it out. Free, no sign-up needed.</p>
-            <textarea id="notes-modal-textarea" placeholder="Paste a paragraph, an article, your notes — anything you want to practice typing…" maxlength="8000"></textarea>
-            <div id="notes-modal-hint"></div>
-            <div id="notes-modal-actions">
-                <button type="button" id="notes-modal-cancel">Cancel</button>
-                <button type="button" id="notes-modal-start">Start Typing</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- ── Notes: OCR processing overlay (shown only while Upload is scanning an image) ── -->
-    <div id="notes-ocr-overlay" role="status" aria-live="polite">
-        <div id="notes-ocr-box">
-            <div id="notes-ocr-spinner"></div>
-            <div id="notes-ocr-label">Scanning image for text…</div>
-        </div>
-    </div>
-
-    <!-- ── Generic toast for Notes feature notices/errors ── -->
-    <div id="rt-generic-toast" role="status" aria-live="polite"></div>
-
-    <!-- ── Own (Zen) mode: manual Finish button — Escape does the same thing ── -->
-    <button type="button" id="zen-finish-btn" title="Finish and see your results (or press Esc)">✓ Finish</button>
-
     
     <footer id="footer">
         <p style="margin: 0;">
@@ -2023,6 +1908,16 @@ footer a:hover{color:var(--rt-main) !important;}
     box-sizing: border-box;
 ">
 
+    <!-- ── BANNER AD #1 — directly below the typing test (728x90) ──
+         Loads via the same safe iframe-based loader as result-ad, and
+         is refreshed with a brand-new ad every time the user leaves a
+         finished result screen and returns to the typing test — so it
+         no longer shows the exact same ad on every retake. -->
+    <div class="native-ad-slot" id="typing-area-ad" style="min-height:90px;">
+        <div class="ad-label">Advertisement</div>
+        <div id="container-typing-area-ad"></div>
+    </div>
+
     <!-- ── TOP FEATURE GRID ── -->
     <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-bottom: 40px;">
         <div style="background:rgba(226,183,20,0.06); border:1px solid rgba(226,183,20,0.15); border-radius:12px; padding:18px 16px; text-align:center;">
@@ -2055,6 +1950,12 @@ footer a:hover{color:var(--rt-main) !important;}
             <div style="color:#e2b714; font-weight:700; font-size:13px; letter-spacing:1px; margin-bottom:6px;">100% FREE</div>
             <div style="font-size:12px; color:#6a7080;">No subscription, no login required. Take unlimited free online typing tests and practice sessions anytime.</div>
         </div>
+    </div>
+
+    <!-- ── BANNER AD #2 — below the 6 feature cards (300x250) ── -->
+    <div class="native-ad-slot" id="ad-slot-2" style="min-height:250px;">
+        <div class="ad-label">Advertisement</div>
+        <div id="container-ad-slot-2"></div>
     </div>
 
     <!-- ── MAIN CONTENT COLUMNS ── -->
@@ -2156,6 +2057,12 @@ footer a:hover{color:var(--rt-main) !important;}
     <!-- ── FAQ SECTION ── -->
     <div style="margin-bottom: 32px;">
 
+        <!-- ── BANNER AD #3 — top of FAQ (320x50) ── -->
+        <div class="native-ad-slot" id="ad-slot-3" style="min-height:50px;">
+            <div class="ad-label">Advertisement</div>
+            <div id="container-ad-slot-3"></div>
+        </div>
+
         <h2 style="color:#e2b714; font-size:16px; letter-spacing:1.5px; margin:0 0 20px; text-align:center;">
             ❓ FREQUENTLY ASKED QUESTIONS
         </h2>
@@ -2185,6 +2092,11 @@ footer a:hover{color:var(--rt-main) !important;}
                 <div style="font-size:12px; color:#6a7080;">WPM is calculated as (correctly typed characters ÷ 5) ÷ minutes elapsed. The standard word length of 5 characters is used so results are consistent regardless of word length. Raw WPM counts all keystrokes including errors.</div>
             </div>
         </div>
+    </div>
+
+        <div class="native-ad-slot" id="ad-slot-4" style="min-height:60px;">
+        <div class="ad-label">Advertisement</div>
+        <div id="container-ad-slot-4"></div>
     </div>
 
     <!-- ── KEYWORD TAG CLOUD ── -->
@@ -3334,7 +3246,7 @@ function createResizeHandle(t){
 /* ── Live WPM shape picker ─────────────────────────────────────────
    A third handle that only exists for the 'liveWpm' HUD target. Unlike
    the move/resize handles, clicking it doesn't drag anything — it opens
-   a small popup offering Number (default, familiar-style bare digit)
+   a small popup offering Number (default, bare digit)
    plus Circle/Square/Rectangle/Triangle. Selection is just a class on
    #live-wpm-display (see the .rt-wpm-* CSS rules), so switching is an
    instant, layout-cheap class swap — no new elements, no reflow-heavy
