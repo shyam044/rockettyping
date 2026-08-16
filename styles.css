@@ -105,7 +105,7 @@ body::before {
     transform: translateX(-50%);
     display: flex;
     gap: 10px;
-    color: #e2b714;
+    color: var(--rt-main);
     opacity: 0.6;
     transition: opacity 0.2s;
     z-index: 30;
@@ -116,7 +116,7 @@ body::before {
 #test-config button {
     background: none;
     border: none;
-    color: #e2b714;
+    color: var(--rt-main);
     cursor: pointer;
     font-size: 16px;
     padding: 6px 12px;
@@ -124,8 +124,47 @@ body::before {
     transition: background 0.15s;
 }
 
-#test-config button:hover { background: rgba(226, 183, 20, 0.1); }
+#test-config button:hover { background: rgba(var(--rt-main-rgb), 0.1); }
 #test-config button.active { text-decoration: underline; }
+
+/* ── Notes: 3 option cards (Own / Upload / Paste) ──────────────────
+   Shown in place of the typing area itself while choosing — #words,
+   #timer and #difficulty-container are all hidden at the same time
+   (see toggleNotesSubmenu() in app-core.js), so this sits in the same
+   vertical slot #words normally occupies. ── */
+#notes-submenu {
+    display: none;
+    width: 100%;
+    max-width: 1300px;
+    margin: 190px auto 0;
+    gap: 28px;
+    justify-content: center;
+    z-index: 30;
+}
+#notes-submenu.open { display: flex; }
+.notes-card {
+    background: rgba(var(--rt-main-rgb), 0.05);
+    border: 2px solid rgba(var(--rt-main-rgb), 0.28);
+    border-radius: 18px;
+    color: var(--rt-text);
+    cursor: pointer;
+    font-family: 'Roboto Mono', monospace;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    width: 200px;
+    height: 200px;
+    transition: background 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
+}
+.notes-card:hover {
+    background: rgba(var(--rt-main-rgb), 0.12);
+    border-color: var(--rt-main);
+    transform: translateY(-4px);
+}
+.notes-card-icon { font-size: 46px; line-height: 1; }
+.notes-card-label { font-size: 17px; font-weight: 700; letter-spacing: 0.5px; }
 
 #timer {
     position: absolute;
@@ -317,12 +356,11 @@ body.typing-active #words .letter {
 #words .active { border-bottom: 2px solid #00e6cc; }
 
 /* Single-line "tape" mode: #words-track's transform is driven entirely by the
-   JS tween in app-core.js (_tween/_tapeTween), which mirrors 
-   actual scrollTape() algorithm — a stop-and-retarget animation at 125ms with
-   ease-in-out-sine. NO CSS transition here: a passive `transition: transform`
-   running at the same time as the JS rAF loop would double-animate every
-   frame's already-eased value, which is what caused the previous rough/laggy
-   feel, not smoothness. */
+   JS tween in app-core.js (_tween/_tapeTween), a stop-and-retarget scrollTape()
+   -style animation at 125ms with ease-in-out-sine. NO CSS transition here: a
+   passive `transition: transform` running at the same time as the JS rAF loop
+   would double-animate every frame's already-eased value, which is what
+   caused the previous rough/laggy feel, not smoothness. */
 #words-track.tape-track {
     flex-wrap: nowrap;
     will-change: transform;
@@ -562,7 +600,7 @@ width: 60%;                       /* full width now */
     flex: 0 0 auto;
 }
 
-/*  meta info boxes */
+/* familiar-style meta info boxes */
 .result-meta-box {
     display: flex;
     flex-direction: column;
@@ -661,38 +699,6 @@ padding: 11px 24px;
     max-width: 100%;
     border: 0;
     margin: 0 auto;
-}
-
-/* Native banner ad slots — SEO content / FAQ placements */
-.native-ad-slot {
-    max-width: 1400px;
-    margin: 0 auto 32px;
-    padding: 0 4px;
-    text-align: center;
-    min-height: 100px;
-    contain: layout;
-    box-sizing: border-box;
-    /* Flexbox centers whatever the ad network injects (div / ins / iframe),
-       fixed-width or not — text-align alone only centers inline content. */
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-.native-ad-slot iframe,
-.native-ad-slot ins,
-.native-ad-slot > div {
-    display: block;
-    width: 100%;
-    max-width: 100%;
-    border: 0;
-    margin: 0 auto;
-}.native-ad-slot .ad-label {
-    font-size: 10px;
-    letter-spacing: 1.5px;
-    color: #555;
-    text-transform: uppercase;
-    margin-bottom: 8px;
-    font-family: 'Roboto Mono', monospace;
 }
 
 @media (max-width: 600px) {
@@ -1263,7 +1269,7 @@ footer a:hover { color: #e2b714; }
 }
 
 /* ── Live WPM shape variants ──────────────────────────────────────
-   Default is "number" — matches no ring/box at all, just
+   Default is "number" — a clean look: no ring/box at all, just
    a big bare themed number. The other four (circle/square/rectangle/
    triangle) are opt-in via the shape picker (edit-mode ◈ handle on
    Live WPM) and reuse the same ring/box structure with a different
