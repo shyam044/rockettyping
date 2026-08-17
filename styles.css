@@ -345,7 +345,7 @@ body.typing-active #words .letter {
     transition: none !important;
 }
 
-#words .word { display: inline-block; margin-right: 20px; position: relative; }
+#words .word { display: inline-block; margin-right: 20px; position: relative; max-width: 100%; overflow-wrap: break-word; }
 /* PERF FIX: promote active word to GPU layer so letter colour changes
    only repaint that compositing layer, not the whole #words container */
 #words .word.active { will-change: transform; }
@@ -364,6 +364,17 @@ body.typing-active #words .letter {
 #words-track.tape-track {
     flex-wrap: nowrap;
     will-change: transform;
+}
+/* Tape mode: words never wrap internally either — they extend the single
+   line, scrolled horizontally via the tape transform. Without this, the
+   new overflow-wrap:break-word above (needed so an unbroken run of
+   characters can move to row 2 in the 2/3-line modes) would also wrap a
+   long word onto multiple internal lines here, breaking tape mode's
+   single-line design. */
+#words-track.tape-track .word {
+    white-space: nowrap;
+    max-width: none;
+    overflow-wrap: normal;
 }
 
 #caret {
