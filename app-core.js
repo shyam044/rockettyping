@@ -109,8 +109,6 @@ let config = {
         let errorTimestamps = [];     // timestamp of every wrong letter keystroke
 
         // === PERFORMANCE FIXES (Issues 5 & 6) ===
-        let cachedRows = [];
-        let rowsCacheInvalid = true;
         // NOTE: caretUpdateRAF removed — replaced by persistent _caretDirty/loop system below
         // PERF: Cache active word DOM element and its letter spans — avoids querySelector on every keystroke
         let activeWordEl = null;
@@ -392,16 +390,20 @@ let config = {
                 });
         }
 
-        /* ── Own (Zen) mode: manual end — Finish button or Escape.
-           Calls the SAME endTest() Time/Words/Quotes use — since Own now
-           reuses the real engine, this reuses the real results screen too,
-           not a separate lookalike one. ── */
+        /* ── Own (Zen) mode: manual end — Finish button, Escape, or Enter
+           (with or without Shift). Calls the SAME endTest() Time/Words/
+           Quotes use — since Own now reuses the real engine, this reuses
+           the real results screen too, not a separate lookalike one. ── */
         var zenFinishBtn = document.getElementById('zen-finish-btn');
         if (zenFinishBtn) zenFinishBtn.addEventListener('click', function(){
             if (config.zenMode && testActive) endTest();
         });
         document.addEventListener('keydown', function(e){
-            if (e.key === 'Escape' && config.zenMode && testActive) endTest();
+            if (!config.zenMode || !testActive) return;
+            if (e.key === 'Escape' || e.key === 'Enter') {
+                e.preventDefault();
+                endTest();
+            }
         });
 
         /* ── Small generic toast, reused for Notes notices/errors ── */
@@ -711,54 +713,31 @@ let config = {
                 activeLetterSpansArr = Array.from(activeWordEl.children);
             }
             scheduleCaretUpdate();
-            rowsCacheInvalid = true;   // ← invalidate cache after full render
         }
 
-        // ==================== PERFORMANCE FIXES ====================
-
-        // Rebuild row cache only when DOM actually changes.
-        // PERF FIX: build a Set for O(1) duplicate detection instead of .some() O(n) scan.
-        // Also expose a rowTopToIndex Map so findIndex calls elsewhere become O(1).
-        let cachedRowsSet = new Set();
-        let rowTopToIndex = new Map();
-
-        function rebuildRowsCache() {
-            if (!rowsCacheInvalid) return;
-
-            cachedRows = [];
-            cachedRowsSet.clear();
-            rowTopToIndex.clear();
-
-            // PERF FIX: Only scan the first 60 children instead of all 80-300.
-            // Row positions stabilise after a few rows — scanning ALL words forces
-            // offsetTop reads on every element, triggering a full layout reflow
-            // that stalls keystrokes for the first 3-4 words in time mode.
-            const children = wordsTrack.children;
-            const scanLimit = Math.min(children.length, 60);
-            for (let i = 0; i < scanLimit; i++) {
-                const top = children[i].offsetTop;
-                const snapped = Math.round(top / 5) * 5;
-                if (!cachedRowsSet.has(snapped)) {
-                    cachedRowsSet.add(snapped);
-                    cachedRows.push(snapped);
-                }
-            }
-            cachedRows.sort((a, b) => a - b);
-            cachedRows.forEach((r, idx) => rowTopToIndex.set(r, idx));
-            rowsCacheInvalid = false;
+        // Shared by getRowHeight() and _updateCaretNow(): an accurate row
+        // height computed straight from CSS (line-height + row-gap) rather
+        // than a hardcoded pixel guess — correct at every breakpoint and
+        // font-size, not just the 36px desktop default.
+        function _computedRowHeightFallback() {
+            const cs = getComputedStyle(wordsTrack);
+            const lh = parseFloat(cs.lineHeight);
+            const gap = parseFloat(cs.rowGap) || parseFloat(cs.gap) || 0;
+            return (!isNaN(lh) && lh > 0) ? (lh + gap) : 60;
         }
-
-        // Single row height in px, derived from real measured rows when available,
-        // falling back to the computed line-height (always accurate regardless of
-        // breakpoint or wrap state) when there's only one row to look at — which
-        // is always true in single-line "tape" mode, where the offsetTop-diff
-        // technique above has nothing to diff against.
+        // Single row height in px, derived directly from CSS (line-height +
+        // row-gap) — a pure font metric that's always correct regardless of
+        // breakpoint, font-size, or word content. Deliberately NOT measured
+        // empirically from word positions (cachedRows[1]-cachedRows[0]):
+        // that approach silently breaks the moment any word in the scanned
+        // range spans multiple internal text-lines (one very long unbroken
+        // "word" — e.g. pasted text with no spaces for a long stretch, or
+        // holding a key in Own mode) — the NEXT real word after it starts
+        // far below all of that word's internal lines, so the measured gap
+        // reflects "several rows tall" rather than one genuine row, and the
+        // scroll math built on that number breaks specifically in that case.
         function getRowHeight() {
-            rebuildRowsCache();
-            if (cachedRows.length >= 2) return cachedRows[1] - cachedRows[0];
-            const lh = parseFloat(getComputedStyle(wordsTrack).lineHeight);
-            if (!isNaN(lh) && lh > 0) return lh;
-            return 60; // safe fallback: 36px font × 1.5 line-height
+            return _computedRowHeightFallback();
         }
 
         // === Smooth scroll/tape animator ==================================
@@ -834,7 +813,6 @@ let config = {
             el.scrollTop = 0;
             _vScrollTween.current = 0;
             wordsTrack.classList.toggle('tape-track', mode === 1);
-            rowsCacheInvalid = true;
             const rowH = getRowHeight();
             if (mode === 1) {
                 el.style.height = rowH + 'px';
@@ -957,29 +935,21 @@ let config = {
                 if (!target) return;
             }
 
-            // === Batched layout reads — touch offsetTop/offsetLeft only once per frame ===
-            // Skip this in tape mode: it exists purely to support the row-scroll
-            // geometry used by the 2/3-line modes below (cachedRows/rowTopToIndex),
-            // which tape mode's branch never reads. Running it anyway forced an
-            // extra synchronous layout reflow (offsetTop on up to 60 elements) on
-            // every keystroke — worst of all on space, since moveToNextWord() marks
-            // the cache invalid on every word completion, so the reflow landed at
-            // the exact moment the space-triggered tween was starting, causing that
-            // specific movement to visibly hitch compared to mid-word letters.
-            if (config.lineMode !== 1) rebuildRowsCache();
-
-            let rowH = 60; // safe fallback: 36px × 1.5 line-height + 6px flex gap
-            if (cachedRows.length >= 2) rowH = cachedRows[1] - cachedRows[0];
+            let rowH = _computedRowHeightFallback();
 
             const wordLeft = activeWord.offsetLeft;
             const wordTop  = activeWord.offsetTop;
             let targetLeft, targetTop, targetW, targetH;
             if (useWordStart) {
                 targetLeft = 0; targetTop = 0; targetW = 0;
-                // An empty div can collapse to 0 height depending on the
-                // browser/font — rowH is a real measured row height (or a
-                // sane computed fallback), always non-zero.
-                targetH = activeWord.offsetHeight || rowH;
+                // Always use the reliable CSS-derived rowH here, never the
+                // empty word's own offsetHeight — an empty element's
+                // measured height isn't reliably exactly 0 in every browser
+                // (can be a tiny nonzero value instead, e.g. 1-2px), which
+                // would produce a collapsed "dot" caret rather than a full
+                // one at the very start of typing and again after a session
+                // ends and a fresh empty word appears.
+                targetH = rowH;
             } else {
                 targetLeft = target.offsetLeft;
                 targetTop  = target.offsetTop;
@@ -1036,15 +1006,35 @@ let config = {
                 // row 3 instead of the view scrolling up to keep it pinned at row 2. `y`
                 // reflects the letter actually being typed, including any wrap within the
                 // word itself, so this is correct for both cases.
+                //
+                // BUG FIX 3: rowH itself (above) used to be measured empirically as the
+                // gap between two consecutive words' offsetTop. That breaks the instant
+                // ANY word spans multiple internal text-lines: the NEXT real word after
+                // it starts far below all of that word's lines, so the "gap" measured
+                // several rows' worth of height, not one — silently corrupting this exact
+                // calculation. rowH is now always derived straight from CSS instead
+                // (line-height + row-gap), which is correct regardless of word content.
                 const currentScrollTop = wordsDiv.scrollTop;
                 const scrollTrigger = (config.lineMode === 2) ? 1 : 2;
                 const visibleRowIdx = Math.round((y - currentScrollTop) / rowH);
                 if (visibleRowIdx >= scrollTrigger) {
                     const scrollTargetTop = Math.max(0, y - rowH);
-                    _vScrollTween.current = currentScrollTop;
-                    _tween(_vScrollTween, scrollTargetTop, 125, function (v) {
-                        wordsDiv.scrollTop = v;
-                    }, _easeInOutSine);
+                    // BUG FIX 4: only (re)start the tween if the target actually
+                    // changed, or nothing is currently animating. The caret stays
+                    // on the SAME row (same y) for many consecutive keystrokes
+                    // while typing across it — every single one of those was
+                    // re-entering this block and calling _tween() again with the
+                    // SAME target. _tween() resets its elapsed-time clock on every
+                    // call regardless of whether the target changed, so the
+                    // animation's ease curve kept restarting from an intermediate
+                    // position instead of ever completing — producing a stalled,
+                    // jittery back-and-forth motion instead of one clean scroll.
+                    if (!_vScrollTween.raf || Math.abs(scrollTargetTop - _vScrollTween.to) >= 0.5) {
+                        _vScrollTween.current = currentScrollTop;
+                        _tween(_vScrollTween, scrollTargetTop, 125, function (v) {
+                            wordsDiv.scrollTop = v;
+                        }, _easeInOutSine);
+                    }
                 }
             }
 
@@ -1333,7 +1323,6 @@ if (!testActive && !testEnded && e.key.length === 1) {
                 currentLetterIndex = 0;
                 extendWordsIfNeeded();
                 scheduleCaretUpdate();
-                rowsCacheInvalid = true;
             } else {
                 if (config.mode === 'words' || config.mode === 'quotes') {
                     endTest();
@@ -1381,7 +1370,6 @@ if (!testActive && !testEnded && e.key.length === 1) {
                 const newZenWords = [''];
                 words = words.concat(newZenWords);
                 wordsTrack.appendChild(_buildWordNodes(newZenWords, wordElsCache));
-                rowsCacheInvalid = true;
                 return;
             }
             if (config.mode !== 'time' && config.mode !== 'words') return;
@@ -1408,12 +1396,10 @@ if (!testActive && !testEnded && e.key.length === 1) {
                     // PERF: append to wordElsCache in the same pass so moveToNextWord()
                     // never needs a live DOM query.
                     wordsTrack.appendChild(_buildWordNodes(newWords, wordElsCache));
-                    rowsCacheInvalid = true;
                 } else {
                     // Time mode: defer DOM work to the next macrotask — never blocks a keystroke
                     setTimeout(function() {
                         wordsTrack.appendChild(_buildWordNodes(newWords, wordElsCache));
-                        rowsCacheInvalid = true;
                     }, 0);
                 }
             }
@@ -2343,7 +2329,6 @@ if (!testActive && !testEnded && e.key.length === 1) {
             if (zenBtnHide) zenBtnHide.classList.remove('show');
 
             renderWords();
-            rowsCacheInvalid = true;   // ← ensure cache is fresh after full reset
         }
         resetTest();
         applyLineMode(config.lineMode);
@@ -2358,9 +2343,10 @@ if (!testActive && !testEnded && e.key.length === 1) {
         // stylesheet switches from media="print" to media="all".
         document.querySelectorAll('link[rel="stylesheet"]').forEach(function(link) {
             link.addEventListener('load', function() {
-                rowsCacheInvalid = true;
-                // Re-measure the real row height now that styles.css has applied
-                // (the height set at page-load time used the 60px fallback estimate).
+                // Re-run layout now that styles.css has applied (font-size/
+                // line-height/gap are all read fresh by getRowHeight() on
+                // each call, so this just needs to re-trigger, not reset
+                // any cache).
                 applyLineMode(config.lineMode);
                 scheduleCaretUpdate();
             });
@@ -2382,7 +2368,6 @@ if (!testActive && !testEnded && e.key.length === 1) {
         // failed), i.e. exactly the swap moment we need to react to.
         if (document.fonts && document.fonts.ready) {
             document.fonts.ready.then(function() {
-                rowsCacheInvalid = true;
                 applyLineMode(config.lineMode);
                 scheduleCaretUpdate();
             });
