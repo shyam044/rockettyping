@@ -297,7 +297,11 @@ body.test-running #live-wpm-display {
 
     user-select: none;
     position: relative;
-    height: 162px;
+    /* 167px = 3 lines (162px) + a small ~5px buffer. Roboto Mono's descenders
+       (p, g, y, etc.) can extend a few px past the line-height box the browser
+       computes for the 3rd/last row; without this buffer, overflow:hidden was
+       clipping the bottom tip of those descenders on the last visible row. */
+    height: 167px;
     overflow: hidden;
 
     transition: opacity 0.25s ease;
@@ -1205,8 +1209,15 @@ footer a:hover { color: #e2b714; }
 #live-wpm-display {
     display: none;
     position: absolute;
-    /* Vertically centered between logo bottom (~155px) and words top (~190px) */
-    top: -25px !important;
+    /* Vertically centered between logo bottom (~155px) and words top (~190px).
+       NOTE: no !important here (on purpose) — an !important stylesheet rule
+       always beats even an inline style, so this used to permanently pin
+       Live WPM's vertical position no matter what the layout-customizer's
+       drag code wrote to style.top, which is why it could be dragged
+       sideways but never up/down. Plain `top` still loses cleanly to the
+       more specific `body.test-running #live-wpm-display` rule below (and
+       to inline styles) exactly as before. */
+    top: -25px;
     /* Horizontally centered under the logo (logo: left:20px, width:120px → center:80px, circle:96px → left:32px) */
     left: 10px;
     z-index: 20;
