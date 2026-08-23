@@ -200,7 +200,7 @@ body::before {
    starts, not just the outer box edge. Live WPM's centered top-of-page spot
    (set below) is unaffected — only the counter's position was wrong. */
 body.test-running #timer {
-    top: 145px;
+    top: 160px;
     left: 20px;
     right: 20px;
     width: auto;
@@ -254,6 +254,7 @@ body.test-running #live-wpm-display {
     border-radius: 50px;
     border: 2px solid rgba(226, 183, 20, 0.25);
     box-shadow: 0 0 20px rgba(226, 183, 20, 0.15);
+      transform: translateY(-30px);
 }
 
 .diff-btn,
@@ -292,7 +293,7 @@ body.test-running #live-wpm-display {
     /* Compress the typing area */
     width: 100%;
     max-width: 1300px;      /* Adjust between 1000–1300px */
-    margin: 190px auto 0;   /* Center horizontally */
+    margin: 170px auto 0;   /* Center horizontally */
 
     user-select: none;
     position: relative;
@@ -345,7 +346,7 @@ body.typing-active #words .letter {
     transition: none !important;
 }
 
-#words .word { display: inline-block; margin-right: 20px; position: relative; max-width: 100%; overflow-wrap: break-word; }
+#words .word { display: inline-block; margin-right: 20px; position: relative; max-width: 100%; overflow-wrap: break-word; align-self: flex-start; }
 /* PERF FIX: promote active word to GPU layer so letter colour changes
    only repaint that compositing layer, not the whole #words container */
 #words .word.active { will-change: transform; }
@@ -1205,7 +1206,7 @@ footer a:hover { color: #e2b714; }
     display: none;
     position: absolute;
     /* Vertically centered between logo bottom (~155px) and words top (~190px) */
-    top: 95px;
+    top: -25px !important;
     /* Horizontally centered under the logo (logo: left:20px, width:120px → center:80px, circle:96px → left:32px) */
     left: 10px;
     z-index: 20;
