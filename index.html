@@ -281,16 +281,24 @@
 
         /* ── 7. Page title — lock height so #words margin never shifts ──────────── */
         #page-title{font-size:15px;line-height:1.4;min-height:21px;max-height:21px;overflow:hidden}
+        /* Kept visible during typing too (see #app #page-title override further
+           down) instead of the site's default body.test-running #page-title{
+           display:none!important} — that only-during-typing collapse was what
+           pushed #words + the keymap up mid-test. Staying visible in both
+           states means "before typing" and "after typing" layouts are now
+           identical, with the title restored rather than removed. */
 
-        /* ── 8. Keymap outer grid — stable from frame 1 ─────────────────────────── */
-        /* Without this, the grid is computed after styles.css loads. Any difference  */
-        /* in computed column widths would shift score badges (CLS source).            */
-        #km-outer-row{display:grid;grid-template-columns:1fr auto 1fr;align-items:flex-end;width:100%}
+        /* ── 8. Keymap outer row — stable from frame 1 ─────────────────────────── */
+        /* Mirrors the flexbox layout further down (also #km-outer-row). Without   */
+        /* this matching, the row would briefly render as a grid then flip to flex */
+        /* at the same specificity/element, once the later <style> block parses.   */
+        #km-outer-row{display:flex;align-items:flex-end;justify-content:flex-start;flex-wrap:wrap;gap:16px;width:100%}
 
-        /* ── 9. Elon badge offset — mirrors styles.css #km-elon-badge rule ─────── */
-        /* styles.css moves this badge 50 px right. Without it here, the badge sits  */
-        /* at 0px on first paint then jumps 50 px when CSS loads → CLS source A.     */
-        #km-elon-badge{transform:translateX(50px)}
+        /* ── 9. Elon badge — no offset needed anymore ────────────────────────────── */
+        /* Musk/Elon spacing is now a real flex `gap` (see #km-scores-panel further */
+        /* down), not a translateX() nudge, so there's nothing to mirror here for   */
+        /* first-paint stability. #km-elon-badge{transform:none!important} below    */
+        /* cancels styles.css's old translateX(50px) rule so it can't reappear.     */
     </style>
 
     <!-- ── Main stylesheets: NON-BLOCKING ─────────────────────────────────────────
@@ -572,9 +580,18 @@
    OUTER ROW — Score Badges + Keymap side by side
 ══════════════════════════════════════════════ */
 #km-outer-row {
-    display: grid;
-    grid-template-columns: 1fr auto 1fr;
-    align-items: flex-end;
+    display: flex;
+    /* Deliberately simple and decoupled: both children are flex:0 0 auto
+       below — neither one grows or shrinks based on the other, so
+       resizing/repositioning one can never shove the other around. A
+       fixed gap keeps them apart; nothing here reacts to content size.
+       align-items:flex-start top-aligns them (matching the reference
+       photo, where the score badges and the keymap box start at the same
+       y-position) — flex-end was bottom-aligning them instead, which
+       pulled the shorter score panel down below the keymap's top edge. */
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: 28px;
     width: 100%;
 }
 
@@ -586,12 +603,16 @@
     flex-direction: row;
     align-items: flex-end;
     justify-content: flex-start;
-    gap: 18px;
+    /* Real gap instead of a translateX() nudge on the Elon badge — a
+       transform shifts pixels without the box actually reserving that
+       space, which is what let it visually bleed into the keymap next
+       to it. A gap is honest layout space; it can never overlap anything. */
+    gap: 10px;
     padding-bottom: 8px;
-    padding-left: 70px;
-    flex-shrink: 0;
-    justify-self: start;
+    padding-left: 20px;
+    flex: 0 0 auto;
     transition: opacity 0.35s ease, transform 0.35s ease;
+  transform: translate(80px, 50px);
 }
 
 #km-scores-panel.km-scores-hidden {
@@ -776,15 +797,9 @@
     animation: musk-gain-fly 1.32s cubic-bezier(0.22,1,0.36,1) forwards;
 }
 
-/* ── Toggle Row ── */
+/* ── Toggle Row (now lives inside #km-header, centered — see below) ── */
 #km-toggle-row {
-    display: flex;
-    justify-content: center;
-    width: 100%;
-    margin-top: 6px;
-    margin-bottom: 4px;
-    position: relative;
-    z-index: 5;
+    display: inline-flex;
     transition: opacity 0.25s ease, visibility 0.25s ease;
 }
 #km-toggle-row.km-toggle-hidden {
@@ -795,16 +810,16 @@
 #km-toggle-btn {
     display: inline-flex;
     align-items: center;
-    gap: 9px;
+    gap: 7px;
     background: rgba(10,10,35,0.7);
     border: 1.5px solid rgba(226,183,20,0.3);
     color: #e2b714;
-    padding: 7px 20px;
-    border-radius: 50px;
+    padding: 5px 14px;
+    border-radius: 20px;
     font-family: 'Roboto Mono', monospace;
-    font-size: 13px;
+    font-size: 11px;
     font-weight: 700;
-    letter-spacing: 1.2px;
+    letter-spacing: 0.8px;
     cursor: pointer;
     transition: all 0.2s ease;
     box-shadow: 0 0 12px rgba(226,183,20,0.1);
@@ -832,59 +847,123 @@
     color: #646669;
 }
 
+/* ── Page title: hide during typing (like the other header elements),
+   but WITHOUT the layout shift ──────────────────────────────────
+   styles.css has "body.test-running #page-title{display:none!important}"
+   (part of a batch rule that also hides several position:absolute/fixed
+   header elements, which don't affect layout either way since they're
+   out of flow). #page-title is the one exception — it's a normal-flow
+   element, so display:none collapses its ~29px and pushes #words + the
+   keymap up the moment a test starts.
+   Fix: override that one rule to use visibility:hidden instead of
+   display:none. Visually identical (title disappears during typing,
+   reappears after — matching every other header element) but the box
+   still reserves its space, so nothing below it ever shifts.
+   #app #page-title has 2 ID selectors vs. styles.css's 1, so it wins on
+   specificity regardless of stylesheet load order. */
+#app #page-title {
+    display: block !important;
+}
+body.test-running #app #page-title {
+    visibility: hidden !important;
+    opacity: 0 !important;
+}
+
+/* Musk/Elon spacing is a real flex `gap` now (see #km-scores-panel), not a
+   transform — this cancels styles.css's old #km-elon-badge{transform:
+   translateX(50px)} so it can't reintroduce the paint-only nudge that was
+   bleeding into the keymap next to it. */
+#km-elon-badge {
+    transform: none !important;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   SIZE TUNING — change ONLY these 5 numbers to resize the whole
+   keymap + virtual hands (keyboard, fingers, palms all scale
+   together, proportionally, from these):
+     --km-unit   = width of one keyboard key-unit (px)
+     --km-key-h  = height of one key row (px)
+     --km-gap    = gap between keys (px)
+     --km-stage-w/--km-stage-h = native drawing-board size the
+        keyboard+hands are built at (JS scales this down/up to fit
+        whatever width the box actually has on screen — see
+        STAGE_W/STAGE_H/UNIT/KEY_H/GAP right at the top of the
+        keymap <script> further down for the JS-side numbers that
+        must match these).
+   Making the stage bigger relative to the container just means it
+   gets scaled down further by JS — so if you only want it visually
+   SMALLER on screen without changing crispness, shrinking UNIT/
+   KEY_H (and STAGE_W/STAGE_H to match) is the right lever, not CSS.
+   ══════════════════════════════════════════════════════════════ */
+:root{
+    --km-stage-w: 610px;
+    --km-stage-h: 270px;
+    --km-mouse-w: 34px;
+    --km-gap: 12px;
+    /* Full content width = keyboard/hands stage + gap + mouse. #km-wrap is
+       capped at this (not just --km-stage-w) so the mouse — and the keys
+       on both edges of the keyboard — always have room and never get
+       clipped by #km-scene's overflow:hidden. */
+    --km-total-w: calc(var(--km-stage-w) + var(--km-gap) + var(--km-mouse-w));
+}
+
 /* ── Scene Container ── */
 #km-wrap {
+    width: min(var(--km-total-w), 100%);
+    /* Decoupled from #km-scores-panel — flex:0 0 auto means its SIZE
+       neither grows nor shrinks based on the score panel (or vice versa);
+       it always stays at its own natural width from --km-total-w. The
+       auto side-margins are a POSITION-only nudge: they soak up whatever
+       space is left over in #km-outer-row after the score panel + gap,
+       centering the keymap within that leftover space (shifting it right
+       of where a plain flex-start would put it) — still nothing to do
+       with either element's size. In the ≤1024px stacked layout
+       (responsive.css), the parent's align-items:center takes over. */
+    flex: 0 0 auto;
+    box-sizing: border-box;
     overflow: visible;
     display: flex;
     flex-direction: column;
     align-items: center;
+    transform: translateX(55px);
 }
 #km-scene {
-    display: inline-flex;
-    align-items: flex-end;
-    gap: 0;
-    padding: 10px 10px 8px;
+    width: 100%;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 8px 8px 6px;
     background: rgba(0,0,0,0.28);
     border-radius: 16px;
     border: 1px solid rgba(226,183,20,0.1);
-    overflow: visible;
-    /* CLS FIX: reserve height so buildKeyboard() filling #km-kb doesn't
-       cause a layout shift. ~178px = actual keyboard+sound-btn height
-       (sound btn ~33px incl. margin + 5 key rows ~142px + scene padding).
-       Previously 220px, which left a visible empty gap above the
-       bottom-aligned content — trimmed to match the real content height. */
-    min-height: 178px;
-    max-height: 178px;
-    transition: max-height 0.45s cubic-bezier(0.34,1.56,0.64,1),
-                opacity 0.35s ease,
-                padding 0.35s ease,
-                margin 0.35s ease;
-}
-#km-scene.km-hidden {
-    /* min-height:0 overrides the 220px reserve so the scene can actually     */
-    /* collapse. CSS spec: if min-height > max-height, min-height wins — so   */
-    /* without this, max-height:0!important had zero effect and the keyboard  */
-    /* never hid, leaving a 220px ghost block (visual bug + #app height CLS). */
-    min-height: 0 !important;
-    max-height: 0 !important;
-    opacity: 0;
-    padding-top: 0;
-    padding-bottom: 0;
     overflow: hidden;
-    pointer-events: none;
-    border-color: transparent;
+    /* #km-scene itself is now ALWAYS shown (never collapsed) — it hosts
+       #km-header, which must stay reachable so the KEY MAP toggle can be
+       switched back on. Only #km-collapsible (keyboard/hands/mouse) below
+       collapses when keymap is OFF; see .km-hidden on that element. */
 }
 
-
-/* ── Keyboard + Mouse Column ── */
-#km-kb-outer {
+/* ── Header: KEY MAP toggle (centered) + SOUND toggle (top-right) ──
+   Both toggles now live inside the box, at the same level, matching the
+   requested layout. #km-header is always visible; #km-toggle-row (just
+   the KEY MAP button) can independently fade out during an active typing
+   test via the existing declutter logic in app-core.js — visibility:hidden
+   keeps its layout space reserved so nothing shifts when it does. */
+#km-header {
     position: relative;
+    width: 100%;
     display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    margin-left: 6px;
+    align-items: center;
+    justify-content: center;
+    min-height: 30px;
+    margin-bottom: 8px;
 }
 #km-sound-btn {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
     display: inline-flex;
     align-items: center;
     gap: 6px;
@@ -898,36 +977,73 @@
     font-weight: 700;
     letter-spacing: 0.5px;
     color: #9aa0a8;
-    margin-bottom: 6px;
     transition: background 0.2s, border-color 0.2s;
 }
 #km-sound-btn:hover { background: rgba(255,255,255,0.09); border-color: rgba(255,255,255,0.22); }
 #km-sound-icon { font-size: 13px; line-height: 1; }
+
+/* ── Collapsible: Keyboard/Hands + Mouse (hidden when keymap is OFF) ── */
+#km-collapsible {
+    width: 100%;
+    box-sizing: border-box;
+    overflow: hidden;
+    /* CLS FIX: the stage keeps its native size the instant the CSS below
+       applies (before JS ever runs), and the JS scaler sets an explicit
+       pixel height on #km-stage-outer immediately on load — so the real
+       height is known and reserved well before buildKeyboard() (deferred
+       to idle time) actually fills in the keys/hands/mouse. Because the
+       box now hugs the stage tightly (no leftover reserve below the
+       hands), there's no unwanted empty space under the keyboard. */
+    max-height: none !important;
+    transition: max-height 0.35s ease, opacity 0.35s ease, margin 0.35s ease;
+}
+#km-collapsible.km-hidden {
+    max-height: 0 !important;
+    opacity: 0;
+    margin: 0 !important;
+    overflow: hidden;
+    pointer-events: none;
+}
+
 #km-kb-col {
-    flex-shrink: 0;
     display: flex;
     align-items: flex-end;
-    gap: 18px;
-    padding-bottom: 2px;
+    justify-content: center;
+    gap: var(--km-gap);
+    width: 100%;
+}
+
+/* ── Scaled stage: keyboard + virtual hands ──
+   #km-stage-outer is fluid (fills its share of #km-kb-col, capped at the
+   keyboard's native width). JS scales #km-stage-scaler to make the native
+   stage exactly fill that fluid width, and sets an explicit pixel height
+   on the outer element to match (transform doesn't affect layout size on
+   its own) — the same technique used by virtual-typing-hands.html. */
+#km-stage-outer {
+    width: 100%;
+    max-width: var(--km-stage-w);
+    overflow: hidden;
+    flex: 1 1 auto;
+    min-width: 0;
+}
+#km-stage-scaler {
+    transform-origin: top left;
 }
 #km-kb {
-    flex-shrink: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 3px;
+    position: relative;
+    width: var(--km-stage-w);
+    height: var(--km-stage-h);
 }
-.km-row { display: flex; gap: 3px; }
 
-/* Base key */
+/* Base key (absolutely positioned by JS via inline left/top/width/height) */
 .km-key {
-    height: 26px;
-    min-width: 26px;
+    position: absolute;
     border-radius: 5px;
     display: flex;
     align-items: center;
     justify-content: center;
     font-family: 'Roboto Mono', monospace;
-    font-size: 9.5px;
+    font-size: 11px;
     font-weight: 700;
     color: #5a5f6a;
     background: rgba(255,255,255,0.04);
@@ -937,15 +1053,15 @@
                 transform 0.07s, box-shadow 0.07s;
     letter-spacing: 0.3px;
     box-shadow: inset 0 -2px 0 rgba(0,0,0,0.4);
-    position: relative;
     overflow: hidden;
     cursor: default;
+    z-index: 2;
 }
 /* Left-hand keys */
 .km-key.km-l { border-color: rgba(226,183,20,0.18); color: #7a7055; }
 /* Right-hand keys */
 .km-key.km-r { border-color: rgba(0,230,204,0.16); color: #406065; }
-/* Both hands */
+/* Both hands (space) */
 .km-key.km-b { border-color: rgba(150,120,210,0.22); color: #6a5888; }
 
 /* Press LEFT */
@@ -983,14 +1099,32 @@
 }
 .km-key.km-pl::after, .km-key.km-pr::after, .km-key.km-pb::after { opacity: 1; }
 
+/* ── Virtual Typing Hands (SVG, drawn over the keyboard) ── */
+#km-hands { position: absolute; top: 0; left: 0; width: var(--km-stage-w); height: var(--km-stage-h); pointer-events: none; z-index: 1; }
+.km-finger { stroke-linejoin: round; transition: fill 0.1s ease, stroke 0.1s ease, filter 0.1s ease; }
+.km-finger.km-fl { fill: rgba(226,183,20,0.08); stroke: rgba(226,183,20,0.4); stroke-width: 1.4; }
+.km-finger.km-fr { fill: rgba(0,230,204,0.08); stroke: rgba(0,230,204,0.35); stroke-width: 1.4; }
+.km-finger.km-fb { fill: rgba(150,120,210,0.1); stroke: rgba(150,120,210,0.45); stroke-width: 1.4; }
+.km-finger.km-fl.km-active { fill: rgba(226,183,20,0.55); stroke: #e2b714; stroke-width: 1.5; filter: drop-shadow(0 0 6px rgba(226,183,20,0.7)); }
+.km-finger.km-fr.km-active { fill: rgba(0,230,204,0.5); stroke: #00e6cc; stroke-width: 1.5; filter: drop-shadow(0 0 6px rgba(0,230,204,0.7)); }
+.km-finger.km-fb.km-active { fill: rgba(130,100,220,0.55); stroke: #9b72cf; stroke-width: 1.5; filter: drop-shadow(0 0 6px rgba(130,100,220,0.6)); }
+.km-crease { fill: none; stroke: rgba(120,136,156,0.55); stroke-width: 0.8; opacity: 0.5; }
+.km-crease.km-active { opacity: 0.9; stroke: rgba(255,255,255,0.85); }
+.km-palm { stroke-width: 1.4; }
+.km-palm.km-fl { fill: rgba(226,183,20,0.07); stroke: rgba(226,183,20,0.35); }
+.km-palm.km-fr { fill: rgba(0,230,204,0.07); stroke: rgba(0,230,204,0.32); }
+
 /* ── Mouse ── */
 #km-mouse-wrap {
-    flex-shrink: 0;
-    width: 48px;
-    padding-bottom: 4px;
+    /* flex:0 0 <width> — never grows, never shrinks, so it can't get
+       squeezed/clipped when space is tight (the keyboard stage is the
+       one that absorbs width changes, via its own JS scaling). */
+    flex: 0 0 var(--km-mouse-w);
+    width: var(--km-mouse-w);
+    padding-bottom: 2px;
 }
 #km-mouse-svg {
-    width: 48px;
+    width: 100%;
     height: auto;
     display: block;
     filter: drop-shadow(0 4px 10px rgba(0,0,0,0.5));
@@ -1005,37 +1139,38 @@
     filter: drop-shadow(0 0 5px #00e6cc);
 }
 #km-mouse-svg.km-mc #km-mwheel { fill: #9b72cf !important; }
-/* Label under mouse */
 #km-mouse-wrap p {
     text-align: center;
     font-family: 'Roboto Mono', monospace;
-    font-size: 9px;
+    font-size: 8px;
     color: #444;
-    margin: 4px 0 0;
-    letter-spacing: 0.8px;
-}
-/* Click ripple on mouse */
-@keyframes km-mclick {
-    0%   { opacity: 0.8; transform: scale(0); }
-    100% { opacity: 0;   transform: scale(2.4); }
-}
-.km-mripple {
-    position: absolute;
-    width: 20px; height: 20px;
-    border-radius: 50%;
-    background: rgba(226,183,20,0.5);
-    pointer-events: none;
-    animation: km-mclick 0.35s ease-out forwards;
+    margin: 3px 0 0;
+    letter-spacing: 0.6px;
 }
 
-/* ── Responsive ── */
+/* ── Responsive ──
+   The scaled stage already shrinks fluidly with its container (JS handles
+   this on load + resize) — only the mouse (not part of the JS-scaled
+   stage) needs explicit breakpoints. --km-mouse-w / --km-gap are updated
+   here too so #km-wrap's --km-total-w cap (stage + gap + mouse) stays
+   accurate at every screen size and nothing gets clipped. */
 @media (max-width: 750px) {
-    .km-key { height: 22px; min-width: 22px; font-size: 7.5px; }
-    #km-mouse-wrap { width: 40px; }
-    #km-mouse-svg { width: 40px; }
+    :root{ --km-mouse-w: 28px; }
 }
 @media (max-width: 520px) {
-    .km-key { height: 18px; min-width: 18px; font-size: 6.5px; border-radius: 3px; }
+    :root{ --km-mouse-w: 22px; --km-gap: 8px; }
+    #km-mouse-wrap p { display: none; }
+}
+
+/* ── Mobile/tablet stacking order ──
+   #km-outer-row switches to a stacked flex column at this same ≤1024px
+   breakpoint (see responsive.css). In the DOM, #km-scores-panel comes
+   before #km-wrap (needed for the desktop grid), but the requested stacked
+   reading order is: typing text (already above #km-outer-row) → keymap →
+   score panel. `order` reorders them visually without touching the DOM. */
+@media (max-width: 1024px) {
+    #km-wrap { order: 1; }
+    #km-scores-panel { order: 2; }
 }
 </style>
     <!-- result-ad loads via the safe iframe-based loadNativeBannerAd()
@@ -1323,13 +1458,13 @@ footer a:hover{color:var(--rt-main) !important;}
     <img src="images/rocket-typing-logo.webp" alt="Rocket Typing" width="120" height="120" style="width:120px; margin-bottom:5px;" fetchpriority="high" loading="eager" decoding="sync" />
     
     <div id="play-game">
-        <button onclick="window.location.href='game.html'" class="play-game-btn">
+        <button onclick="window.location.href='/game'" class="play-game-btn">
             GAME
         </button>
-        <button onclick="window.location.href='coding.html'" class="learn-type-btn">
+        <button onclick="window.location.href='/coding'" class="learn-type-btn">
             CODE
         </button>
-        <button onclick="window.location.href='learn.html'" class="learn-type-btn">
+        <button onclick="window.location.href='/learn'" class="learn-type-btn">
             LEARN
         </button>
     </div>
@@ -1481,62 +1616,66 @@ footer a:hover{color:var(--rt-main) !important;}
         </div>
     </div>
 
-    <!-- ── RIGHT: Keymap box ── -->
+    <!-- ── RIGHT: Keymap + Virtual Typing Hands box ── -->
     <div id="km-wrap">
-    <!-- Toggle Button -->
-    <div id="km-toggle-row">
-        <button id="km-toggle-btn" onclick="kmToggle()" title="Toggle keymap visualization">
-            <span>⌨️</span>
-            <span>KEY MAP</span>
-            <span id="km-pill" class="km-pill on">ON</span>
-        </button>
-    </div>
-
-    <!-- Scene: Character + Keyboard + Mouse -->
+    <!-- Scene: header (KEY MAP toggle centered + SOUND toggle) is always
+         visible so the keymap can be switched back on; only the keyboard/
+         hands/mouse content below collapses when toggled off. -->
     <div id="km-scene">
-
-        <!-- ── Keyboard + Mouse ── -->
-        <div id="km-kb-outer">
+        <div id="km-header">
+            <div id="km-toggle-row">
+                <button id="km-toggle-btn" onclick="kmToggle()" title="Toggle keymap visualization">
+                    <span>⌨️</span>
+                    <span>KEY MAP</span>
+                    <span id="km-pill" class="km-pill on">ON</span>
+                </button>
+            </div>
             <button id="km-sound-btn" onclick="kmSoundToggle()" title="Toggle keyboard sound">
                 <span id="km-sound-icon">🔇</span>
                 <span> SOUND </span>
                 <span id="km-sound-pill" class="km-pill off">OFF</span>
             </button>
-        <div id="km-kb-col">
-            <div id="km-kb"><!-- Keys injected by JS --></div>
+        </div><!-- #km-header -->
 
-            <!-- Mouse SVG -->
-            <div id="km-mouse-wrap">
-                <svg id="km-mouse-svg" viewBox="0 0 70 110" xmlns="http://www.w3.org/2000/svg">
-                    <!-- Mouse body -->
-                    <path d="M 8 44 Q 8 12 35 8 Q 62 12 62 44 L 62 86 Q 62 104 35 104 Q 8 104 8 86 Z"
-                          fill="#1A2230" stroke="#2e3f52" stroke-width="1.5"/>
-                    <!-- Left button -->
-                    <path id="km-mlbtn" d="M 9 42 Q 9 14 34 10 L 34 52 L 9 52 Z"
-                          fill="#21293A" stroke="#2e3f52" stroke-width="1.2" class="km-mbtn"/>
-                    <!-- Right button -->
-                    <path id="km-mrbtn" d="M 61 42 Q 61 14 36 10 L 36 52 L 61 52 Z"
-                          fill="#21293A" stroke="#2e3f52" stroke-width="1.2" class="km-mbtn"/>
-                    <!-- Divider line -->
-                    <line x1="35" y1="10" x2="35" y2="52" stroke="#2e3f52" stroke-width="1.5"/>
-                    <!-- Scroll wheel -->
-                    <rect id="km-mwheel" x="30" y="20" width="10" height="20" rx="5" fill="#2e3f52"/>
-                    <!-- Wheel shine -->
-                    <rect x="31" y="21" width="4" height="18" rx="2" fill="rgba(255,255,255,0.07)"/>
-                    <!-- Bottom taper -->
-                    <ellipse cx="35" cy="86" rx="24" ry="8" fill="#16202f" opacity="0.5"/>
-                    <!-- Left click dot indicator -->
-                    <circle id="km-lclick-dot" cx="22" cy="34" r="4" fill="#e2b714" opacity="0"/>
-                    <!-- Right click dot indicator -->
-                    <circle id="km-rclick-dot" cx="48" cy="34" r="4" fill="#00e6cc" opacity="0"/>
-                    <!-- Mouse label -->
-                    <text x="35" y="97" text-anchor="middle" font-size="7" fill="#3a4a5a" font-family="Roboto Mono,monospace" letter-spacing="0.5">MOUSE</text>
-                </svg>
-                <p>Left / Right click</p>
-            </div>
-        </div><!-- #km-kb-col -->
-        </div><!-- #km-kb-outer -->
+        <div id="km-collapsible">
+            <div id="km-kb-col">
+                <div id="km-stage-outer">
+                    <div id="km-stage-scaler">
+                        <div id="km-kb"><!-- Keys + SVG hands injected by JS --></div>
+                    </div>
+                </div>
 
+                <!-- Mouse SVG -->
+                <div id="km-mouse-wrap">
+                    <svg id="km-mouse-svg" viewBox="0 0 70 110" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Mouse body -->
+                        <path d="M 8 44 Q 8 12 35 8 Q 62 12 62 44 L 62 86 Q 62 104 35 104 Q 8 104 8 86 Z"
+                              fill="#1A2230" stroke="#2e3f52" stroke-width="1.5"/>
+                        <!-- Left button -->
+                        <path id="km-mlbtn" d="M 9 42 Q 9 14 34 10 L 34 52 L 9 52 Z"
+                              fill="#21293A" stroke="#2e3f52" stroke-width="1.2" class="km-mbtn"/>
+                        <!-- Right button -->
+                        <path id="km-mrbtn" d="M 61 42 Q 61 14 36 10 L 36 52 L 61 52 Z"
+                              fill="#21293A" stroke="#2e3f52" stroke-width="1.2" class="km-mbtn"/>
+                        <!-- Divider line -->
+                        <line x1="35" y1="10" x2="35" y2="52" stroke="#2e3f52" stroke-width="1.5"/>
+                        <!-- Scroll wheel -->
+                        <rect id="km-mwheel" x="30" y="20" width="10" height="20" rx="5" fill="#2e3f52"/>
+                        <!-- Wheel shine -->
+                        <rect x="31" y="21" width="4" height="18" rx="2" fill="rgba(255,255,255,0.07)"/>
+                        <!-- Bottom taper -->
+                        <ellipse cx="35" cy="86" rx="24" ry="8" fill="#16202f" opacity="0.5"/>
+                        <!-- Left click dot indicator -->
+                        <circle id="km-lclick-dot" cx="22" cy="34" r="4" fill="#e2b714" opacity="0"/>
+                        <!-- Right click dot indicator -->
+                        <circle id="km-rclick-dot" cx="48" cy="34" r="4" fill="#00e6cc" opacity="0"/>
+                        <!-- Mouse label -->
+                        <text x="35" y="97" text-anchor="middle" font-size="7" fill="#3a4a5a" font-family="Roboto Mono,monospace" letter-spacing="0.5">MOUSE</text>
+                    </svg>
+                    <p>Left / Right click</p>
+                </div>
+            </div><!-- #km-kb-col -->
+        </div><!-- #km-collapsible -->
     </div><!-- #km-scene -->
 </div><!-- #km-wrap -->
 
@@ -2395,7 +2534,7 @@ window.deleteUser = deleteUser;
             return window._fragmentsLoaded[url];
         }
         function ensureProfileModalLoaded() {
-            return loadFragment('profile.html');
+            return loadFragment('/profile');
         }
         function ensureLeaderboardModalLoaded() {
             var isFirstLoad = !window._fragmentsLoaded['leaderboard.html'];
@@ -2490,7 +2629,7 @@ window.deleteUser = deleteUser;
         })();
     </script>
     <script src="vocabulary.js?v=3"></script>
-    <script src="app-core.js?v=2"></script>
+    <script src="app-core.js?v=1"></script>
     <script>
 (function() {
     const isSunday = new Date().getDay() === 0;
@@ -2599,81 +2738,301 @@ initCountryDrop('idx');
 (function(){
 'use strict';
 
+/* ══════════════════════════════════════════════════════════════
+   SIZE TUNING (JS side — must match the CSS custom properties
+   --km-stage-w / --km-stage-h near "SIZE TUNING" in the <style>
+   block above):
+     UNIT / KEY_H / GAP   = one keyboard key's width/height/gap (px)
+     STAGE_W / STAGE_H    = native drawing-board size (px) — keep in
+                             sync with --km-stage-w/--km-stage-h
+   Everything else (finger length, palm size, thumb position, etc.)
+   is derived from these via HAND_SCALE = UNIT / 54 (54 was the size
+   the hand-drawing numbers below were originally tuned at), so the
+   whole keyboard + hands resizes proportionally from just these 5
+   numbers — no other constant below needs to change.
+   ══════════════════════════════════════════════════════════════ */
+var UNIT=38, KEY_H=32, GAP=3, STAGE_W=610, STAGE_H=270;
+var HAND_SCALE = UNIT/54;
+function unitW(n){ return n*UNIT-GAP; }
+
 /* ── Keyboard Layout Definition ──────────────────────────────────
-   [displayLabel, keyCode, widthMultiplier, hand(L/R/B)]
+   [displayLabel, keyCode, widthMultiplier, hand(l/r/b)] per row.
+   Same physical key set + geometry approach as the standalone
+   virtual-typing-hands demo, but keyed by real KeyboardEvent.code so
+   it's driven directly by the user's actual keystrokes (no separate
+   mock input box, prompt, or stats — just the keymap + hands).
 ───────────────────────────────────────────────────────────────── */
-var KB_LAYOUT = [
-    [ // Row 0 — Number row
-        ['`','Backquote',1,'L'],['1','Digit1',1,'L'],['2','Digit2',1,'L'],['3','Digit3',1,'L'],
-        ['4','Digit4',1,'L'],['5','Digit5',1,'L'],['6','Digit6',1,'R'],['7','Digit7',1,'R'],
-        ['8','Digit8',1,'R'],['9','Digit9',1,'R'],['0','Digit0',1,'R'],['-','Minus',1,'R'],
-        ['=','Equal',1,'R'],['⌫','Backspace',2,'R']
-    ],
-    [ // Row 1 — QWERTY
-        ['Tab','Tab',1.5,'L'],['Q','KeyQ',1,'L'],['W','KeyW',1,'L'],['E','KeyE',1,'L'],
-        ['R','KeyR',1,'L'],['T','KeyT',1,'L'],['Y','KeyY',1,'R'],['U','KeyU',1,'R'],
-        ['I','KeyI',1,'R'],['O','KeyO',1,'R'],['P','KeyP',1,'R'],['[','BracketLeft',1,'R'],
-        [']','BracketRight',1,'R'],['\\','Backslash',1.5,'R']
-    ],
-    [ // Row 2 — Home row
-        ['Caps','CapsLock',1.8,'L'],['A','KeyA',1,'L'],['S','KeyS',1,'L'],['D','KeyD',1,'L'],
-        ['F','KeyF',1,'L'],['G','KeyG',1,'L'],['H','KeyH',1,'R'],['J','KeyJ',1,'R'],
-        ['K','KeyK',1,'R'],['L','KeyL',1,'R'],[';','Semicolon',1,'R'],["'","Quote",1,'R'],
-        ['↵','Enter',2.3,'R']
-    ],
-    [ // Row 3 — Bottom
-        ['⇧','ShiftLeft',2.3,'L'],['Z','KeyZ',1,'L'],['X','KeyX',1,'L'],['C','KeyC',1,'L'],
-        ['V','KeyV',1,'L'],['B','KeyB',1,'L'],['N','KeyN',1,'R'],['M','KeyM',1,'R'],
-        [',','Comma',1,'R'],['.','Period',1,'R'],['/','Slash',1,'R'],['⇧','ShiftRight',2.7,'R']
-    ],
-    [ // Row 4 — Space row
-        ['Ctrl','ControlLeft',1.5,'L'],['⊞','MetaLeft',1.3,'L'],['Alt','AltLeft',1.3,'L'],
-        ['Space','Space',6.2,'B'],
-        ['Alt','AltRight',1.3,'R'],['Ctrl','ControlRight',1.5,'R']
-    ]
+var ROWS = [
+    { keys: [
+        ['`','Backquote',1,'l'],['1','Digit1',1,'l'],['2','Digit2',1,'l'],['3','Digit3',1,'l'],
+        ['4','Digit4',1,'l'],['5','Digit5',1,'l'],['6','Digit6',1,'r'],['7','Digit7',1,'r'],
+        ['8','Digit8',1,'r'],['9','Digit9',1,'r'],['0','Digit0',1,'r'],['-','Minus',1,'r'],
+        ['=','Equal',1,'r'],['⌫','Backspace',2,'r']
+    ]},
+    { keys: [
+        ['Tab','Tab',1.5,'l'],['Q','KeyQ',1,'l'],['W','KeyW',1,'l'],['E','KeyE',1,'l'],
+        ['R','KeyR',1,'l'],['T','KeyT',1,'l'],['Y','KeyY',1,'r'],['U','KeyU',1,'r'],
+        ['I','KeyI',1,'r'],['O','KeyO',1,'r'],['P','KeyP',1,'r'],['[','BracketLeft',1,'r'],
+        [']','BracketRight',1,'r'],['\\','Backslash',1.5,'r']
+    ]},
+    { keys: [
+        ['Caps','CapsLock',1.8,'l'],['A','KeyA',1,'l'],['S','KeyS',1,'l'],['D','KeyD',1,'l'],
+        ['F','KeyF',1,'l'],['G','KeyG',1,'l'],['H','KeyH',1,'r'],['J','KeyJ',1,'r'],
+        ['K','KeyK',1,'r'],['L','KeyL',1,'r'],[';','Semicolon',1,'r'],["'",'Quote',1,'r'],
+        ['↵','Enter',2.3,'r']
+    ]},
+    { keys: [
+        ['⇧','ShiftLeft',2.3,'l'],['Z','KeyZ',1,'l'],['X','KeyX',1,'l'],['C','KeyC',1,'l'],
+        ['V','KeyV',1,'l'],['B','KeyB',1,'l'],['N','KeyN',1,'r'],['M','KeyM',1,'r'],
+        [',','Comma',1,'r'],['.','Period',1,'r'],['/','Slash',1,'r'],['⇧','ShiftRight',2.7,'r']
+    ]},
+    { keys: [
+        ['Ctrl','ControlLeft',1.5,'l'],['⊞','MetaLeft',1.3,'l'],['Alt','AltLeft',1.3,'l'],
+        ['Space','Space',6.2,'b'],
+        ['Alt','AltRight',1.3,'r'],['Ctrl','ControlRight',1.5,'r']
+    ]}
 ];
 
-/* ── State ──────────────────────────────────────────────────── */
-var keymapOn = true;
-var UNIT  = 26; // base key width (px)
-var GAP   = 3;  // gap between keys (px)
+/* Which finger presses each physical key (standard touch-typing map).
+   Ctrl/Win/Alt aren't part of the touch-typing finger map (no fixed
+   target finger) — they still highlight on press, just without a
+   finger animation, same as the rest of the keyboard's unmapped keys. */
+var fingerOfCode = {
+    Backquote:'LP', Digit1:'LP', KeyQ:'LP', KeyA:'LP', KeyZ:'LP', Tab:'LP', CapsLock:'LP', ShiftLeft:'LP',
+    Digit2:'LR', KeyW:'LR', KeyS:'LR', KeyX:'LR',
+    Digit3:'LM', KeyE:'LM', KeyD:'LM', KeyC:'LM',
+    Digit4:'LI', KeyR:'LI', KeyF:'LI', KeyV:'LI', Digit5:'LI', KeyT:'LI', KeyG:'LI', KeyB:'LI',
+    Digit6:'RI', KeyY:'RI', KeyH:'RI', KeyN:'RI', Digit7:'RI', KeyU:'RI', KeyJ:'RI', KeyM:'RI',
+    Digit8:'RM', KeyI:'RM', KeyK:'RM', Comma:'RM',
+    Digit9:'RR', KeyO:'RR', KeyL:'RR', Period:'RR',
+    Digit0:'RP', KeyP:'RP', Semicolon:'RP', Quote:'RP', Minus:'RP', Equal:'RP',
+    BracketLeft:'RP', BracketRight:'RP', Backslash:'RP', Enter:'RP', ShiftRight:'RP', Backspace:'RP', Slash:'RP',
+    Space:'TR'
+};
+var homeKey       = { LP:'KeyA', LR:'KeyS', LM:'KeyD', LI:'KeyF', RI:'KeyJ', RM:'KeyK', RR:'KeyL', RP:'Semicolon', TR:'Space' };
+var handOfFinger  = { LP:'l', LR:'l', LM:'l', LI:'l', RI:'r', RM:'r', RR:'r', RP:'r', TL:'b', TR:'b' };
+var fingerIds     = ['LP','LR','LM','LI','RI','RM','RR','RP'];
+/* Original (UNIT=54-tuned) finger widths & length offsets — scaled by
+   HAND_SCALE at the point of use in buildHands(), so they track UNIT. */
+var fingerWidthsBase = { LP:{base:17,tip:14}, LR:{base:20,tip:17}, LM:{base:22,tip:18}, LI:{base:20,tip:17},
+                          RI:{base:20,tip:17}, RM:{base:22,tip:18}, RR:{base:20,tip:17}, RP:{base:17,tip:14} };
+var lengthBonusBase = { LP:-45, LR:0, LM:15, LI:-10, RI:-10, RM:15, RR:0, RP:-45 };
+var CONVERGE = 0.1;
 
-/* ── Build Keyboard ─────────────────────────────────────────── */
+var keymapOn = true;
+var kbBuilt  = false;
+var keyPos   = {};
+var fingers  = {};
+var NS = 'http://www.w3.org/2000/svg';
+function svgEl(tag, attrs){
+    var e = document.createElementNS(NS, tag);
+    for (var k in attrs) e.setAttribute(k, attrs[k]);
+    return e;
+}
+
+/* ── Finger / thumb path generators (same geometry math as the
+   virtual-typing-hands prototype, parameterized on live key positions;
+   every literal pixel constant is multiplied by HAND_SCALE so the whole
+   hand resizes in lockstep with UNIT/KEY_H above). ── */
+function fingerPath(bx,by,tx,ty,baseW,tipW,bend){
+    bend = bend || 0;
+    var dx=tx-bx, dy=ty-by, len=Math.hypot(dx,dy)||1, ux=dx/len, uy=dy/len, px=-uy, py=ux, bxo=px*bend, byo=py*bend;
+    var b1x=bx+px*baseW/2, b1y=by+py*baseW/2, b2x=bx-px*baseW/2, b2y=by-py*baseW/2;
+    var t1x=tx+px*tipW/2, t1y=ty+py*tipW/2, t2x=tx-px*tipW/2, t2y=ty-py*tipW/2;
+    var c1x=bx+ux*len*0.4+px*baseW*0.28+bxo, c1y=by+uy*len*0.4+py*baseW*0.28+byo;
+    var c2x=tx-ux*len*0.3+px*tipW*0.28+bxo,  c2y=ty-uy*len*0.3+py*tipW*0.28+byo;
+    var c3x=tx-ux*len*0.3-px*tipW*0.28+bxo,  c3y=ty-uy*len*0.3-py*tipW*0.28+byo;
+    var c4x=bx+ux*len*0.4-px*baseW*0.28+bxo, c4y=by+uy*len*0.4-py*baseW*0.28+byo;
+    return 'M '+b1x+' '+b1y+' C '+c1x+' '+c1y+', '+c2x+' '+c2y+', '+t1x+' '+t1y+
+        ' A '+(tipW/2)+' '+(tipW/2)+' 0 0 1 '+t2x+' '+t2y+
+        ' C '+c3x+' '+c3y+', '+c4x+' '+c4y+', '+b2x+' '+b2y+' Z';
+}
+function creaseLines(bx,by,tx,ty,baseW,tipW){
+    var dx=tx-bx, dy=ty-by, len=Math.hypot(dx,dy)||1, ux=dx/len, uy=dy/len, px=-uy, py=ux;
+    var q = 4*HAND_SCALE;
+    function oneCrease(t){
+        var cx=bx+dx*t, cy=by+dy*t, wdt=(baseW+(tipW-baseW)*t)*0.76;
+        var p1x=cx+px*wdt/2, p1y=cy+py*wdt/2, p2x=cx-px*wdt/2, p2y=cy-py*wdt/2, qx=cx+ux*q, qy=cy+uy*q;
+        return 'M '+p1x+' '+p1y+' Q '+qx+' '+qy+', '+p2x+' '+p2y;
+    }
+    return oneCrease(0.38)+' '+oneCrease(0.72);
+}
+function thumbPath(side,baseX,baseY,tipX,tipY){
+    var dx=tipX-baseX, dy=tipY-baseY, len=Math.hypot(dx,dy)||1, ux=dx/len, uy=dy/len, px=-uy, py=ux;
+    var baseW=30*HAND_SCALE, tipW=21*HAND_SCALE, o1=10*HAND_SCALE, o1y=12*HAND_SCALE, o2=7*HAND_SCALE, o2y=7*HAND_SCALE;
+    var b1x=baseX+px*baseW/2, b1y=baseY+py*baseW/2, b2x=baseX-px*baseW/2, b2y=baseY-py*baseW/2;
+    var t1x=tipX+px*tipW/2, t1y=tipY+py*tipW/2, t2x=tipX-px*tipW/2, t2y=tipY-py*tipW/2;
+    var c1x=baseX+dx*0.25+px*baseW*0.55+side*o1, c1y=baseY+dy*0.25+py*baseW*0.55-o1y;
+    var c2x=tipX-dx*0.18+px*tipW*0.65+side*o2,   c2y=tipY-dy*0.18+py*tipW*0.65-o2y;
+    var c3x=tipX-dx*0.18-px*tipW*0.65+side*o2,   c3y=tipY-dy*0.18-py*tipW*0.65-o2y;
+    var c4x=baseX+dx*0.25-px*baseW*0.55+side*o1, c4y=baseY+dy*0.25-py*baseW*0.55-o1y;
+    return 'M '+b1x+' '+b1y+' C '+c1x+' '+c1y+', '+c2x+' '+c2y+', '+t1x+' '+t1y+
+        ' A '+(tipW/2)+' '+(tipW/2)+' 0 0 1 '+t2x+' '+t2y+
+        ' C '+c3x+' '+c3y+', '+c4x+' '+c4y+', '+b2x+' '+b2y+' Z';
+}
+function thumbCrease(baseX,baseY,tipX,tipY){
+    var dx=tipX-baseX, dy=tipY-baseY, len=Math.hypot(dx,dy)||1, ux=dx/len, uy=dy/len, px=-uy, py=ux, t=0.48;
+    var width=18*HAND_SCALE, q=3*HAND_SCALE;
+    var cx=baseX+dx*t, cy=baseY+dy*t, p1x=cx+px*width/2, p1y=cy+py*width/2, p2x=cx-px*width/2, p2y=cy-py*width/2;
+    return 'M '+p1x+' '+p1y+' Q '+(cx+ux*q)+' '+(cy+uy*q)+', '+p2x+' '+p2y;
+}
+
+/* ── Build Keyboard + Hands ─────────────────────────────────── */
 function buildKeyboard(){
-    var kbEl = document.getElementById('km-kb');
-    if(!kbEl) return;
-    kbEl.innerHTML = '';
-    KB_LAYOUT.forEach(function(row){
-        var rowEl = document.createElement('div');
-        rowEl.className = 'km-row';
-        row.forEach(function(k){
-            var label=k[0], code=k[1], w=k[2], hand=k[3].toLowerCase();
-            var el = document.createElement('div');
-            el.className = 'km-key km-'+hand;
-            el.dataset.code = code;
-            el.dataset.hand = hand;
-            el.style.minWidth  = (UNIT*w + GAP*(w-1)) + 'px';
-            el.style.flexBasis = (UNIT*w + GAP*(w-1)) + 'px';
-            el.textContent = label;
-            rowEl.appendChild(el);
+    var kb = document.getElementById('km-kb');
+    if(!kb || kbBuilt) return;
+    kbBuilt = true;
+    kb.innerHTML = '';
+    keyPos = {};
+
+    var maxRowW = 0;
+    ROWS.forEach(function(row){
+        var rw = 0;
+        row.keys.forEach(function(k){ rw += k[2]*UNIT; });
+        if(rw > maxRowW) maxRowW = rw;
+    });
+    // Center the whole keyboard block (the widest row) inside the stage,
+    // instead of sitting flush against the left edge — this is what keeps
+    // the background box symmetric with no lopsided empty space.
+    var globalOffsetX = Math.max(0, (STAGE_W-maxRowW)/2);
+
+    ROWS.forEach(function(row, ri){
+        var rw = 0;
+        row.keys.forEach(function(k){ rw += k[2]*UNIT; });
+        var x = globalOffsetX + (maxRowW-rw)/2; // center each row against the widest row too
+        var yTop = ri*(KEY_H+GAP);
+        row.keys.forEach(function(def){
+            var label=def[0], code=def[1], mult=def[2], hand=def[3];
+            var width = unitW(mult);
+            var div = document.createElement('div');
+            div.className = 'km-key km-'+hand;
+            div.style.left   = x+'px';
+            div.style.top    = yTop+'px';
+            div.style.width  = width+'px';
+            div.style.height = KEY_H+'px';
+            div.textContent  = label;
+            div.dataset.code = code;
+            div.dataset.hand = hand;
+            kb.appendChild(div);
+            keyPos[code] = { x: x+width/2, y: yTop+KEY_H/2 };
+            x += mult*UNIT;
         });
-        kbEl.appendChild(rowEl);
+    });
+
+    buildHands(kb);
+    scaleStage();
+}
+
+function buildHands(kb){
+    var svg = svgEl('svg', { id:'km-hands', viewBox:'0 0 '+STAGE_W+' '+STAGE_H });
+    kb.appendChild(svg);
+
+    var homeRowY    = keyPos['KeyA'].y;
+    var fingerBaseY = homeRowY + 150*HAND_SCALE;
+    var palmTopY    = fingerBaseY - 55*HAND_SCALE;
+    var wristY      = palmTopY + 130*HAND_SCALE;
+    var leftBaseXs  = ['LP','LR','LM','LI'].map(function(f){ return keyPos[homeKey[f]].x; });
+    var rightBaseXs = ['RI','RM','RR','RP'].map(function(f){ return keyPos[homeKey[f]].x; });
+    var leftCenterX  = (leftBaseXs[0]+leftBaseXs[3])/2;
+    var rightCenterX = (rightBaseXs[0]+rightBaseXs[3])/2;
+
+    function palmGeometry(baseXs, thumbSide){
+        var pad=20*HAND_SCALE, minX=baseXs[0], maxX=baseXs[3], leftX=minX-pad, rightX=maxX+pad;
+        var thumbBulge=84*HAND_SCALE, otherBulge=26*HAND_SCALE;
+        var bulgeRight = thumbSide>0 ? thumbBulge : otherBulge;
+        var bulgeLeft  = thumbSide>0 ? otherBulge : thumbBulge;
+        var midY = (palmTopY+wristY)/2;
+        var wristSpan=(rightX-leftX)*0.5, wristCenterX=(leftX+rightX)/2+thumbSide*24*HAND_SCALE;
+        var wristLeftX=wristCenterX-wristSpan/2, wristRightX=wristCenterX+wristSpan/2;
+        var n1=4*HAND_SCALE, n2=14*HAND_SCALE, n3=16*HAND_SCALE;
+        return 'M '+leftX+' '+palmTopY+
+            ' Q '+(leftX-n1)+' '+(palmTopY-n2)+', '+((leftX+rightX)/2)+' '+(palmTopY-n3)+
+            ' Q '+(rightX+n1)+' '+(palmTopY-n2)+', '+rightX+' '+palmTopY+
+            ' Q '+(rightX+bulgeRight)+' '+midY+', '+wristRightX+' '+wristY+
+            ' L '+wristLeftX+' '+wristY+
+            ' Q '+(leftX-bulgeLeft)+' '+midY+', '+leftX+' '+palmTopY+' Z';
+    }
+    svg.appendChild(svgEl('path', { d: palmGeometry(leftBaseXs,+1),  class:'km-palm km-fl' }));
+    svg.appendChild(svgEl('path', { d: palmGeometry(rightBaseXs,-1), class:'km-palm km-fr' }));
+
+    fingerIds.forEach(function(f){
+        var isLeft = f[0]==='L', centerX = isLeft ? leftCenterX : rightCenterX;
+        var homeCode = homeKey[f];
+        var tip = { x: keyPos[homeCode].x, y: keyPos[homeCode].y - 20*HAND_SCALE };
+        var baseX = tip.x+(centerX-tip.x)*CONVERGE, baseY = fingerBaseY+lengthBonusBase[f]*HAND_SCALE;
+        var wdt = { base: fingerWidthsBase[f].base*HAND_SCALE, tip: fingerWidthsBase[f].tip*HAND_SCALE };
+        var path   = svgEl('path', { class:'km-finger km-f'+handOfFinger[f], d: fingerPath(baseX,baseY,tip.x,tip.y,wdt.base,wdt.tip) });
+        var crease = svgEl('path', { class:'km-crease', d: creaseLines(baseX,baseY,tip.x,tip.y,wdt.base,wdt.tip) });
+        svg.appendChild(path); svg.appendChild(crease);
+        fingers[f] = { path:path, crease:crease, baseX:baseX, baseY:baseY, homeX:tip.x, homeY:tip.y, curX:tip.x, curY:tip.y, w:wdt };
+    });
+
+    var to1=30*HAND_SCALE, to2=48*HAND_SCALE, to3=70*HAND_SCALE, to4=12*HAND_SCALE;
+    var thumbConfigs = {
+        TL: { side:-1, baseX:leftBaseXs[3]+to1,  baseY:palmTopY+to2, tipX:leftBaseXs[3]+to3,  tipY:palmTopY-to4 },
+        TR: { side:+1, baseX:rightBaseXs[0]-to1, baseY:palmTopY+to2, tipX:rightBaseXs[0]-to3, tipY:palmTopY-to4 }
+    };
+    ['TL','TR'].forEach(function(f){
+        var cfg = thumbConfigs[f];
+        var path   = svgEl('path', { class:'km-finger km-fb', d: thumbPath(cfg.side,cfg.baseX,cfg.baseY,cfg.tipX,cfg.tipY) });
+        var crease = svgEl('path', { class:'km-crease', d: thumbCrease(cfg.baseX,cfg.baseY,cfg.tipX,cfg.tipY) });
+        svg.appendChild(path); svg.appendChild(crease);
+        fingers[f] = { path:path, crease:crease, baseX:cfg.baseX, baseY:cfg.baseY, homeX:cfg.tipX, homeY:cfg.tipY,
+                       curX:cfg.tipX, curY:cfg.tipY, w:{base:30*HAND_SCALE,tip:21*HAND_SCALE}, side:cfg.side, isThumb:true };
     });
 }
 
-/* ── Highlight Key ──────────────────────────────────────────── */
-function highlightKey(code){
-    var el = document.querySelector('.km-key[data-code="'+code+'"]');
-    if(!el) return;
-    var hand = el.dataset.hand;
-    var cls = hand==='l' ? 'km-pl' : (hand==='r' ? 'km-pr' : 'km-pb');
-    el.classList.remove('km-pl','km-pr','km-pb');
-    el.classList.add(cls);
-    clearTimeout(el._khTimer);
-    el._khTimer = setTimeout(function(){ el.classList.remove('km-pl','km-pr','km-pb'); }, 210);
+/* ── Finger animation ──────────────────────────────────────── */
+function animateFinger(fid, targetX, targetY, press){
+    var fg = fingers[fid]; if(!fg) return;
+    var dur=130, startX=fg.curX, startY=fg.curY, t0=performance.now();
+    if(fg._raf) cancelAnimationFrame(fg._raf);
+    function step(now){
+        var t = Math.min(1,(now-t0)/dur), ease = t<0.5 ? 2*t*t : -1+(4-2*t)*t;
+        fg.curX = startX+(targetX-startX)*ease;
+        fg.curY = startY+(targetY-startY)*ease;
+        if(fg.isThumb){
+            fg.path.setAttribute('d', thumbPath(fg.side,fg.baseX,fg.baseY,fg.curX,fg.curY));
+            fg.crease.setAttribute('d', thumbCrease(fg.baseX,fg.baseY,fg.curX,fg.curY));
+        } else {
+            fg.path.setAttribute('d', fingerPath(fg.baseX,fg.baseY,fg.curX,fg.curY,fg.w.base,fg.w.tip,fg.bend||0));
+            fg.crease.setAttribute('d', creaseLines(fg.baseX,fg.baseY,fg.curX,fg.curY,fg.w.base,fg.w.tip));
+        }
+        if(t<1) fg._raf = requestAnimationFrame(step);
+    }
+    fg._raf = requestAnimationFrame(step);
+    if(press){
+        fg.path.classList.add('km-active'); fg.crease.classList.add('km-active');
+        clearTimeout(fg._releaseTimer);
+        fg._releaseTimer = setTimeout(function(){
+            fg.path.classList.remove('km-active'); fg.crease.classList.remove('km-active');
+        }, 150);
+    }
+}
+function returnHome(fid){
+    var fg = fingers[fid]; if(!fg) return;
+    clearTimeout(fg._homeTimer);
+    fg._homeTimer = setTimeout(function(){ animateFinger(fid, fg.homeX, fg.homeY, false); }, 170);
 }
 
-/* ── Mouse Click Animations ─────────────────────────────────── */
+/* ── Press a key: highlight it + move its finger (real keystrokes only) ── */
+function pressKey(code){
+    var keyEl = document.querySelector('.km-key[data-code="'+code+'"]');
+    if(keyEl){
+        var hand = keyEl.dataset.hand;
+        var cls = hand==='l' ? 'km-pl' : (hand==='r' ? 'km-pr' : 'km-pb');
+        keyEl.classList.remove('km-pl','km-pr','km-pb');
+        keyEl.classList.add(cls);
+        clearTimeout(keyEl._khTimer);
+        keyEl._khTimer = setTimeout(function(){ keyEl.classList.remove('km-pl','km-pr','km-pb'); }, 210);
+    }
+    var pos = keyPos[code], fid = fingerOfCode[code];
+    if(!pos || !fid) return; // key isn't part of the touch-typing map (e.g. Ctrl/Alt/arrows) — highlight only
+    animateFinger(fid, pos.x, pos.y-(code==='Space' ? 4*HAND_SCALE : 0), true);
+    returnHome(fid);
+}
+
+/* ── Mouse click animations ─────────────────────────────────── */
 function handleMouseDown(btn){
     if(!keymapOn) return;
     var svg = document.getElementById('km-mouse-svg');
@@ -2730,18 +3089,34 @@ window.kmSoundToggle = function(){
     try{ localStorage.setItem('rt_keysound',soundOn?'1':'0'); }catch(e){}
 };
 
+/* ── Responsive scaling ──────────────────────────────────────
+   #km-stage-outer is fluid width (capped at STAGE_W). Scale the native
+   STAGE_W×STAGE_H stage down to fit it exactly, on any device size, and
+   set an explicit pixel height on the outer element (transform doesn't
+   affect layout size) so there's no layout jump and no page overflow. */
+function scaleStage(){
+    var outer  = document.getElementById('km-stage-outer');
+    var scaler = document.getElementById('km-stage-scaler');
+    if(!outer || !scaler) return;
+    var s = Math.min(1, outer.clientWidth / STAGE_W) || 1;
+    scaler.style.transform = 'scale('+s+')';
+    outer.style.height = (STAGE_H*s)+'px';
+}
+
 /* ── Toggle ─────────────────────────────────────────────────── */
 window.kmToggle = function(){
     keymapOn = !keymapOn;
-    var scene = document.getElementById('km-scene');
+    var collapsible = document.getElementById('km-collapsible');
     var pill  = document.getElementById('km-pill');
     var app   = document.getElementById('app');
     if(keymapOn){
-        if(scene){ scene.classList.remove('km-hidden'); }
+        if(collapsible){ collapsible.classList.remove('km-hidden'); }
         if(pill){ pill.textContent='ON'; pill.className='km-pill on'; }
         if(app){ app.classList.remove('km-compact'); }
+        if(!kbBuilt) buildKeyboard();
+        scaleStage();
     } else {
-        if(scene){ scene.classList.add('km-hidden'); }
+        if(collapsible){ collapsible.classList.add('km-hidden'); }
         if(pill){ pill.textContent='OFF'; pill.className='km-pill off'; }
         if(app){ app.classList.add('km-compact'); }
     }
@@ -2754,7 +3129,7 @@ function kmInit(){
         var saved = localStorage.getItem('rt_keymap');
         if(saved === '0'){
             keymapOn = false;
-            var sc = document.getElementById('km-scene');
+            var sc = document.getElementById('km-collapsible');
             var pl = document.getElementById('km-pill');
             var ap = document.getElementById('app');
             if(sc) sc.classList.add('km-hidden');
@@ -2774,21 +3149,28 @@ function kmInit(){
         }
     }catch(e){}
 
-    // INP FIX: defer heavy DOM injection (buildKeyboard creates ~50 elements)
-    // to an idle slot so it never blocks the first user interaction.
-    // requestIdleCallback is not available in all browsers; fall back to
-    // a 200 ms timeout which still yields to the first paint + interaction.
+    // Reserve the correct on-screen height immediately (the #km-kb stage
+    // has a fixed native layout box as soon as the CSS above applies,
+    // independent of when its contents are actually built) — this is
+    // what keeps CLS low without needing a hardcoded pixel guess.
+    scaleStage();
+
+    // INP FIX: defer heavy DOM injection (buildKeyboard creates the keys
+    // + SVG hand paths) to an idle slot so it never blocks the first user
+    // interaction. requestIdleCallback isn't available everywhere; fall
+    // back to a 200 ms timeout which still yields to first paint + input.
     if(typeof requestIdleCallback !== 'undefined'){
         requestIdleCallback(buildKeyboard, { timeout: 2000 });
     } else {
         setTimeout(buildKeyboard, 200);
     }
 
-    // Keydown listener
-    // PERF FIX: throttle keymap visual updates to max ~30 fps (33 ms gate).
-    // At 120 WPM the keydown fires every ~100 ms but the arm animation takes
-    // 190 ms to complete — so every call was interrupting the previous one.
-    // The gate drops redundant calls so the compositor stays uncontested.
+    // Keydown listener — real physical keystrokes drive the sound, key
+    // highlight, and finger animation (no separate mock input box).
+    // PERF FIX: throttle the visual update to max ~30 fps (33 ms gate).
+    // At 120 WPM keydown fires every ~100 ms but the finger animation
+    // takes ~130-190 ms to complete, so this keeps the compositor from
+    // getting contested. Sound plays on every keystroke regardless.
     var _kmLastUpdate = 0;
     document.addEventListener('keydown', function(e){
         playKeyClick();
@@ -2796,15 +3178,20 @@ function kmInit(){
         var now = performance.now();
         if(now - _kmLastUpdate < 33) return;
         _kmLastUpdate = now;
-        highlightKey(e.code);
+        pressKey(e.code);
     });
 
     // Mouse down/up
     document.addEventListener('mousedown', function(e){ handleMouseDown(e.button); });
     document.addEventListener('mouseup',   function(){   handleMouseUp(); });
-
     // Prevent context menu from stealing mouse-up on right-click
     document.addEventListener('contextmenu', function(){ handleMouseUp(); });
+
+    window.addEventListener('resize', scaleStage);
+    if(typeof ResizeObserver !== 'undefined'){
+        var outer = document.getElementById('km-stage-outer');
+        if(outer) new ResizeObserver(scaleStage).observe(outer);
+    }
 }
 
 // Kick off after DOM ready
@@ -3193,7 +3580,6 @@ var HUD_TARGETS = [
     { key:'muskBadge',    sel:'#km-musk-badge',                        label:'Musk Score badge' },
     { key:'elonBadge',    sel:'#km-elon-badge',                        label:'Elon Score badge' },
     { key:'kmToggle',     sel:'#km-toggle-btn',                        label:'Keymap toggle button' },
-    { key:'kmSound',      sel:'#km-sound-btn',                         label:'Sound button' },
     { key:'kmScene',      sel:'#km-scene',                             label:'Keymap' },
     { key:'liveWpm',      sel:'#live-wpm-display',                     label:'Live WPM' }
 ];
