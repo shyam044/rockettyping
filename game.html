@@ -689,13 +689,36 @@
       color: #e2b714;
     }
 
+    /* ── Finish gate — a soft glow marking the destination, not a drawn
+       line. The old checkered stripe pattern had hard black/white edges
+       that read as literal lines cutting across the track, which broke
+       the realistic space feel everywhere else. This is a single soft
+       gradient (glow fading to darkness on both sides) with a slow pulse
+       — no crisp edges anywhere. Pure CSS, compositor-friendly. ── */
     #finish-line {
       position: absolute;
       top: 0;
       bottom: 0;
-      width: 12px;
-      background: repeating-linear-gradient(45deg, #fff 0px, #fff 8px, #000 8px, #000 16px);
-      box-shadow: 0 0 20px #e2b714;
+      width: 84px;
+      margin-left: -36px;
+      pointer-events: none;
+      background:
+        radial-gradient(ellipse 40px 100% at center, rgba(255, 224, 140, 0.55) 0%, rgba(226, 183, 20, 0.22) 35%, rgba(226, 183, 20, 0) 75%),
+        linear-gradient(90deg, rgba(0, 0, 0, 0) 0%, rgba(0, 4, 10, 0.25) 45%, rgba(0, 4, 10, 0.25) 55%, rgba(0, 0, 0, 0) 100%);
+      mix-blend-mode: screen;
+      animation: rt-finish-pulse 2.6s ease-in-out infinite;
+    }
+
+    @keyframes rt-finish-pulse {
+
+      0%,
+      100% {
+        opacity: 0.75;
+      }
+
+      50% {
+        opacity: 1;
+      }
     }
 
     #finish-text {
@@ -708,6 +731,7 @@
       writing-mode: vertical-rl;
       text-orientation: mixed;
       letter-spacing: 4px;
+      text-shadow: 0 0 16px rgba(226, 183, 20, 0.8), 0 0 32px rgba(226, 183, 20, 0.3);
     }
 
     /* ═══════════════════════════════════════════════════════
@@ -945,7 +969,7 @@
     #caret {
       position: absolute;
       background: #00e6cc;
-      /* Spring-like cubic-bezier: fast start, overshoots slightly, settles  */
+      /* Spring-like cubic-bezier: fast start, overshoots slightly, settles — like Monkeytype */
       transition: transform 0.06s cubic-bezier(0.34, 1.56, 0.64, 1), height 0.06s ease;
       width: 3px;
       border-radius: 3px;
@@ -1031,7 +1055,7 @@
     }
 
     /* PERF: during race, words container scrolls with a subtle smooth — feels glassy.
-       125ms + ease-in-out-sine matches real scrollTape() implementation
+       125ms + ease-in-out-sine matches MonkeyType's real scrollTape() implementation
        (jQuery .animate() at 125ms with the default 'swing' easing, which is
        mathematically the same curve as ease-in-out-sine). */
     body.race-active #words {
@@ -2808,13 +2832,13 @@
 
   <footer
     style="position:fixed;bottom:0;left:0;right:0;background:#1a2333;padding:10px 16px;text-align:center;font-size:12px;color:#777;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:6px 14px;z-index:9999;">
-    <a href="index.html" tabindex="-1" style="color:#e2b714;text-decoration:none;">← Typing Test</a>
+    <a href="/" tabindex="-1" style="color:#e2b714;text-decoration:none;">← Typing Test</a>
     <span style="color:#444;">|</span>
-    <a href="/privacy.html" tabindex="-1" style="color:#aaa;text-decoration:none;">Privacy Policy</a>
+    <a href="/privacy" tabindex="-1" style="color:#aaa;text-decoration:none;">Privacy Policy</a>
     <span style="color:#444;">|</span>
-    <a href="/terms.html" tabindex="-1" style="color:#aaa;text-decoration:none;">Terms of Use</a>
+    <a href="/terms" tabindex="-1" style="color:#aaa;text-decoration:none;">Terms of Use</a>
     <span style="color:#444;">|</span>
-    <a href="/about.html" tabindex="-1" style="color:#aaa;text-decoration:none;">About</a>
+    <a href="/about" tabindex="-1" style="color:#aaa;text-decoration:none;">About</a>
     <span style="color:#444;">|</span>
     <a href="mailto:contact@rockettyping.com" tabindex="-1" style="color:#aaa;text-decoration:none;">Contact</a>
     <span style="color:#444;">|</span>
@@ -4231,14 +4255,20 @@
       <feGaussianBlur stdDeviation="4"/>
     </filter>
   </defs>`;
-      // Main Milky Way band - tilted slightly
-      ds += `<ellipse cx="${DEEP_VISIBLE_W * 0.5}" cy="${H * 0.5}" rx="${DEEP_VISIBLE_W * 0.72}" ry="${H * 0.26}" fill="url(#mw1)" opacity="0.7" transform="rotate(-3 ${DEEP_VISIBLE_W * 0.5} ${H * 0.5})"/>`;
+      // Main Milky Way band - tilted slightly. Blurred like every other
+      // nebula shape in this layer — these two ellipses were previously
+      // the only unblurred shapes here, so their perfectly crisp vector
+      // edges (flattest right around their top/bottom, which is exactly
+      // where they cross most of the track's width) read as two faint
+      // but hard horizontal lines instead of a soft glow. Blur removes
+      // that geometric edge entirely.
+      ds += `<ellipse cx="${DEEP_VISIBLE_W * 0.5}" cy="${H * 0.5}" rx="${DEEP_VISIBLE_W * 0.72}" ry="${H * 0.26}" fill="url(#mw1)" opacity="0.7" transform="rotate(-3 ${DEEP_VISIBLE_W * 0.5} ${H * 0.5})" filter="url(#nebBlur)"/>`;
       // Secondary density band
-      ds += `<ellipse cx="${DEEP_VISIBLE_W * 0.45}" cy="${H * 0.44}" rx="${DEEP_VISIBLE_W * 0.55}" ry="${H * 0.15}" fill="url(#mw2)" opacity="0.55" transform="rotate(-2 ${DEEP_VISIBLE_W * 0.5} ${H * 0.5})"/>`;
+      ds += `<ellipse cx="${DEEP_VISIBLE_W * 0.45}" cy="${H * 0.44}" rx="${DEEP_VISIBLE_W * 0.55}" ry="${H * 0.15}" fill="url(#mw2)" opacity="0.55" transform="rotate(-2 ${DEEP_VISIBLE_W * 0.5} ${H * 0.5})" filter="url(#nebBlur)"/>`;
       // Bright core bulge region, randomized each build
       const bulgeX = DEEP_VISIBLE_W * (0.35 + rnd() * 0.4);
-      ds += `<ellipse cx="${bulgeX}" cy="${H * 0.48}" rx="${DEEP_VISIBLE_W * 0.16}" ry="${H * 0.18}" fill="#1a2030" opacity="0.45"/>`;
-      ds += `<ellipse cx="${bulgeX}" cy="${H * 0.48}" rx="${DEEP_VISIBLE_W * 0.08}" ry="${H * 0.10}" fill="#1e2638" opacity="0.4"/>`;
+      ds += `<ellipse cx="${bulgeX}" cy="${H * 0.48}" rx="${DEEP_VISIBLE_W * 0.16}" ry="${H * 0.18}" fill="#1a2030" opacity="0.45" filter="url(#nebBlurSoft)"/>`;
+      ds += `<ellipse cx="${bulgeX}" cy="${H * 0.48}" rx="${DEEP_VISIBLE_W * 0.08}" ry="${H * 0.10}" fill="#1e2638" opacity="0.4" filter="url(#nebBlurSoft)"/>`;
 
       // ── Nebulae (5 distinct color themes, randomly placed & sized each
       //    build so the deep field never looks the same twice) ──
@@ -4849,7 +4879,7 @@
     }
     function pauseModalClose() {
       hidePauseModal();
-      window.location.href = 'index.html';
+      window.location.href = '/';
     }
 
     /* ── Logo click → pause modal ── */
