@@ -42,13 +42,14 @@ img { max-width: 100%; }
    ════════════════════════════════════════════════════════════════ */
 @media (min-width: 1401px) {
     #app  { max-width: 1500px; }
-    /* height = font-size(38) × line-height(1.5) × 3 rows, so overflow:hidden
-       clips to exactly 3 rows here too (not slightly less than 3). */
-    #words { height: 171px; }
+    /* height = font-size(38) × line-height(1.5) × 3 rows, + a small ~6px
+       buffer so descenders (p, g, y…) on the 3rd row aren't clipped by
+       overflow:hidden. */
+    #words { height: 177px; }
     #words-track { font-size: 38px; }
     /* Custom-layout panel (Reset/Undo-Redo/Save) must always be exactly
        the same box #words occupies at this breakpoint. */
-    #rt-custom-panel { height: 171px; }
+    #rt-custom-panel { height: 177px; }
 }
 
 /* ════════════════════════════════════════════════════════════════
@@ -66,10 +67,11 @@ img { max-width: 100%; }
    ════════════════════════════════════════════════════════════════ */
 @media (max-width: 1024px) {
     #app               { max-width: 96%; padding: 16px; }
-    /* height = font-size(32) × line-height(1.5) × 3 rows */
-    #words             { height: 144px; }
+    /* height = font-size(32) × line-height(1.5) × 3 rows, + a small ~5px
+       descender buffer (see #words in styles.css) */
+    #words             { height: 149px; }
     #words-track       { font-size: 32px; }
-    #rt-custom-panel   { height: 144px; }
+    #rt-custom-panel   { height: 149px; }
     #difficulty-container { right: 10px; }
     .diff-btn, .qlen-btn { padding: 9px 16px; font-size: 12.5px; }
 
@@ -237,17 +239,18 @@ img { max-width: 100%; }
     /* Typing area */
     #words {
         margin-top: 10px;
-        /* height = font-size(28) × line-height(1.5, inherited from base) × 3 rows.
+        /* height = font-size(28) × line-height(1.5, inherited from base) × 3 rows,
+           + a small ~4px descender buffer so p/g/y on the 3rd row aren't clipped.
            MUST be a fixed height, not auto/min-height — auto has nothing for
            overflow:hidden to clip, so the box grows to fit every generated
            word (many rows) instead of showing exactly 3 like desktop does. */
-        height: 126px;
+        height: 130px;
     }
     #words-track {
         font-size: 28px;
         padding: 0 10px;
     }
-    #rt-custom-panel { margin-top: 10px; height: 126px; }
+    #rt-custom-panel { margin-top: 10px; height: 130px; }
 
     .notes-card { width: 150px; height: 150px; gap: 10px; }
     .notes-card-icon { font-size: 36px; }
@@ -324,10 +327,11 @@ img { max-width: 100%; }
 
     #page-title { font-size: 12px !important; }
 
-    /* height = font-size(24) × line-height(1.4) × 3 rows */
-    #words { height: 101px; }
+    /* height = font-size(24) × line-height(1.4) × 3 rows, + a small ~4px
+       descender buffer (see #words in styles.css) */
+    #words { height: 105px; }
     #words-track { font-size: 24px; line-height: 1.4; gap: 4px; }
-    #rt-custom-panel { height: 101px; }
+    #rt-custom-panel { height: 105px; }
 
     #notes-submenu {
         flex-direction: column;
@@ -483,16 +487,17 @@ img { max-width: 100%; }
     .diff-btn, .qlen-btn { padding: 7px 10px; font-size: 10.5px; letter-spacing: 0.6px; }
 
     #words {
-        /* height = font-size(20) × line-height(1.5) × 3 rows.
+        /* height = font-size(20) × line-height(1.5) × 3 rows, + a small ~3px
+           descender buffer so p/g/y on the 3rd row aren't clipped.
            Fixed height (not min-height) so it actually clips to 3 rows. */
-        height: 90px;
+        height: 93px;
     }
     #words-track {
         font-size: 20px;
         line-height: 1.5;
         padding: 0 4px;
     }
-    #rt-custom-panel { height: 90px; padding: 6px 10px; }
+    #rt-custom-panel { height: 93px; padding: 6px 10px; }
     .rt-cp-row { font-size: 10px; padding: 4px 8px; }
 
     .notes-card { max-width: 100%; padding: 14px 16px; gap: 12px; }
@@ -584,10 +589,11 @@ img { max-width: 100%; }
     #play-game { flex-direction: column !important; width: 100%; }
     .play-game-btn, .learn-type-btn { width: 100%; justify-content: center; }
 
-    /* height = font-size(17) × line-height(1.5, inherited) × 3 rows */
-    #words { height: 77px; }
+    /* height = font-size(17) × line-height(1.5, inherited) × 3 rows, + a
+       small ~3px descender buffer (see #words in styles.css) */
+    #words { height: 80px; }
     #words-track { font-size: 17px; }
-    #rt-custom-panel { height: 77px; padding: 4px 8px; gap: 4px; }
+    #rt-custom-panel { height: 80px; padding: 4px 8px; gap: 4px; }
     .rt-cp-row { font-size: 9px; padding: 3px 6px; }
     .rt-cp-nav-btn { width: 28px; height: 28px; font-size: 12px; }
 
