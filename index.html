@@ -195,7 +195,7 @@
     <link rel="dns-prefetch" href="https://flagcdn.com">
     <!-- Preload critical assets: logo image + main stylesheet -->
     <link rel="preload" as="image" href="/images/rocket-typing-logo.webp" fetchpriority="high">
-    <link rel="preload" href="styles.css?v=1" as="style">
+    <link rel="preload" href="styles.css" as="style">
     <link rel="preload" href="responsive.css" as="style">
     <!-- ═══════════════════════════════════════════════════════════════════
          INLINE CRITICAL CSS  — rendered before any external stylesheet.
@@ -612,7 +612,13 @@
     padding-left: 20px;
     flex: 0 0 auto;
     transition: opacity 0.35s ease, transform 0.35s ease;
-  transform: translate(80px, 50px);
+    /* Was `transform: translate(80px, 50px)`. Same fix as #km-wrap below:
+       a transform here made this the containing block for the Musk/Elon
+       score badges once the layout-customizer set them to position:fixed
+       to drag them, which trapped them near their original spot instead
+       of letting them move freely. margin gives the identical visual
+       offset without creating that containing block. */
+    margin: 50px 0 0 80px;
 }
 
 #km-scores-panel.km-scores-hidden {
@@ -925,7 +931,16 @@ body.test-running #app #page-title {
     display: flex;
     flex-direction: column;
     align-items: center;
-    transform: translateX(55px);
+    /* Was `transform: translateX(55px)`. A CSS transform on ANY ancestor
+       creates a new containing block for its position:fixed descendants —
+       so when the layout-customizer (further down) made the keymap
+       position:fixed to drag it freely around the page, its left/top ended
+       up measured against this box instead of the viewport, trapping it
+       near its original spot no matter how far you dragged. margin-left
+       gives the exact same 55px visual nudge without that side effect, so
+       the keymap (and its KEY MAP toggle button) can now be dragged
+       anywhere on screen. */
+    transform: translateX(-25px);
 }
 #km-scene {
     width: 100%;
@@ -1325,9 +1340,10 @@ footer a:hover{color:var(--rt-main) !important;}
     gap:6px;
     margin-top:190px;
     /* Exactly the same box the 3-line typing paragraph occupies (#words is
-       height:162px) — not a minimum, the actual fixed height, so this panel
+       height:167px, including its small descender buffer — see #words in
+       styles.css) — not a minimum, the actual fixed height, so this panel
        always fits in precisely the same space instead of growing taller. */
-    height:162px;
+    height:167px;
     width:100%;
     background:var(--rt-panel-bg);
     border:2px solid var(--rt-main);
