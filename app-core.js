@@ -174,6 +174,7 @@ let config = {
                 if (config.mode !== 'quotes') setQuoteAuthor('');
                 toggleDifficultyVsQuoteLengthUI();
                 resetTest();
+                applyLineMode(config.lineMode); // restore the real line-mode treatment (no longer zen-overridden)
             });
         });
 
@@ -226,6 +227,7 @@ let config = {
             window._customNotesText = null;
             toggleDifficultyVsQuoteLengthUI();
             resetTest();
+            applyLineMode(config.lineMode); // (re-)apply — resolves to the fixed 2-row treatment for Own
         }
 
         function startNotesQuotesTest(text) {
@@ -244,6 +246,7 @@ let config = {
             config.notesActive = true;
             toggleDifficultyVsQuoteLengthUI();
             resetTest();
+            applyLineMode(config.lineMode); // ensure real line-mode sizing (not a leftover zen 2-row)
             if (capped) showRtToast('Long text — using the first 500 words to keep things fast.');
         }
 
@@ -802,19 +805,32 @@ let config = {
         // and the running transform math always agree exactly.
         let _tapeAnchorX = 0;
 
-        function applyLineMode(mode) {
+        // Own (free typing) always uses a fixed 2-row window, regardless of
+        // whatever line-mode the user has set for Time/Words/Quotes — this
+        // never touches config.lineMode itself (that stays the user's real,
+        // persisted preference for the other modes). Used consistently by
+        // both applyLineMode() (container sizing) and _updateCaretNow()
+        // (scroll-trigger/tape-mode logic) so they can never disagree.
+        function _effectiveLineMode() {
+            return (config.mode === 'zen') ? 2 : config.lineMode;
+        }
+
+        function applyLineMode(mode, persist) {
             mode = (mode === 1 || mode === 2) ? mode : 3;
-            config.lineMode = mode;
-            saveConfig();
+            if (persist !== false) {
+                config.lineMode = mode;
+                saveConfig();
+            }
+            const effectiveMode = (config.mode === 'zen') ? 2 : mode;
             const el = wordsDiv;
             if (!el) return;
             el.classList.remove('line-mode-1', 'line-mode-2', 'line-mode-3');
-            el.classList.add('line-mode-' + mode);
+            el.classList.add('line-mode-' + effectiveMode);
             el.scrollTop = 0;
             _vScrollTween.current = 0;
-            wordsTrack.classList.toggle('tape-track', mode === 1);
+            wordsTrack.classList.toggle('tape-track', effectiveMode === 1);
             const rowH = getRowHeight();
-            if (mode === 1) {
+            if (effectiveMode === 1) {
                 el.style.height = rowH + 'px';
                 // Pre-position the text so word 1 / letter 1 starts AT the center
                 // anchor from the very first keystroke —
@@ -831,7 +847,7 @@ let config = {
                 _tapeTween.from = 0;
                 _tapeTween.to = 0;
                 if (_tapeTween.raf) { cancelAnimationFrame(_tapeTween.raf); _tapeTween.raf = null; }
-            } else if (mode === 2) {
+            } else if (effectiveMode === 2) {
                 el.style.height = (rowH * 2) + 'px';
                 wordsTrack.style.paddingLeft = '';
                 wordsTrack.style.transform = '';
@@ -862,7 +878,7 @@ let config = {
         // general idea of "smoothing" — which is what an earlier continuous
         // per-frame version missed despite being smooth in its own right.
         function _updateTapeTarget(wordLeft, tLeft, tW) {
-            if (config.lineMode !== 1) return;
+            if (_effectiveLineMode() !== 1) return;
             const targetX = Math.max(0, (wordLeft + tLeft + tW) - _tapeAnchorX);
             _tween(_tapeTween, targetX, 125, function (v) {
                 wordsTrack.style.transform = 'translateX(-' + v + 'px)';
@@ -968,7 +984,7 @@ let config = {
             // gave the caret its own independent motion on top of the track's
             // motion, and the two aren't perfectly synced, which is what read as
             // "the cursor is also moving" instead of only the words.
-            const caretX = (config.lineMode === 1) ? _tapeAnchorX : x;
+            const caretX = (_effectiveLineMode() === 1) ? _tapeAnchorX : x;
 
             // ── Geometry-based scrolling ───────────────────────────────────────────
             // The old approach looked up the active word's row index in cachedRows[].
@@ -978,7 +994,7 @@ let config = {
             //
             // New approach: use raw offsetTop geometry. No row cache needed for scrolling.
             // Works correctly for 10 words or 10,000,000 words.
-            if (config.lineMode === 1) {
+            if (_effectiveLineMode() === 1) {
                 // ── Single-line "tape" mode: retarget the stop-and-retarget
                 // tween exactly the way a stop-and-retarget scrollTape() implementation does —
                 // once per keystroke, from wherever the track visually is
@@ -1015,7 +1031,7 @@ let config = {
                 // calculation. rowH is now always derived straight from CSS instead
                 // (line-height + row-gap), which is correct regardless of word content.
                 const currentScrollTop = wordsDiv.scrollTop;
-                const scrollTrigger = (config.lineMode === 2) ? 1 : 2;
+                const scrollTrigger = (_effectiveLineMode() === 2) ? 1 : 2;
                 const visibleRowIdx = Math.round((y - currentScrollTop) / rowH);
                 if (visibleRowIdx >= scrollTrigger) {
                     const scrollTargetTop = Math.max(0, y - rowH);
@@ -1054,6 +1070,19 @@ let config = {
 // layout panel is open (see showCustomPanel), but this guarantees a test
 // can never start from a stray keystroke while arranging the layout.
 if (window._rtCustomModeActive) return;
+
+// Own (free typing): Enter (with or without Shift) or Escape ends the
+// session and shows results. This must run BEFORE the Tab+Enter restart
+// shortcut below — otherwise, if the user had pressed Tab at any point
+// during a long free-typing session (easy to do by accident), the very
+// next Enter would silently RESET the session instead of ending it with
+// results, since Tab+Enter is normally the "restart" gesture everywhere
+// else on the site.
+if (config.zenMode && testActive && (e.key === 'Enter' || e.key === 'Escape')) {
+    e.preventDefault();
+    endTest();
+    return;
+}
 
 // ── Block modifier combos (Alt+*, Ctrl+*, Meta+*) — never type these ──
 if (e.altKey || e.ctrlKey || e.metaKey) return;
@@ -1587,47 +1616,61 @@ if (!testActive && !testEnded && e.key.length === 1) {
             document.getElementById('tip-text').textContent = tipText;
 
             // === Build per-second chart data (PERF: O(n) two-pointer, replaces O(n²) filter loops) ===
-            window._testStartTime = startTime;
-            const testEndTime = Date.now();
-            const elapsedMs = testEndTime - startTime;
-            const totalSecs = Math.max(1, Math.ceil(elapsedMs / 1000));
+            // Wrapped defensively: this must never be able to block the results
+            // screen (right below) from showing, regardless of session length
+            // or data shape — Own mode in particular has no fixed time limit,
+            // so a session could in principle run far longer than Time mode
+            // ever would.
+            try {
+                window._testStartTime = startTime;
+                const testEndTime = Date.now();
+                const elapsedMs = testEndTime - startTime;
+                // Cap at 1 hour of per-second buckets — a chart with more data
+                // points than that isn't meaningfully readable anyway, and this
+                // keeps the loop below bounded regardless of session length.
+                const totalSecs = Math.min(3600, Math.max(1, Math.ceil(elapsedMs / 1000)));
 
-            const _wpmPerSec = [], _rawPerSec = [], _burstPerSec = [];
-            const sortedCorr = correctTimestamps.slice().sort((a, b) => a - b);
-            const sortedKeys = keystrokeTimestamps.slice().sort((a, b) => a - b);
+                const _wpmPerSec = [], _rawPerSec = [], _burstPerSec = [];
+                const sortedCorr = correctTimestamps.slice().sort((a, b) => a - b);
+                const sortedKeys = keystrokeTimestamps.slice().sort((a, b) => a - b);
 
-            let corrPtr = 0, rawPtr = 0;
-            const burstBuckets = new Array(totalSecs).fill(0);
-            sortedKeys.forEach(ts => {
-                const b = Math.min(Math.floor((ts - startTime) / 1000), totalSecs - 1);
-                if (b >= 0) burstBuckets[b]++;
-            });
+                let corrPtr = 0, rawPtr = 0;
+                const burstBuckets = new Array(totalSecs).fill(0);
+                sortedKeys.forEach(ts => {
+                    const b = Math.min(Math.floor((ts - startTime) / 1000), totalSecs - 1);
+                    if (b >= 0) burstBuckets[b]++;
+                });
 
-            for (let s = 1; s <= totalSecs; s++) {
-                const tAtSec = Math.min(startTime + s * 1000, testEndTime);
-                while (corrPtr < sortedCorr.length && sortedCorr[corrPtr] <= tAtSec) corrPtr++;
-                while (rawPtr < sortedKeys.length && sortedKeys[rawPtr] <= tAtSec) rawPtr++;
-                const minElapsed = (tAtSec - startTime) / 60000;
-                _wpmPerSec.push(minElapsed > 0 ? Math.round(corrPtr / 5 / minElapsed) : 0);
-                _rawPerSec.push(minElapsed > 0 ? Math.round(rawPtr  / 5 / minElapsed) : 0);
-                const bucketIdx = s - 1;
-                const wStart2 = startTime + bucketIdx * 1000;
-                const wEnd2   = Math.min(startTime + s * 1000, testEndTime);
-                const wDur    = wEnd2 - wStart2;
-                if (wDur >= 900) {
-                    _burstPerSec.push(Math.round((burstBuckets[bucketIdx] / 5) * (60000 / wDur)));
-                } else {
-                    _burstPerSec.push(_burstPerSec.length > 0 ? _burstPerSec[_burstPerSec.length - 1] : 0);
+                for (let s = 1; s <= totalSecs; s++) {
+                    const tAtSec = Math.min(startTime + s * 1000, testEndTime);
+                    while (corrPtr < sortedCorr.length && sortedCorr[corrPtr] <= tAtSec) corrPtr++;
+                    while (rawPtr < sortedKeys.length && sortedKeys[rawPtr] <= tAtSec) rawPtr++;
+                    const minElapsed = (tAtSec - startTime) / 60000;
+                    _wpmPerSec.push(minElapsed > 0 ? Math.round(corrPtr / 5 / minElapsed) : 0);
+                    _rawPerSec.push(minElapsed > 0 ? Math.round(rawPtr  / 5 / minElapsed) : 0);
+                    const bucketIdx = s - 1;
+                    const wStart2 = startTime + bucketIdx * 1000;
+                    const wEnd2   = Math.min(startTime + s * 1000, testEndTime);
+                    const wDur    = wEnd2 - wStart2;
+                    if (wDur >= 900) {
+                        _burstPerSec.push(Math.round((burstBuckets[bucketIdx] / 5) * (60000 / wDur)));
+                    } else {
+                        _burstPerSec.push(_burstPerSec.length > 0 ? _burstPerSec[_burstPerSec.length - 1] : 0);
+                    }
                 }
-            }
 
-            window._chartData = {
-                wpm: _wpmPerSec,
-                raw: _rawPerSec,
-                burst: _burstPerSec,
-                errors: errorTimestamps,
-                elapsed: elapsedMs
-            };
+                window._chartData = {
+                    wpm: _wpmPerSec,
+                    raw: _rawPerSec,
+                    burst: _burstPerSec,
+                    errors: errorTimestamps,
+                    elapsed: elapsedMs
+                };
+            } catch (_chartErr) {
+                console.error('endTest(): chart data build failed, using an empty chart instead', _chartErr);
+                window._testStartTime = startTime;
+                window._chartData = { wpm: [], raw: [], burst: [], errors: [], elapsed: Date.now() - startTime };
+            }
 
             // === Populate Test Type + Time meta boxes ===
             const elapsedSecs = Math.round((Date.now() - startTime) / 1000);
@@ -2284,7 +2327,7 @@ if (!testActive && !testEnded && e.key.length === 1) {
             wordsDiv.scrollTop = 0;
             _vScrollTween.current = 0;
             if (wordsTrack !== wordsDiv) {
-                wordsTrack.style.transform = (config.lineMode === 1) ? 'translateX(0px)' : '';
+                wordsTrack.style.transform = (_effectiveLineMode() === 1) ? 'translateX(0px)' : '';
             }
             _tapeTween.current = 0;
             _tapeTween.from = 0;
