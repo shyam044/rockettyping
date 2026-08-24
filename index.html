@@ -919,28 +919,19 @@ body.test-running #app #page-title {
     /* Decoupled from #km-scores-panel — flex:0 0 auto means its SIZE
        neither grows nor shrinks based on the score panel (or vice versa);
        it always stays at its own natural width from --km-total-w. The
-       auto side-margins are a POSITION-only nudge: they soak up whatever
-       space is left over in #km-outer-row after the score panel + gap,
-       centering the keymap within that leftover space (shifting it right
-       of where a plain flex-start would put it) — still nothing to do
-       with either element's size. In the ≤1024px stacked layout
-       (responsive.css), the parent's align-items:center takes over. */
+       margin-left is a desktop-only POSITION nudge: it shifts the keymap
+       right of where flex-start would otherwise put it, to visually
+       balance it against the score panel + gap on wide screens. In the
+       ≤1024px stacked layout (responsive.css) this is reset to 0 so
+       align-items:center on the parent can center the keymap correctly —
+       leaving the desktop offset in place there was pushing it off-center
+       and crowding it against the right edge on phones/tablets. */
     flex: 0 0 auto;
     box-sizing: border-box;
     overflow: visible;
     display: flex;
     flex-direction: column;
     align-items: center;
-    /* Was `transform: translateX(55px)`. A CSS transform on ANY ancestor
-       creates a new containing block for its position:fixed descendants —
-       so when the layout-customizer (further down) made the keymap
-       position:fixed to drag it freely around the page, its left/top ended
-       up measured against this box instead of the viewport, trapping it
-       near its original spot no matter how far you dragged. margin-left
-       gives the exact same 55px visual nudge without that side effect, so
-       the keymap (and its KEY MAP toggle button) can now be dragged
-       anywhere on screen. */
-    transform: translateX(-25px);
 }
 #km-scene {
     width: 100%;
