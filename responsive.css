@@ -101,6 +101,15 @@ img { max-width: 100%; }
         align-items: center;
         gap: 12px;
     }
+    /* ── Center the keymap + score badges on tablet/phone ──────────
+       #km-wrap carries a small margin-left nudge for desktop-only visual
+       balance (see #km-wrap in index.html); #km-scores-panel carries its
+       own desktop-only offset margin too. Neither is meant for this
+       stacked, centered layout — left as-is they push the keymap and
+       score badges off-center to the right, making them look crammed
+       against (or overflowing past) the right edge on phones/tablets. */
+    #km-wrap { margin-left: 0; }
+
     #km-scores-panel {
         flex-direction: row !important;
         justify-content: center !important;
@@ -109,6 +118,7 @@ img { max-width: 100%; }
         align-self: center;
         width: 100%;
         gap: 16px;
+        margin: 0 !important;
     }
     #km-elon-badge { transform: none !important; }
 
