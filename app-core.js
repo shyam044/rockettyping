@@ -1308,6 +1308,134 @@ if (!testActive && !testEnded && e.key.length === 1) {
                 scheduleCaretUpdate();
             }
         }
+
+        /* ── Mobile keyboards / IMEs / swipe-to-type ──────────────────────
+           handleKeydown (above) is a real 'keydown' listener, and on desktop
+           that's all that's needed: every character calls e.preventDefault(),
+           which stops the browser from ever writing into #input's value, so
+           #input's own 'input' event never fires for ordinary desktop typing.
+
+           Mobile virtual keyboards break that assumption. Gboard, the iOS
+           keyboard, Samsung Keyboard, swipe/glide-typing, and predictive-text
+           taps frequently don't fire a 'keydown' with a usable e.key at all
+           (many report e.key === "Unidentified", some skip keydown
+           entirely) — which is why typing, and the caret along with it,
+           could stall completely on phones. What every one of them DOES
+           reliably fire is a real 'input' event on #input, because that's
+           the one part of the browser's native text pipeline any
+           keyboard/IME/swipe engine has to go through to place characters
+           in a text field — including swiped words, which land as one
+           multi-character 'input' event rather than a run of keydowns.
+           So mobile typing (and swipe-to-type) is driven from that event
+           instead, running through the exact same per-character logic as
+           handleKeydown (typeLetter / handleBackspace / moveToNextWord),
+           just replayed one character at a time. */
+        function simulateTypedChar(key) {
+            if (window._rtCustomModeActive) return;
+
+            if (config.zenMode && testActive && (key === 'Enter' || key === 'Escape')) {
+                endTest();
+                return;
+            }
+
+            if (!testActive && !testEnded && key.length === 1) {
+                testActive = true;
+                startTimer();
+                caret.classList.remove('blink');
+                setTimeout(function() {
+                    document.body.classList.add('typing-active');
+                    document.body.classList.add('test-running');
+                    var kmToggleRow = document.getElementById('km-toggle-row');
+                    if (kmToggleRow) kmToggleRow.classList.add('km-toggle-hidden');
+                    var kmScoresPanel = document.getElementById('km-scores-panel');
+                    if (kmScoresPanel) kmScoresPanel.classList.add('km-scores-hidden');
+                    document.getElementById("test-config").style.display = "none";
+                    document.getElementById("difficulty-container").style.display = "none";
+                    document.getElementById("leaderboard-btn").style.display = "none";
+                    document.getElementById("play-game").style.display = "none";
+                    toggleNotesSubmenu(false);
+                    timerDiv.classList.remove('highlight');
+                    if (config.mode === 'words') {
+                        timerDiv.textContent = (currentWordIndex + 1) + '/' + config.words;
+                    } else if (config.mode === 'quotes') {
+                        timerDiv.textContent = (currentWordIndex + 1) + '/' + words.length;
+                    }
+                }, 0);
+            }
+            if (!testActive) return;
+
+            const now = Date.now();
+
+            if (key === 'Backspace') {
+                handleBackspace();
+                return;
+            }
+
+            if (key.length !== 1 && key !== ' ') return;
+
+            totalKeystrokes++;
+            keystrokeTimestamps.push(now);
+
+            if (key === ' ') {
+                const wordLen = words[currentWordIndex].length;
+                const isCorrectSpace = (currentLetterIndex >= wordLen);
+                if (isCorrectSpace) {
+                    correctKeystrokes++;
+                    correctSpaces++;
+                    correctTimestamps.push(now);
+                } else {
+                    earlySpaces++;
+                    missedChars += wordLen - currentLetterIndex;
+                    for (let i = currentLetterIndex; i < activeLetterSpansArr.length; i++) {
+                        activeLetterSpansArr[i].classList.add('incorrect');
+                    }
+                }
+                moveToNextWord();
+                return;
+            }
+
+            typeLetter(key);
+        }
+
+        input.addEventListener('input', function(e) {
+            // Custom-layout editing or a finished test: just discard
+            // whatever landed in the field, same as handleKeydown's guards.
+            if (window._rtCustomModeActive || testEnded) { input.value = ''; return; }
+
+            var itype = e.inputType || '';
+
+            // Never treat paste/drop as typing — that would defeat the
+            // whole point of a typing test. Discard it silently.
+            if (itype.indexOf('Paste') !== -1 || itype.indexOf('Drop') !== -1) {
+                input.value = '';
+                return;
+            }
+
+            // Backspace / delete gestures (mobile keyboards frequently send
+            // these as an 'input' event with no matching usable keydown).
+            if (itype.indexOf('delete') === 0) {
+                handleBackspace();
+                input.value = '';
+                return;
+            }
+
+            // Everything else — insertText (normal typing), insertCompositionText
+            // and insertFromComposition (IME composition, and this is also how
+            // swipe/glide-typed words arrive), insertReplacementText
+            // (autocorrect/predictive-text taps) — counts as typed input.
+            // e.data is the exact string the browser inserted when it provides
+            // one; otherwise #input's value IS that string, since it's always
+            // cleared back to '' right after every event is handled below, so
+            // nothing ever accumulates in it between events.
+            var typed = (e.data != null && e.data !== '') ? e.data : input.value;
+            input.value = '';
+            if (!typed) return;
+
+            for (var i = 0; i < typed.length; i++) {
+                simulateTypedChar(typed[i]);
+            }
+        });
+
         function checkWordComplete() {
             if (currentLetterIndex === words[currentWordIndex].length) {
                 // Word complete, wait for space
