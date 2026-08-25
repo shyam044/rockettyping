@@ -42,14 +42,14 @@ img { max-width: 100%; }
    ════════════════════════════════════════════════════════════════ */
 @media (min-width: 1401px) {
     #app  { max-width: 1500px; }
-    /* height = font-size(38) × line-height(1.5) × 3 rows, + a small ~6px
-       buffer so descenders (p, g, y…) on the 3rd row aren't clipped by
-       overflow:hidden. */
-    #words { height: 177px; }
+    /* Height for 3 rows = 3×line-box + 2×row-gap (see #words in styles.css
+       for why the gap has to be counted, not just the line-box height).
+       38×1.5=57/row, gap 6px: 3×57 + 2×6 = 183px. */
+    #words { height: 183px; }
     #words-track { font-size: 38px; }
     /* Custom-layout panel (Reset/Undo-Redo/Save) must always be exactly
        the same box #words occupies at this breakpoint. */
-    #rt-custom-panel { height: 177px; }
+    #rt-custom-panel { height: 183px; }
 }
 
 /* ════════════════════════════════════════════════════════════════
@@ -67,11 +67,11 @@ img { max-width: 100%; }
    ════════════════════════════════════════════════════════════════ */
 @media (max-width: 1024px) {
     #app               { max-width: 96%; padding: 16px; }
-    /* height = font-size(32) × line-height(1.5) × 3 rows, + a small ~5px
-       descender buffer (see #words in styles.css) */
-    #words             { height: 149px; }
+    /* Height for 3 rows = 3×line-box + 2×row-gap. 32×1.5=48/row, gap 6px:
+       3×48 + 2×6 = 156px. */
+    #words             { height: 156px; }
     #words-track       { font-size: 32px; }
-    #rt-custom-panel   { height: 149px; }
+    #rt-custom-panel   { height: 156px; }
     #difficulty-container { right: 10px; }
     .diff-btn, .qlen-btn { padding: 9px 16px; font-size: 12.5px; }
 
@@ -249,18 +249,21 @@ img { max-width: 100%; }
     /* Typing area */
     #words {
         margin-top: 10px;
-        /* height = font-size(28) × line-height(1.5, inherited from base) × 3 rows,
-           + a small ~4px descender buffer so p/g/y on the 3rd row aren't clipped.
+        /* Height for 3 rows = 3×line-box + 2×row-gap (see #words in
+           styles.css for why the gap between wrapped rows has to be
+           counted too, not just the line-box height — leaving it out is
+           what was clipping descenders like p/g/y on the 3rd row).
+           28×1.5=42/row, gap 6px: 3×42 + 2×6 = 138px.
            MUST be a fixed height, not auto/min-height — auto has nothing for
            overflow:hidden to clip, so the box grows to fit every generated
            word (many rows) instead of showing exactly 3 like desktop does. */
-        height: 130px;
+        height: 138px;
     }
     #words-track {
         font-size: 28px;
         padding: 0 10px;
     }
-    #rt-custom-panel { margin-top: 10px; height: 130px; }
+    #rt-custom-panel { margin-top: 10px; height: 138px; }
 
     .notes-card { width: 150px; height: 150px; gap: 10px; }
     .notes-card-icon { font-size: 36px; }
@@ -337,11 +340,12 @@ img { max-width: 100%; }
 
     #page-title { font-size: 12px !important; }
 
-    /* height = font-size(24) × line-height(1.4) × 3 rows, + a small ~4px
-       descender buffer (see #words in styles.css) */
-    #words { height: 105px; }
+    /* Height for 3 rows = 3×line-box + 2×row-gap. 24×1.4=33.6/row, gap 4px:
+       3×33.6 + 2×4 = 108.8px, rounded up to 109px so nothing sub-pixel
+       gets clipped. */
+    #words { height: 109px; }
     #words-track { font-size: 24px; line-height: 1.4; gap: 4px; }
-    #rt-custom-panel { height: 105px; }
+    #rt-custom-panel { height: 109px; }
 
     #notes-submenu {
         flex-direction: column;
@@ -497,17 +501,18 @@ img { max-width: 100%; }
     .diff-btn, .qlen-btn { padding: 7px 10px; font-size: 10.5px; letter-spacing: 0.6px; }
 
     #words {
-        /* height = font-size(20) × line-height(1.5) × 3 rows, + a small ~3px
-           descender buffer so p/g/y on the 3rd row aren't clipped.
+        /* Height for 3 rows = 3×line-box + 2×row-gap (gap stays 4px,
+           inherited from the ≤600px block above — not redeclared here).
+           20×1.5=30/row: 3×30 + 2×4 = 98px.
            Fixed height (not min-height) so it actually clips to 3 rows. */
-        height: 93px;
+        height: 98px;
     }
     #words-track {
         font-size: 20px;
         line-height: 1.5;
         padding: 0 4px;
     }
-    #rt-custom-panel { height: 93px; padding: 6px 10px; }
+    #rt-custom-panel { height: 98px; padding: 6px 10px; }
     .rt-cp-row { font-size: 10px; padding: 4px 8px; }
 
     .notes-card { max-width: 100%; padding: 14px 16px; gap: 12px; }
@@ -599,11 +604,12 @@ img { max-width: 100%; }
     #play-game { flex-direction: column !important; width: 100%; }
     .play-game-btn, .learn-type-btn { width: 100%; justify-content: center; }
 
-    /* height = font-size(17) × line-height(1.5, inherited) × 3 rows, + a
-       small ~3px descender buffer (see #words in styles.css) */
-    #words { height: 80px; }
+    /* Height for 3 rows = 3×line-box + 2×row-gap (line-height 1.5 and gap
+       4px are both inherited from the wider blocks above, not redeclared
+       here). 17×1.5=25.5/row: 3×25.5 + 2×4 = 84.5px, rounded up to 85px. */
+    #words { height: 85px; }
     #words-track { font-size: 17px; }
-    #rt-custom-panel { height: 80px; padding: 4px 8px; gap: 4px; }
+    #rt-custom-panel { height: 85px; padding: 4px 8px; gap: 4px; }
     .rt-cp-row { font-size: 9px; padding: 3px 6px; }
     .rt-cp-nav-btn { width: 28px; height: 28px; font-size: 12px; }
 
