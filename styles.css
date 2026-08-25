@@ -297,11 +297,15 @@ body.test-running #live-wpm-display {
 
     user-select: none;
     position: relative;
-    /* 167px = 3 lines (162px) + a small ~5px buffer. Roboto Mono's descenders
-       (p, g, y, etc.) can extend a few px past the line-height box the browser
-       computes for the 3rd/last row; without this buffer, overflow:hidden was
-       clipping the bottom tip of those descenders on the last visible row. */
-    height: 167px;
+    /* Height for exactly 3 full rows = 3 × line-box height + 2 × row-gap
+       (#words-track below is flex-wrap with gap:6px between wrapped rows).
+       The OLD value here (162px) only counted 3 × line-box height and
+       completely forgot the 2 gaps between those rows — so the 3rd row's
+       box actually started ~12px lower than this container accounted for,
+       and its bottom (with it, the tail of any descender — p, g, y, etc.)
+       was cut off by overflow:hidden. This is the real, exact number, not
+       a padded guess: 3 × (36×1.5) + 2×6 = 162 + 12 = 174px. */
+    height: 174px;
     overflow: hidden;
 
     transition: opacity 0.25s ease;
