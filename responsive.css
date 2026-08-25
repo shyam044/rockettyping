@@ -243,7 +243,18 @@ img { max-width: 100%; }
         width: 100%;
     }
 
-    .difficulty-group { flex-wrap: wrap; justify-content: center; }
+    /* .difficulty-group has a `transform: translateY(-30px)` in the base
+       (desktop) styles — a nudge that only makes sense while
+       #difficulty-container is absolutely positioned off in the top-right
+       corner, far from #timer. Once this breakpoint switches both of them
+       to normal stacked flow (timer, then difficulty buttons, directly
+       underneath), that same -30px pull yanked the EASY/MEDIUM/HARD (and
+       SHORT/MEDIUM/LONG) pills straight up into the timer number above
+       them — collapsing what should be two clearly separate rows into one
+       overlapping mess. Resetting it here is what actually gives them
+       their own row, cleanly below the timer, matching the desktop
+       spacing's intent instead of fighting it. */
+    .difficulty-group { flex-wrap: wrap; justify-content: center; transform: none; }
     .diff-btn, .qlen-btn { padding: 8px 14px; font-size: 12px; }
 
     /* Typing area */
