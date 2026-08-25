@@ -618,7 +618,7 @@
        to drag them, which trapped them near their original spot instead
        of letting them move freely. margin gives the identical visual
        offset without creating that containing block. */
-    margin: 50px 0 0 80px;
+    margin: 50px 0 0 60px;
 }
 
 #km-scores-panel.km-scores-hidden {
@@ -1330,11 +1330,10 @@ footer a:hover{color:var(--rt-main) !important;}
     flex-direction:column;
     gap:6px;
     margin-top:190px;
-    /* Exactly the same box the 3-line typing paragraph occupies (#words is
-       height:167px, including its small descender buffer — see #words in
-       styles.css) — not a minimum, the actual fixed height, so this panel
-       always fits in precisely the same space instead of growing taller. */
-    height:167px;
+    /* Must exactly match #words' height (styles.css) — see the comment there
+       for how this number is derived (3 × line-box + 2 × row-gap, not just
+       3 × line-box). */
+    height:174px;
     width:100%;
     background:var(--rt-panel-bg);
     border:2px solid var(--rt-main);
