@@ -396,14 +396,39 @@ let config = {
         /* ── Own (Zen) mode: manual end — Finish button, Escape, or Enter
            (with or without Shift). Calls the SAME endTest() Time/Words/
            Quotes use — since Own now reuses the real engine, this reuses
-           the real results screen too, not a separate lookalike one. ── */
+           the real results screen too, not a separate lookalike one.
+
+           Checks e.code as a fallback alongside e.key — e.code identifies
+           the physical key and is never altered by held modifiers, which
+           covers the rare browser/OS/layout combos where Shift+Enter's
+           e.key isn't a clean "Enter". Used consistently everywhere this
+           shortcut is checked (here, in handleKeydown, and in
+           simulateTypedChar) so all three agree on what counts. ── */
+        function _isZenEndKey(e) {
+            return e.key === 'Enter' || e.key === 'Escape' ||
+                   e.code === 'Enter' || e.code === 'NumpadEnter' || e.code === 'Escape';
+        }
         var zenFinishBtn = document.getElementById('zen-finish-btn');
         if (zenFinishBtn) zenFinishBtn.addEventListener('click', function(){
             if (config.zenMode && testActive) endTest();
         });
         document.addEventListener('keydown', function(e){
             if (!config.zenMode || !testActive) return;
-            if (e.key === 'Escape' || e.key === 'Enter') {
+            if (_isZenEndKey(e)) {
+                e.preventDefault();
+                endTest();
+            }
+        });
+        // Defense-in-depth fallback: if a 'keydown' for this combo somehow
+        // never reaches the listener above (some browser/OS/IME combos have
+        // been seen to swallow certain modifier+key keydowns), catch it on
+        // 'keyup' instead. endTest() itself guards on `testActive` as its
+        // very first line, so if the keydown handler already ended the
+        // test, this is always a harmless no-op — it can never end it twice
+        // or double-count anything.
+        document.addEventListener('keyup', function(e){
+            if (!config.zenMode || !testActive) return;
+            if (_isZenEndKey(e)) {
                 e.preventDefault();
                 endTest();
             }
@@ -829,7 +854,11 @@ let config = {
             el.scrollTop = 0;
             _vScrollTween.current = 0;
             wordsTrack.classList.toggle('tape-track', effectiveMode === 1);
-            const rowH = getRowHeight();
+            // Rounded to a whole pixel — see the matching comment in
+            // _updateCaretNow() on why this must line up with the integer
+            // offsetTop/offsetLeft values used for the per-keystroke scroll
+            // math, not just here.
+            const rowH = Math.round(getRowHeight());
             if (effectiveMode === 1) {
                 el.style.height = rowH + 'px';
                 // Pre-position the text so word 1 / letter 1 starts AT the center
@@ -951,7 +980,18 @@ let config = {
                 if (!target) return;
             }
 
-            let rowH = _computedRowHeightFallback();
+            // Rounded to a whole pixel to match offsetTop/offsetLeft below —
+            // those are integers per spec (CSSOM View rounds them), but this
+            // is computed from CSS line-height/gap which can land on a
+            // fraction (e.g. 24px font × 1.4 line-height = 33.6px). Comparing
+            // a fractional rowH against integer offsets works fine on row 1,
+            // but the mismatch compounds every row: by row 2-3 the assumed
+            // and real positions have drifted enough to visibly disagree,
+            // which is what made the scroll-up feel like it overshot and
+            // corrected itself ("up and down") a couple of rows in — worst
+            // in Own mode specifically, since its 2-row window scrolls on
+            // EVERY wrapped row (Time/Words/Quotes only scroll every 2 rows).
+            let rowH = Math.round(_computedRowHeightFallback());
 
             const wordLeft = activeWord.offsetLeft;
             const wordTop  = activeWord.offsetTop;
@@ -1078,7 +1118,15 @@ if (window._rtCustomModeActive) return;
 // next Enter would silently RESET the session instead of ending it with
 // results, since Tab+Enter is normally the "restart" gesture everywhere
 // else on the site.
-if (config.zenMode && testActive && (e.key === 'Enter' || e.key === 'Escape')) {
+//
+// Checks e.code as well as e.key: e.key is what's affected by modifiers/
+// layout, and on a handful of browser+OS+keyboard-layout combos, holding
+// Shift while pressing Enter has been seen to report e.key as something
+// other than "Enter" (or skip carrying a clean value at all). e.code
+// identifies the physical key itself and is never altered by Shift, so
+// checking both makes Shift+Enter behave exactly like plain Enter here
+// regardless of that quirk.
+if (config.zenMode && testActive && _isZenEndKey(e)) {
     e.preventDefault();
     endTest();
     return;
