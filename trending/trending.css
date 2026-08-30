@@ -1,0 +1,795 @@
+/* ============================================================
+   TRENDING FEATURE — shared styles
+   Matches Rocket Typing's existing dark theme (see styles.css):
+   bg #0d1117, text #c9d1d9, accent blue #58a6ff, caret green
+   #56d364, error red #f85149 — plus a "trending flame" accent
+   (#ff6b35) so the section feels distinct but on-brand.
+   ============================================================ */
+
+:root {
+  --tr-bg: #0d1117;
+  --tr-bg-soft: #131a24;
+  --tr-card: #161c27;
+  --tr-border: rgba(255, 255, 255, 0.08);
+  --tr-text: #c9d1d9;
+  --tr-sub: #8b949e;
+  --tr-accent: #ff6b35;   /* trending flame */
+  --tr-accent-rgb: 255, 107, 53;
+  --tr-blue: #58a6ff;
+  --tr-gold: #ffd700;
+  --tr-cyan: #00e6cc;
+  --tr-green: #56d364;
+  --tr-red: #f85149;
+  --tr-radius: 14px;
+  --tr-font: 'Roboto Mono', 'JetBrains Mono', monospace;
+  --tr-font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+.tr-root {
+  min-height: 100vh;
+  background: var(--tr-bg);
+  background-image:
+    radial-gradient(circle at 15% 10%, rgba(255, 107, 53, 0.10) 0%, transparent 45%),
+    radial-gradient(circle at 85% 30%, rgba(88, 166, 255, 0.10) 0%, transparent 45%);
+  color: var(--tr-text);
+  font-family: var(--tr-font-body);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+.tr-container {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: clamp(14px, 4vw, 32px);
+}
+
+/* ---------- top bar ---------- */
+.tr-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px clamp(14px, 4vw, 32px);
+  max-width: 860px;
+  margin: 0 auto;
+}
+.tr-brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--tr-text);
+  text-decoration: none;
+  font-family: var(--tr-font);
+  font-weight: 700;
+  font-size: clamp(13px, 3vw, 15px);
+}
+.tr-brand img { width: 34px; height: 34px; }
+.tr-brand:hover { color: var(--tr-blue); }
+.tr-topbar-right { display: flex; gap: 8px; align-items: center; }
+.tr-pill-link {
+  font-family: var(--tr-font);
+  font-size: 12px;
+  color: var(--tr-sub);
+  text-decoration: none;
+  border: 1px solid var(--tr-border);
+  padding: 7px 12px;
+  border-radius: 999px;
+  transition: all .15s;
+  white-space: nowrap;
+}
+.tr-pill-link:hover { color: var(--tr-blue); border-color: rgba(88,166,255,.4); }
+
+/* ---------- hero / hub header ---------- */
+.tr-hero {
+  text-align: center;
+  padding: clamp(18px, 5vw, 40px) 0 clamp(10px, 3vw, 20px);
+}
+.tr-hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--tr-font);
+  font-size: 12px;
+  letter-spacing: 1px;
+  color: var(--tr-accent);
+  background: rgba(var(--tr-accent-rgb), 0.12);
+  border: 1px solid rgba(var(--tr-accent-rgb), 0.35);
+  padding: 5px 14px;
+  border-radius: 999px;
+  margin-bottom: 14px;
+  animation: tr-pulse 2.2s ease-in-out infinite;
+}
+@keyframes tr-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(var(--tr-accent-rgb), 0.35); }
+  50% { box-shadow: 0 0 0 6px rgba(var(--tr-accent-rgb), 0); }
+}
+.tr-hero h1 {
+  font-size: clamp(22px, 5vw, 34px);
+  margin: 0 0 8px;
+  color: #fff;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+}
+.tr-hero p {
+  color: var(--tr-sub);
+  max-width: 560px;
+  margin: 0 auto;
+  font-size: clamp(13px, 3vw, 15px);
+}
+
+/* ---------- date picker ---------- */
+.tr-datebar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin: 18px 0 26px;
+}
+.tr-datebar label {
+  font-family: var(--tr-font);
+  font-size: 12px;
+  color: var(--tr-sub);
+}
+#tr-date-select {
+  font-family: var(--tr-font);
+  font-size: 13px;
+  background: var(--tr-card);
+  color: var(--tr-text);
+  border: 1px solid var(--tr-border);
+  border-radius: 8px;
+  padding: 8px 12px;
+  cursor: pointer;
+}
+#tr-date-select:focus { outline: 2px solid var(--tr-blue); }
+
+/* ---------- article cards (hub list) ---------- */
+.tr-card {
+  display: block;
+  background: linear-gradient(150deg, var(--tr-card), var(--tr-bg-soft));
+  border: 1px solid var(--tr-border);
+  border-radius: var(--tr-radius);
+  padding: clamp(16px, 4vw, 24px);
+  text-decoration: none;
+  color: inherit;
+  margin-bottom: 16px;
+  transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease;
+  position: relative;
+  overflow: hidden;
+}
+.tr-card::before {
+  content: "";
+  position: absolute; inset: 0;
+  background: linear-gradient(120deg, rgba(var(--tr-accent-rgb), 0.06), transparent 60%);
+  opacity: 0;
+  transition: opacity .2s;
+}
+.tr-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(var(--tr-accent-rgb), 0.4);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+}
+.tr-card:hover::before { opacity: 1; }
+.tr-card-meta {
+  display: flex; gap: 10px; align-items: center;
+  font-family: var(--tr-font);
+  font-size: 11px;
+  color: var(--tr-accent);
+  margin-bottom: 10px;
+  letter-spacing: .5px;
+  text-transform: uppercase;
+}
+.tr-card-meta .tr-dot { color: var(--tr-border); }
+.tr-card h2 {
+  font-size: clamp(17px, 4vw, 21px);
+  margin: 0 0 8px;
+  color: #fff;
+  font-weight: 700;
+}
+.tr-card p { color: var(--tr-sub); margin: 0 0 14px; font-size: 14px; }
+.tr-card-cta {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: var(--tr-font);
+  font-size: 12px; font-weight: 700;
+  color: var(--tr-accent);
+}
+.tr-card-cta svg { width: 14px; height: 14px; }
+
+.tr-empty {
+  text-align: center;
+  color: var(--tr-sub);
+  font-family: var(--tr-font);
+  padding: 40px 10px;
+}
+
+/* ---------- ARTICLE PAGE ---------- */
+.tr-article-wrap { max-width: 760px; margin: 0 auto; padding: clamp(10px,3vw,20px) clamp(14px,4vw,32px) 90px; }
+
+.tr-breadcrumb {
+  font-family: var(--tr-font);
+  font-size: 11px;
+  color: var(--tr-sub);
+  margin-bottom: 16px;
+}
+.tr-breadcrumb a { color: var(--tr-sub); text-decoration: none; }
+.tr-breadcrumb a:hover { color: var(--tr-blue); }
+
+.tr-article-header { margin-bottom: 22px; }
+.tr-article-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: var(--tr-font); font-size: 11px; letter-spacing: 1px;
+  color: var(--tr-accent);
+  background: rgba(var(--tr-accent-rgb), 0.12);
+  border: 1px solid rgba(var(--tr-accent-rgb), 0.35);
+  padding: 4px 12px; border-radius: 999px; margin-bottom: 12px;
+}
+.tr-article-header h1 {
+  font-size: clamp(24px, 5vw, 36px);
+  line-height: 1.25;
+  color: #fff;
+  margin: 0 0 12px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+}
+.tr-article-sub {
+  display: flex; gap: 14px; flex-wrap: wrap;
+  font-family: var(--tr-font); font-size: 12px; color: var(--tr-sub);
+}
+
+.tr-article-body { font-size: clamp(15px, 2.2vw, 17px); color: #d8dee6; }
+.tr-article-body p { margin: 0 0 18px; }
+.tr-article-body h2 { color: #fff; font-size: clamp(18px, 3vw, 22px); margin: 28px 0 12px; }
+.tr-article-body ul { margin: 0 0 18px; padding-left: 22px; }
+.tr-article-body li { margin-bottom: 6px; }
+
+/* ---------- article figures / images ---------- */
+/* Capped height + object-fit:cover so a tall aerial/landscape photo
+   reads as a supporting visual next to the article text, not a huge
+   block that dominates the page — same idea real news sites use.
+   Scales down further on smaller screens where vertical space is
+   more precious relative to the shorter line length. */
+.tr-figure {
+  margin: 22px 0;
+}
+.tr-figure.tr-figure-hero { margin-top: 0; }
+.tr-figure img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 420px;
+  object-fit: cover;
+  object-position: center;
+  border-radius: var(--tr-radius);
+  border: 1px solid var(--tr-border);
+  background: var(--tr-card); /* visible while the image itself is still loading */
+  cursor: zoom-in;
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+.tr-figure img:hover { transform: scale(1.01); box-shadow: 0 10px 28px rgba(0,0,0,0.35); }
+.tr-figure figcaption {
+  font-family: var(--tr-font);
+  font-size: 12px;
+  color: var(--tr-sub);
+  text-align: center;
+  margin-top: 8px;
+  line-height: 1.5;
+  font-style: italic;
+}
+@media (max-width: 599px) {
+  .tr-figure { margin: 16px 0; }
+  .tr-figure img { max-height: 200px; }
+}
+@media (min-width: 600px) and (max-width: 899px) {
+  .tr-figure img { max-height: 280px; }
+}
+@media (min-width: 900px) and (max-width: 1199px) {
+  .tr-figure img { max-height: 360px; }
+}
+
+.tr-startbar {
+  position: sticky;
+  bottom: 16px;
+  display: flex;
+  justify-content: center;
+  margin-top: 30px;
+  z-index: 20;
+}
+#tr-start-btn {
+  font-family: var(--tr-font);
+  font-weight: 800;
+  font-size: clamp(14px, 3vw, 16px);
+  letter-spacing: 1px;
+  color: #0d1117;
+  background: linear-gradient(135deg, var(--tr-accent), #ffb347);
+  border: none;
+  padding: 15px 34px;
+  border-radius: 999px;
+  cursor: pointer;
+  box-shadow: 0 10px 30px rgba(var(--tr-accent-rgb), 0.4);
+  transition: transform .15s ease, box-shadow .15s ease;
+}
+#tr-start-btn:hover { transform: translateY(-2px) scale(1.03); box-shadow: 0 14px 36px rgba(var(--tr-accent-rgb), 0.55); }
+#tr-start-btn:active { transform: translateY(0) scale(0.98); }
+
+/* ---------- TYPING VIEW ---------- */
+#tr-typing-view { display: none; }
+body.tr-typing #tr-article-view { display: none; }
+body.tr-typing #tr-typing-view { display: block; }
+body.tr-typing { overflow-x: hidden; }
+
+.tr-typing-topbar {
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 10px;
+  margin-bottom: 18px;
+}
+.tr-diff-group { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+.tr-diff-btn {
+  font-family: var(--tr-font);
+  font-size: 12px;
+  background: rgba(255,255,255,0.03);
+  border: 2px solid var(--tr-border);
+  color: var(--tr-sub);
+  padding: 7px 13px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all .15s;
+}
+.tr-diff-btn:hover { color: var(--tr-text); border-color: rgba(255,255,255,0.2); }
+.tr-diff-btn.active { color: var(--tr-accent); border-color: var(--tr-accent); background: rgba(var(--tr-accent-rgb),0.1); }
+
+/* photo on/off toggle — sits right after the difficulty buttons, OFF by default */
+.tr-photo-toggle {
+  display: flex; align-items: center; gap: 8px;
+  font-family: var(--tr-font); font-size: 12px; color: var(--tr-sub);
+  padding-left: 6px; margin-left: 2px;
+  border-left: 1px solid var(--tr-border);
+}
+.tr-toggle-switch { position: relative; display: inline-block; width: 36px; height: 20px; flex: 0 0 auto; }
+.tr-toggle-switch input { opacity: 0; width: 0; height: 0; }
+.tr-toggle-slider {
+  position: absolute; inset: 0; cursor: pointer;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid var(--tr-border);
+  border-radius: 999px;
+  transition: background .15s ease;
+}
+.tr-toggle-slider::before {
+  content: "";
+  position: absolute; left: 2px; top: 2px;
+  width: 14px; height: 14px;
+  background: var(--tr-sub);
+  border-radius: 50%;
+  transition: transform .15s ease, background .15s ease;
+}
+.tr-toggle-switch input:checked + .tr-toggle-slider { background: rgba(var(--tr-accent-rgb), 0.25); border-color: var(--tr-accent); }
+.tr-toggle-switch input:checked + .tr-toggle-slider::before { transform: translateX(16px); background: var(--tr-accent); }
+.tr-toggle-switch input:focus-visible + .tr-toggle-slider { outline: 2px solid var(--tr-accent); outline-offset: 2px; }
+
+/* "Read Article" button — sits right after the Photos toggle, same
+   gold gradient as #tr-start-btn so it reads as the site's one
+   consistent "primary action" color. Click returns to the article
+   view (typing progress/state is preserved, not reset). */
+.tr-read-btn {
+  font-family: var(--tr-font);
+  font-weight: 800;
+  font-size: 11px;
+  letter-spacing: 0.4px;
+  color: #0d1117;
+  background: linear-gradient(135deg, var(--tr-accent), #ffb347);
+  border: none;
+  padding: 7px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  white-space: nowrap;
+  box-shadow: 0 4px 14px rgba(var(--tr-accent-rgb), 0.35);
+  transition: transform .15s ease, box-shadow .15s ease;
+}
+.tr-read-btn:hover { transform: translateY(-1px) scale(1.03); box-shadow: 0 6px 18px rgba(var(--tr-accent-rgb), 0.5); }
+.tr-read-btn:active { transform: translateY(0) scale(0.98); }
+.tr-read-btn:focus-visible { outline: 2px solid var(--tr-accent); outline-offset: 2px; }
+
+.tr-live-stats {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+.tr-live-words {
+  font-family: var(--tr-font);
+  text-align: center;
+}
+.tr-live-words .num { font-size: 26px; font-weight: 800; color: var(--tr-blue); line-height: 1; }
+.tr-live-words .lbl { font-size: 10px; color: var(--tr-sub); letter-spacing: 1px; }
+
+.tr-live-wpm {
+  font-family: var(--tr-font);
+  text-align: center;
+}
+.tr-live-wpm .num { font-size: 26px; font-weight: 800; color: var(--tr-accent); line-height: 1; }
+.tr-live-wpm .lbl { font-size: 10px; color: var(--tr-sub); letter-spacing: 1px; }
+
+/* ---------- FOCUS MODE (hide chrome while typing) ----------
+   Added to <body> the instant a keystroke lands (see onInput in
+   trending-engine.js), removed the instant the mouse/finger moves, or
+   the input loses focus, or the test finishes. Only the words-left +
+   live-WPM cluster stays on screen — visibility (not display) is used
+   so nothing reflows and the toggle stays cheap on every keystroke. */
+.tr-topbar, .tr-breadcrumb, .tr-diff-group, .tr-footer-links {
+  transition: opacity .2s ease, visibility .2s ease;
+}
+body.tr-hide-chrome .tr-topbar,
+body.tr-hide-chrome .tr-breadcrumb,
+body.tr-hide-chrome .tr-diff-group,
+body.tr-hide-chrome .tr-footer-links {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+#tr-words {
+  /* Keep scrolling enabled */
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  /* Hide scrollbar on Firefox */
+  scrollbar-width: none;
+
+  /* Keep the rest of your existing styles */
+  font-family: var(--tr-font);
+  background: var(--tr-card);
+  border: 1px solid var(--tr-border);
+  border-radius: var(--tr-radius);
+  padding: clamp(16px, 4vw, 26px);
+  position: relative;
+  max-height: 70vh;
+
+  user-select: none;
+  cursor: text;
+
+  transition: opacity .25s ease;
+  transform: translateZ(0);
+  will-change: scroll-position;
+  contain: layout style;
+}
+
+/* Hide scrollbar on Chrome, Edge, Safari, mobile browsers */
+#tr-words::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+#tr-words::-webkit-scrollbar {
+  width: 7px;
+}
+
+#tr-words::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+#tr-words::-webkit-scrollbar-thumb {
+  background: rgba(255,107,53,.45);
+  border-radius: 10px;
+}
+
+#tr-words::-webkit-scrollbar-thumb:hover {
+  background: rgba(255,107,53,.7);
+}
+
+
+#tr-words-track {
+  font-size: clamp(18px, 2.6vw, 28px);
+  line-height: 1.5;
+  letter-spacing: 0.3px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  align-content: flex-start;
+  gap: 6px;                       /* small gap between words on the same row + between wrapped rows */
+}
+
+/* Each WORD is the flex item — letters inside it are plain inline spans,
+   never flex items themselves, so there is no gap between letters. The
+   20px margin-right is what actually reads as "the space" between words
+   (same technique as the main site). */
+#tr-words .word {
+  display: inline-block;
+  margin-right: 20px;
+  max-width: 100%;
+  overflow-wrap: break-word;
+  align-self: flex-start;
+  /* deliberately NOT position:relative — letters inside need their
+     offsetLeft/offsetTop measured directly against #tr-words (the
+     caret's own positioning context), not against the word itself. */
+}
+#tr-words .word.active { border-bottom: 2px solid var(--tr-accent); }
+
+/* Paragraph break: a flex-basis:100% spacer forces a new line and adds
+   real visible space before the next paragraph. Its height is set from
+   JS to exactly one measured row height, so every "row slot" in the
+   document — including across paragraph boundaries — stays uniform,
+   which is what keeps the scroll-up math correct all the way through
+   the article, not just for the first couple of rows. */
+.tr-para-break { flex-basis: 100%; }
+
+/* Inline photos inside the typing flow — same images/positions as the
+   article, OFF by default. Given its own class (not .tr-para-break) so
+   the JS that force-matches spacer heights to one text row never
+   touches these — they keep their natural image height. */
+.tr-inline-photo {
+  flex-basis: 100%;
+  margin: 14px 0;
+  display: none; /* shown only when #tr-words has .tr-photos-on */
+}
+#tr-words.tr-photos-on .tr-inline-photo { display: block; }
+.tr-inline-photo figure { margin: 0; }
+.tr-inline-photo img {
+  display: block;
+  width: 100%;
+  max-height: 260px;
+  object-fit: cover;
+  border-radius: 10px;
+  border: 1px solid var(--tr-border);
+  cursor: zoom-in;
+}
+@media (max-width: 599px) {
+  .tr-inline-photo img { max-height: 160px; }
+}
+.tr-inline-photo figcaption {
+  font-family: var(--tr-font);
+  font-size: 11px;
+  color: var(--tr-sub);
+  text-align: center;
+  margin-top: 6px;
+  font-style: italic;
+}
+
+#tr-words .ch { color: #646669; transition: color .04s; }
+#tr-words .ch.correct { color: var(--tr-text); }
+#tr-words .ch.incorrect { color: var(--tr-red); }
+body.tr-typing-active #tr-words .ch { transition: none !important; } /* no per-keystroke transition queue at speed */
+
+/* Real caret div — moved via translate3d from JS, batched to one rAF
+   update per frame, and always targeting a real rendered letter span
+   (never a space character) so its size/position never flickers.
+   Idle: gentle 0.08s ease-out settle. While actively typing: 0.13s
+   linear continuous glide — this is what makes it track fast typing
+   smoothly instead of jumping keystroke to keystroke. */
+#tr-caret {
+  position: absolute;
+  left: 0; top: 0;
+  background: var(--tr-accent);
+  width: 3px;
+  border-radius: 3px;
+  transition: transform 0.08s ease-out, height 0.06s ease-out;
+  will-change: transform, height;
+  pointer-events: none;
+}
+body.tr-typing-active #tr-caret { transition: 0.13s linear !important; }
+#tr-caret.blink { animation: tr-blink 1s step-end infinite; }
+@keyframes tr-blink { 50% { opacity: 0; } }
+
+#tr-hidden-input {
+  position: absolute;
+  opacity: 0;
+  width: 1px; height: 1px;
+  pointer-events: none;
+}
+
+.tr-focus-hint {
+  text-align: center;
+  font-family: var(--tr-font);
+  font-size: 12px;
+  color: var(--tr-sub);
+  margin-top: 10px;
+  min-height: 18px;
+}
+
+/* ---------- results ---------- */
+#tr-result { display: none; }
+body.tr-done #tr-typing-view > *:not(#tr-result) { display: none; }
+body.tr-done #tr-result { display: block; }
+
+.tr-result-top {
+  display: flex; gap: 10px; align-items: center; justify-content: center;
+  font-family: var(--tr-font);
+  color: var(--tr-accent);
+  margin-bottom: 18px;
+  font-size: 13px; letter-spacing: 1px;
+}
+
+.tr-result-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+  margin-bottom: 20px;
+}
+.tr-stat {
+  background: var(--tr-card);
+  border: 1px solid var(--tr-border);
+  border-radius: 12px;
+  padding: 16px 8px;
+  text-align: center;
+  font-family: var(--tr-font);
+}
+.tr-stat .v { font-size: clamp(18px, 4.2vw, 30px); font-weight: 800; }
+.tr-stat .l { font-size: 10px; color: var(--tr-sub); letter-spacing: 1px; margin-top: 4px; }
+.tr-stat.wpm .v { color: var(--tr-gold); }
+.tr-stat.raw .v { color: var(--tr-cyan); }
+.tr-stat.acc .v { color: var(--tr-green); }
+.tr-stat.cons .v { color: var(--tr-blue); }
+.tr-stat.err .v { color: var(--tr-red); }
+
+#tr-chart-wrap {
+  background: var(--tr-card);
+  border: 1px solid var(--tr-border);
+  border-radius: var(--tr-radius);
+  padding: 14px;
+  margin-bottom: 20px;
+}
+#tr-chart { width: 100%; height: 140px; display: block; }
+
+.tr-result-actions {
+  display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;
+  margin-bottom: 22px;
+}
+.tr-btn {
+  font-family: var(--tr-font);
+  font-weight: 700; font-size: 13px;
+  border-radius: 8px; padding: 12px 20px;
+  cursor: pointer; border: 2px solid var(--tr-border);
+  background: transparent; color: var(--tr-text);
+  transition: all .15s;
+}
+.tr-btn:hover { border-color: var(--tr-accent); color: var(--tr-accent); }
+.tr-btn.primary { background: var(--tr-accent); border-color: var(--tr-accent); color: #0d1117; }
+.tr-btn.primary:hover { filter: brightness(1.08); color: #0d1117; }
+
+.tr-streak {
+  text-align: center;
+  font-family: var(--tr-font);
+  font-size: 12px;
+  color: var(--tr-sub);
+  margin-bottom: 10px;
+}
+.tr-streak b { color: var(--tr-accent); }
+
+/* ---------- right-side ad rail (the ONLY ad on this page) ---------- */
+/* position:fixed, completely outside the article's own layout flow —
+   this is the actual fix for the "article shifted left" bug. Before,
+   the rail was a flex sibling of the article inside a row that got
+   centered as a combined unit, which visually pushed the article off
+   center. Now the article goes back to being centered purely on its
+   own (plain .tr-article-wrap margin:auto, untouched by the rail at
+   all), and the rail independently anchors to the viewport's right
+   edge. Only shown when the viewport is wide enough that it can't
+   possibly overlap the centered content. */
+.tr-ad-rail {
+  display: none;
+}
+@media (min-width: 1650px) {
+  .tr-ad-rail {
+    display: block;
+    position: fixed;
+    top: 100px;
+    right: 24px;
+    width: 300px;
+    z-index: 5;
+  }
+}
+.tr-ad-rail-inner {
+  min-height: 250px;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+/* ---------- related / footer nav ---------- */
+.tr-footer-links {
+  text-align: center;
+  font-family: var(--tr-font);
+  font-size: 12px;
+  color: var(--tr-sub);
+  padding: 30px 0 10px;
+}
+.tr-footer-links a { color: var(--tr-sub); margin: 0 8px; text-decoration: none; }
+.tr-footer-links a:hover { color: var(--tr-blue); }
+
+/* ============ RESPONSIVE ============
+   xs: <380  sm: 380-599  md: 600-899  lg: 900-1199  xl: 1200+ */
+@media (max-width: 599px) {
+  .tr-result-grid { grid-template-columns: repeat(2, 1fr); }
+  .tr-typing-topbar { justify-content: center; text-align: center; }
+  .tr-photo-toggle { border-left: none; padding-left: 0; margin-left: 0; }
+  .tr-live-stats { gap: 12px; }
+  .tr-live-words .num, .tr-live-wpm .num { font-size: 22px; }
+}
+@media (min-width: 1200px) {
+  .tr-container, .tr-article-wrap { max-width: 920px; }
+}
+
+/* ============ LIGHTBOX (click-to-zoom on any article/typing photo) ============ */
+#tr-lightbox {
+  position: fixed;
+  inset: 0;
+  background: rgba(6, 8, 12, 0.94);
+  z-index: 999;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  padding: 24px;
+  -webkit-tap-highlight-color: transparent;
+}
+#tr-lightbox.open { display: flex; }
+body.tr-lightbox-open { overflow: hidden; }
+
+#tr-lightbox-stage {
+  position: relative;
+  max-width: 100%;
+  max-height: calc(100% - 70px);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  touch-action: none;
+  cursor: grab;
+}
+#tr-lightbox-stage.zoomed { cursor: grab; }
+#tr-lightbox-stage.dragging { cursor: grabbing; }
+#tr-lightbox-img {
+  max-width: 100%;
+  max-height: 100%;
+  border-radius: 8px;
+  user-select: none;
+  -webkit-user-drag: none;
+  transform-origin: center center;
+  transition: transform .15s ease-out;
+  will-change: transform;
+}
+
+#tr-lightbox-caption {
+  font-family: var(--tr-font);
+  font-size: 12px;
+  color: var(--tr-sub);
+  text-align: center;
+  margin-top: 14px;
+  max-width: 640px;
+}
+
+#tr-lightbox-controls {
+  position: absolute;
+  top: 16px; right: 16px;
+  display: flex; gap: 8px;
+  z-index: 2;
+}
+#tr-lightbox-controls button {
+  font-family: var(--tr-font);
+  font-size: 16px;
+  width: 38px; height: 38px;
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.15);
+  background: rgba(255,255,255,0.06);
+  color: #fff;
+  cursor: pointer;
+  transition: background .15s;
+}
+#tr-lightbox-controls button:hover { background: rgba(255,255,255,0.15); }
+#tr-lightbox-close {
+  position: absolute;
+  top: 16px; left: 16px;
+  font-family: var(--tr-font);
+  font-size: 20px;
+  width: 38px; height: 38px;
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.15);
+  background: rgba(255,255,255,0.06);
+  color: #fff;
+  cursor: pointer;
+  z-index: 2;
+}
+#tr-lightbox-close:hover { background: rgba(255,255,255,0.15); }
+
+@media (max-width: 480px) {
+  #tr-lightbox-caption { font-size: 11px; padding: 0 30px; }
+}

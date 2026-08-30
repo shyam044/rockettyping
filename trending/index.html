@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Today's Trending News — Type the Viral Story of the Day | Rocket Typing</title>
+<meta name="description" content="A brand-new trending news story every day, turned into a free typing test. Read what the internet is talking about, then race the clock to type it — pick Easy, Medium or Hard mode.">
+<meta name="keywords" content="trending news today, viral news typing test, daily typing practice, typing test with real articles, trending topics typing, current events typing game">
+<meta name="author" content="Rocket Typing">
+<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">
+<link rel="canonical" href="https://www.rockettyping.com/trending">
+<link rel="icon" href="/images/logo-192.webp">
+<meta name="google-adsense-account" content="ca-pub-8311353174841359">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="Today's Trending News — Type the Viral Story of the Day | Rocket Typing">
+<meta property="og:description" content="A new viral news story every day, turned into a typing test. Read it, then type it — Easy, Medium or Hard.">
+<meta property="og:url" content="https://www.rockettyping.com/trending">
+<meta property="og:image" content="https://www.rockettyping.com/images/og-banner.webp">
+<meta property="og:site_name" content="Rocket Typing">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Today's Trending News — Type the Viral Story of the Day">
+<meta name="twitter:description" content="A new viral news story every day, turned into a free typing test.">
+<meta name="twitter:image" content="https://www.rockettyping.com/images/og-banner.webp">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "name": "Rocket Typing — Trending",
+  "description": "Daily trending news articles turned into free typing tests.",
+  "url": "https://www.rockettyping.com/trending"
+}
+</script>
+
+<link rel="preload" as="style" href="/trending/trending.css">
+<link rel="stylesheet" href="/trending/trending.css">
+</head>
+<body>
+<div class="tr-root">
+
+  <div class="tr-topbar">
+    <a href="/" class="tr-brand">
+      <img src="/images/rocket-typing-logo.webp" alt="Rocket Typing" width="34" height="34">
+      Rocket Typing
+    </a>
+    <div class="tr-topbar-right">
+      <a href="/" class="tr-pill-link">⌨️ Typing Test</a>
+      <a href="/leaderboard" class="tr-pill-link">🏆 Leaderboard</a>
+    </div>
+  </div>
+
+  <div class="tr-container">
+    <div class="tr-hero">
+      <span class="tr-hero-badge">🔥 UPDATED DAILY</span>
+      <h1>Today's Trending Story — Now a Typing Test</h1>
+      <p>Every day we turn the internet's biggest story into a typing challenge. Read what happened, hit <strong>Start Typing</strong>, and see your WPM and accuracy at the end.</p>
+    </div>
+
+    <div class="tr-datebar">
+      <label for="tr-date-select">Jump to a month:</label>
+      <select id="tr-date-select" aria-label="Select a month of trending articles"></select>
+    </div>
+
+    <div id="tr-article-list"></div>
+
+    <p class="tr-empty" id="tr-empty-msg" style="display:none;">No trending article found for that date yet — check back soon!</p>
+  </div>
+
+  <div class="tr-footer-links">
+    <a href="/">Typing Test</a>
+    <a href="/learn">Learn Typing</a>
+    <a href="/game">Typing Game</a>
+    <a href="/leaderboard">Leaderboard</a>
+    <a href="/about">About</a>
+  </div>
+</div>
+
+<script>
+(function () {
+  "use strict";
+  var listEl = document.getElementById("tr-article-list");
+  var selectEl = document.getElementById("tr-date-select");
+  var emptyEl = document.getElementById("tr-empty-msg");
+  var months = [];               // ["2026-08", "2026-07", ...] newest first
+  var monthCache = {};           // month key -> articles array, so re-selecting a month is instant
+  var latestMonthArticles = [];  // used to flag "TRENDING NOW" only on the single newest article site-wide
+
+  function fmtDate(d) {
+    var dt = new Date(d + "T00:00:00");
+    return dt.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
+  }
+  function fmtMonth(m) {
+    var dt = new Date(m + "-01T00:00:00");
+    return dt.toLocaleDateString("en-US", { month: "long", year: "numeric" });
+  }
+  function sortDesc(arr) {
+    return arr.slice().sort(function (a, b) { return new Date(b.date) - new Date(a.date); });
+  }
+
+  function cardHtml(a, isLatestOverall) {
+    var card = document.createElement("a");
+    card.className = "tr-card";
+    card.href = a.url;
+    var meta = document.createElement("div");
+    meta.className = "tr-card-meta";
+    meta.innerHTML =
+      (isLatestOverall ? "🔥 TRENDING NOW" : "") +
+      '<span class="tr-dot">•</span><span></span><span class="tr-dot">•</span><span></span>';
+    meta.querySelectorAll("span")[1].textContent = fmtDate(a.date);
+    meta.querySelectorAll("span")[3].textContent = a.readMinutes + " min read";
+    var h2 = document.createElement("h2");
+    h2.textContent = a.title;
+    var p = document.createElement("p");
+    p.textContent = a.excerpt;
+    var cta = document.createElement("span");
+    cta.className = "tr-card-cta";
+    cta.textContent = "Read & Start Typing →";
+    card.appendChild(meta);
+    card.appendChild(h2);
+    card.appendChild(p);
+    card.appendChild(cta);
+    return card;
+  }
+
+  function renderList(items) {
+    listEl.innerHTML = "";
+    if (!items.length) {
+      emptyEl.style.display = "block";
+      return;
+    }
+    emptyEl.style.display = "none";
+    var latestSlug = latestMonthArticles[0] ? latestMonthArticles[0].slug : null;
+    items.forEach(function (a) {
+      listEl.appendChild(cardHtml(a, a.slug === latestSlug));
+    });
+  }
+
+  // Each trending article lives inside its OWN month's JSON file (e.g.
+  // /trending/manifest/2026-08.json), so no single fetch ever has to
+  // carry the site's entire history — this stays fast and tiny even
+  // after years of daily articles. /trending/manifest/index.json just
+  // lists which months exist; individual month files are fetched only
+  // when actually needed (lazily, and cached client-side once fetched).
+  function loadMonth(monthKey) {
+    if (monthCache[monthKey]) {
+      renderList(sortDesc(monthCache[monthKey]));
+      return;
+    }
+    fetch("/trending/manifest/" + monthKey + ".json")
+      .then(function (r) { return r.json(); })
+      .then(function (data) {
+        var sorted = sortDesc(data || []);
+        monthCache[monthKey] = sorted;
+        renderList(sorted);
+      })
+      .catch(function () {
+        listEl.innerHTML = "";
+        emptyEl.style.display = "block";
+        emptyEl.textContent = "Couldn't load that month's articles — please try again.";
+      });
+  }
+
+  function populateMonthSelect() {
+    selectEl.innerHTML = "";
+    months.forEach(function (m, i) {
+      var opt = document.createElement("option");
+      opt.value = m;
+      opt.textContent = fmtMonth(m) + (i === 0 ? " (latest)" : "");
+      selectEl.appendChild(opt);
+    });
+    selectEl.addEventListener("change", function () { loadMonth(selectEl.value); });
+  }
+
+  fetch("/trending/manifest/index.json")
+    .then(function (r) { return r.json(); })
+    .then(function (data) {
+      months = (data || []).slice().sort(function (a, b) { return b.localeCompare(a); });
+      if (!months.length) { emptyEl.style.display = "block"; return; }
+      populateMonthSelect();
+      return fetch("/trending/manifest/" + months[0] + ".json")
+        .then(function (r) { return r.json(); })
+        .then(function (data) {
+          var sorted = sortDesc(data || []);
+          monthCache[months[0]] = sorted;
+          latestMonthArticles = sorted;
+          renderList(sorted);
+        });
+    })
+    .catch(function () {
+      listEl.innerHTML = "";
+      emptyEl.style.display = "block";
+      emptyEl.textContent = "Couldn't load trending articles right now — please refresh.";
+    });
+})();
+</script>
+<!-- Analytics: async so never blocks rendering (same setup as the main typing test) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-136SVFZRDF"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-136SVFZRDF');
+</script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8311353174841359"
+    crossorigin="anonymous"></script>
+</body>
+</html>
