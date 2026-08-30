@@ -195,8 +195,8 @@
     <link rel="dns-prefetch" href="https://flagcdn.com">
     <!-- Preload critical assets: logo image + main stylesheet -->
     <link rel="preload" as="image" href="/images/rocket-typing-logo.webp" fetchpriority="high">
-    <link rel="preload" href="styles.css?v=5" as="style">
-    <link rel="preload" href="responsive.css?v=5" as="style">
+    <link rel="preload" href="styles.css" as="style">
+    <link rel="preload" href="responsive.css" as="style">
     <!-- ═══════════════════════════════════════════════════════════════════
          INLINE CRITICAL CSS  — rendered before any external stylesheet.
          RULE: every layout-affecting property that also exists in styles.css
@@ -1475,7 +1475,8 @@ footer a:hover{color:var(--rt-main) !important;}
         </button>
     </div>
 
-    <!-- Sunday Championship button — placed exactly below PLAY GAME -->
+    <!-- Sunday Championship + Trending row — placed exactly below GAME/CODE/LEARN,
+         Sunday Champ on the left, Trending on the right (matches the sketch) -->
     <div id="sunday-champ-nav"></div>
 
 </div>
@@ -2133,15 +2134,42 @@ footer a:hover{color:var(--rt-main) !important;}
 
     
     <footer id="footer">
-        <p style="margin: 0;">
-            <a href="/about">About</a> |
-            <a href="/privacy">Privacy Policy</a> |
-            <a href="/blog/">Blog</a> |
-            <a href="/terms">Terms of Service</a> |
-            <a href="contact">Contact</a>
-        </p>
-        <p style="margin: 5px 0 0 0; font-size: 12px; color: #666;">&copy; 2026 <strong style="color: #e2b714;">Rocket
-                Typing</strong></p>
+        <div id="footer-inner">
+            <nav id="footer-nav" aria-label="Site">
+                <a href="/about">About</a>
+                <a href="/privacy">Privacy Policy</a>
+                <a href="/blog/">Blog</a>
+                <a href="/terms">Terms of Service</a>
+                <a href="/contact">Contact</a>
+            </nav>
+
+            <div id="footer-social" aria-label="Follow Rocket Typing">
+                <a href="https://www.instagram.com/rocket_typing" target="_blank" rel="noopener noreferrer" aria-label="Rocket Typing on Instagram" title="Instagram">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="3" y="3" width="18" height="18" rx="5" stroke="currentColor" stroke-width="1.8"/>
+                        <circle cx="12" cy="12" r="4.2" stroke="currentColor" stroke-width="1.8"/>
+                        <circle cx="17.1" cy="6.9" r="1.15" fill="currentColor"/>
+                    </svg>
+                </a>
+                <a href="https://www.facebook.com/profile.php?id=61585496682369" target="_blank" rel="noopener noreferrer" aria-label="Rocket Typing on Facebook" title="Facebook">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M14.5 8.5H16.5V5.3C16.16 5.25 15 5.15 13.65 5.15C10.83 5.15 8.9 6.88 8.9 10.03V12.7H5.8V16.28H8.9V21H12.6V16.28H15.58L16.05 12.7H12.6V10.4C12.6 9.36 12.88 8.5 14.5 8.5Z" fill="currentColor"/>
+                    </svg>
+                </a>
+                <a href="https://www.youtube.com/@rockettyping" target="_blank" rel="noopener noreferrer" aria-label="Rocket Typing on YouTube" title="YouTube">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M21.5 8.4C21.5 8.4 21.31 7.05 20.72 6.45C19.98 5.67 19.15 5.67 18.77 5.62C16.05 5.42 12 5.42 12 5.42H11.99C11.99 5.42 7.95 5.42 5.23 5.62C4.85 5.67 4.02 5.67 3.28 6.45C2.69 7.05 2.5 8.4 2.5 8.4C2.5 8.4 2.3 9.99 2.3 11.57V13.06C2.3 14.64 2.5 16.23 2.5 16.23C2.5 16.23 2.69 17.58 3.28 18.18C4.02 18.96 4.99 18.93 5.42 19.02C6.98 19.16 12 19.21 12 19.21C12 19.21 16.05 19.2 18.77 19.01C19.15 18.96 19.98 18.96 20.72 18.18C21.31 17.58 21.5 16.23 21.5 16.23C21.5 16.23 21.7 14.64 21.7 13.06V11.57C21.7 9.99 21.5 8.4 21.5 8.4ZM9.9 14.98V9.36L14.98 12.17L9.9 14.98Z" fill="currentColor"/>
+                    </svg>
+                </a>
+                <a href="https://x.com/Rocket_Typing" target="_blank" rel="noopener noreferrer" aria-label="Rocket Typing on X" title="X">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M13.65 10.72L20.13 3H18.6L12.97 9.71L8.47 3H3.28L10.08 12.99L3.28 21H4.81L10.76 13.94L15.51 21H20.7L13.65 10.72ZM11.55 12.98L10.86 12L5.38 4.06H7.75L12.17 10.46L12.86 11.44L18.6 19.99H16.23L11.55 12.98Z" fill="currentColor"/>
+                    </svg>
+                </a>
+            </div>
+
+            <p id="footer-copy">&copy; 2026 <strong>Rocket Typing</strong>. All rights reserved.</p>
+        </div>
     </footer>
 
 <style>
@@ -2635,25 +2663,30 @@ window.deleteUser = deleteUser;
         })();
     </script>
     <script src="vocabulary.js?v=3"></script>
-    <script src="app-core.js?v=2"></script>
+    <script src="app-core.js?v=1"></script>
     <script>
 (function() {
     const isSunday = new Date().getDay() === 0;
     const nav = document.getElementById('sunday-champ-nav');
     nav.innerHTML = `
-        <a href="test.html" style="
-            display:inline-flex; align-items:center; gap:8px;
-            background:${isSunday ? 'linear-gradient(135deg,#e2b714,#ff9900)' : 'rgba(226,183,20,0.12)'};
-            color:${isSunday ? '#0a0a23' : '#e2b714'};
-            border:2px solid ${isSunday ? '#ff9900' : 'rgba(226,183,20,0.35)'};
-            border-radius:50px; padding:10px 18px;
-            font-family:'Roboto Mono',monospace; font-size:13px;
-            font-weight:900; letter-spacing:1.5px; text-decoration:none;
-            box-shadow:${isSunday ? '0 0 30px rgba(226,183,20,0.5)' : 'none'};
-            transition:all .2s;
-        ">
-            🏆 ${isSunday ? '🔴 LIVE NOW' : 'SUNDAY CHAMP'}
-        </a>
+        <div id="second-row-nav">
+            <a href="test.html" id="sunday-champ-btn" style="
+                display:inline-flex; align-items:center; gap:8px;
+                background:${isSunday ? 'linear-gradient(135deg,#e2b714,#ff9900)' : 'rgba(226,183,20,0.12)'};
+                color:${isSunday ? '#0a0a23' : '#e2b714'};
+                border:2px solid ${isSunday ? '#ff9900' : 'rgba(226,183,20,0.35)'};
+                border-radius:50px; padding:10px 18px;
+                font-family:'Roboto Mono',monospace; font-size:13px;
+                font-weight:900; letter-spacing:1.5px; text-decoration:none;
+                box-shadow:${isSunday ? '0 0 30px rgba(226,183,20,0.5)' : 'none'};
+                transition:all .2s;
+            ">
+                🏆 ${isSunday ? '🔴 LIVE NOW' : 'SUNDAY CHAMP'}
+            </a>
+            <button type="button" onclick="window.location.href='/trending'" id="trending-nav-btn" title="Type today's viral news story">
+                🔥 TRENDING
+            </button>
+        </div>
     `;
 })();
 // Handle ?openAuth=login and ?openAuth=signup from game.html and other pages
@@ -3570,7 +3603,8 @@ var HUD_TARGETS = [
     { key:'gameBtn',      sel:'#play-game button:nth-child(1)',        label:'GAME button' },
     { key:'codeBtn',      sel:'#play-game button:nth-child(2)',        label:'CODE button' },
     { key:'learnBtn',     sel:'#play-game button:nth-child(3)',        label:'LEARN button' },
-    { key:'sundayChamp',  sel:'#sunday-champ-nav',                     label:'Sunday Champ button' },
+    { key:'sundayChamp',  sel:'#sunday-champ-btn',                     label:'Sunday Champ button' },
+    { key:'trendingBtn',  sel:'#trending-nav-btn',                     label:'Trending button' },
     { key:'authBtn',      sel:'#header-auth-btn',                      label:'Login/Signup button' },
     { key:'leaderboardBtn',sel:'#leaderboard-btn',                     label:'Leaderboard button' },
     { key:'modeTime',     sel:'#test-config button[data-mode="time"]',   label:'Time button' },
