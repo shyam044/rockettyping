@@ -1119,6 +1119,42 @@ footer a:hover { color: #e2b714; }
     background-position: 100% 100%;
 }
 
+/* Sunday Champ + Trending row — sits directly below the GAME/CODE/LEARN
+   box, Sunday Champ on the left and Trending on the right (per sketch).
+   Lives inside #sunday-champ-nav so it inherits its existing position
+   below #play-game without touching that layout. */
+#second-row-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    flex-wrap: wrap;
+}
+
+#trending-nav-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 107, 53, 0.12);
+    color: #ff6b35;
+    border: 2px solid rgba(255, 107, 53, 0.5);
+    border-radius: 50px;
+    padding: 10px 18px;
+    font-family: 'Roboto Mono', monospace;
+    font-size: 13px;
+    font-weight: 900;
+    letter-spacing: 1.5px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s;
+}
+
+#trending-nav-btn:hover {
+    transform: translateY(-3px);
+    background: rgba(255, 107, 53, 0.22);
+    box-shadow: 0 0 20px rgba(255, 107, 53, 0.4);
+}
+
 @keyframes glowPulseLearn {
     from { opacity: 0.88; }
     to   { opacity: 1; }
@@ -1461,3 +1497,89 @@ body,button,input,textarea,select{font-family:var(--rt-font) !important;}
 .pm-recent-row span:nth-child(2){color:var(--rt-bodytext) !important;}
 .pm-recent-row span:nth-child(3){color:var(--rt-caret) !important;}
 .pm-rank-badge{color:var(--rt-main) !important;}
+/* ══════════════════════════════════════════════════════════════════════
+   SITE FOOTER — About / Privacy / Blog / Terms / Contact + social links.
+   Styled as its own quiet card, matching the same gold accent and dark
+   panel language as #seo-content right below it (rgba(10,10,35,0.6) bg,
+   rgba(226,183,20,…) border/glow) — not the blue --rt-main used by the
+   leaderboard/profile modals, since visually this sits next to, and reads
+   as part of, the gold-accented content block, not those modals.
+   ══════════════════════════════════════════════════════════════════════ */
+#footer {
+    padding: 0 28px 40px;
+}
+#footer-inner {
+    max-width: 1400px;
+    margin: 0 auto;
+    background: rgba(10, 10, 35, 0.6);
+    border: 1px solid rgba(226, 183, 20, 0.12);
+    border-radius: 20px;
+    padding: 32px 28px 26px;
+    text-align: center;
+    box-sizing: border-box;
+}
+
+#footer-nav {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 10px 30px;
+}
+#footer-nav a {
+    color: #9aa0a8;
+    text-decoration: none;
+    font-size: 13.5px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    padding: 2px 0;
+    border-bottom: 1px solid transparent;
+    transition: color 0.2s ease, border-color 0.2s ease;
+}
+#footer-nav a:hover,
+#footer-nav a:focus-visible {
+    color: #e2b714;
+    border-bottom-color: rgba(226, 183, 20, 0.5);
+}
+
+#footer-social {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    margin: 22px 0;
+}
+#footer-social a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: rgba(226, 183, 20, 0.08);
+    border: 1px solid rgba(226, 183, 20, 0.25);
+    color: #e2b714;
+    transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+#footer-social a svg {
+    width: 18px;
+    height: 18px;
+}
+#footer-social a:hover,
+#footer-social a:focus-visible {
+    background: rgba(226, 183, 20, 0.18);
+    border-color: rgba(226, 183, 20, 0.55);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 18px rgba(226, 183, 20, 0.25);
+}
+
+#footer-copy {
+    margin: 18px 0 0;
+    padding-top: 18px;
+    border-top: 1px solid rgba(226, 183, 20, 0.1);
+    font-size: 12.5px;
+    color: #6a7080;
+}
+#footer-copy strong {
+    color: #e2b714;
+}
