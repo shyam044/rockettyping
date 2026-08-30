@@ -19,6 +19,17 @@
     },
 
     {
+      "source": "/trending/:slug.html",
+      "destination": "/trending/:slug",
+      "permanent": true
+    },
+    {
+      "source": "/trending.html",
+      "destination": "/trending",
+      "permanent": true
+    },
+
+    {
       "source": "/test.html",
       "destination": "/test",
       "permanent": true
@@ -74,6 +85,15 @@
     {
       "source": "/blog/:slug",
       "destination": "/blog/:slug.html"
+    },
+
+    {
+      "source": "/trending/:slug",
+      "destination": "/trending/:slug.html"
+    },
+    {
+      "source": "/trending",
+      "destination": "/trending/trending.html"
     },
 
     {
@@ -150,6 +170,18 @@
       ]
     },
     {
+      "source": "/trending",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate, stale-while-revalidate=86400" }
+      ]
+    },
+    {
+      "source": "/trending/:slug",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=300, must-revalidate, stale-while-revalidate=86400" }
+      ]
+    },
+    {
       "source": "/(.*)\\.html",
       "headers": [
         { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate, stale-while-revalidate=86400" }
@@ -165,6 +197,19 @@
       "source": "/images/(.*)",
       "headers": [
         { "key": "Cache-Control", "value": "public, max-age=2592000, stale-while-revalidate=86400" }
+      ]
+    },
+    {
+      "source": "/trending/images/(.*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=2592000, stale-while-revalidate=86400" }
+      ]
+    },
+    {
+      "source": "/trending/manifest.json",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=60, s-maxage=300, stale-while-revalidate=86400" },
+        { "key": "Content-Type", "value": "application/json; charset=utf-8" }
       ]
     }
   ]
