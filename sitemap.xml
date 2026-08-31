@@ -278,7 +278,7 @@
 
   <url>
     <loc>https://www.rockettyping.com/trending</loc>
-    <lastmod>2026-08-29</lastmod>
+    <lastmod>2026-08-31</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
@@ -433,6 +433,70 @@
         <image:loc>https://www.rockettyping.com/trending/images/us-venezuela-oil-deal-65-billion-barrels-image/venezuela-oil-production-revival-investment-jobs-2026.webp</image:loc>
         <image:title>Venezuela Oil Production Revival Investment Jobs</image:title>
         <image:caption>Workers at a Venezuelan refinery construction site, representing the investment and jobs officials hope the deal will bring.</image:caption>
+    </image:image>
+
+</url>
+
+  <url>
+    <loc>https://www.rockettyping.com/trending/nepal-tibet-flash-floods-glacier-collapse</loc>
+    <lastmod>2026-08-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+
+    <image:image>
+        <image:loc>https://www.rockettyping.com/trending/images/nepal-tibet-flash-floods-glacier-collapse-image/nepal-tibet-glacier-collapse-flash-floods-featured.webp</image:loc>
+        <image:title>Nepal Tibet Glacier Collapse Flash Floods Featured Image</image:title>
+        <image:caption>A section of glacier breaking away high in the Himalayas, the event that triggered the catastrophic Nepal-Tibet flash floods.</image:caption>
+    </image:image>
+
+    <image:image>
+        <image:loc>https://www.rockettyping.com/trending/images/nepal-tibet-flash-floods-glacier-collapse-image/nepal-tibet-flood-rescue-helicopters-efforts.webp</image:loc>
+        <image:title>Nepal Tibet Flood Rescue Helicopters Efforts</image:title>
+        <image:caption>Search-and-rescue helicopters and ground teams working along the flood-damaged valley near the Nepal-Tibet border.</image:caption>
+    </image:image>
+
+    <image:image>
+        <image:loc>https://www.rockettyping.com/trending/images/nepal-tibet-flash-floods-glacier-collapse-image/nepal-tibet-flood-recovery-aid-support.webp</image:loc>
+        <image:title>Nepal Tibet Flood Recovery Aid Support</image:title>
+        <image:caption>Aid trucks and relief tents set up in the mountains to support communities affected by the flood.</image:caption>
+    </image:image>
+
+    <image:image>
+        <image:loc>https://www.rockettyping.com/trending/images/nepal-tibet-flash-floods-glacier-collapse-image/nepal-tibet-barrier-lake-flood-risk.webp</image:loc>
+        <image:title>Nepal Tibet Barrier Lake Flood Risk</image:title>
+        <image:caption>Diagram of a temporary barrier lake dammed by landslide debris, showing the flood risk to downstream villages if it fails.</image:caption>
+    </image:image>
+
+</url>
+
+  <url>
+    <loc>https://www.rockettyping.com/trending/messi-inter-miami-four-goals-new-head-coach</loc>
+    <lastmod>2026-08-31</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+
+    <image:image>
+        <image:loc>https://www.rockettyping.com/trending/images/messi-inter-miami-four-goals-new-head-coach-image/lionel-messi-inter-miami-mls-scoring-leader-2026.webp</image:loc>
+        <image:title>Lionel Messi Inter Miami MLS Scoring Leader 2026</image:title>
+        <image:caption>Lionel Messi on the ball for Inter Miami, now the MLS scoring leader with 18 goals in 2026.</image:caption>
+    </image:image>
+
+    <image:image>
+        <image:loc>https://www.rockettyping.com/trending/images/messi-inter-miami-four-goals-new-head-coach-image/messi-inter-miami-4-goals-montreal-2026-mls.webp</image:loc>
+        <image:title>Messi Inter Miami Four Goals Montreal 2026 MLS</image:title>
+        <image:caption>Lionel Messi celebrates after his four-goal performance in Inter Miami's 7-1 win over CF Montreal.</image:caption>
+    </image:image>
+
+    <image:image>
+        <image:loc>https://www.rockettyping.com/trending/images/messi-inter-miami-four-goals-new-head-coach-image/messi-free-kick-solo-run-inter-miami-vs-montreal.webp</image:loc>
+        <image:title>Messi Free Kick Solo Run Inter Miami vs Montreal</image:title>
+        <image:caption>Lionel Messi striking a free kick during Inter Miami's win over CF Montreal, one of four different goals he scored.</image:caption>
+    </image:image>
+
+    <image:image>
+        <image:loc>https://www.rockettyping.com/trending/images/messi-inter-miami-four-goals-new-head-coach-image/cristian-kily-gonzalez-new-inter-miami-coach-2026.webp</image:loc>
+        <image:title>Cristian Kily Gonzalez New Inter Miami Coach 2026</image:title>
+        <image:caption>Cristian "Kily" Gonzalez, Inter Miami's new head coach, pitchside during a match.</image:caption>
     </image:image>
 
 </url>
