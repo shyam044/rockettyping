@@ -57,6 +57,11 @@
       <p>Every day we turn the internet's biggest story into a typing challenge. Read what happened, hit <strong>Start Typing</strong>, and see your WPM and accuracy at the end.</p>
     </div>
 
+    <div class="tr-search-bar">
+      <span class="tr-search-icon" aria-hidden="true">🔎</span>
+      <input type="search" id="tr-search-input" placeholder="Search trending articles by keyword…" aria-label="Search trending articles by keyword" autocomplete="off">
+    </div>
+
     <div class="tr-datebar">
       <label for="tr-date-select">Jump to a month:</label>
       <select id="tr-date-select" aria-label="Select a month of trending articles"></select>
@@ -82,9 +87,12 @@
   var listEl = document.getElementById("tr-article-list");
   var selectEl = document.getElementById("tr-date-select");
   var emptyEl = document.getElementById("tr-empty-msg");
+  var searchEl = document.getElementById("tr-search-input");
   var months = [];               // ["2026-08", "2026-07", ...] newest first
   var monthCache = {};           // month key -> articles array, so re-selecting a month is instant
   var latestMonthArticles = [];  // used to flag "TRENDING NOW" only on the single newest article site-wide
+  var searchDebounce = null;
+  var defaultEmptyMsg = "No trending article found for that date yet — check back soon!";
 
   function fmtDate(d) {
     var dt = new Date(d + "T00:00:00");
@@ -169,7 +177,60 @@
       opt.textContent = fmtMonth(m) + (i === 0 ? " (latest)" : "");
       selectEl.appendChild(opt);
     });
-    selectEl.addEventListener("change", function () { loadMonth(selectEl.value); });
+    selectEl.addEventListener("change", function () {
+      if (searchEl && searchEl.value) searchEl.value = ""; // leave search mode, back to browsing by month
+      loadMonth(selectEl.value);
+    });
+  }
+
+  // ---------- search (matches keywords against every loaded article's
+  // title, excerpt and category, across ALL months — not just the one
+  // currently selected in the dropdown) ----------
+  function combineAllCached() {
+    var all = [];
+    months.forEach(function (m) { if (monthCache[m]) all = all.concat(monthCache[m]); });
+    return sortDesc(all);
+  }
+  function loadAllMonthsThen(cb) {
+    var toLoad = months.filter(function (m) { return !monthCache[m]; });
+    if (!toLoad.length) { cb(); return; }
+    Promise.all(toLoad.map(function (m) {
+      return fetch("/trending/manifest/" + m + ".json")
+        .then(function (r) { return r.json(); })
+        .then(function (data) { monthCache[m] = sortDesc(data || []); })
+        .catch(function () { monthCache[m] = monthCache[m] || []; });
+    })).then(cb);
+  }
+  function runSearch(rawQuery) {
+    var q = rawQuery.trim().toLowerCase();
+    if (!q) {
+      emptyEl.textContent = defaultEmptyMsg;
+      loadMonth(selectEl.value);
+      return;
+    }
+    loadAllMonthsThen(function () {
+      var matches = combineAllCached().filter(function (a) {
+        var hay = (a.title + " " + a.excerpt + " " + (a.category || "")).toLowerCase();
+        return hay.indexOf(q) !== -1;
+      });
+      emptyEl.textContent = "No articles matched \u201c" + rawQuery.trim() + "\u201d \u2014 try a different search.";
+      renderList(matches);
+    });
+  }
+  if (searchEl) {
+    searchEl.addEventListener("input", function () {
+      clearTimeout(searchDebounce);
+      var val = searchEl.value;
+      searchDebounce = setTimeout(function () { runSearch(val); }, 200);
+    });
+    // Pressing Enter searches immediately instead of waiting on the debounce
+    searchEl.addEventListener("keydown", function (e) {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        clearTimeout(searchDebounce);
+        runSearch(searchEl.value);
+      }
+    });
   }
 
   fetch("/trending/manifest/index.json")
