@@ -120,6 +120,35 @@
 }
 
 /* ---------- date picker ---------- */
+.tr-search-bar {
+  position: relative;
+  max-width: 480px;
+  margin: 0 auto 16px;
+}
+.tr-search-icon {
+  position: absolute;
+  left: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 14px;
+  opacity: .55;
+  pointer-events: none;
+}
+#tr-search-input {
+  width: 100%;
+  box-sizing: border-box;
+  font-family: var(--tr-font);
+  font-size: 16px; /* keeps iOS Safari from auto-zooming on focus */
+  background: var(--tr-card);
+  color: var(--tr-text);
+  border: 1px solid var(--tr-border);
+  border-radius: 999px;
+  padding: 11px 16px 11px 38px;
+  transition: border-color .15s ease, box-shadow .15s ease;
+}
+#tr-search-input::placeholder { color: var(--tr-sub); font-size: 14px; }
+#tr-search-input:focus { outline: none; border-color: var(--tr-blue); box-shadow: 0 0 0 3px rgba(88,166,255,.15); }
+
 .tr-datebar {
   display: flex;
   align-items: center;
@@ -443,6 +472,7 @@ body.tr-hide-chrome .tr-footer-links {
   padding: clamp(16px, 4vw, 26px);
   position: relative;
   max-height: 70vh;
+  max-height: 70dvh; /* dynamic viewport height — follows the visible area as the on-screen keyboard opens/closes, instead of the stale pre-keyboard 70vh */
 
   user-select: none;
   cursor: text;
@@ -571,10 +601,23 @@ body.tr-typing-active #tr-caret { transition: 0.13s linear !important; }
 @keyframes tr-blink { 50% { opacity: 0; } }
 
 #tr-hidden-input {
-  position: absolute;
+  /* Fixed (not absolute) and pinned to the top-left corner so it's
+     ALWAYS already inside the visible viewport, no matter how far the
+     page is scrolled. Mobile browsers auto-scroll the page to bring a
+     newly-focused input above the on-screen keyboard — since this
+     input sits right after the words box in normal flow, that used to
+     yank the whole page down the instant typing started. Being
+     viewport-fixed at (0,0) means there's never anything to scroll to.
+     font-size:16px stops iOS Safari's auto-zoom-on-focus for inputs
+     under 16px, which was the other source of the jump/shift. */
+  position: fixed;
+  top: 0;
+  left: 0;
   opacity: 0;
   width: 1px; height: 1px;
+  font-size: 16px;
   pointer-events: none;
+  z-index: -1;
 }
 
 .tr-focus-hint {
