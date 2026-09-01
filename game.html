@@ -580,6 +580,25 @@
       height: 58px;
     }
 
+    /* ── Rocket lineup entrance — rockets fly in one-by-one and gather
+         at the CENTER of the track (like a typing-race "starting grid"
+         reveal) before snapping back to the true starting line right as
+         the countdown hits GO. Transform/opacity only (never touches
+         .rocket's own `left`, which still encodes race progress), so
+         it can't interfere with typing-driven movement. ── */
+    .rocket-container.rt-lineup {
+      transition: transform .6s cubic-bezier(.22, 1.45, .36, 1), opacity .35s ease;
+    }
+
+    .rocket-container.rt-lineup-hidden {
+      opacity: 0;
+      transform: translateX(-260px) scale(.72) rotate(-10deg);
+    }
+
+    .rocket-container.rt-lineup-center {
+      transform: translateX(var(--rt-center-x, 350px)) scale(1.06);
+    }
+
     .rocket {
       position: absolute;
       left: 0;
@@ -675,14 +694,24 @@
       }
     }
 
+    /* .name now lives INSIDE .rocket (see markup), ahead of the
+       .ship-svg graphic, so normal flex layout puts it before the ship
+       and it moves in lockstep with .rocket's own `left` as the race
+       progresses — no separate position syncing needed. */
     .name {
-      position: absolute;
-      left: 120px;
+      flex-shrink: 0;
+      margin-right: 8px;
       font-size: 14px;
       color: #ccc;
       font-weight: bold;
       text-shadow: 0 0 8px #000;
       white-space: nowrap;
+    }
+
+    .ship-svg {
+      display: flex;
+      align-items: center;
+      flex-shrink: 0;
     }
 
     .player .name {
@@ -1666,6 +1695,49 @@
       font-family: 'JetBrains Mono', monospace;
     }
 
+    /* ── Music / Sound toggles — shown before the race starts ── */
+    #audio-toggle-row {
+      display: flex;
+      gap: 14px;
+      margin-bottom: 28px;
+    }
+
+    .audio-toggle-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(226, 183, 20, 0.4);
+      color: #e8ecf4;
+      padding: 9px 16px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-family: 'JetBrains Mono', monospace;
+      transition: transform .15s ease, background .15s ease, border-color .15s ease;
+    }
+
+    .audio-toggle-btn:hover {
+      transform: scale(1.05);
+      background: rgba(226, 183, 20, 0.14);
+    }
+
+    .audio-toggle-btn .audio-toggle-state {
+      color: #6ee7a0;
+      font-weight: 900;
+    }
+
+    .audio-toggle-btn.off {
+      opacity: .6;
+      border-color: rgba(255, 255, 255, 0.18);
+    }
+
+    .audio-toggle-btn.off .audio-toggle-state {
+      color: #ff6b6b;
+    }
+
     /* ── Pause Modal ── */
     #pause-modal {
       position: fixed;
@@ -1825,20 +1897,11 @@
       overflow: hidden;
     }
 
+    /* Old blurred placeholder background — no longer used now that the
+       real rockets fly into their lanes during the lineup phase, so the
+       actual race track stays visible underneath the overlay text. */
     #race-start-bg {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 60px;
-      background: #0f1a2e;
-      filter: blur(10px);
-    }
-
-    #race-start-bg span {
-      font-size: 120px;
+      display: none;
     }
 
     #race-start-text {
@@ -1847,6 +1910,20 @@
       font-size: 80px;
       color: #ffd700;
       font-weight: bold;
+      text-shadow: 0 2px 16px rgba(0, 0, 0, 0.9), 0 0 30px rgba(226, 183, 20, 0.5);
+      transition: font-size .25s ease;
+    }
+
+    /* During the rocket lineup, shrink + park the label near the top so
+       it doesn't sit on top of the incoming rockets. */
+    #race-start-overlay.rt-lineup-phase #race-start-text {
+      position: absolute;
+      top: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 20px;
+      letter-spacing: 3px;
+      color: #ffd700;
     }
 
     /* ── BIG LIVE WPM in race track ── */
@@ -2575,6 +2652,10 @@
         <div id="race-start-text">Finding pilots...</div>
       </div>
       <div id="start-race-overlay">
+        <div id="audio-toggle-row">
+          <button id="music-toggle-btn" type="button" class="audio-toggle-btn" onclick="toggleMusic()">🎵 MUSIC <span id="music-toggle-state" class="audio-toggle-state">ON</span></button>
+          <button id="sound-toggle-btn" type="button" class="audio-toggle-btn" onclick="toggleSound()">⌨️ SOUND <span id="sound-toggle-state" class="audio-toggle-state">ON</span></button>
+        </div>
         <button id="start-race-btn" onclick="beginRace()">🚀 START RACE</button>
         <div id="start-race-hint">PRESS ENTER OR CLICK TO BEGIN</div>
       </div>
@@ -2608,33 +2689,28 @@
 
       <div class="lane" id="opp-lane1">
         <div class="rocket-container">
-          <div class="rocket" id="opp-rocket1"></div>
+          <div class="rocket" id="opp-rocket1"><span class="name">NOVA</span><span class="ship-svg"></span></div>
         </div>
-        <div class="name" style="top:12px;">NOVA</div>
       </div>
       <div class="lane" id="opp-lane2">
         <div class="rocket-container">
-          <div class="rocket" id="opp-rocket2"></div>
+          <div class="rocket" id="opp-rocket2"><span class="name">PULSE</span><span class="ship-svg"></span></div>
         </div>
-        <div class="name" style="top:12px;">PULSE</div>
       </div>
       <div class="lane" id="opp-lane3">
         <div class="rocket-container">
-          <div class="rocket" id="opp-rocket3"></div>
+          <div class="rocket" id="opp-rocket3"><span class="name">COMET</span><span class="ship-svg"></span></div>
         </div>
-        <div class="name" style="top:12px;">COMET</div>
       </div>
       <div class="lane" id="opp-lane4">
         <div class="rocket-container">
-          <div class="rocket" id="opp-rocket4"></div>
+          <div class="rocket" id="opp-rocket4"><span class="name">ORBIT</span><span class="ship-svg"></span></div>
         </div>
-        <div class="name" style="top:12px;">ORBIT</div>
       </div>
       <div class="lane player" id="player-lane">
         <div class="rocket-container">
-          <div class="rocket" id="player-rocket"></div>
+          <div class="rocket" id="player-rocket"><span class="name">YOU</span><span class="ship-svg"></span></div>
         </div>
-        <div class="name" style="top:12px;color:#ffd700;">YOU</div>
       </div>
       <div id="timer">0:00</div>
     </div>
@@ -2928,6 +3004,35 @@
     Object.values(sounds).forEach(s => { s.preload = 'auto'; s.volume = 0.65; });
     sounds.ambient.loop = true; sounds.ambient.volume = 0.25; sounds.boost.volume = 0.85; sounds.win.volume = 0.95; sounds.lose.volume = 0.75;
 
+    /* ── Music / Sound toggles — persisted, shown on the pre-race
+       overlay. "Music" gates the looping ambient background track.
+       "Sound" gates everything else (typing ticks, countdown beeps,
+       ignition/win/lose sfx, engine roar). ── */
+    let musicOn = localStorage.getItem('rt_music_on') !== '0';
+    let soundOn = localStorage.getItem('rt_sound_on') !== '0';
+    function _updateAudioToggleUI() {
+      const mBtn = document.getElementById('music-toggle-btn'), sBtn = document.getElementById('sound-toggle-btn');
+      const mState = document.getElementById('music-toggle-state'), sState = document.getElementById('sound-toggle-state');
+      if (mBtn && mState) { mBtn.classList.toggle('off', !musicOn); mState.textContent = musicOn ? 'ON' : 'OFF'; }
+      if (sBtn && sState) { sBtn.classList.toggle('off', !soundOn); sState.textContent = soundOn ? 'ON' : 'OFF'; }
+    }
+    function playAmbient() { if (musicOn) sounds.ambient.play().catch(() => { }); }
+    function toggleMusic() {
+      musicOn = !musicOn;
+      localStorage.setItem('rt_music_on', musicOn ? '1' : '0');
+      if (!musicOn) { sounds.ambient.pause(); }
+      else if (raceStarted && testActive) { playAmbient(); }
+      _updateAudioToggleUI();
+    }
+    function toggleSound() {
+      soundOn = !soundOn;
+      localStorage.setItem('rt_sound_on', soundOn ? '1' : '0');
+      if (!soundOn) { stopEngineSound(); }
+      else if (raceStarted && testActive) { startEngineSound(); }
+      _updateAudioToggleUI();
+    }
+    _updateAudioToggleUI();
+
     /* ── Web Audio context for synthesized typing sounds ── */
     let _audioCtx = null;
     function _getAudioCtx() {
@@ -2982,6 +3087,7 @@
       return buf;
     }
     function startEngineSound() {
+      if (!soundOn) return;
       try {
         const ctx = _getAudioCtx();
         if (_engineNodes) stopEngineSound();
@@ -3033,6 +3139,7 @@
     }
 
     function playSound(k) {
+      if (!soundOn) return;
       if (k === 'typeCorrect') { _playCorrectSound(); return; }
       if (k === 'typeIncorrect') { _playIncorrectSound(); return; }
       const a = sounds[k]; if (!a) return; a.currentTime = 0; a.play().catch(() => { });
@@ -3202,7 +3309,7 @@
     ];
 
     let currentShipAssignment = [...ALL_SHIPS];
-    function assignShips() { const s = [...ALL_SHIPS].sort(() => Math.random() - 0.5); currentShipAssignment = s;['opp-rocket1', 'opp-rocket2', 'opp-rocket3', 'opp-rocket4', 'player-rocket'].forEach((id, i) => { document.getElementById(id).innerHTML = s[i].svg; }); }
+    function assignShips() { const s = [...ALL_SHIPS].sort(() => Math.random() - 0.5); currentShipAssignment = s;['opp-rocket1', 'opp-rocket2', 'opp-rocket3', 'opp-rocket4', 'player-rocket'].forEach((id, i) => { const el = document.getElementById(id); const svgHost = el.querySelector('.ship-svg'); if (svgHost) svgHost.innerHTML = s[i].svg; else el.innerHTML = s[i].svg; }); }
 
     /* ============================================================
        GAME ENGINE
@@ -3887,43 +3994,76 @@
     }
 
     /* updateOpponentProgress — logic only; no DOM writes; visuals batched via rAF */
-    /* updateOpponentProgress — human-like variable speed: bursts, slowdowns, brief pauses */
+    /* updateOpponentProgress — human-like variable speed: bursts, slowdowns, brief pauses.
+       Driven by real elapsed wall-clock time (not a fixed 50ms-per-tick
+       assumption) so the AI opponents keep advancing accurately even
+       when the interval is throttled or paused in a backgrounded tab —
+       coming back to the page "catches up" their position instead of
+       leaving them frozen, like real opponents who kept racing while
+       you were away. Long gaps are processed in small chunks so the
+       burst/pause state machine still gets to cycle through
+       realistically instead of one dice roll deciding the whole gap. */
+    let _lastOppTickTime = null;
     function updateOpponentProgress() {
       if (!raceStarted) return;
-      raceElapsedTicks++;
-      const ramp = Math.min(1, raceElapsedTicks / 100); // 0→1 over first 5 s
+      const now = Date.now();
+      let remaining = _lastOppTickTime ? Math.max(0, now - _lastOppTickTime) : 50;
+      _lastOppTickTime = now;
 
-      for (let i = 0; i < oppRockets.length; i++) {
-        // ── State machine: pick new speed when timer expires ──────────────────
-        opponentVarianceTick[i]--;
-        if (opponentVarianceTick[i] <= 0) {
-          const t = opponentWPMs[i]; // target (average) WPM for this opponent
-          const r = Math.random();
-          if (r < 0.10) {
-            // Brief pause (finger slip / hesitation) — 0.3–1 s
-            opponentCurrentWPMs[i] = 0;
-            opponentVarianceTick[i] = 6 + Math.floor(Math.random() * 14);
-          } else if (r < 0.25) {
-            // Speed burst — 120–160 % of target, 0.5–1.5 s
-            opponentCurrentWPMs[i] = t * (1.2 + Math.random() * 0.4);
-            opponentVarianceTick[i] = 10 + Math.floor(Math.random() * 20);
-          } else if (r < 0.45) {
-            // Slow patch — 55–80 % of target, 0.75–2 s
-            opponentCurrentWPMs[i] = t * (0.55 + Math.random() * 0.25);
-            opponentVarianceTick[i] = 15 + Math.floor(Math.random() * 25);
-          } else {
-            // Normal rhythm — 85–115 % of target, 1–3 s
-            opponentCurrentWPMs[i] = t * (0.85 + Math.random() * 0.30);
-            opponentVarianceTick[i] = 20 + Math.floor(Math.random() * 40);
-          }
+      // Guard against pathological gaps (tab left open for a very long
+      // time) — fast-forward the bulk of it with each opponent's average
+      // pace, then simulate the final stretch in fine-grained chunks.
+      const FINE_WINDOW_MS = 8000;
+      if (remaining > FINE_WINDOW_MS) {
+        const bulk = remaining - FINE_WINDOW_MS;
+        for (let i = 0; i < oppRockets.length; i++) {
+          if (opponentFinishTimeMs[i] !== null) continue;
+          opponentProgress[i] += opponentWPMs[i] * STEP * bulk / 1000;
+          if (opponentProgress[i] >= TRACK_WIDTH) { opponentProgress[i] = TRACK_WIDTH; opponentFinishTimeMs[i] = startTime ? now - startTime : 0; }
         }
-        // Already finished → stay parked exactly at the line, skip further movement
-        if (opponentFinishTimeMs[i] !== null) { opponentProgress[i] = TRACK_WIDTH; continue; }
+        remaining = FINE_WINDOW_MS;
+      }
 
-        opponentProgress[i] += Math.max(0, opponentCurrentWPMs[i]) * STEP / 20 * ramp;
-        if (opponentProgress[i] >= TRACK_WIDTH) {
-          opponentProgress[i] = TRACK_WIDTH; // clamp — no overshoot
-          opponentFinishTimeMs[i] = startTime ? Date.now() - startTime : 0;
+      const CHUNK = 200; // ms per simulated state-machine step
+      while (remaining > 0) {
+        const dt = Math.min(CHUNK, remaining);
+        remaining -= dt;
+        raceElapsedTicks++;
+        const rampMs = startTime ? (now - startTime) : 0; // 0→1 over first 5s
+        const ramp = Math.min(1, rampMs / 5000);
+
+        for (let i = 0; i < oppRockets.length; i++) {
+          // ── State machine: pick new speed when timer expires ──────
+          opponentVarianceTick[i] -= dt;
+          if (opponentVarianceTick[i] <= 0) {
+            const t = opponentWPMs[i]; // target (average) WPM for this opponent
+            const r = Math.random();
+            if (r < 0.10) {
+              // Brief pause (finger slip / hesitation) — 0.3–1 s
+              opponentCurrentWPMs[i] = 0;
+              opponentVarianceTick[i] = 300 + Math.random() * 700;
+            } else if (r < 0.25) {
+              // Speed burst — 120–160 % of target, 0.5–1.5 s
+              opponentCurrentWPMs[i] = t * (1.2 + Math.random() * 0.4);
+              opponentVarianceTick[i] = 500 + Math.random() * 1000;
+            } else if (r < 0.45) {
+              // Slow patch — 55–80 % of target, 0.75–2 s
+              opponentCurrentWPMs[i] = t * (0.55 + Math.random() * 0.25);
+              opponentVarianceTick[i] = 750 + Math.random() * 1250;
+            } else {
+              // Normal rhythm — 85–115 % of target, 1–3 s
+              opponentCurrentWPMs[i] = t * (0.85 + Math.random() * 0.30);
+              opponentVarianceTick[i] = 1000 + Math.random() * 2000;
+            }
+          }
+          // Already finished → stay parked exactly at the line, skip further movement
+          if (opponentFinishTimeMs[i] !== null) { opponentProgress[i] = TRACK_WIDTH; continue; }
+
+          opponentProgress[i] += Math.max(0, opponentCurrentWPMs[i]) * STEP * dt / 1000 * ramp;
+          if (opponentProgress[i] >= TRACK_WIDTH) {
+            opponentProgress[i] = TRACK_WIDTH; // clamp — no overshoot
+            opponentFinishTimeMs[i] = startTime ? now - startTime : 0;
+          }
         }
       }
 
@@ -4742,7 +4882,7 @@
       // Synthetic accuracy per opponent — faster pilots tend to be slightly more accurate
       opponentAccuracy = opponentWPMs.map(w => Math.min(99, Math.round(87 + Math.random() * 8 + (w > base ? 3 : 0))));
       opponentFinishTimeMs = [null, null, null, null];
-      if (_countdownIv) { clearInterval(_countdownIv); _countdownIv = null; } _countdownActive = false; clearInterval(elapsedInterval); elapsedInterval = null; clearInterval(opponentInterval); opponentInterval = null; clearInterval(playerMomentumInterval); playerMomentumInterval = null; clearInterval(liveWpmInterval); liveWpmInterval = null; testActive = false; typedWords = []; missedChars = 0; spaces = 0; correctSpaces = 0; playerProgress = 0; raceElapsedTicks = 0; opponentsDone = false; clearTimeout(playerFinishTimeout); playerFinishTimeout = null; opponentProgress = [0, 0, 0, 0]; opponentCurrentWPMs = [0, 0, 0, 0]; opponentVarianceTick = [0, 0, 0, 0]; currentWordIndex = 0; currentLetterIndex = 0; correctChars = 0; rawChars = 0; correctKeystrokes = 0; totalKeystrokes = 0; keystrokeTimestamps = []; playerRocket.style.left = '0px'; oppRockets.forEach(r => { r.style.left = '0px'; r.parentElement.classList.remove('boost'); }); timerDiv.textContent = '0:00'; resultDiv.classList.remove('visible'); resetLiveHud();
+      if (_countdownIv) { clearInterval(_countdownIv); _countdownIv = null; } _countdownActive = false; clearInterval(elapsedInterval); elapsedInterval = null; clearInterval(opponentInterval); opponentInterval = null; clearInterval(playerMomentumInterval); playerMomentumInterval = null; clearInterval(liveWpmInterval); liveWpmInterval = null; testActive = false; typedWords = []; missedChars = 0; spaces = 0; correctSpaces = 0; playerProgress = 0; raceElapsedTicks = 0; opponentsDone = false; clearTimeout(playerFinishTimeout); playerFinishTimeout = null; opponentProgress = [0, 0, 0, 0]; opponentCurrentWPMs = [0, 0, 0, 0]; opponentVarianceTick = [0, 0, 0, 0]; _lastOppTickTime = null; currentWordIndex = 0; currentLetterIndex = 0; correctChars = 0; rawChars = 0; correctKeystrokes = 0; totalKeystrokes = 0; keystrokeTimestamps = []; playerRocket.style.left = '0px'; oppRockets.forEach(r => { r.style.left = '0px'; r.parentElement.classList.remove('boost', 'rt-lineup-hidden', 'rt-lineup-center'); }); playerRocket.parentElement.classList.remove('boost', 'rt-lineup-hidden', 'rt-lineup-center'); timerDiv.textContent = '0:00'; resultDiv.classList.remove('visible'); resetLiveHud();
       // Reset active word cache
       _setActiveWord(null);
       _rafPending = false; _caretDirty = false; _visualDirty = false;
@@ -4765,28 +4905,90 @@
         buildAsteroidField();
       });
     }
+    /* ── Rocket lineup — the 5 rockets fly in one at a time and gather
+       at the CENTER of the track (opponents first, player last for a
+       little drama) — the classic typing-race "starting grid" reveal —
+       instead of the old static "Finding pilots..." screen. They snap
+       back to the true starting line together right as the countdown
+       hits "LET'S GO!" (see returnRocketsToStart). Purely
+       transform/opacity on .rocket-container, so it never touches
+       .rocket's own `left`, which still encodes race progress. ── */
+    const RT_TRACK_BASE_W = 920, RT_LANE_PAD = 20;
+    function runRocketLineup(cb) {
+      const order = ['opp-rocket1', 'opp-rocket2', 'opp-rocket3', 'opp-rocket4', 'player-rocket'];
+      const rockets = order.map(id => document.getElementById(id)).filter(Boolean);
+      const containers = rockets.map(el => el.parentElement);
+      if (!containers.length) { cb(); return; }
+      containers.forEach(c => c.classList.add('rt-lineup', 'rt-lineup-hidden'));
+      // Force a reflow so the hidden state is committed before we start
+      // removing it — otherwise the browser can coalesce the add+remove
+      // into a single frame and skip the entrance transition entirely.
+      void containers[0].offsetWidth;
+      const STAGGER = 240;
+      containers.forEach((c, i) => {
+        // Center each rocket on the true middle of the track, based on
+        // its actual rendered width (name label + ship), so longer
+        // names still land centered instead of drifting off-axis.
+        const rocketW = rockets[i].offsetWidth || 110;
+        const centerX = (RT_TRACK_BASE_W / 2) - (rocketW / 2) - RT_LANE_PAD;
+        setTimeout(() => {
+          c.style.setProperty('--rt-center-x', centerX + 'px');
+          c.classList.remove('rt-lineup-hidden');
+          c.classList.add('rt-lineup-center', 'boost');
+          playSound('boost');
+          setTimeout(() => c.classList.remove('boost'), 320);
+        }, i * STAGGER);
+      });
+      const totalTime = (containers.length - 1) * STAGGER + 700;
+      setTimeout(cb, totalTime);
+    }
+    /* Snaps all 5 rockets from the center reveal back to the real
+       starting line, together, right as "LET'S GO!" appears. */
+    function returnRocketsToStart() {
+      ['opp-rocket1', 'opp-rocket2', 'opp-rocket3', 'opp-rocket4', 'player-rocket'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el && el.parentElement) el.parentElement.classList.remove('rt-lineup-center');
+      });
+    }
     let _countdownIv = null;
     let _countdownActive = false;
     function showRaceCountdown(cb) {
       if (_countdownActive) return; // prevent double-start
       _countdownActive = true;
-      leaderboardBtn.style.display = "none"; const ov = document.getElementById("race-start-overlay"), tx = document.getElementById("race-start-text"); ov.style.display = "flex"; tx.textContent = "Finding pilots..."; playSound('startIgnition'); setTimeout(() => { let count = 3; _countdownIv = setInterval(() => { tx.textContent = count; playSound('countdown'); count--; if (count === 0) { clearInterval(_countdownIv); _countdownIv = null; setTimeout(() => { tx.textContent = "LET'S GO!"; playSound('startIgnition'); sounds.ambient.currentTime = 0; sounds.ambient.play().catch(() => { }); }, 800); setTimeout(() => { _countdownActive = false; ov.style.display = "none"; raceStarted = true; testActive = true; startTime = Date.now(); elapsedInterval = setInterval(updateElapsed, 1000); opponentInterval = setInterval(updateOpponentProgress, 50); playerMomentumInterval = setInterval(_updatePlayerMomentum, 50); caret.style.opacity = '1'; document.body.classList.add('race-active'); startLiveHud(); startEngineSound(); startCometField(); if (_elRaceTrack) { _elRaceTrack.classList.remove('rt-warp-flash'); void _elRaceTrack.offsetWidth; _elRaceTrack.classList.add('rt-warp-flash'); } cb(); }, 1600); } }, 950); }, 800);
+      leaderboardBtn.style.display = "none";
+      const ov = document.getElementById("race-start-overlay"), tx = document.getElementById("race-start-text");
+      ov.style.display = "flex";
+      ov.classList.add('rt-lineup-phase');
+      tx.textContent = "PILOTS TAKING POSITION...";
+      runRocketLineup(() => {
+        ov.classList.remove('rt-lineup-phase');
+        let count = 3;
+        _countdownIv = setInterval(() => { tx.textContent = count; playSound('countdown'); count--; if (count === 0) { clearInterval(_countdownIv); _countdownIv = null; setTimeout(() => { tx.textContent = "LET'S GO!"; playSound('startIgnition'); returnRocketsToStart(); sounds.ambient.currentTime = 0; playAmbient(); }, 800); setTimeout(() => { _countdownActive = false; ov.style.display = "none"; raceStarted = true; testActive = true; startTime = Date.now(); elapsedInterval = setInterval(updateElapsed, 1000); opponentInterval = setInterval(updateOpponentProgress, 50); playerMomentumInterval = setInterval(_updatePlayerMomentum, 50); caret.style.opacity = '1'; document.body.classList.add('race-active'); startLiveHud(); startEngineSound(); startCometField(); if (_elRaceTrack) { _elRaceTrack.classList.remove('rt-warp-flash'); void _elRaceTrack.offsetWidth; _elRaceTrack.classList.add('rt-warp-flash'); } cb(); }, 1600); } }, 950);
+      });
     }
     /* ── Page Visibility API — pause ALL intervals when tab is hidden ──
        Prevents stacked timers and wasted CPU when user switches tabs */
     document.addEventListener('visibilitychange', () => {
       if (document.hidden) {
-        if (opponentInterval) { clearInterval(opponentInterval); opponentInterval = null; }
+        // The opponent interval is deliberately left running — browsers
+        // just throttle its firing rate in a backgrounded tab, and
+        // updateOpponentProgress() now works off real elapsed time, so
+        // the AI racers keep advancing while you're away instead of
+        // freezing, like real opponents would. Only pause things tied
+        // to the player themselves (no keystrokes land in a hidden tab
+        // anyway) and things with no point running unseen.
         if (elapsedInterval) { clearInterval(elapsedInterval); elapsedInterval = null; }
         if (liveWpmInterval) { clearInterval(liveWpmInterval); liveWpmInterval = null; }
         if (playerMomentumInterval) { clearInterval(playerMomentumInterval); playerMomentumInterval = null; }
         sounds.ambient.pause();
       } else if (raceStarted && testActive) {
-        if (!opponentInterval) opponentInterval = setInterval(updateOpponentProgress, 50);
         if (!elapsedInterval) elapsedInterval = setInterval(updateElapsed, 1000);
         if (!liveWpmInterval) liveWpmInterval = setInterval(updateLiveHud, 400);
         if (!playerMomentumInterval) playerMomentumInterval = setInterval(_updatePlayerMomentum, 50);
-        sounds.ambient.play().catch(() => { });
+        if (!opponentInterval && !opponentsDone) opponentInterval = setInterval(updateOpponentProgress, 50);
+        updateElapsed();
+        updateAllVisuals();
+        playAmbient();
       }
     });
     restartBtn.addEventListener('click', () => { leaderboardBtn.style.display = "none"; resultDiv.classList.remove('visible'); resetRace(); showStartRaceOverlay(); });
