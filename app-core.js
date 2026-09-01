@@ -4455,6 +4455,85 @@ function _renderMuskScore(uid) {
 }
 
 /* ══════════════════════════════════════════════
+   COMPACT NUMBER FORMATTING (Musk/Elon score rings)
+   Once a score crosses 1000, the ring shows a compact form
+   (10.5K, 3.2M, 1.1B, 7.4T, …) instead of the raw digits so it
+   always fits the circle. Supports every short-scale tier up to
+   Vigintillion; anything beyond that (never realistically reached)
+   falls back to scientific notation so it's still never disallowed.
+══════════════════════════════════════════════ */
+var RT_COMPACT_SUFFIXES = [
+    '', 'K', 'M', 'B', 'T',
+    'Qa', 'Qi', 'Sx', 'Sp', 'Oc', 'No',           // Quadrillion … Nonillion
+    'Dc', 'Ud', 'Dd', 'Td', 'Qad', 'Qid', 'Sxd', 'Spd', 'Ocd', 'Nod', // Decillion … Novemdecillion
+    'Vg'                                          // Vigintillion
+];
+
+function _rtFormatCompact(n) {
+    n = Number(n) || 0;
+    var abs = Math.abs(n);
+    if (abs < 1000) return null; // caller keeps its own (non-compact) formatting
+    var tier = Math.floor(Math.log10(abs) / 3);
+    if (tier < RT_COMPACT_SUFFIXES.length) {
+        var scaled = n / Math.pow(1000, tier);
+        return scaled.toFixed(1) + RT_COMPACT_SUFFIXES[tier];
+    }
+    return n.toExponential(2); // astronomically large — infinite-safe fallback
+}
+
+function formatMuskCompact(n) {
+    n = Math.floor(Number(n) || 0);
+    var c = _rtFormatCompact(n);
+    return c !== null ? c : String(n);
+}
+
+function formatElonCompact(n) {
+    n = Number(n) || 0;
+    var c = _rtFormatCompact(n);
+    return c !== null ? c : n.toFixed(2);
+}
+
+/* Comma-formats the exact underlying number for the hover/tap tooltip,
+   e.g. 10545 -> "10,545", 5222.34 -> "5,222.34" */
+function _rtCommaFormat(numOrStr) {
+    var parts = String(numOrStr).split('.');
+    parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    return parts.join('.');
+}
+
+/* Tap-to-reveal support for touch devices (hover doesn't exist there).
+   Tapping a score ring shows its exact-value tooltip for a few seconds,
+   or until the user taps elsewhere / taps it again. */
+(function _rtInitScoreTipTouch() {
+    function init() {
+        var rings = document.querySelectorAll('.km-score-ring');
+        if (!rings.length) return;
+        rings.forEach(function (ring) {
+            ring.addEventListener('click', function (e) {
+                if (!window.matchMedia || !window.matchMedia('(hover: none)').matches) return;
+                e.stopPropagation();
+                var wasShown = ring.classList.contains('km-tip-show');
+                rings.forEach(function (r) { r.classList.remove('km-tip-show'); });
+                if (!wasShown) {
+                    ring.classList.add('km-tip-show');
+                    setTimeout(function () { ring.classList.remove('km-tip-show'); }, 3000);
+                }
+            });
+        });
+        document.addEventListener('click', function (e) {
+            rings.forEach(function (r) {
+                if (!r.contains(e.target)) r.classList.remove('km-tip-show');
+            });
+        });
+    }
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        init();
+    }
+})();
+
+/* ══════════════════════════════════════════════
    UPDATE KEYMAP SCORE BADGES (Musk + Elon)
 ══════════════════════════════════════════════ */
 function updateKmScoreBadges() {
@@ -4467,14 +4546,22 @@ function updateKmScoreBadges() {
     var elonRaw   = _computeElonScore(_getElonState(uid)); // returns locked decimal score
     var elonScore = parseFloat(elonRaw.toFixed(2));
 
-    var muskEl = document.getElementById('km-musk-num');
-    var elonEl = document.getElementById('km-elon-num');
+    var muskEl    = document.getElementById('km-musk-num');
+    var elonEl    = document.getElementById('km-elon-num');
+    var muskTipEl = document.getElementById('km-musk-exact');
+    var elonTipEl = document.getElementById('km-elon-exact');
 
-    function setAndPop(el, val) {
+    function setAndPop(el, tipEl, val, isElon) {
         if (!el) return;
-        var prev = parseInt(el.textContent) || 0;
-        el.textContent = val;
-        if (val !== prev) {
+        var prevRaw = parseFloat(el.getAttribute('data-raw')) || 0;
+        el.setAttribute('data-raw', val);
+        el.textContent = isElon ? formatElonCompact(val) : formatMuskCompact(val);
+        if (tipEl) {
+            tipEl.textContent = isElon
+                ? _rtCommaFormat(val.toFixed(2))
+                : _rtCommaFormat(Math.floor(val));
+        }
+        if (val !== prevRaw) {
             el.classList.remove('km-pop');
             void el.offsetWidth; // reflow to restart animation
             el.classList.add('km-pop');
@@ -4482,8 +4569,8 @@ function updateKmScoreBadges() {
         }
     }
 
-    setAndPop(muskEl, muskScore);
-    setAndPop(elonEl, elonScore);
+    setAndPop(muskEl, muskTipEl, muskScore, false);
+    setAndPop(elonEl, elonTipEl, elonScore, true);
 }
 
 // Update badges when Firebase auth is ready
