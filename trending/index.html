@@ -67,9 +67,19 @@
       <select id="tr-date-select" aria-label="Select a month of trending articles"></select>
     </div>
 
+    <div class="tr-month-nav" id="tr-month-nav-top">
+      <button type="button" class="tr-month-nav-btn" data-dir="prev">← Previous Month</button>
+      <button type="button" class="tr-month-nav-btn" data-dir="next">Next Month →</button>
+    </div>
+
     <div id="tr-article-list"></div>
 
     <p class="tr-empty" id="tr-empty-msg" style="display:none;">No trending article found for that date yet — check back soon!</p>
+
+    <div class="tr-month-nav" id="tr-month-nav-bottom">
+      <button type="button" class="tr-month-nav-btn" data-dir="prev">← Previous Month</button>
+      <button type="button" class="tr-month-nav-btn" data-dir="next">Next Month →</button>
+    </div>
   </div>
 
   <div class="tr-footer-links">
@@ -153,6 +163,7 @@
   function loadMonth(monthKey) {
     if (monthCache[monthKey]) {
       renderList(sortDesc(monthCache[monthKey]));
+      updateMonthNav();
       return;
     }
     fetch("/trending/manifest/" + monthKey + ".json")
@@ -161,11 +172,13 @@
         var sorted = sortDesc(data || []);
         monthCache[monthKey] = sorted;
         renderList(sorted);
+        updateMonthNav();
       })
       .catch(function () {
         listEl.innerHTML = "";
         emptyEl.style.display = "block";
         emptyEl.textContent = "Couldn't load that month's articles — please try again.";
+        updateMonthNav();
       });
   }
 
@@ -182,6 +195,50 @@
       loadMonth(selectEl.value);
     });
   }
+
+  // ---------- prev/next MONTH navigation (top and bottom of the list) ----------
+  // months[] is sorted newest-first, so a smaller index = a newer month.
+  // "Next" moves to a newer month (hidden on the newest/current month);
+  // "Prev" moves to an older month (hidden on the oldest month there is).
+  function currentMonthIndex() {
+    return months.indexOf(selectEl.value);
+  }
+  function updateMonthNav() {
+    var idx = currentMonthIndex();
+    var isSearching = !!(searchEl && searchEl.value.trim());
+    var hasOlder = !isSearching && idx !== -1 && idx < months.length - 1;
+    var hasNewer = !isSearching && idx !== -1 && idx > 0;
+    var navBars = document.querySelectorAll(".tr-month-nav");
+    navBars.forEach(function (nav) {
+      nav.style.display = (!isSearching && (hasOlder || hasNewer)) ? "flex" : "none";
+    });
+    document.querySelectorAll('.tr-month-nav-btn[data-dir="prev"]').forEach(function (b) {
+      b.style.display = hasOlder ? "" : "none";
+    });
+    document.querySelectorAll('.tr-month-nav-btn[data-dir="next"]').forEach(function (b) {
+      b.style.display = hasNewer ? "" : "none";
+    });
+  }
+  document.querySelectorAll('.tr-month-nav-btn[data-dir="prev"]').forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var idx = currentMonthIndex();
+      if (idx === -1 || idx >= months.length - 1) return; // already at the oldest month
+      selectEl.value = months[idx + 1];
+      if (searchEl && searchEl.value) searchEl.value = "";
+      loadMonth(selectEl.value);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+  });
+  document.querySelectorAll('.tr-month-nav-btn[data-dir="next"]').forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var idx = currentMonthIndex();
+      if (idx <= 0) return; // already at the newest/current month
+      selectEl.value = months[idx - 1];
+      if (searchEl && searchEl.value) searchEl.value = "";
+      loadMonth(selectEl.value);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+  });
 
   // ---------- search (matches keywords against every loaded article's
   // title, excerpt and category, across ALL months — not just the one
@@ -215,6 +272,7 @@
       });
       emptyEl.textContent = "No articles matched \u201c" + rawQuery.trim() + "\u201d \u2014 try a different search.";
       renderList(matches);
+      updateMonthNav(); // search is active — this hides the prev/next month bars
     });
   }
   if (searchEl) {
@@ -246,6 +304,7 @@
           monthCache[months[0]] = sorted;
           latestMonthArticles = sorted;
           renderList(sorted);
+          updateMonthNav();
         });
     })
     .catch(function () {
