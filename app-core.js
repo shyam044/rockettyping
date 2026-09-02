@@ -450,6 +450,21 @@ let config = {
 
         // Tab + Enter (or Enter alone) from result page → go back to test (works even when input is blurred)
         document.addEventListener('keydown', function(e) {
+            // Guard against a same-event double-fire: in Own (zen) mode,
+            // Enter/Shift+Enter/Escape end the test via handleKeydown on
+            // the #input element FIRST (bubbling order), which synchronously
+            // shows the result screen and calls e.preventDefault(). That
+            // SAME keydown event then keeps bubbling up to this document
+            // listener — and without this guard, if the key was Enter, the
+            // "Enter alone restarts the test" logic below would immediately
+            // fire too, undoing the result screen it had just shown a
+            // moment earlier in the very same event (this is why Escape
+            // worked fine — it never matches e.key === 'Enter' below — but
+            // Enter/Shift+Enter looked like they "refreshed" instead of
+            // showing results). Any handler that already called
+            // preventDefault() on this event has already fully handled it.
+            if (e.defaultPrevented) return;
+
             // Only act when the result screen is visible
             var resDiv = document.getElementById('result');
             if (!resDiv || resDiv.style.display === 'none' || !resDiv.classList.contains('visible')) return;
