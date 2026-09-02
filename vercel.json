@@ -23,6 +23,7 @@
       "destination": "/trending/:slug",
       "permanent": true
     },
+
     {
       "source": "/trending.html",
       "destination": "/trending",
@@ -34,49 +35,64 @@
       "destination": "/test",
       "permanent": true
     },
+
     {
       "source": "/game.html",
       "destination": "/game",
       "permanent": true
     },
+
     {
       "source": "/about.html",
       "destination": "/about",
       "permanent": true
     },
+
     {
       "source": "/privacy.html",
       "destination": "/privacy",
       "permanent": true
     },
+
     {
       "source": "/blog.html",
       "destination": "/blog",
       "permanent": true
     },
+
     {
       "source": "/terms.html",
       "destination": "/terms",
       "permanent": true
     },
+
     {
       "source": "/contact.html",
       "destination": "/contact",
       "permanent": true
     },
+
     {
       "source": "/learn.html",
       "destination": "/learn",
       "permanent": true
     },
+
     {
       "source": "/leaderboard.html",
       "destination": "/leaderboard",
       "permanent": true
     },
+
     {
       "source": "/profile.html",
       "destination": "/profile",
+      "permanent": true
+    },
+
+    {
+      "source": "/coding.html",
+      "destination": "/coding",
       "permanent": true
     }
   ],
@@ -91,6 +107,7 @@
       "source": "/trending/:slug",
       "destination": "/trending/:slug.html"
     },
+
     {
       "source": "/trending",
       "destination": "/trending/trending.html"
@@ -100,41 +117,55 @@
       "source": "/test",
       "destination": "/test.html"
     },
+
     {
       "source": "/game",
       "destination": "/game.html"
     },
+
     {
       "source": "/about",
       "destination": "/about.html"
     },
+
     {
       "source": "/privacy",
       "destination": "/privacy.html"
     },
+
     {
       "source": "/blog",
       "destination": "/blog.html"
     },
+
     {
       "source": "/terms",
       "destination": "/terms.html"
     },
+
     {
       "source": "/contact",
       "destination": "/contact.html"
     },
+
     {
       "source": "/learn",
       "destination": "/learn.html"
     },
+
     {
       "source": "/leaderboard",
       "destination": "/leaderboard.html"
     },
+
     {
       "source": "/profile",
       "destination": "/profile.html"
+    },
+
+    {
+      "source": "/coding",
+      "destination": "/coding.html"
     }
   ],
 
@@ -142,74 +173,138 @@
     {
       "source": "/(.*)",
       "headers": [
-        { "key": "Strict-Transport-Security", "value": "max-age=31536000; includeSubDomains; preload" },
-        { "key": "Cross-Origin-Opener-Policy", "value": "same-origin-allow-popups" },
-        { "key": "X-Frame-Options", "value": "SAMEORIGIN" },
-        { "key": "X-Content-Type-Options", "value": "nosniff" },
-        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
-        { "key": "Permissions-Policy", "value": "camera=(), microphone=(), geolocation=()" },
-        { "key": "Content-Security-Policy", "value": "object-src 'none'; base-uri 'self'; frame-ancestors 'self'; upgrade-insecure-requests;" }
+        {
+          "key": "Strict-Transport-Security",
+          "value": "max-age=31536000; includeSubDomains; preload"
+        },
+        {
+          "key": "Cross-Origin-Opener-Policy",
+          "value": "same-origin-allow-popups"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "SAMEORIGIN"
+        },
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        },
+        {
+          "key": "Permissions-Policy",
+          "value": "camera=(), microphone=(), geolocation=()"
+        },
+        {
+          "key": "Content-Security-Policy",
+          "value": "object-src 'none'; base-uri 'self'; frame-ancestors 'self'; upgrade-insecure-requests;"
+        }
       ]
     },
+
     {
       "source": "/",
       "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate, stale-while-revalidate=86400" }
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, must-revalidate, stale-while-revalidate=86400"
+        }
       ]
     },
+
     {
-      "source": "/(test|game|about|privacy|blog|terms|contact|learn|leaderboard|profile)",
+      "source": "/(test|game|about|privacy|blog|terms|contact|learn|leaderboard|profile|coding)",
       "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate, stale-while-revalidate=86400" }
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, must-revalidate, stale-while-revalidate=86400"
+        }
       ]
     },
+
     {
       "source": "/blog/:slug",
       "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate, stale-while-revalidate=86400" }
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, must-revalidate, stale-while-revalidate=86400"
+        }
       ]
     },
+
     {
       "source": "/trending",
       "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate, stale-while-revalidate=86400" }
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, must-revalidate, stale-while-revalidate=86400"
+        }
       ]
     },
+
     {
       "source": "/trending/:slug",
       "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=300, must-revalidate, stale-while-revalidate=86400" }
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=300, must-revalidate, stale-while-revalidate=86400"
+        }
       ]
     },
+
     {
       "source": "/(.*)\\.html",
       "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate, stale-while-revalidate=86400" }
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, must-revalidate, stale-while-revalidate=86400"
+        }
       ]
     },
+
     {
       "source": "/(.*)\\.(css|js)",
       "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=604800, stale-while-revalidate=86400" }
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=604800, stale-while-revalidate=86400"
+        }
       ]
     },
+
     {
       "source": "/images/(.*)",
       "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=2592000, stale-while-revalidate=86400" }
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=2592000, stale-while-revalidate=86400"
+        }
       ]
     },
+
     {
       "source": "/trending/images/(.*)",
       "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=2592000, stale-while-revalidate=86400" }
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=2592000, stale-while-revalidate=86400"
+        }
       ]
     },
+
     {
       "source": "/trending/manifest.json",
       "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=60, s-maxage=300, stale-while-revalidate=86400" },
-        { "key": "Content-Type", "value": "application/json; charset=utf-8" }
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=60, s-maxage=300, stale-while-revalidate=86400"
+        },
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
       ]
     }
   ]
