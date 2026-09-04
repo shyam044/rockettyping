@@ -278,7 +278,7 @@
 
   <url>
     <loc>https://www.rockettyping.com/trending</loc>
-    <lastmod>2026-09-03</lastmod>
+    <lastmod>2026-09-04</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
@@ -593,6 +593,38 @@
         <image:loc>https://www.rockettyping.com/trending/images/cassandra-wilson-dies-at-70-jazz-legend-image/cassandra-wilson-music-legacy-remembrance.webp</image:loc>
         <image:title>Cassandra Wilson Music Legacy Remembrance</image:title>
         <image:caption>An open songbook and vinyl record with musical notes rising into a starry sky, representing Wilson's lasting musical legacy.</image:caption>
+    </image:image>
+
+</url>
+
+  <url>
+    <loc>https://www.rockettyping.com/trending/tornado-warning-michigan-great-lakes-september-2026</loc>
+    <lastmod>2026-09-04</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+
+    <image:image>
+        <image:loc>https://www.rockettyping.com/trending/images/tornado-warning-michigan-great-lakes-september-2026-image/tornado-warning-vs-watch-explained.webp</image:loc>
+        <image:title>Tornado Warning vs Watch Explained</image:title>
+        <image:caption>Side-by-side comparison of a tornado warning (take action now) and a tornado watch (be ready), explaining the key difference.</image:caption>
+    </image:image>
+
+    <image:image>
+        <image:loc>https://www.rockettyping.com/trending/images/tornado-warning-michigan-great-lakes-september-2026-image/tornado-warning-great-lakes-michigan-ohio-featured.webp</image:loc>
+        <image:title>Tornado Warning Great Lakes Michigan Ohio</image:title>
+        <image:caption>An illustrative National Weather Service-style severe storm risk outlook map for the Great Lakes region.</image:caption>
+    </image:image>
+
+    <image:image>
+        <image:loc>https://www.rockettyping.com/trending/images/tornado-warning-michigan-great-lakes-september-2026-image/tornado-safety-shelter-actions.webp</image:loc>
+        <image:title>Tornado Safety Shelter Actions</image:title>
+        <image:caption>Four tornado safety steps: choose a sturdy home, go to a basement or interior room, stay away from windows, and avoid cars and outdoor areas.</image:caption>
+    </image:image>
+
+    <image:image>
+        <image:loc>https://www.rockettyping.com/trending/images/tornado-warning-michigan-great-lakes-september-2026-image/severe-weather-preparedness-stay-safe.webp</image:loc>
+        <image:title>Severe Weather Preparedness Stay Safe</image:title>
+        <image:caption>A phone displaying a storm advisory weather alert in front of a house, encouraging people to stay prepared and stay safe.</image:caption>
     </image:image>
 
 </url>
