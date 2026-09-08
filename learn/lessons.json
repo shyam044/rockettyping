@@ -224,6 +224,21 @@
 "sub":"Reach up with your right pinky finger"
 },
 {
+  "slug":"top-row-ui-typing-lesson",
+  "title":"Top Row: Typing U + I",
+  "keyLabel":"the letters U and I",
+  "emoji":"u i 🖐️",
+  "sub":"Practice the U and I top-row keys together"
+},
+{
+  "slug":"top-row-op-typing-lesson",
+  "title":"Top Row: Typing O + P",
+  "keyLabel":"the letters O and P",
+  "emoji":"o p 🖐️",
+  "sub":"Practice the O and P top-row keys together"
+},
+
+{
     "slug": "top-row-uiop-typing-lesson",
     "title": "Top Row: U I O P",
     "keyLabel": "the letters U, I, O and P",
@@ -264,6 +279,20 @@
 "keyLabel":"the letter V",
 "emoji":"v 🖐️",
 "sub":"Reach down with your left index finger"
+},
+{
+  "slug":"bottom-row-zx-typing-lesson",
+  "title":"Bottom Row: Typing Z + X",
+  "keyLabel":"the letters Z and X",
+  "emoji":"z x 🖐️",
+  "sub":"Practice the Z and X bottom-row keys together"
+},
+{
+  "slug":"bottom-row-cv-typing-lesson",
+  "title":"Bottom Row: Typing C + V",
+  "keyLabel":"the letters C and V",
+  "emoji":"c v 🖐️",
+  "sub":"Practice the C and V bottom-row keys together"
 },
 {
 "slug":"bottom-row-zxcv-typing-lesson",
