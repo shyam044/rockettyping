@@ -202,7 +202,7 @@ body { overflow-y: auto !important; background:#0a0a23; }
    builds the lesson cards + points "Start Learning" at Lesson 1.
    The hero and page shell above render immediately regardless of
    how long this takes, so this never blocks first paint. */
-fetch('lessons.json')
+fetch('/learn/lessons.json')          // ← FIXED: absolute path
   .then(function(r){ return r.ok ? r.json() : []; })
   .catch(function(){ return []; })
   .then(function(list){
@@ -258,6 +258,5 @@ fetch('lessons.json')
     }
   });
 </script>
-
 </body>
 </html>
