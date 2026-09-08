@@ -168,6 +168,27 @@
 "sub":"Reach up with your right index finger"
 },
 {
+  "slug":"top-row-qw-typing-lesson",
+  "title":"Top Row: Typing Q + W",
+  "keyLabel":"the letters Q and W",
+  "emoji":"q w 🖐️",
+  "sub":"Practice the Q and W top-row keys together"
+},
+{
+  "slug":"top-row-er-typing-lesson",
+  "title":"Top Row: Typing E + R",
+  "keyLabel":"the letters E and R",
+  "emoji":"e r 🖐️",
+  "sub":"Practice the E and R top-row keys together"
+},
+{
+  "slug":"top-row-ty-typing-lesson",
+  "title":"Top Row: Typing T + Y",
+  "keyLabel":"the letters T and Y",
+  "emoji":"t y 🖐️",
+  "sub":"Practice the T and Y top-row keys together"
+},
+{
 "slug":"top-row-qwerty-typing-lesson",
 "title":"Top Row: QWERTY",
 "keyLabel":"the QWERTY keys",
