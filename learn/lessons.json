@@ -77,6 +77,20 @@
   "sub": "Right pinky — home row key"
 },
 {
+  "slug":"home-row-jk-typing-lesson",
+  "title":"Home Row: Typing J + K",
+  "keyLabel":"the letters J and K",
+  "emoji":"j k 🖐️",
+  "sub":"Practice the J and K home-row keys together"
+},
+{
+  "slug":"home-row-l-semicolon-typing-lesson",
+  "title":"Home Row: Typing L + ;",
+  "keyLabel":"the letters L and ;",
+  "emoji":"l ; 🖐️",
+  "sub":"Practice the L and semicolon home-row keys together"
+},
+{
   "slug": "home-row-jkl-semicolon-typing-lesson",
   "title": "Home Row: Typing JKL;",
   "keyLabel": "the letters J, K, L, and ;",
