@@ -1,0 +1,276 @@
+[
+  {
+    "slug": "home-row-letter-a-typing-lesson",
+    "title": "Home Row: The Letter A",
+    "keyLabel": "the letter A",
+    "emoji": "a 🖐️",
+    "sub": "Your first anchor key — left pinky"
+  },
+  {
+    "slug": "home-row-letter-s-typing-lesson",
+    "title": "Home Row: The Letter S",
+    "keyLabel": "the letter S",
+    "emoji": "s 🖐️",
+    "sub": "Next anchor key — left ring finger"
+  },
+  {
+    "slug": "home-row-letter-d-typing-lesson",
+    "title": "Home Row: The Letter D",
+    "keyLabel": "the letter D",
+    "emoji": "d 🖐️",
+    "sub": "Next anchor key — left index finger"
+  },
+    {
+    "slug": "home-row-letter-f-typing-lesson",
+    "title": "Home Row: The Letter F",
+    "keyLabel": "the letter F",
+    "emoji": "f 🖐️",
+    "sub": "Next anchor key — left index finger"
+  },
+  {
+    "slug": "home-row-as-typing-lesson",
+    "title": "Home Row: Typing A + S",
+    "keyLabel": "the letters A and S",
+    "emoji": "a s 🖐️",
+    "sub": "Practice the first two home-row keys together"
+  },
+  {
+  "slug":"home-row-df-typing-lesson",
+  "title":"Home Row: Typing D + F",
+  "keyLabel":"the letters D and F",
+  "emoji":"d f 🖐️",
+  "sub":"Practice the D and F home-row keys together"
+},
+{
+  "slug": "home-row-asdf-typing-lesson",
+  "title": "Home Row: Typing ASDF",
+  "keyLabel": "the letters A, S, D, and F",
+  "emoji": "a s d f 🖐️",
+  "sub": "Practice the four main left-hand home-row keys"
+},
+{
+  "slug": "home-row-letter-j-typing-lesson",
+  "title": "Home Row: The Letter J",
+  "keyLabel": "the letter J",
+  "emoji": "j 🖐️",
+  "sub": "Right index finger — home row anchor key"
+},
+{
+  "slug": "home-row-letter-k-typing-lesson",
+  "title": "Home Row: The Letter K",
+  "keyLabel": "the letter K",
+  "emoji": "k 🖐️",
+  "sub": "Next anchor key — right middle finger"
+},
+{
+  "slug": "home-row-letter-l-typing-lesson",
+  "title": "Home Row: The Letter L",
+  "keyLabel": "the letter L",
+  "emoji": "l 🖐️",
+  "sub": "Next anchor key — right ring finger"
+},
+{
+  "slug": "home-row-semicolon-typing-lesson",
+  "title": "Home Row: The Semicolon",
+  "keyLabel": "the semicolon key",
+  "emoji": "; 🖐️",
+  "sub": "Right pinky — home row key"
+},
+{
+  "slug": "home-row-jkl-semicolon-typing-lesson",
+  "title": "Home Row: Typing JKL;",
+  "keyLabel": "the letters J, K, L, and ;",
+  "emoji": "j k l ; 🖐️",
+  "sub": "Practice the four main right-hand home-row keys"
+},
+{
+  "slug": "home-row-letter-g-typing-lesson",
+  "title": "Typing the Letter G",
+  "keyLabel": "the letter G",
+  "emoji": "g 🖐️",
+  "sub": "Left index finger — reach from F"
+},
+{
+  "slug": "home-row-letter-h-typing-lesson",
+  "title": "Typing the Letter H",
+  "keyLabel": "the letter H",
+  "emoji": "h 🖐️",
+  "sub": "Right index finger — reach from J"
+},
+{
+  "slug": "home-row-gh-typing-lesson",
+  "title": "Home Row: Typing G + H",
+  "keyLabel": "the letters G and H",
+  "emoji": "g h 🖐️",
+  "sub": "Practice G and H together with home-row typing exercises"
+},
+{
+"slug":"home-row-asdfghjkl-typing-lesson",
+"title":"Home Row: ASDFGHJKL;",
+"keyLabel":"the home row keys ASDFGHJKL;",
+"emoji":"⌨️ 🖐️",
+"sub":"Master the home row with common words"
+},
+{
+"slug":"top-row-letter-q-typing-lesson",
+"title":"Top Row: The Letter Q",
+"keyLabel":"the letter Q",
+"emoji":"q 🖐️",
+"sub":"Reach up with your left pinky finger"
+},
+{
+"slug":"top-row-letter-w-typing-lesson",
+"title":"Top Row: The Letter W",
+"keyLabel":"the letter W",
+"emoji":"w 🖐️",
+"sub":"Reach up with your left ring finger"
+},
+{
+"slug":"top-row-letter-e-typing-lesson",
+"title":"Top Row: The Letter E",
+"keyLabel":"the letter E",
+"emoji":"e 🖐️",
+"sub":"Reach up with your left middle finger"
+},
+{
+"slug":"top-row-letter-r-typing-lesson",
+"title":"Top Row: The Letter R",
+"keyLabel":"the letter R",
+"emoji":"r 🖐️",
+"sub":"Reach up with your left index finger"
+},
+{
+"slug":"top-row-letter-t-typing-lesson",
+"title":"Top Row: The Letter T",
+"keyLabel":"the letter T",
+"emoji":"t 🖐️",
+"sub":"Reach up with your left index finger"
+},
+{
+"slug":"top-row-letter-y-typing-lesson",
+"title":"Top Row: The Letter Y",
+"keyLabel":"the letter Y",
+"emoji":"y 🖐️",
+"sub":"Reach up with your right index finger"
+},
+{
+"slug":"top-row-qwerty-typing-lesson",
+"title":"Top Row: QWERTY",
+"keyLabel":"the QWERTY keys",
+"emoji":"qwerty 🖐️",
+"sub":"Practice the QWERTY top row"
+},
+{
+"slug":"top-row-letter-u-typing-lesson",
+"title":"Top Row: The Letter U",
+"keyLabel":"the letter U",
+"emoji":"u 🖐️",
+"sub":"Reach up with your right index finger"
+},
+{
+"slug":"top-row-letter-i-typing-lesson",
+"title":"Top Row: The Letter I",
+"keyLabel":"the letter I",
+"emoji":"i 🖐️",
+"sub":"Reach up with your right middle finger"
+},
+{
+"slug":"top-row-letter-o-typing-lesson",
+"title":"Top Row: The Letter O",
+"keyLabel":"the letter O",
+"emoji":"o 🖐️",
+"sub":"Reach up with your right ring finger"
+},
+{
+"slug":"top-row-letter-p-typing-lesson",
+"title":"Top Row: The Letter P",
+"keyLabel":"the letter P",
+"emoji":"p 🖐️",
+"sub":"Reach up with your right pinky finger"
+},
+{
+    "slug": "top-row-uiop-typing-lesson",
+    "title": "Top Row: U I O P",
+    "keyLabel": "the letters U, I, O and P",
+    "emoji": "⌨️",
+    "sub": "Practice the top row with U, I, O and P"
+},
+{
+"slug":"top-row-qwertyuiop-typing-lesson",
+"title":"Top Row: QWERTYUIOP",
+"keyLabel":"the letters Q, W, E, R, T, Y, U, I, O and P",
+"emoji":"⌨️",
+"sub":"Practice the complete QWERTY top row"
+},
+{
+"slug":"bottom-row-letter-z-typing-lesson",
+"title":"Bottom Row: The Letter Z",
+"keyLabel":"the letter Z",
+"emoji":"z 🖐️",
+"sub":"Reach down with your left pinky finger"
+},
+{
+"slug":"bottom-row-letter-x-typing-lesson",
+"title":"Bottom Row: The Letter X",
+"keyLabel":"the letter X",
+"emoji":"x 🖐️",
+"sub":"Reach down with your left ring finger"
+},
+{
+"slug":"bottom-row-letter-c-typing-lesson",
+"title":"Bottom Row: The Letter C",
+"keyLabel":"the letter C",
+"emoji":"c 🖐️",
+"sub":"Reach down with your left middle finger"
+},
+{
+"slug":"bottom-row-letter-v-typing-lesson",
+"title":"Bottom Row: The Letter V",
+"keyLabel":"the letter V",
+"emoji":"v 🖐️",
+"sub":"Reach down with your left index finger"
+},
+{
+"slug":"bottom-row-zxcv-typing-lesson",
+"title":"Bottom Row: Z X C V",
+"keyLabel":"the letters Z, X, C and V",
+"emoji":"zxcv 🖐️",
+"sub":"Practice the bottom row with Z, X, C and V"
+},
+{
+"slug":"bottom-row-letter-b-typing-lesson",
+"title":"Bottom Row: The Letter B",
+"keyLabel":"the letter B",
+"emoji":"b 🖐️",
+"sub":"Reach down with your left index finger"
+},
+{
+"slug":"bottom-row-letter-n-typing-lesson",
+"title":"Bottom Row: The Letter N",
+"keyLabel":"the letter N",
+"emoji":"n 🖐️",
+"sub":"Reach down with your right index finger"
+},
+{
+"slug":"bottom-row-letter-m-typing-lesson",
+"title":"Bottom Row: The Letter M",
+"keyLabel":"the letter M",
+"emoji":"m 🖐️",
+"sub":"Reach down with your right index finger"
+},
+{
+"slug":"bottom-row-bnm-typing-lesson",
+"title":"Bottom Row: B N M",
+"keyLabel":"the letters B, N and M",
+"emoji":"bnm 🖐️",
+"sub":"Practice the bottom row with B, N and M"
+},
+{
+  "slug":"qwertyuiop-asdfghjkl-zxcvbnm-typing-lesson",
+  "title":"QWERTY Keyboard Typing Lesson",
+  "keyLabel":"QWERTYUIOP, ASDFGHJKL and ZXCVBNM",
+  "emoji":"⌨️",
+  "sub":"Learn to type across all three rows of the QWERTY keyboard"
+}
+
+]
