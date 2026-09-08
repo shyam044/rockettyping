@@ -25,6 +25,12 @@
     },
 
     {
+      "source": "/learn/:slug.html",
+      "destination": "/learn/:slug",
+      "permanent": true
+    },
+
+    {
       "source": "/trending.html",
       "destination": "/trending",
       "permanent": true
@@ -109,6 +115,11 @@
     },
 
     {
+      "source": "/learn/:slug",
+      "destination": "/learn/:slug.html"
+    },
+
+    {
       "source": "/trending",
       "destination": "/trending/trending.html"
     },
@@ -150,7 +161,7 @@
 
     {
       "source": "/learn",
-      "destination": "/learn.html"
+      "destination": "/learn/index.html"
     },
 
     {
@@ -255,6 +266,16 @@
     },
 
     {
+      "source": "/learn/:slug",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, must-revalidate, stale-while-revalidate=86400"
+        }
+      ]
+    },
+
+    {
       "source": "/(.*)\\.html",
       "headers": [
         {
@@ -296,6 +317,20 @@
 
     {
       "source": "/trending/manifest.json",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=60, s-maxage=300, stale-while-revalidate=86400"
+        },
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ]
+    },
+
+    {
+      "source": "/learn/lessons.json",
       "headers": [
         {
           "key": "Cache-Control",
