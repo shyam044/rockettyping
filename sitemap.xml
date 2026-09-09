@@ -352,7 +352,114 @@
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
-
+<url>
+<loc>https://www.rockettyping.com/learn/number-1-typing-lesson</loc>
+<lastmod>2026-09-09</lastmod>
+<changefreq>weekly</changefreq>
+<priority>0.8</priority>
+</url>
+<url>
+<loc>https://www.rockettyping.com/learn/number-2-typing-lesson</loc>
+<lastmod>2026-09-09</lastmod>
+<changefreq>weekly</changefreq>
+<priority>0.8</priority>
+</url>
+<url>
+<loc>https://www.rockettyping.com/learn/number-12-typing-lesson</loc>
+<lastmod>2026-09-09</lastmod>
+<changefreq>weekly</changefreq>
+<priority>0.8</priority>
+</url>
+<url>
+<loc>https://www.rockettyping.com/learn/number-3-typing-lesson</loc>
+<lastmod>2026-09-09</lastmod>
+<changefreq>weekly</changefreq>
+<priority>0.8</priority>
+</url>
+<url>
+<loc>https://www.rockettyping.com/learn/number-4-typing-lesson</loc>
+<lastmod>2026-09-09</lastmod>
+<changefreq>weekly</changefreq>
+<priority>0.8</priority>
+</url>
+<url>
+<loc>https://www.rockettyping.com/learn/number-34-typing-lesson</loc>
+<lastmod>2026-09-09</lastmod>
+<changefreq>weekly</changefreq>
+<priority>0.8</priority>
+</url>
+<url>
+<loc>https://www.rockettyping.com/learn/number-5-typing-lesson</loc>
+<lastmod>2026-09-09</lastmod>
+<changefreq>weekly</changefreq>
+<priority>0.8</priority>
+</url>
+<url>
+<loc>https://www.rockettyping.com/learn/number-6-typing-lesson</loc>
+<lastmod>2026-09-09</lastmod>
+<changefreq>weekly</changefreq>
+<priority>0.8</priority>
+</url>
+<url>
+<loc>https://www.rockettyping.com/learn/number-56-typing-lesson</loc>
+<lastmod>2026-09-09</lastmod>
+<changefreq>weekly</changefreq>
+<priority>0.8</priority>
+</url>
+<url>
+<loc>https://www.rockettyping.com/learn/number-12345-typing-lesson</loc>
+<lastmod>2026-09-09</lastmod>
+<changefreq>weekly</changefreq>
+<priority>0.9</priority>
+</url>
+<url>
+<loc>https://www.rockettyping.com/learn/number-7-typing-lesson</loc>
+<lastmod>2026-09-09</lastmod>
+<changefreq>weekly</changefreq>
+<priority>0.8</priority>
+</url>
+<url>
+<loc>https://www.rockettyping.com/learn/number-8-typing-lesson</loc>
+<lastmod>2026-09-09</lastmod>
+<changefreq>weekly</changefreq>
+<priority>0.8</priority>
+</url>
+<url>
+<loc>https://www.rockettyping.com/learn/number-78-typing-lesson</loc>
+<lastmod>2026-09-09</lastmod>
+<changefreq>weekly</changefreq>
+<priority>0.8</priority>
+</url>
+<url>
+<loc>https://www.rockettyping.com/learn/number-9-typing-lesson</loc>
+<lastmod>2026-09-09</lastmod>
+<changefreq>weekly</changefreq>
+<priority>0.8</priority>
+</url>
+<url>
+<loc>https://www.rockettyping.com/learn/number-0-typing-lesson</loc>
+<lastmod>2026-09-09</lastmod>
+<changefreq>weekly</changefreq>
+<priority>0.8</priority>
+</url>
+<url>
+<loc>https://www.rockettyping.com/learn/number-90-typing-lesson</loc>
+<lastmod>2026-09-09</lastmod>
+<changefreq>weekly</changefreq>
+<priority>0.8</priority>
+</url>
+<url>
+<loc>https://www.rockettyping.com/learn/number-67890-typing-lesson</loc>
+<lastmod>2026-09-09</lastmod>
+<changefreq>weekly</changefreq>
+<priority>0.9</priority>
+</url>
+<url>
+<loc>https://www.rockettyping.com/learn/number-1234567890-typing-lesson</loc>
+<lastmod>2026-09-09</lastmod>
+<changefreq>weekly</changefreq>
+<priority>0.9</priority>
+</url>
   <url>
     <loc>https://www.rockettyping.com/game</loc>
     <lastmod>2026-06-05</lastmod>
@@ -614,7 +721,7 @@
 
 <url>
     <loc>https://www.rockettyping.com/trending</loc>
-    <lastmod>2026-09-08</lastmod>
+    <lastmod>2026-09-09</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
@@ -1080,6 +1187,36 @@
         <image:loc>https://www.rockettyping.com/trending/images/canada-retaliatory-tariffs-us-goods-2026-image/canada-worker-business-support-tariff-impact.webp</image:loc>
         <image:title>Canada Worker Business Support Tariff Impact</image:title>
         <image:caption>A hand holding shields representing agriculture and industry, symbolizing government support for workers and businesses.</image:caption>
+    </image:image>
+</url>
+<url>
+    <loc>https://www.rockettyping.com/trending/nintendo-direct-9-9-2026-metroid-kirby</loc>
+    <lastmod>2026-09-09</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+
+    <image:image>
+        <image:loc>https://www.rockettyping.com/trending/images/nintendo-direct-9-9-2026-metroid-kirby-image/nintendo-direct-9-9-2026-switch-2-featured.webp</image:loc>
+        <image:title>Nintendo Direct 9.9.2026 Switch 2 Featured Image</image:title>
+        <image:caption>A Nintendo Switch 2 console on stage during a live Nintendo Direct presentation.</image:caption>
+    </image:image>
+
+    <image:image>
+        <image:loc>https://www.rockettyping.com/trending/images/nintendo-direct-9-9-2026-metroid-kirby-image/metroid-ravenous-kirby-world-beyond-reveals.webp</image:loc>
+        <image:title>Metroid Ravenous Kirby World Beyond Reveals</image:title>
+        <image:caption>Split artwork contrasting Metroid Ravenous's "Eat or Be Eaten" tagline with Kirby and the World Beyond's bright, explorable skies.</image:caption>
+    </image:image>
+
+    <image:image>
+        <image:loc>https://www.rockettyping.com/trending/images/nintendo-direct-9-9-2026-metroid-kirby-image/nintendo-switch-2-third-party-games-lineup.webp</image:loc>
+        <image:title>Nintendo Switch 2 Third Party Games Lineup</image:title>
+        <image:caption>A Winter 2027 game lineup graphic covering action, RPG, adventure, and port categories.</image:caption>
+    </image:image>
+
+    <image:image>
+        <image:loc>https://www.rockettyping.com/trending/images/nintendo-direct-9-9-2026-metroid-kirby-image/switch-2-winter-2027-games-excitement.webp</image:loc>
+        <image:title>Switch 2 Winter 2027 Games Excitement</image:title>
+        <image:caption>A Nintendo Switch 2 console flying through a glowing, star-filled fantasy landscape.</image:caption>
     </image:image>
 
 </url>
