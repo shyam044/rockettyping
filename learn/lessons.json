@@ -335,6 +335,132 @@
   "keyLabel":"QWERTYUIOP, ASDFGHJKL and ZXCVBNM",
   "emoji":"⌨️",
   "sub":"Learn to type across all three rows of the QWERTY keyboard"
+},
+{
+  "slug": "number-1-typing-lesson",
+  "title": "Typing Number 1",
+  "keyLabel": "the number 1",
+  "emoji": "1 🔢",
+  "sub": "Your first number key — left pinky"
+},
+{
+  "slug": "number-2-typing-lesson",
+  "title": "Typing Number 2",
+  "keyLabel": "the number 2",
+  "emoji": "2 🔢",
+  "sub": "Your second number key — left ring finger"
+},
+{
+  "slug": "number-12-typing-lesson",
+  "title": "Typing Numbers 1 and 2",
+  "keyLabel": "numbers 1 and 2",
+  "emoji": "1️⃣2️⃣ 🔢",
+  "sub": "Build number-row accuracy — left pinky and ring finger"
+},
+{
+  "slug": "number-3-typing-lesson",
+  "title": "Typing Number 3",
+  "keyLabel": "the number 3",
+  "emoji": "3 🔢",
+  "sub": "Your third number key — left middle finger"
+},
+{
+  "slug": "number-4-typing-lesson",
+  "title": "Typing Number 4",
+  "keyLabel": "the number 4",
+  "emoji": "4 🔢",
+  "sub": "Your fourth number key — left index finger"
+},
+{
+  "slug": "number-34-typing-lesson",
+  "title": "Typing Numbers 3 and 4",
+  "keyLabel": "numbers 3 and 4",
+  "emoji": "3️⃣4️⃣ 🔢",
+  "sub": "Build number-row accuracy — middle and index finger"
+},
+{
+  "slug": "number-5-typing-lesson",
+  "title": "Typing Number 5",
+  "keyLabel": "the number 5",
+  "emoji": "5 🔢",
+  "sub": "Your fifth number key — left index finger"
+},
+{
+  "slug": "number-6-typing-lesson",
+  "title": "Typing Number 6",
+  "keyLabel": "the number 6",
+  "emoji": "6 🔢",
+  "sub": "Your sixth number key — right index finger"
+},
+{
+  "slug": "number-56-typing-lesson",
+  "title": "Typing Numbers 5 and 6",
+  "keyLabel": "numbers 5 and 6",
+  "emoji": "5️⃣6️⃣ 🔢",
+  "sub": "Build number-row accuracy — left and right index fingers"
+},
+{
+  "slug": "number-12345-typing-lesson",
+  "title": "Typing Numbers 1, 2, 3, 4 and 5",
+  "keyLabel": "numbers 1, 2, 3, 4 and 5",
+  "emoji": "1️⃣2️⃣3️⃣4️⃣5️⃣ 🔢",
+  "sub": "Build number-row accuracy — pinky, ring, middle and index fingers"
+},
+{
+  "slug":"number-7-typing-lesson",
+  "title":"Typing Number 7",
+  "keyLabel":"the number 7",
+  "emoji":"7 🔢",
+  "sub":"Your seventh number key — right index finger"
+},
+{
+  "slug":"number-8-typing-lesson",
+  "title":"Typing Number 8",
+  "keyLabel":"the number 8",
+  "emoji":"8 🔢",
+  "sub":"Your eighth number key — right middle finger"
+},
+{
+  "slug":"number-78-typing-lesson",
+  "title":"Typing Numbers 7 and 8",
+  "keyLabel":"numbers 7 and 8",
+  "emoji":"7️⃣8️⃣ 🔢",
+  "sub":"Build number-row accuracy — right index and middle fingers"
+},
+{
+  "slug":"number-9-typing-lesson",
+  "title":"Typing Number 9",
+  "keyLabel":"the number 9",
+  "emoji":"9️⃣ 🔢",
+  "sub":"Your ninth number key — right ring finger"
+},
+{
+  "slug":"number-0-typing-lesson",
+  "title":"Typing Number 0",
+  "keyLabel":"the number 0",
+  "emoji":"0️⃣ 🔢",
+  "sub":"Your tenth number key — right pinky finger"
+},
+{
+  "slug":"number-90-typing-lesson",
+  "title":"Typing Numbers 9 and 0",
+  "keyLabel":"numbers 9 and 0",
+  "emoji":"9️⃣0️⃣ 🔢",
+  "sub":"Build number-row accuracy — right ring and pinky fingers"
+},
+{
+  "slug":"number-67890-typing-lesson",
+  "title":"Typing Numbers 6, 7, 8, 9 and 0",
+  "keyLabel":"numbers 6, 7, 8, 9 and 0",
+  "emoji":"6️⃣7️⃣8️⃣9️⃣0️⃣ 🔢",
+  "sub":"Build number-row accuracy — index, middle, ring and pinky fingers"
+},
+{
+  "slug":"number-1234567890-typing-lesson",
+  "title":"Typing Numbers 1 to 0",
+  "keyLabel":"numbers 1 to 0",
+  "emoji":"1️⃣2️⃣3️⃣4️⃣5️⃣6️⃣7️⃣8️⃣9️⃣0️⃣ 🔢",
+  "sub":"Master the complete number row — all ten number keys"
 }
 
 ]
