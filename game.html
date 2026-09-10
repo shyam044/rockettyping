@@ -113,7 +113,7 @@
       s1.text = 'atOptions = ' + JSON.stringify(job.opts) + ';';
       el.appendChild(s1);
       var s2 = document.createElement('script');
-      s2.src = 'https://www.highperformanceformat.com/' + job.opts.key + '/invoke.js';
+      s2.src = 'https://www.' + (job.opts.domain || 'highperformanceformat.com') + '/' + job.opts.key + '/invoke.js';
       var advance = function () { _adsterraLoading = false; _adsterraProcessQueue(); };
       s2.onload = advance;
       s2.onerror = advance;
@@ -232,7 +232,7 @@
     #race-track-scale-wrap {
       width: 100%;
       max-width: 920px;
-      margin: 12px auto 16px;
+      margin: 2px;
       display: flex;
       justify-content: center;
     }
@@ -1980,9 +1980,9 @@
 
 <body>
   <div id="app">
-    <div id="top-banner-ad" style="width:100%;height:50px;display:flex;justify-content:center;align-items:flex-start;flex-shrink:0;overflow:hidden;">
+    <div id="top-banner-ad" style="width:100%;height:90px;display:flex;justify-content:center;align-items:flex-start;flex-shrink:0;overflow:hidden;">
     </div>
-    <script>_lazyLoadAdsterra('top-banner-ad', { key: 'e8642ebc1588f7663a0e84f1c8058052', format: 'iframe', height: 50, width: 320, params: {} });</script>
+    <script>_lazyLoadAdsterra('top-banner-ad', { key: 'ec2cd2e3ac271efe174e656e9ef09deb', format: 'iframe', height: 90, width: 728, domain: 'highrevenueformat.com', params: {} });</script>
     <!-- Visually hidden H1 for SEO — screen readers and Googlebot see this -->
     <h1 style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;">Rocket
       Race – Free Online Typing Speed Game | Rocket Typing</h1>
@@ -2200,32 +2200,6 @@
       .game-topnav-logout:hover {
         border-color: #da3333;
         color: #da3333;
-      }
-
-      /* ── Side ad rails (left/right empty space) ── */
-      .ad-rail {
-        position: fixed;
-        top: 50%;
-        transform: translateY(-50%);
-        width: 160px;
-        z-index: 9000;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
-
-      .ad-rail-left {
-        left: 12px;
-      }
-
-      .ad-rail-right {
-        right: 12px;
-      }
-
-      @media (max-width:1300px) {
-        .ad-rail {
-          display: none;
-        }
       }
 
       /* ══════════════════════════════════════════════════════
@@ -2632,14 +2606,6 @@
 
     <!-- ══ TOPNAV — shows username + logout when logged in ══ -->
     <div id="game-topnav"></div>
-
-    <!-- ══ SIDE AD RAILS — 160x600 vertical banner (same zone both sides) ══ -->
-    <div id="ad-rail-left" class="ad-rail ad-rail-left">
-    </div>
-    <script>_lazyLoadAdsterra('ad-rail-left', { key: 'e3a304a061bb8b53fdbf045abe87c573', format: 'iframe', height: 300, width: 160, params: {} });</script>
-    <div id="ad-rail-right" class="ad-rail ad-rail-right">
-    </div>
-    <script>_lazyLoadAdsterra('ad-rail-right', { key: 'f9fd656d91c4953d559c8174661c6df8', format: 'iframe', height: 600, width: 160, params: {} });</script>
 
     <img id="logo" src="images/rocket-typing-logo.webp" alt="Rocket Typing Logo">
     <div id="race-track-scale-wrap">
