@@ -868,3 +868,22 @@ body.tr-lightbox-open { overflow: hidden; }
 @media (max-width: 480px) {
   #tr-lightbox-caption { font-size: 11px; padding: 0 30px; }
 }
+
+.tr-article-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.tr-article-header-row .tr-article-badge {
+  margin-bottom: 0;
+  flex-shrink: 0;
+}
+
+.tr-article-header-row .tr-topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
