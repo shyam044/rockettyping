@@ -721,7 +721,7 @@
 
 <url>
     <loc>https://www.rockettyping.com/trending</loc>
-    <lastmod>2026-09-14</lastmod>
+    <lastmod>2026-09-15</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
@@ -1284,7 +1284,7 @@
 </url>
 <url>
     <loc>https://www.rockettyping.com/trending/brics-summit-2026-new-delhi</loc>
-    <lastmod>2026-09-13</lastmod>
+    <lastmod>2026-09-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
 
@@ -1315,7 +1315,7 @@
 </url>
 <url>
     <loc>https://www.rockettyping.com/trending/zverev-wins-2026-us-open-mens-title</loc>
-    <lastmod>2026-09-14</lastmod>
+    <lastmod>2026-09-13</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
 
@@ -1372,6 +1372,37 @@
         <image:loc>https://www.rockettyping.com/trending/images/ios-27-siri-ai-overhaul-release-image/ios-27-available-now-siri-ai-privacy.webp</image:loc>
         <image:title>iOS 27 Available Now Siri AI Privacy</image:title>
         <image:caption>A phone mid-update surrounded by other Apple devices, representing the same-day release across iPad, Watch, and Mac.</image:caption>
+    </image:image>
+
+</url>
+<url>
+    <loc>https://www.rockettyping.com/trending/kennedy-center-closes-for-renovations</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+
+    <image:image>
+        <image:loc>https://www.rockettyping.com/trending/images/kennedy-center-closes-for-renovations-image/kennedy-center-board-votes-close-renovations-featured.webp</image:loc>
+        <image:title>Kennedy Center Board Votes Close Renovations Featured Image</image:title>
+        <image:caption>A closed performing arts building under overcast skies with scaffolding rising behind it, representing the Kennedy Center's renovation closure.</image:caption>
+    </image:image>
+
+    <image:image>
+        <image:loc>https://www.rockettyping.com/trending/images/kennedy-center-closes-for-renovations-image/kennedy-center-structural-safety-renovation-closure.webp</image:loc>
+        <image:title>Kennedy Center Structural Safety Renovation Closure</image:title>
+        <image:caption>A cracked building facade behind safety barriers with scaffolding and repair equipment, representing structural safety concerns.</image:caption>
+    </image:image>
+
+    <image:image>
+        <image:loc>https://www.rockettyping.com/trending/images/kennedy-center-closes-for-renovations-image/kennedy-center-naming-dispute-legal-ruling.webp</image:loc>
+        <image:title>Kennedy Center Naming Dispute Legal Ruling</image:title>
+        <image:caption>An illustration of a courthouse and scales of justice beside a performing arts building, representing the legal dispute over the building's name.</image:caption>
+    </image:image>
+
+    <image:image>
+        <image:loc>https://www.rockettyping.com/trending/images/kennedy-center-closes-for-renovations-image/kennedy-center-temporary-closure-performing-arts-memorial.webp</image:loc>
+        <image:title>Kennedy Center Temporary Closure Performing Arts Memorial</image:title>
+        <image:caption>An empty theatre with stage lights and a single lit candle, representing the temporary closure of a performing arts memorial.</image:caption>
     </image:image>
 
 </url>
