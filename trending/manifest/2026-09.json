@@ -124,5 +124,14 @@
     "excerpt": "Apple released iOS 27 on September 14, 2026, headlined by Siri AI — a rebuilt assistant with natural conversation, personal context, and a dedicated app — plus Liquid Glass controls and new photo tools.",
     "category": "Technology",
     "readMinutes": 3
+  },
+  {
+    "date": "2026-09-15",
+    "slug": "kennedy-center-closes-for-renovations",
+    "url": "/trending/kennedy-center-closes-for-renovations",
+    "title": "Kennedy Center Board Votes to Close Building for Renovations",
+    "excerpt": "The Kennedy Center board voted on September 15, 2026 to immediately close its main building for a two-year, roughly $250 million renovation, citing safety and financial concerns amid an ongoing legal dispute over the building's name.",
+    "category": "News / U.S.",
+    "readMinutes": 2
   }
 ]
