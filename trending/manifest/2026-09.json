@@ -57,8 +57,8 @@
     "date": "2026-09-07",
     "slug": "lisa-sawadika-music-video-bangkok",
     "url": "/trending/lisa-sawadika-music-video-bangkok",
-    "title": "LISA's \u201cSaWaDiKa\u201d Official Music Video: A Bold Hello from Thailand",
-    "excerpt": "LISA of BLACKPINK's new single \u201cSaWaDiKa\u201d hit 70.8 million views in 24 hours and 100 million in two days, celebrating her Thai roots ahead of her Press Play EP.",
+    "title": "LISA's “SaWaDiKa” Official Music Video: A Bold Hello from Thailand",
+    "excerpt": "LISA of BLACKPINK's new single “SaWaDiKa” hit 70.8 million views in 24 hours and 100 million in two days, celebrating her Thai roots ahead of her Press Play EP.",
     "category": "Entertainment / Music",
     "readMinutes": 3
   },
@@ -84,7 +84,7 @@
     "date": "2026-09-10",
     "slug": "apple-surprise-and-shine-event-iphone-duo",
     "url": "/trending/apple-surprise-and-shine-event-iphone-duo",
-    "title": "Apple \u201cSurprise and Shine\u201d Event: iPhone Duo and All the New Products Explained Simply",
+    "title": "Apple “Surprise and Shine” Event: iPhone Duo and All the New Products Explained Simply",
     "excerpt": "Apple's September 9, 2026 event unveiled the foldable iPhone Duo, iPhone 18 Pro and Pro Max, Apple Watch Series 12 and Ultra 4, and AirPods 5, led by new CEO John Ternus.",
     "category": "Technology",
     "readMinutes": 4
@@ -96,6 +96,33 @@
     "title": "Remembering September 11: The 25th Anniversary of a Day That Changed the World",
     "excerpt": "Today, September 11, 2026, marks 25 years since the September 11, 2001 attacks. This year's commemoration adds a new seventh moment of silence honoring those who later died from related illnesses.",
     "category": "News / World",
+    "readMinutes": 3
+  },
+  {
+    "date": "2026-09-12",
+    "slug": "brics-summit-2026-new-delhi",
+    "url": "/trending/brics-summit-2026-new-delhi",
+    "title": "BRICS Summit 2026 in New Delhi: What You Need to Know in Simple Words",
+    "excerpt": "India hosted the 18th BRICS Summit in New Delhi on September 12-13, 2026, bringing together leaders including Putin, Xi Jinping, and Pezeshkian under the theme of resilience, innovation, cooperation, and sustainability.",
+    "category": "News / World",
+    "readMinutes": 3
+  },
+  {
+    "date": "2026-09-13",
+    "slug": "zverev-wins-2026-us-open-mens-title",
+    "url": "/trending/zverev-wins-2026-us-open-mens-title",
+    "title": "Alexander Zverev Wins the 2026 US Open Men's Title",
+    "excerpt": "Alexander Zverev beat Ben Shelton 6-3, 7-6(2), 5-7, 6-2 at Arthur Ashe Stadium to win his first US Open and second Grand Slam title of 2026, the first German man to win in New York since Boris Becker.",
+    "category": "Sports",
+    "readMinutes": 2
+  },
+  {
+    "date": "2026-09-14",
+    "slug": "ios-27-siri-ai-overhaul-release",
+    "url": "/trending/ios-27-siri-ai-overhaul-release",
+    "title": "Apple Releases iOS 27 with Major Siri AI Overhaul",
+    "excerpt": "Apple released iOS 27 on September 14, 2026, headlined by Siri AI — a rebuilt assistant with natural conversation, personal context, and a dedicated app — plus Liquid Glass controls and new photo tools.",
+    "category": "Technology",
     "readMinutes": 3
   }
 ]
