@@ -134,6 +134,15 @@
     "category": "News / U.S.",
     "readMinutes": 2
   },
+    {
+    "date": "2026-09-16",
+    "slug": "house-votes-end-iran-war-third-time",
+    "url": "/trending/house-votes-end-iran-war-third-time",
+    "title": "US House Votes to End Iran War for Third Time",
+    "excerpt": "The US House voted 220-204 on September 15, 2026 to pass a war powers resolution on Iran, with seven Republicans joining all Democrats. It is the third such House vote this year.",
+    "category": "News / Politics",
+    "readMinutes": 2
+  },
   {
     "date": "2026-09-17",
     "slug": "federal-reserve-raises-interest-rates-september-2026",
@@ -141,6 +150,15 @@
     "title": "Federal Reserve Raises Interest Rates for First Time Since 2023",
     "excerpt": "The Federal Reserve raised its key interest rate by 0.25% on September 16, 2026, bringing the target range to 3.75%\u20134% \u2014 the first hike since July 2023, citing inflation tied to higher energy prices linked to the war involving Iran.",
     "category": "News / Business",
+    "readMinutes": 3
+  },
+  {
+    "date": "2026-09-18",
+    "slug": "strait-of-hormuz-oil-tanker-incident-2026",
+    "url": "/trending/strait-of-hormuz-oil-tanker-incident-2026",
+    "title": "Iran's IRGC Claims Strike on Togo-Flagged Oil Tanker in Strait of Hormuz",
+    "excerpt": "Iran's IRGC said it struck the Togo-flagged oil tanker Trend in the Strait of Hormuz on September 18, 2026, sparking a fire. UKMTO separately reported a security incident nearby, with the crew safe and no confirmed environmental damage.",
+    "category": "News / World",
     "readMinutes": 3
   }
 ]
