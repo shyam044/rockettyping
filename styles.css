@@ -415,7 +415,7 @@ body.typing-active #caret {
 #caret.blink { animation: blink 1s step-end infinite; }
 @keyframes blink { 50% { opacity: 0; } }
 
-#input { position: absolute; opacity: 0; pointer-events: none; }
+#input { position: fixed; top: 0; left: 0; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
 
 #logo { cursor: pointer; }
 
