@@ -277,7 +277,7 @@
         #difficulty-container{position:absolute;top:120px;right:15px;z-index:30}
 
         /* ── 6. Hidden input — always out of flow ───────────────────────────────── */
-        #input{position:absolute;opacity:0;pointer-events:none}
+        #input{position:fixed;top:0;left:0;width:1px;height:1px;opacity:0;pointer-events:none}
 
         /* ── 7. Page title — lock height so #words margin never shifts ──────────── */
         #page-title{font-size:15px;line-height:1.4;min-height:21px;max-height:21px;overflow:hidden}
@@ -1365,6 +1365,55 @@ footer a:hover{color:var(--rt-main) !important;}
 .rt-search-box::placeholder{color:#777;}
 .rt-swatch{height:38px;border-radius:8px;cursor:pointer;border:2px solid rgba(255,255,255,0.12);transition:transform .15s,border-color .15s;}
 .rt-swatch:hover{transform:scale(1.08);border-color:#fff;}
+
+/* ── Custom Background layer (video/image behind the whole app) ── */
+#rt-bg-media-wrap{position:fixed;inset:0;z-index:-3;overflow:hidden;display:none;background:#000;}
+#rt-bg-media-wrap.active{display:block;}
+#rt-bg-video,#rt-bg-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:none;}
+#rt-bg-video.show,#rt-bg-img.show{display:block;}
+#rt-bg-overlay{position:fixed;inset:0;z-index:-2;background:rgba(8,8,18,0.55);display:none;pointer-events:none;}
+#rt-bg-overlay.active{display:block;}
+/* Once a custom background is active, retire the built-in starfield so
+   the chosen video/image is the only thing visible behind the app. */
+body.rt-custom-bg{background-image:none !important;animation:none !important;}
+body.rt-custom-bg::before{display:none !important;}
+/* The typing card (#app) normally sits on a near-opaque panel color
+   (~85% opacity) so a custom background was barely visible behind the
+   words/keymap — the one part of the page the visitor actually looks
+   at. Make it clearly translucent instead so the chosen video/image
+   reads through the whole typing area, not just the page margins. */
+/* NOTE: intentionally no backdrop-filter here. A blur recalculated every
+   frame over an element this large (#app spans nearly the full viewport),
+   on top of a moving video, is real GPU cost on every visitor's device —
+   for a barely-visible 1px blur it isn't worth it. The darker background
+   alone gives enough contrast for the words/keymap to stay readable. */
+body.rt-custom-bg #app{background:rgba(8,8,18,0.28) !important;}
+/* Slight text-shadow keeps words/keymap labels legible over a busy
+   video/image without needing to darken #app further. text-shadow is
+   inherited, so this reaches the individual letter/word spans too. */
+body.rt-custom-bg #words-track{text-shadow:0 1px 8px rgba(0,0,0,0.85);}
+/* Pre-paint flag set by the inline <head> script (see below) so returning
+   visitors with a saved background never see a flash of the default
+   starfield before applyBackground() runs. */
+html.rt-custom-bg-pending body{background-image:none !important;animation:none !important;}
+html.rt-custom-bg-pending body::before{display:none !important;}
+
+/* Settings ▸ 🎬 BG tab — thumbnail grid, same interaction language as
+   the color-theme swatches above but wider to show a preview frame. */
+.rt-bg-type-toggle{display:flex;gap:8px;margin-top:10px;}
+.rt-bg-type-btn{flex:1;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#aaa;
+    padding:8px 4px;border-radius:8px;cursor:pointer;font-family:'Roboto Mono',monospace;font-size:12px;font-weight:900;letter-spacing:.5px;}
+.rt-bg-type-btn.active{background:var(--rt-main);color:var(--rt-bg);border-color:var(--rt-main);}
+#rt-bg-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:10px;}
+.rt-bg-swatch{position:relative;height:64px;border-radius:8px;overflow:hidden;cursor:pointer;
+    border:2px solid rgba(255,255,255,0.12);transition:transform .15s,border-color .15s;background:#000;}
+.rt-bg-swatch:hover{transform:scale(1.05);border-color:#fff;}
+.rt-bg-swatch.selected{border-color:var(--rt-main);box-shadow:0 0 0 1px var(--rt-main);}
+.rt-bg-swatch img{width:100%;height:100%;object-fit:cover;display:block;opacity:0.9;}
+.rt-bg-swatch .rt-bg-label{position:absolute;left:0;right:0;bottom:0;padding:3px 6px;font-size:9px;
+    background:rgba(0,0,0,0.65);color:#fff;letter-spacing:.3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.rt-bg-swatch .rt-bg-kind-icon{position:absolute;top:4px;right:4px;font-size:10px;
+    background:rgba(0,0,0,0.55);border-radius:4px;padding:1px 4px;line-height:1.4;}
 .rt-normal-btn{width:100%;padding:9px;border-radius:8px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.15);
     color:#ddd;font-family:'Roboto Mono',monospace;font-size:12px;font-weight:700;letter-spacing:.5px;cursor:pointer;margin-bottom:4px;}
 .rt-normal-btn:hover{background:rgba(255,255,255,0.12);}
@@ -1496,10 +1545,31 @@ footer a:hover{color:var(--rt-main) !important;}
             }
         }
     }catch(e){}
+    try{
+        var rawBg = localStorage.getItem('rt_bg');
+        if(rawBg){
+            var bgSaved = JSON.parse(rawBg);
+            if(bgSaved && bgSaved.id && bgSaved.id !== 'none'){
+                document.documentElement.classList.add('rt-custom-bg-pending');
+            }
+        }
+    }catch(e){}
 })();
 </script>
 </head>
 <body>
+    <!-- ── Custom Background (video/image), selected from Settings ▸ 🎬 BG ──
+         Fixed full-viewport layer that sits behind everything (negative
+         z-index). Hidden by default; only shown once the visitor picks a
+         background, or on return visits when one was saved. A dark
+         scrim (#rt-bg-overlay) sits on top of it so typing-test text stays
+         readable no matter how busy the chosen video/image is. -->
+    <div id="rt-bg-media-wrap" aria-hidden="true">
+        <video id="rt-bg-video" muted loop playsinline preload="none"></video>
+        <img id="rt-bg-img" alt="">
+    </div>
+    <div id="rt-bg-overlay" aria-hidden="true"></div>
+
     <div id="app" role="main" aria-label="Rocket Typing speed test application">
   <h1 id="page-title" style="text-align:center; color:#e2b714; font-family:'Roboto Mono',monospace; font-size:15px; letter-spacing:1px; margin: 0 0 8px 0; opacity:0.7;">🚀 Free Typing Speed Test — Improve Your WPM</h1>
 
@@ -3642,6 +3712,134 @@ function applyFont(f, persist){
     if (persist !== false) { try { localStorage.setItem('rt_font', JSON.stringify(f)); } catch(e){} }
 }
 
+/* ── Custom Background presets (video/image behind the whole site) ──
+   `id:'none'` is always first and means "use the built-in starfield".
+   Everything else points at files under /backgrounds/ (see the folder
+   convention comment above BACKGROUNDS). Add new entries here as more
+   assets are uploaded — the settings grid renders itself from this list. */
+var BACKGROUNDS = [
+    { id:'none', name:'Default Starfield', type:'none' },
+    {
+        id:'deep-space-black-hole',
+        name:'Deep Space: Black Hole',
+        type:'video',
+        // Primary source (required). An optional 'webm' key can be added
+        // later (e.g. webm:'/backgrounds/videos/deep-space-black-hole-accretion-disk-background.webm')
+        // once a VP9/AV1 encode exists — applyBackground() will prefer it
+        // automatically on browsers that support it.
+        src: '/backgrounds/videos/deep-space-black-hole-accretion-disk-background.webm',
+        poster: '/backgrounds/videos/deep-space-black-hole-accretion-disk-background-poster.webp',
+        thumb: '/backgrounds/videos/deep-space-black-hole-accretion-disk-background-thumb.webp'
+    },
+    {
+        id:'lord-krishna-eyes',
+        name:'Lord Krishna: Eyes Close-Up',
+        type:'video',
+        src: '/backgrounds/videos/lord-krishna-eyes-close-up-background.webm',
+        poster: '/backgrounds/videos/lord-krishna-eyes-close-up-background-poster.webp',
+        thumb: '/backgrounds/videos/lord-krishna-eyes-close-up-background-thumb.webp'
+    }
+    // Images use: { id:'…', name:'…', type:'image', src:'/backgrounds/images/your-seo-file-name.webp', thumb:'(same file, or a smaller version)' }
+];
+
+function getCurrentBackgroundId(){
+    try {
+        var raw = localStorage.getItem('rt_bg');
+        if (!raw) return 'none';
+        return (JSON.parse(raw) || {}).id || 'none';
+    } catch(e){ return 'none'; }
+}
+
+var rtBgVideoEl, rtBgImgEl, rtBgWrapEl, rtBgOverlayEl;
+function applyBackground(b, persist){
+    rtBgVideoEl = rtBgVideoEl || document.getElementById('rt-bg-video');
+    rtBgImgEl   = rtBgImgEl   || document.getElementById('rt-bg-img');
+    rtBgWrapEl  = rtBgWrapEl  || document.getElementById('rt-bg-media-wrap');
+    rtBgOverlayEl = rtBgOverlayEl || document.getElementById('rt-bg-overlay');
+    if (!rtBgWrapEl) return;
+
+    if (!b || b.type === 'none') {
+        rtBgVideoEl.classList.remove('show');
+        rtBgImgEl.classList.remove('show');
+        rtBgVideoEl.pause();
+        rtBgVideoEl.removeAttribute('src');
+        rtBgVideoEl.load(); // release any buffered/decoded video data, not just stop playback
+        rtBgImgEl.removeAttribute('src');
+        rtBgWrapEl.classList.remove('active');
+        rtBgOverlayEl.classList.remove('active');
+        document.body.classList.remove('rt-custom-bg');
+        if (persist !== false) { try { localStorage.setItem('rt_bg', JSON.stringify({ id:'none' })); } catch(e){} }
+        return;
+    }
+
+    rtBgWrapEl.classList.add('active');
+    rtBgOverlayEl.classList.add('active');
+    document.body.classList.add('rt-custom-bg');
+
+    if (b.type === 'video') {
+        rtBgImgEl.classList.remove('show');
+        rtBgImgEl.removeAttribute('src');
+        if (b.poster) rtBgVideoEl.setAttribute('poster', b.poster);
+        rtBgVideoEl.preload = 'auto';
+        rtBgVideoEl.src = b.src;
+        rtBgVideoEl.classList.add('show');
+        // Respect "reduce motion" (OS/browser accessibility + battery-saver
+        // setting): show the poster frame only, never autoplay the video.
+        // Cheaper for that visitor's device too — one static frame instead
+        // of continuous decode/composite every frame.
+        var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (!reduceMotion) {
+            // Autoplay can be blocked before any user gesture on some browsers;
+            // the settings click itself counts as a gesture, so this normally
+            // succeeds. If it's ever blocked, the poster frame still shows.
+            var playPromise = rtBgVideoEl.play();
+            if (playPromise && playPromise.catch) playPromise.catch(function(){});
+        }
+    } else if (b.type === 'image') {
+        rtBgVideoEl.classList.remove('show');
+        rtBgVideoEl.pause();
+        rtBgVideoEl.removeAttribute('src');
+        rtBgImgEl.src = b.src;
+        rtBgImgEl.classList.add('show');
+    }
+
+    if (persist !== false) { try { localStorage.setItem('rt_bg', JSON.stringify({ id: b.id })); } catch(e){} }
+}
+
+/* Restore a saved background on load (after BACKGROUNDS is defined —
+   unlike the theme/font restore in <head>, this runs once the DOM/video
+   elements exist, so it's placed here rather than in the pre-paint block). */
+(function restoreSavedBackground(){
+    try {
+        var raw = localStorage.getItem('rt_bg');
+        if (!raw) return;
+        var saved = JSON.parse(raw);
+        var match = BACKGROUNDS.filter(function(b){ return b.id === saved.id; })[0];
+        if (match && match.type !== 'none') applyBackground(match, false);
+    } catch(e){}
+    document.documentElement.classList.remove('rt-custom-bg-pending');
+})();
+
+/* The background video always keeps playing and looping while typing —
+   it behaves like a looping GIF (the `loop` attribute on #rt-bg-video
+   already handles restarting it automatically). The ONLY time it's
+   paused is when the browser tab itself is hidden, since a video no one
+   can see anyway shouldn't keep burning CPU/battery in the background;
+   it resumes the instant the tab becomes visible again. Typing or racing
+   never pauses it. */
+(function pauseBgVideoWhenTabHidden(){
+    function sync(){
+        var v = document.getElementById('rt-bg-video');
+        if (!v || !v.classList.contains('show')) return;
+        if (document.hidden) { v.pause(); return; }
+        // Don't resume playback for visitors who've asked for reduced
+        // motion — they only ever get the static poster frame.
+        if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        var p = v.play(); if (p && p.catch) p.catch(function(){});
+    }
+    document.addEventListener('visibilitychange', sync);
+})();
+
 /* ── HUD drag-to-reposition + resize ──────────────────────────────
    Free Fire-style: grab ANY individual button/element (not grouped
    containers) and drop it anywhere; grab its bottom-right dot to
@@ -4078,7 +4276,7 @@ function hideCustomPanelAndSave(){
     if (words) words.style.display = '';
     window._rtCustomModeActive = false;
     var typingInput = document.getElementById('input');
-    if (typingInput) { typingInput.disabled = false; typingInput.focus(); }
+    if (typingInput) { typingInput.disabled = false; typingInput.focus({ preventScroll: true }); }
 }
 
 /* ── Settings panel UI ─────────────────────────────────────────── */
@@ -4091,6 +4289,7 @@ function buildPanel(){
                 '<button class="rt-settings-tab active" data-tab="color">🎨 COLOR</button>' +
                 '<button class="rt-settings-tab" data-tab="font">🔤 FONT</button>' +
                 '<button class="rt-settings-tab" data-tab="lines">📏 LINES</button>' +
+                '<button class="rt-settings-tab" data-tab="bg">🎬 BG</button>' +
                 '<button class="rt-settings-tab" data-tab="custom">🖱 CUSTOM</button>' +
             '</div>' +
             '<div class="rt-settings-pane active" id="rt-tab-color">' +
@@ -4108,6 +4307,16 @@ function buildPanel(){
                 '<button class="rt-line-btn" data-lines="2"><span class="rt-line-btn-icon"><span style="width:100%"></span><span style="width:100%"></span></span>TWO LINES</button>' +
                 '<button class="rt-line-btn" data-lines="3"><span class="rt-line-btn-icon"><span style="width:100%"></span><span style="width:100%"></span><span style="width:100%"></span></span>THREE LINES (Default)</button>' +
             '</div>' +
+            '<div class="rt-settings-pane" id="rt-tab-bg">' +
+                '<button class="rt-normal-btn" id="rt-bg-normal">↺ NORMAL (default starfield)</button>' +
+                '<p class="rt-hint">Choose whether your background is a video or an image, then pick one below. Your choice is saved on this device.</p>' +
+                '<div class="rt-bg-type-toggle">' +
+                    '<button class="rt-bg-type-btn active" data-bgtype="video">🎬 VIDEO</button>' +
+                    '<button class="rt-bg-type-btn" data-bgtype="image">🖼 IMAGE</button>' +
+                '</div>' +
+                '<div id="rt-bg-grid"></div>' +
+                '<p class="rt-hint" id="rt-bg-empty-hint" style="display:none;">No background images added yet — check back soon.</p>' +
+            '</div>' +
         '</div>';
     document.body.appendChild(wrap);
 
@@ -4122,6 +4331,48 @@ function buildPanel(){
         grid.appendChild(sw);
     });
     document.getElementById('rt-color-normal').addEventListener('click', function(){ applyTheme(THEMES[0]); });
+
+    // ── Background (video/image) grid ──
+    // Two-step choice: pick the type (Video or Image) with the toggle,
+    // then pick a specific background from that type's grid.
+    var bgGrid = document.getElementById('rt-bg-grid');
+    var bgEmptyHint = document.getElementById('rt-bg-empty-hint');
+    var currentBg = BACKGROUNDS.filter(function(b){ return b.id === getCurrentBackgroundId(); })[0];
+    var activeBgType = (currentBg && currentBg.type !== 'none') ? currentBg.type : 'video';
+
+    function renderBgGrid(type){
+        activeBgType = type;
+        document.querySelectorAll('.rt-bg-type-btn').forEach(function(btn){
+            btn.classList.toggle('active', btn.dataset.bgtype === type);
+        });
+        bgGrid.innerHTML = '';
+        var items = BACKGROUNDS.filter(function(b){ return b.type === type; });
+        bgEmptyHint.style.display = items.length ? 'none' : 'block';
+        var currentId = getCurrentBackgroundId();
+        items.forEach(function(b){
+            var sw = document.createElement('div');
+            sw.className = 'rt-bg-swatch' + (currentId === b.id ? ' selected' : '');
+            sw.title = b.name;
+            sw.innerHTML =
+                '<img src="' + b.thumb + '" alt="" loading="lazy">' +
+                '<span class="rt-bg-kind-icon">' + (b.type === 'video' ? '🎬' : '🖼') + '</span>' +
+                '<span class="rt-bg-label">' + b.name + '</span>';
+            sw.addEventListener('click', function(){
+                applyBackground(b);
+                bgGrid.querySelectorAll('.rt-bg-swatch').forEach(function(s){ s.classList.remove('selected'); });
+                sw.classList.add('selected');
+            });
+            bgGrid.appendChild(sw);
+        });
+    }
+    document.querySelectorAll('.rt-bg-type-btn').forEach(function(btn){
+        btn.addEventListener('click', function(){ renderBgGrid(btn.dataset.bgtype); });
+    });
+    renderBgGrid(activeBgType);
+    document.getElementById('rt-bg-normal').addEventListener('click', function(){
+        applyBackground(BACKGROUNDS[0]);
+        bgGrid.querySelectorAll('.rt-bg-swatch').forEach(function(s){ s.classList.remove('selected'); });
+    });
 
     // Plain substring filter — nothing here is ever written back into the
     // DOM as HTML (no innerHTML with the query text), so there's no XSS
