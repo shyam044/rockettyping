@@ -139,11 +139,11 @@ let config = {
                 && !e.target.closest('#rt-settings-panel')
                 && !e.target.closest('#rt-settings-btn')
                 && !e.target.closest('#rt-custom-panel')) {
-                input.focus();
+                input.focus({ preventScroll: true });
             }
         });
         window.addEventListener('focus', () => {
-            if (!testActive && !window._rtCustomModeActive) input.focus();
+            if (!testActive && !window._rtCustomModeActive) input.focus({ preventScroll: true });
         });
         const timerDiv = document.getElementById('timer');
         const resultDiv = document.getElementById('result');
@@ -2529,7 +2529,7 @@ if (!testActive && !testEnded && e.key.length === 1) {
             wordsDiv.style.opacity = 0;
             requestAnimationFrame(() => wordsDiv.style.opacity = 1);
             input.value = '';
-            input.focus();
+            input.focus({ preventScroll: true });
 
             if (config.mode === 'time' || config.mode === 'words' || config.mode === 'quotes' || config.mode === 'zen') generateWords();
 
