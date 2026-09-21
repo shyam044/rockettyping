@@ -86,6 +86,7 @@
     }catch(e){}
 })();
 </script>
+    <script type="text/javascript" async="async" data-noptimize="1" data-cfasync="false" src="//scripts.scriptwrapper.com/tags/31b6b722-d3b7-49a8-acd3-2264f19c9dc5.js"></script>
 </head>
 
 <body>
@@ -95,7 +96,6 @@
         <a href="/" style="cursor:pointer; display:flex; flex-direction:column; align-items:flex-start; text-decoration:none;">
             <img src="images/rocket-typing-logo.webp" alt="Rocket Typing" width="120" height="120" style="width:120px; margin-bottom:5px;" fetchpriority="high" loading="eager" decoding="sync" />
         </a>
-            <div class="ad-slot ad-bottom-banner" id="ad-bottom-banner"></div>
         <div id="header-right-group" style="display:flex;align-items:center;gap:8px;z-index:35;position:relative;top:6px;">
             <div id="header-auth-btn" style="display:flex;align-items:center;"></div>
         </div>
@@ -745,7 +745,6 @@
 </style>
 
 <div class="profile-layout">
-<aside class="ad-slot ad-rail ad-rail-left" id="ad-rail-left"></aside>
 <div id="profileModal" aria-label="User Profile">
   <div id="profileModalBox">
     <!-- Banner with avatar (sticky at top, not scrolled) -->
@@ -931,7 +930,6 @@
     </div><!-- end pm-scroll-body -->
   </div>
 </div>
-<aside class="ad-slot ad-rail ad-rail-right" id="ad-rail-right"></aside>
 </div><!-- /.profile-layout -->
     <style>
 /* ── Standalone page overrides: this is no longer a fixed-overlay
@@ -2757,66 +2755,5 @@ document.addEventListener('click', e => {
 // Init
 initCountryDrop('idx');
 </script>
-<!-- ============================================================
-     LAZY / VIEWABILITY-BASED AD LOADING
-     Previously all 3 ad slots (header banner + 2 rails) fired their
-     ad-network <script src> the instant the HTML parser reached them —
-     3 extra synchronous third-party requests competing with the page's
-     own CSS/JS for bandwidth during the critical rendering path, which
-     hurts FCP/LCP/TBT. Same fix as index.html: each slot's iframe is
-     only requested once it's about to actually enter the viewport,
-     via IntersectionObserver, using an isolated iframe (srcdoc) so the
-     ad network's document.write() call gets a clean initial parse.
-     ============================================================ -->
-<script>
-(function(){
-    function loadDirectBannerAd(containerElId, adKey, width, height) {
-        var container = document.getElementById(containerElId);
-        if (!container) return;
-        container.innerHTML = '';
-        var iframe = document.createElement('iframe');
-        iframe.setAttribute('scrolling', 'no');
-        iframe.setAttribute('frameborder', '0');
-        iframe.style.cssText = 'display:block; width:' + width + 'px; max-width:100%; height:' + height + 'px; border:0; overflow:hidden; margin:0 auto;';
-        var cacheBust = Date.now() + Math.random().toString(36).slice(2);
-        iframe.srcdoc =
-            '<!DOCTYPE html><html><head><style>html,body{margin:0;padding:0;background:transparent;display:flex;justify-content:center;align-items:center;overflow:hidden;}</style></head><body>' +
-            '<script>atOptions={"key":"' + adKey + '","format":"iframe","height":' + height + ',"width":' + width + ',"params":{}};<\/script>' +
-            '<script src="https://www.highperformanceformat.com/' + adKey + '/invoke.js?_=' + cacheBust + '"><\/script>' +
-            '<\/body><\/html>';
-        container.appendChild(iframe);
-    }
-
-    var _adSlotLoaders = {
-        'ad-bottom-banner': function(){ loadDirectBannerAd('ad-bottom-banner', 'ec2cd2e3ac271efe174e656e9ef09deb', 728, 90); },
-        'ad-rail-left':     function(){ loadDirectBannerAd('ad-rail-left', 'f9fd656d91c4953d559c8174661c6df8', 160, 600); },
-        'ad-rail-right':    function(){ loadDirectBannerAd('ad-rail-right', 'e3a304a061bb8b53fdbf045abe87c573', 160, 300); }
-    };
-    var _adSlotLoaded = {};
-
-    var _adLazyObserver = ('IntersectionObserver' in window) ? new IntersectionObserver(function(entries){
-        entries.forEach(function(entry){
-            if (!entry.isIntersecting) return;
-            var id = entry.target.id;
-            if (_adSlotLoaded[id]) return;
-            _adSlotLoaded[id] = true;
-            _adSlotLoaders[id]();
-        });
-    }, { rootMargin: '200px 0px', threshold: 0.01 }) : null;
-
-    Object.keys(_adSlotLoaders).forEach(function(id){
-        var el = document.getElementById(id);
-        if (!el) return;
-        if (_adLazyObserver) {
-            _adLazyObserver.observe(el);
-        } else if (!_adSlotLoaded[id]) {
-            _adSlotLoaded[id] = true;
-            _adSlotLoaders[id]();
-        }
-    });
-})();
-</script>
-<!-- Social Bar ad — self-positions as a corner overlay, no container needed -->
-<script async src="https://pl30277777.effectivecpmnetwork.com/7f/22/10/7f2210f14d8eecc91fc8f7de5c422435.js"></script>
 </body>
 </html>
