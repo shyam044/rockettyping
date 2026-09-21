@@ -1863,7 +1863,7 @@ if (!testActive && !testEnded && e.key.length === 1) {
                 window._chartData = { wpm: [], raw: [], burst: [], errors: [], elapsed: Date.now() - startTime };
             }
 
-            // === Populate Test Type + Time meta boxes ===
+            // === Populate Test Type + Time + Words meta boxes ===
             const elapsedSecs = Math.round((Date.now() - startTime) / 1000);
             const modeLabels = { time: 'time', words: 'words', quotes: 'quotes' };
             const modeLabel = modeLabels[config.mode] || config.mode;
@@ -1873,10 +1873,16 @@ if (!testActive && !testEnded && e.key.length === 1) {
             else if (config.mode === 'time') modeDisplay = 'time ' + config.time;
             else if (config.mode === 'words') modeDisplay = 'words ' + config.words;
 
+            // Word count: how many words were actually typed (any word the
+            // visitor started or finished), not the target word-list length.
+            const wordsTypedCount = typedWords.filter(function(w){ return w; }).length;
+
             const modEl = document.getElementById('result-mode-display');
             const timeEl = document.getElementById('result-time-display');
+            const wordsEl = document.getElementById('result-words-display');
             if (modEl) modEl.textContent = modeDisplay;
             if (timeEl) timeEl.textContent = elapsedSecs;
+            if (wordsEl) wordsEl.textContent = wordsTypedCount;
 
             // Show result
             resultDiv.style.display = 'block';
