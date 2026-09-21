@@ -1,27 +1,10 @@
 /* ============================================================
-   TRENDING ADS — Rocket Typing
-   Just one ad on this page: the right-side rail. It's only ever in
-   the DOM on wide viewports where it's already visible (see
-   .tr-ad-rail CSS, min-width: 1650px), so there's no benefit to
-   delaying the push — it's requested as soon as the page loads.
-
-   Safe if AdSense's script is blocked (adblock, slow network, etc.) —
-   the push is wrapped so a missing `adsbygoogle` array never throws.
+   trending-ads.js — retired
+   The ad rail this file used to populate (and the Google AdSense
+   `<ins class="adsbygoogle">` unit it pushed into) has been removed
+   from every Trending article page. Ads on this site are now served
+   by Mediavine, whose own script tag (added to every page's <head>)
+   handles ad placement automatically — no per-page loader needed.
+   This file is kept as an empty, harmless stub only so that any
+   cached/old page still requesting it doesn't get a 404.
    ============================================================ */
-(function () {
-  "use strict";
-
-  function init() {
-    var ins = document.querySelector(".tr-ad-rail ins.adsbygoogle");
-    if (!ins) return;
-    try {
-      (window.adsbygoogle = window.adsbygoogle || []).push({});
-    } catch (e) { /* AdSense script not available (blocked/offline) — fail silently */ }
-  }
-
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", init);
-  } else {
-    init();
-  }
-})();
