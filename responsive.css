@@ -455,6 +455,19 @@ img { max-width: 100%; }
     }
     .result-meta-box .rmb-value { font-size: 18px; }
 
+    /* TIME + WORDS pair: the group itself takes the full row width (like
+       the other stacked boxes), but its two children split that width
+       between them side-by-side instead of each claiming 100%. */
+    .result-meta-box-group {
+        width: 100%;
+        gap: 10px;
+    }
+    .result-meta-box-group .result-meta-box {
+        flex: 1 1 0;
+        width: auto;
+        justify-content: center;
+    }
+
     /* Leaderboard */
     .leaderboard-header-grid,
     .leaderboard-row {
