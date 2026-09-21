@@ -134,15 +134,6 @@
     "category": "News / U.S.",
     "readMinutes": 2
   },
-    {
-    "date": "2026-09-16",
-    "slug": "house-votes-end-iran-war-third-time",
-    "url": "/trending/house-votes-end-iran-war-third-time",
-    "title": "US House Votes to End Iran War for Third Time",
-    "excerpt": "The US House voted 220-204 on September 15, 2026 to pass a war powers resolution on Iran, with seven Republicans joining all Democrats. It is the third such House vote this year.",
-    "category": "News / Politics",
-    "readMinutes": 2
-  },
   {
     "date": "2026-09-17",
     "slug": "federal-reserve-raises-interest-rates-september-2026",
@@ -162,21 +153,30 @@
     "readMinutes": 3
   },
   {
-"date": "2026-09-19",
-"slug": "trump-infinite-life-greenland-security-deal-2026",
-"url": "/trending/trump-infinite-life-greenland-security-deal-2026",
-"title": "Trump Announces US Security Deal on Greenland Called “Infinite Life” Agreement",
-"excerpt": "President Trump announced a proposed “Infinite Life” security agreement with Denmark and Greenland on September 18, 2026, giving the US long-term basing, access, and overflight rights with no cost or end date, expected to be signed at the UN General Assembly next week.",
-"category": "News / World",
-"readMinutes": 3
+    "date": "2026-09-18",
+    "slug": "trump-infinite-life-greenland-security-deal-2026",
+    "url": "/trending/trump-infinite-life-greenland-security-deal-2026",
+    "title": "Trump Announces US Security Deal on Greenland Called \u201cInfinite Life\u201d Agreement",
+    "excerpt": "President Trump announced a proposed \u201cInfinite Life\u201d security agreement with Denmark and Greenland on September 18, 2026, giving the US long-term basing, access, and overflight rights with no cost or end date, expected to be signed at the UN General Assembly next week.",
+    "category": "News / World",
+    "readMinutes": 3
   },
-   {
-"date": "2026-09-20",
-"slug": "20th-asian-games-nagoya-2026-opening",
-"url": "/trending/20th-asian-games-nagoya-2026-opening",
-"title": "20th Asian Games Open in Nagoya, Japan",
-"excerpt": "The 20th Asian Games officially began on September 19, 2026, in Nagoya, Japan, with Emperor Naruhito declaring the Games open and over 15,000 athletes from 45 nations competing in 43 sports for 469 gold medals through October 4.",
-"category": "Sports",
-"readMinutes": 3
+  {
+    "date": "2026-09-20",
+    "slug": "20th-asian-games-nagoya-2026-opening",
+    "url": "/trending/20th-asian-games-nagoya-2026-opening",
+    "title": "20th Asian Games Open in Nagoya, Japan",
+    "excerpt": "The 20th Asian Games officially began on September 19, 2026, in Nagoya, Japan, with Emperor Naruhito declaring the Games open and over 15,000 athletes from 45 nations competing in 43 sports for 469 gold medals through October 4.",
+    "category": "Sports",
+    "readMinutes": 3
+  },
+  {
+    "date": "2026-09-21",
+    "slug": "trump-iran-deciding-mode-2026",
+    "url": "/trending/trump-iran-deciding-mode-2026",
+    "title": "Trump Says He Is in \u201cDeciding Mode\u201d on Iran and Warns of \u201cVery Big Things\u201d as Tehran Issues Seven Conditions",
+    "excerpt": "On September 20, 2026, Trump said he is in \u201cdeciding mode\u201d on Iran, weighing military action, economic pressure, or a deal, as Tehran sent seven conditions for talks through Qatari mediators, including an end to fighting and the US naval blockade.",
+    "category": "News / World",
+    "readMinutes": 3
   }
 ]
