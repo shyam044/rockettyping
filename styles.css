@@ -661,6 +661,14 @@ width: 60%;                       /* full width now */
     margin-top: 1px;
 }
 
+/* Wraps TIME + WORDS together as a pair on the right side of the row,
+   Time first (closer to center) then Words (outermost right). */
+.result-meta-box-group {
+    display: flex;
+    gap: 10px;
+    flex: 0 0 auto;
+}
+
 #result #restart {
     background: linear-gradient(to right, #ffd700, #ff9900);
     color: #0a0a23;
@@ -731,6 +739,8 @@ padding: 11px 24px;
     .result-bottom-row { flex-direction: column; align-items: center; margin-top: 12px; padding-left: 0; padding-right: 0; }
     .result-meta-box { flex-direction: row; gap: 12px; min-width: unset; width: 100%; justify-content: flex-start; padding: 8px 14px; }
     .result-meta-box .rmb-value { font-size: 18px; }
+    .result-meta-box-group { width: 100%; gap: 10px; }
+    .result-meta-box-group .result-meta-box { flex: 1 1 0; width: auto; justify-content: center; }
 }
 
 /* ==================== LEADERBOARD ==================== */
