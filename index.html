@@ -29,7 +29,6 @@
         content="Improve your typing speed and accuracy with Rocket Typing — free WPM test, touch typing practice, typing games, and a global leaderboard. No signup needed.">
     <meta name="twitter:image" content="https://www.rockettyping.com/images/og-banner.webp">
     <meta name="twitter:creator" content="@rockettyping">
-    <meta name="google-adsense-account" content="ca-pub-8311353174841359">
 <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -195,8 +194,8 @@
     <link rel="dns-prefetch" href="https://flagcdn.com">
     <!-- Preload critical assets: logo image + main stylesheet -->
     <link rel="preload" as="image" href="/images/rocket-typing-logo.webp" fetchpriority="high">
-    <link rel="preload" href="styles.css?v=1" as="style">
-    <link rel="preload" href="responsive.css?v=1" as="style">
+    <link rel="preload" href="styles.css" as="style">
+    <link rel="preload" href="responsive.css" as="style">
     <!-- ═══════════════════════════════════════════════════════════════════
          INLINE CRITICAL CSS  — rendered before any external stylesheet.
          RULE: every layout-affecting property that also exists in styles.css
@@ -314,11 +313,11 @@
          appear ~300-500 ms after first paint — invisible to users at normal reading
          speed, and completely invisible when already cached.
          ──────────────────────────────────────────────────────────────────────────── -->
-    <link rel="stylesheet" href="styles.css?v=1"     media="print" onload="this.onload=null;this.media='all'">
-    <link rel="stylesheet" href="responsive.css?v=1" media="print" onload="this.onload=null;this.media='all'">
+    <link rel="stylesheet" href="styles.css"     media="print" onload="this.onload=null;this.media='all'">
+    <link rel="stylesheet" href="responsive.css" media="print" onload="this.onload=null;this.media='all'">
     <noscript>
-        <link rel="stylesheet" href="styles.css?v=1">
-        <link rel="stylesheet" href="responsive.css?v=1">
+        <link rel="stylesheet" href="styles.css">
+        <link rel="stylesheet" href="responsive.css">
     </noscript>
     <!-- Font Awesome removed: the whole 6.6.0 icon library (100+ KB + an extra
          third-party connection) was being loaded on this page to render exactly
@@ -342,8 +341,6 @@
         gtag('js', new Date());
         gtag('config', 'G-136SVFZRDF');
     </script>
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8311353174841359"
-        crossorigin="anonymous"></script>
     <!-- Confetti: lazy-loaded on first actual use (see fireConfetti() below)
          instead of on every page load — most visits never trigger it. -->
     <script>
@@ -1562,6 +1559,7 @@ html.rt-custom-bg-pending body::before{display:none !important;}
     }catch(e){}
 })();
 </script>
+    <script type="text/javascript" async="async" data-noptimize="1" data-cfasync="false" src="//scripts.scriptwrapper.com/tags/31b6b722-d3b7-49a8-acd3-2264f19c9dc5.js"></script>
 </head>
 <body>
     <!-- ── Custom Background (video/image), selected from Settings ▸ 🎬 BG ──
@@ -1896,9 +1894,6 @@ html.rt-custom-bg-pending body::before{display:none !important;}
                 <div class="rmb-sub">typed</div>
             </div>
         </div>
-    </div>
-    <div id="result-ad">
-        <div id="container-42f27a48e35d8fefd79d32771cdb9094"></div>
     </div>
 </div>
 
@@ -2797,7 +2792,7 @@ window.deleteUser = deleteUser;
         })();
     </script>
     <script src="vocabulary.js?v=3"></script>
-    <script src="app-core.js?v=2"></script>
+    <script src="app-core.js?v=1"></script>
     <script>
 (function() {
     const isSunday = new Date().getDay() === 0;
