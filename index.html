@@ -1404,6 +1404,12 @@ html.rt-custom-bg-pending body::before{display:none !important;}
 .rt-bg-type-btn{flex:1;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#aaa;
     padding:8px 4px;border-radius:8px;cursor:pointer;font-family:'Roboto Mono',monospace;font-size:12px;font-weight:900;letter-spacing:.5px;}
 .rt-bg-type-btn.active{background:var(--rt-main);color:var(--rt-bg);border-color:var(--rt-main);}
+.rt-bg-volume-row{display:flex;align-items:center;justify-content:space-between;gap:10px;
+    margin-top:12px;padding:8px 10px;background:rgba(255,255,255,0.04);border-radius:8px;border:1px solid rgba(255,255,255,0.08);}
+.rt-bg-volume-label{font-family:'Roboto Mono',monospace;font-size:12px;color:#ccc;letter-spacing:.3px;}
+.rt-bg-volume-toggle{min-width:52px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);color:#999;
+    padding:5px 10px;border-radius:20px;cursor:pointer;font-family:'Roboto Mono',monospace;font-size:10px;font-weight:900;letter-spacing:.5px;transition:all .15s;}
+.rt-bg-volume-toggle.on{background:var(--rt-main);color:var(--rt-bg);border-color:var(--rt-main);}
 #rt-bg-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:10px;}
 .rt-bg-swatch{position:relative;height:64px;border-radius:8px;overflow:hidden;cursor:pointer;
     border:2px solid rgba(255,255,255,0.12);transition:transform .15s,border-color .15s;background:#000;}
@@ -1875,11 +1881,20 @@ html.rt-custom-bg-pending body::before{display:none !important;}
             </button>
         </div>
 
-        <!-- RIGHT: Time Info -->
-        <div class="result-meta-box" id="result-time-box">
-            <div class="rmb-label">TIME</div>
-            <div class="rmb-value" id="result-time-display">—</div>
-            <div class="rmb-sub">seconds</div>
+        <!-- RIGHT: Time Info + Word Count, side-by-side (Time on the left
+             of this pair, Word Count on the right, per the requested
+             layout) -->
+        <div class="result-meta-box-group">
+            <div class="result-meta-box" id="result-time-box">
+                <div class="rmb-label">TIME</div>
+                <div class="rmb-value" id="result-time-display">—</div>
+                <div class="rmb-sub">seconds</div>
+            </div>
+            <div class="result-meta-box" id="result-words-box">
+                <div class="rmb-label">WORDS</div>
+                <div class="rmb-value" id="result-words-display">—</div>
+                <div class="rmb-sub">typed</div>
+            </div>
         </div>
     </div>
     <div id="result-ad">
@@ -3738,6 +3753,15 @@ var BACKGROUNDS = [
         src: '/backgrounds/videos/lord-krishna-eyes-close-up-background.webm',
         poster: '/backgrounds/videos/lord-krishna-eyes-close-up-background-poster.webp',
         thumb: '/backgrounds/videos/lord-krishna-eyes-close-up-background-thumb.webp'
+    },
+    {
+        id:'martial-artists-sparring',
+        name:'Martial Artists Sparring',
+        type:'video',
+        hasAudio: true, // has a real soundtrack — this is what the 🔊 volume toggle controls
+        src: '/backgrounds/videos/martial-artists-sparring-fight-background.webm',
+        poster: '/backgrounds/videos/martial-artists-sparring-fight-background-poster.webp',
+        thumb: '/backgrounds/videos/martial-artists-sparring-fight-background-thumb.webp'
     }
     // Images use: { id:'…', name:'…', type:'image', src:'/backgrounds/images/your-seo-file-name.webp', thumb:'(same file, or a smaller version)' }
 ];
@@ -3748,6 +3772,18 @@ function getCurrentBackgroundId(){
         if (!raw) return 'none';
         return (JSON.parse(raw) || {}).id || 'none';
     } catch(e){ return 'none'; }
+}
+
+/* ── Background video volume (default OFF = muted) ──
+   A separate, persisted on/off preference for whether background videos
+   that HAVE a soundtrack (see hasAudio on a BACKGROUNDS entry) play with
+   sound. Videos with no soundtrack are unaffected either way. */
+function getBgVolumeOn(){
+    try { return localStorage.getItem('rt_bg_volume') === 'on'; } catch(e){ return false; }
+}
+function setBgVolumeOn(on){
+    try { localStorage.setItem('rt_bg_volume', on ? 'on' : 'off'); } catch(e){}
+    if (rtBgVideoEl) rtBgVideoEl.muted = !on;
 }
 
 var rtBgVideoEl, rtBgImgEl, rtBgWrapEl, rtBgOverlayEl;
@@ -3783,6 +3819,11 @@ function applyBackground(b, persist){
         rtBgVideoEl.preload = 'auto';
         rtBgVideoEl.src = b.src;
         rtBgVideoEl.classList.add('show');
+        // Volume: OFF by default (muted). Only ever unmuted if the visitor
+        // has explicitly turned the 🔊 Video Sound toggle on — and even
+        // then, a video with no soundtrack of its own just stays silent
+        // regardless, there's nothing to unmute.
+        rtBgVideoEl.muted = !getBgVolumeOn();
         // Respect "reduce motion" (OS/browser accessibility + battery-saver
         // setting): show the poster frame only, never autoplay the video.
         // Cheaper for that visitor's device too — one static frame instead
@@ -3792,8 +3833,17 @@ function applyBackground(b, persist){
             // Autoplay can be blocked before any user gesture on some browsers;
             // the settings click itself counts as a gesture, so this normally
             // succeeds. If it's ever blocked, the poster frame still shows.
+            // An UNMUTED autoplay attempt (returning visitor with sound
+            // already turned on) can still be blocked by the browser with
+            // no prior gesture on this page load — if so it silently falls
+            // back to playing muted; the visitor's own next click anywhere
+            // (which already calls play() as a real gesture) recovers sound.
             var playPromise = rtBgVideoEl.play();
-            if (playPromise && playPromise.catch) playPromise.catch(function(){});
+            if (playPromise && playPromise.catch) playPromise.catch(function(){
+                rtBgVideoEl.muted = true;
+                var retry = rtBgVideoEl.play();
+                if (retry && retry.catch) retry.catch(function(){});
+            });
         }
     } else if (b.type === 'image') {
         rtBgVideoEl.classList.remove('show');
@@ -4310,6 +4360,10 @@ function buildPanel(){
             '<div class="rt-settings-pane" id="rt-tab-bg">' +
                 '<button class="rt-normal-btn" id="rt-bg-normal">↺ NORMAL (default starfield)</button>' +
                 '<p class="rt-hint">Choose whether your background is a video or an image, then pick one below. Your choice is saved on this device.</p>' +
+                '<div class="rt-bg-volume-row">' +
+                    '<span class="rt-bg-volume-label">🔊 Video Sound</span>' +
+                    '<button class="rt-bg-volume-toggle" id="rt-bg-volume-toggle" role="switch" aria-checked="false" title="Only affects background videos that have a soundtrack">OFF</button>' +
+                '</div>' +
                 '<div class="rt-bg-type-toggle">' +
                     '<button class="rt-bg-type-btn active" data-bgtype="video">🎬 VIDEO</button>' +
                     '<button class="rt-bg-type-btn" data-bgtype="image">🖼 IMAGE</button>' +
@@ -4372,6 +4426,27 @@ function buildPanel(){
     document.getElementById('rt-bg-normal').addEventListener('click', function(){
         applyBackground(BACKGROUNDS[0]);
         bgGrid.querySelectorAll('.rt-bg-swatch').forEach(function(s){ s.classList.remove('selected'); });
+    });
+
+    // ── Background video volume toggle (default OFF) ──
+    var volBtn = document.getElementById('rt-bg-volume-toggle');
+    function paintVolBtn(on){
+        volBtn.textContent = on ? 'ON' : 'OFF';
+        volBtn.classList.toggle('on', on);
+        volBtn.setAttribute('aria-checked', on ? 'true' : 'false');
+    }
+    paintVolBtn(getBgVolumeOn());
+    volBtn.addEventListener('click', function(){
+        var next = !getBgVolumeOn();
+        setBgVolumeOn(next);
+        paintVolBtn(next);
+        // This click IS a user gesture, so unmuting + resuming playback
+        // here (rather than waiting for the next click elsewhere on the
+        // page) is reliably allowed by every browser's autoplay policy.
+        if (rtBgVideoEl && rtBgVideoEl.classList.contains('show')) {
+            var p = rtBgVideoEl.play();
+            if (p && p.catch) p.catch(function(){});
+        }
     });
 
     // Plain substring filter — nothing here is ever written back into the
