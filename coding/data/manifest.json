@@ -1,0 +1,20 @@
+{
+  "_readme": "Index for the coding home page. Each problems-N.json holds at most 'limit' (100) problems. To add a problem: append it to the newest problems-N.json (when that file has 100, create problems-(N+1).json and add it to 'chunks'), then update totalProblems, difficultyCounts, that chunk's count/lastId, and bump 'version' so browsers re-download the changed files. The 'file' value must be lowercase letters, digits and hyphens ending in .html.",
+  "version": "2",
+  "limit": 100,
+  "totalProblems": 10,
+  "difficultyCounts": {
+    "Easy": 10,
+    "Medium": 0,
+    "Hard": 0
+  },
+  "chunks": [
+    {
+      "chunk": 1,
+      "file": "problems-1.json",
+      "count": 10,
+      "firstId": 1,
+      "lastId": 10
+    }
+  ]
+}

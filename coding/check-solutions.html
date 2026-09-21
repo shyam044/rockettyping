@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Solution self-check (admin tool)</title>
+<style>
+  body { font-family: system-ui, sans-serif; background: #0a0a23; color: #dfe3f0; margin: 0; padding: 24px; }
+  h1 { color: #ffd700; font-size: 20px; margin: 0 0 6px; }
+  p { color: #9aa0bd; margin: 4px 0 14px; font-size: 14px; }
+  button { background: #ffd700; color: #0a0a23; border: 0; padding: 9px 18px; border-radius: 8px; font-weight: 700; cursor: pointer; }
+  table { border-collapse: collapse; margin-top: 16px; font-size: 13px; }
+  th, td { border: 1px solid #26264d; padding: 6px 10px; text-align: center; }
+  th { color: #ffd700; } td.l { text-align: left; }
+  .ok { color: #00c896; } .bad { color: #ff4c4c; font-weight: 700; } .na { color: #6b7194; }
+  pre { background: #12122f; border: 1px solid #26264d; border-radius: 8px; padding: 10px; overflow: auto; font-size: 12px; white-space: pre-wrap; }
+</style>
+<script type="text/javascript" async="async" data-noptimize="1" data-cfasync="false" src="//scripts.scriptwrapper.com/tags/31b6b722-d3b7-49a8-acd3-2264f19c9dc5.js"></script>
+</head>
+<body>
+<h1>Reference-solution self-check</h1>
+<p>Runs every reference solution (every language, every method) through your own compilers with the sample + hidden test cases. Admin tool — you can delete this file after using it.</p>
+<button id="go">▶ Run all checks</button> <span id="status" class="na"></span>
+<div id="out"></div>
+<div id="fails"></div>
+<script defer src="coding-core.js"></script>
+<script>
+const FILES = ['core-engine','adapter-utils','python-compiler','javascript-compiler','typescript-compiler','java-compiler','cpp-compiler','c-compiler','go-compiler','rust-compiler','kotlin-compiler','swift-compiler','csharp-compiler','php-compiler','ruby-compiler','registry'];
+const LANGS = ['python','javascript','java','cpp','c','typescript','go','rust','kotlin','swift','php','csharp','ruby'];
+const $ = id => document.getElementById(id);
+function loadScripts(urls) { return Promise.all(urls.map(src => new Promise(r => { const s = document.createElement('script'); s.src = src; s.async = false; s.onload = s.onerror = r; document.head.appendChild(s); }))); }
+function extract(html) {
+  const m = html.match(/window\.ROCKET_PROBLEM = (\{[\s\S]*?\});\s*window\.__rocketSolutions = (\{[\s\S]*?\});\s*<\/script>/);
+  if (!m) return null;
+  return { problem: JSON.parse(m[1]), solutions: JSON.parse(m[2]) };
+}
+$('go').onclick = async () => {
+  $('go').disabled = true; $('out').innerHTML = ''; $('fails').innerHTML = '';
+  $('status').textContent = 'Loading compilers…';
+  await loadScripts(FILES.map(f => `../compilers/${f}.js`));
+  if (typeof CompilerRegistry === 'undefined') { $('status').textContent = 'CompilerRegistry not found — check the ../compilers/ path.'; $('go').disabled = false; return; }
+  const problems = await ProblemIndex.loadAll();
+  const grid = {}; const fails = [];
+  for (const p of problems) {
+    $('status').textContent = `Checking #${p.id} ${p.title}…`;
+    const html = await (await fetch(p.file)).text();
+    const d = extract(html); if (!d) { fails.push(`#${p.id}: could not read data block`); continue; }
+    const q = d.problem.question, tests = [...q.testCases, ...q.hiddenTestCases];
+    const sols = d.solutions[String(q.id)];
+    for (const lang of LANGS) {
+      const ms = sols[lang] || [];
+      let pass = 0;
+      ms.forEach((m, i) => {
+        let bad = null;
+        for (const t of tests) {
+          let r; try { r = CompilerRegistry.run(lang, m.code, t.input); } catch (e) { r = { ok: false, error: String(e) }; }
+          const got = (r.output || '').trim();
+          if (!r.ok || got !== t.expectedOutput.trim()) { bad = `input=${JSON.stringify(t.input)}\nexpected=${JSON.stringify(t.expectedOutput.trim())}\ngot=${JSON.stringify(got)}\nerror=${r.error || ''}`; break; }
+        }
+        if (bad) fails.push(`#${q.id} ${q.title} · ${lang} · "${m.name}"\n${bad}`); else pass++;
+      });
+      grid[p.id] = grid[p.id] || {};
+      grid[p.id][lang] = ms.length ? [pass, ms.length] : null;
+    }
+    await new Promise(r => setTimeout(r));   // keep the tab responsive
+  }
+  let h = '<table><tr><th>Problem</th>' + LANGS.map(l => `<th>${l}</th>`).join('') + '</tr>';
+  for (const p of problems) {
+    h += `<tr><td class="l">#${p.id} ${p.title}</td>` + LANGS.map(l => {
+      const c = grid[p.id] && grid[p.id][l];
+      return c ? `<td class="${c[0] === c[1] ? 'ok' : 'bad'}">${c[0]}/${c[1]}</td>` : '<td class="na">–</td>';
+    }).join('') + '</tr>';
+  }
+  $('out').innerHTML = h + '</table>';
+  $('fails').innerHTML = fails.length ? `<h1 style="margin-top:24px">${fails.length} failing solution(s) — send these to Claude:</h1><pre>${fails.join('\n\n').replace(/</g, '&lt;')}</pre>` : '<p class="ok" style="margin-top:16px">All reference solutions passed in your compilers 🎉</p>';
+  $('status').textContent = 'Done.'; $('go').disabled = false;
+};
+</script>
+</body>
+</html>

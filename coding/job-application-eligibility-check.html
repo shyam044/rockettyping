@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Job Eligibility Check (if/else) in Python, Java, C++ &amp; More | Rocket Typing</title>
+<meta name="description" content="Print Job or No Job when the salary is above 10 lakhs and the company offers a cab – the AND operator with if/else in 13 languages, including Python, Java and C++.">
+<meta name="keywords" content="job eligibility check program, if else and operator, logical and in python, logical and in java, multiple conditions if statement, string comparison in c, coding practice conditions">
+<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+<link rel="canonical" href="https://www.rockettyping.com/coding/job-application-eligibility-check">
+<meta http-equiv="Content-Security-Policy" content="object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Job Eligibility Check (if/else) in Python, Java, C++ &amp; More | Rocket Typing">
+<meta property="og:description" content="Print Job or No Job when the salary is above 10 lakhs and the company offers a cab – the AND operator with if/else in 13 languages, including Python, Java and C++.">
+<meta property="og:url" content="https://www.rockettyping.com/coding/job-application-eligibility-check">
+<meta property="og:image" content="https://www.rockettyping.com/images/og-banner.webp">
+<meta property="og:site_name" content="Rocket Typing">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Job Eligibility Check (if/else) in Python, Java, C++ &amp; More | Rocket Typing">
+<meta name="twitter:description" content="Print Job or No Job when the salary is above 10 lakhs and the company offers a cab – the AND operator with if/else in 13 languages, including Python, Java and C++.">
+<meta name="twitter:image" content="https://www.rockettyping.com/images/og-banner.webp">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "LearningResource",
+  "name": "Job Application Eligibility Check — Coding Practice in 13 Languages",
+  "description": "Print Job or No Job when the salary is above 10 lakhs and the company offers a cab – the AND operator with if/else in 13 languages, including Python, Java and C++.",
+  "educationalLevel": "Beginner",
+  "learningResourceType": "Interactive coding exercise",
+  "teaches": "Job Application Eligibility Check in 13 programming languages (Python, JavaScript, Java, C, C++, TypeScript, Go, Rust, Kotlin, Swift, PHP, C# and Ruby)",
+  "inLanguage": "en",
+  "isAccessibleForFree": true,
+  "isPartOf": {
+    "@type": "Course",
+    "name": "Free Coding Practice with Typing Speed Test",
+    "url": "https://www.rockettyping.com/coding/"
+  },
+  "provider": {
+    "@type": "Organization",
+    "name": "Rocket Typing",
+    "sameAs": "https://www.rockettyping.com"
+  },
+  "url": "https://www.rockettyping.com/coding/job-application-eligibility-check"
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "How do you check two conditions in Python, Java and C?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Python and Ruby use and (Ruby also allows &&); Java, C, C++, JavaScript, Go, Rust, Kotlin, Swift, PHP and C# use &&. Both parts must be true for the block to run."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How do you compare strings in Java and C?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "In Java use facility.equals(\"cab\") — == would compare object references. In C use strcmp(facility, \"cab\") == 0. In Python, JavaScript, C++, Go, Rust, Kotlin, Swift, C# and Ruby a plain == compares the text."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Why does a salary of 10 print No Job?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The rule is salary > 10, which is strictly greater than. 10 is not greater than 10, so the condition fails."
+      }
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://www.rockettyping.com/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Coding Practice",
+      "item": "https://www.rockettyping.com/coding/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": "Job Application Eligibility Check",
+      "item": "https://www.rockettyping.com/coding/job-application-eligibility-check"
+    }
+  ]
+}
+</script>
+<link rel="icon" type="image/png" sizes="32x32" href="../images/favicon-32.webp">
+<link rel="icon" type="image/png" sizes="16x16" href="../images/favicon-16.webp">
+<link rel="apple-touch-icon" href="../images/logo-192.webp">
+<meta name="theme-color" content="#0a0a23">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@300;400;500;700&family=Inter:wght@300;400;500;600;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@300;400;500;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"></noscript>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-136SVFZRDF"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-136SVFZRDF');</script>
+<link rel="stylesheet" href="coding.css">
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+<!-- Monaco's stylesheet: loaded without blocking first paint (the data-name attribute is what Monaco's loader looks for) -->
+<link rel="stylesheet" media="print" onload="this.media='all'" data-name="vs/editor/editor.main" href="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs/editor/editor.main.min.css">
+<script type="text/javascript" async="async" data-noptimize="1" data-cfasync="false" src="//scripts.scriptwrapper.com/tags/31b6b722-d3b7-49a8-acd3-2264f19c9dc5.js"></script>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="/" class="nav-logo"><span class="rocket">🚀</span>Rocket<span>Typing</span></a>
+  <div class="nav-links">
+    <button class="nav-btn" onclick="goHome()">⌨️ Typing Test</button>
+    <a href="./#dashboard" class="nav-btn">Dashboard</a>
+    <a href="./#problems" class="nav-btn active">Problems</a>
+    <a href="./#profile" class="nav-btn">Profile</a>
+  </div>
+</nav>
+
+<div id="app">
+
+  <!-- ══ WORKSPACE VIEW ══ -->
+  <div id="view-workspace" class="view active">
+    <!-- Left: problem description -->
+    <div class="workspace-sidebar">
+      <div class="sidebar-tabs">
+        <button class="sidebar-tab active" onclick="setSidebarTab('desc',this)">Description</button>
+        <button class="sidebar-tab" onclick="setSidebarTab('notes',this)">Notes</button>
+        <button class="sidebar-tab" onclick="setSidebarTab('hint',this)">Hint</button>
+      </div>
+      <div class="sidebar-content" id="sidebar-desc" data-prerendered="1">
+    <div class="prob-meta">
+      <h1>#10 Job Application Eligibility Check</h1>
+      <span class="badge easy">Easy</span>
+      <span class="meta-pill">⏱ 1 sec</span>
+      <span class="meta-pill">💾 256 MB</span>
+      <span class="meta-pill">🏷 Conditions</span>
+      <button onclick="toggleBookmark(10)" id="bm-btn-10" style="background:none;border:1px solid var(--border);color:var(--text2);padding:4px 10px;border-radius:5px;cursor:pointer;font-size:11px">🔖 Bookmark</button>
+    </div>
+    <div class="prob-section"><h2>Problem Statement</h2><div class="prob-text">A company is hiring and has set two specific eligibility conditions for applicants:<br><br>1. The applicant&#39;s <strong>salary must be greater than 10 lakhs</strong> (i.e., salary &gt; 10).<br>2. The company must provide a <strong>cab facility</strong> (i.e., the facility is <code>&quot;cab&quot;</code>).<br><br>Only if <strong>both</strong> conditions are satisfied should the applicant apply. Otherwise, they should not.<br><br>You are given the salary and the facility type. Determine whether the applicant should apply for the job.</div></div>
+    <div class="prob-section"><h2>Input Format</h2><div class="prob-text">• First line: an integer representing the salary in lakhs (e.g., <code>15</code>)<br>• Second line: a string representing the facility type (e.g., <code>cab</code> or <code>no cab</code>)</div></div>
+    <div class="prob-section"><h2>Output Format</h2><div class="prob-text">Print exactly one of:<br>- <code>Job</code> — if salary &gt; 10 AND facility is <code>cab</code><br>- <code>No Job</code> — otherwise</div></div>
+    <div class="prob-section"><h2>Constraints</h2><div class="prob-text">• 1 ≤ salary ≤ 100<br>• The facility string is either <code>cab</code> or <code>no cab</code> (lowercase).</div></div>
+    <div class="prob-section"><h2>Sample Input</h2><div class="io-box">15
+cab</div></div>
+    <div class="prob-section"><h2>Sample Output</h2><div class="io-box">Job</div></div>
+    <div class="prob-section"><h2>Explanation</h2><div class="prob-text">Salary is 15 (which is &gt; 10) and the facility is <code>cab</code>. Both conditions are met, so the output is <code>Job</code>.</div></div>
+  </div>
+      <div class="sidebar-content" id="sidebar-notes" style="display:none">
+        <textarea id="notes-area" placeholder="Write your personal notes for this problem…"
+          style="width:100%;height:calc(100% - 0px);background:transparent;border:none;outline:none;color:var(--text);font-family:var(--font-mono);font-size:12px;resize:none;line-height:1.7"
+          oninput="saveNote()"></textarea>
+      </div>
+      <div class="sidebar-content" id="sidebar-hint" style="display:none">
+        <div class="hint-box" id="hint-content">Use a single `if` statement with the `and` operator to check both conditions at once.</div>
+      </div>
+    </div>
+
+    <!-- Right: editor + output -->
+    <div class="workspace-main">
+      <div class="editor-toolbar">
+        <select class="lang-select" id="lang-select" onchange="changeLanguage()">
+          <option value="python">Python</option>
+          <option value="javascript">JavaScript</option>
+          <option value="java">Java</option>
+          <option value="cpp">C++</option>
+          <option value="c">C</option>
+          <option value="typescript">TypeScript</option>
+          <option value="go">Go</option>
+          <option value="rust">Rust</option>
+          <option value="kotlin">Kotlin</option>
+          <option value="swift">Swift</option>
+          <option value="php">PHP</option>
+          <option value="csharp">C#</option>
+          <option value="ruby">Ruby</option>
+        </select>
+
+        <button class="editor-btn" onclick="resetCode()" title="Reset code">↺ Reset</button>
+        <button class="editor-btn" onclick="copyCode()"  title="Copy code">📋 Copy</button>
+        <button class="editor-btn" onclick="downloadCode()" title="Download">⬇ Save</button>
+        <button class="editor-btn" onclick="uploadCode()"   title="Upload file">⬆ Upload</button>
+        <input type="file" id="file-upload" accept=".py,.js,.java,.cpp,.c,.ts,.go,.rs,.kt,.swift,.php,.cs,.rb" style="display:none" onchange="handleUpload(event)">
+
+        <button class="editor-btn mic" id="mic-btn" onclick="toggleMic()" title="Voice to Code">🎤 Voice</button>
+
+        <div class="toolbar-spacer"></div>
+
+        <span class="timer-display" id="workspace-timer">00:00</span>
+        <span class="autosave-dot" id="autosave-dot"></span>
+
+        <button class="editor-btn run"    id="run-btn"    onclick="runCode()">▶ Run</button>
+        <button class="editor-btn submit" id="submit-btn" onclick="submitCode()">⚡ Submit</button>
+      </div>
+
+      <!-- Monaco -->
+      <div class="editor-wrap">
+        <div id="monaco-editor"></div>
+        <!-- Mic panel -->
+        <div class="mic-panel" id="mic-panel">
+          <h4>🎤 Voice to Code</h4>
+          <div class="mic-transcript" id="mic-transcript">Say something…</div>
+          <div class="mic-controls">
+            <button class="mic-ctrl" onclick="pauseMic()">⏸ Pause</button>
+            <button class="mic-ctrl" onclick="resumeMic()">▶ Resume</button>
+            <button class="mic-ctrl" onclick="stopMic()">⏹ Stop</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Output panel -->
+      <div class="output-panel">
+        <div class="output-tabs">
+          <button class="output-tab active" onclick="setOutputTab('output',this)">Output</button>
+          <button class="output-tab" onclick="setOutputTab('testcases',this)">Test Cases</button>
+          <button class="output-tab" onclick="setOutputTab('console',this)">Console</button>
+        </div>
+        <div class="output-body" id="output-output">
+          <div class="output-line dim">Click "Run" to execute your code against sample test cases.</div>
+        </div>
+        <div class="output-body" id="output-testcases" style="display:none">
+          <div class="output-line dim">No test results yet.</div>
+        </div>
+        <div class="output-body" id="output-console" style="display:none">
+          <div class="output-line dim">Console output will appear here.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+</div><!-- #app -->
+
+<main class="seo-content" id="seo-content">
+  <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a> / <a href="./">Coding Practice</a> / Job Application Eligibility Check</nav>
+
+  <h2>About this problem: Job Application Eligibility Check</h2>
+  <p>A company only qualifies when two conditions hold at once: the salary is greater than 10 lakhs <em>and</em> the facility is <code>"cab"</code>. This is a classic use of the logical AND operator — both comparisons must be true for the output to be <code>Job</code>; otherwise it is <code>No Job</code>.</p><p>A salary of exactly 10 does not qualify, because the rule is strictly greater than. Solutions are provided in 13 languages, showing <code>and</code> in Python and Ruby and <code>&&</code> everywhere else.</p>
+  <div class="seo-facts">
+    <span class="badge easy">Easy</span>
+    <span class="meta-pill">🏷 Conditions</span>
+    <span class="meta-pill">13 languages</span>
+    <span class="meta-pill">15 reference solutions</span>
+  </div>
+  <div class="lang-chips"><span class="meta-pill">Python</span><span class="meta-pill">JavaScript</span><span class="meta-pill">Java</span><span class="meta-pill">C++</span><span class="meta-pill">C</span><span class="meta-pill">TypeScript</span><span class="meta-pill">Go</span><span class="meta-pill">Rust</span><span class="meta-pill">Kotlin</span><span class="meta-pill">Swift</span><span class="meta-pill">PHP</span><span class="meta-pill">C#</span><span class="meta-pill">Ruby</span></div>
+
+  <h2>Job Application Eligibility Check — solutions in 13 languages</h2>
+<details class="seo-lang" open>
+<summary><h3>Job Application Eligibility Check in Python — 3 solutions</h3></summary>
+<h4>if / else</h4>
+<pre><code class="language-python">salary = int(input())
+facility = input()
+if salary &gt; 10 and facility == &quot;cab&quot;:
+    print(&quot;Job&quot;)
+else:
+    print(&quot;No Job&quot;)</code></pre>
+<ol class="seo-explain"><li>Reads the salary (in lakhs) from input and converts it to an integer.</li><li>Reads the facility type from input, e.g. cab or no cab.</li><li>Checks both conditions at once: salary greater than 10 AND facility equal to cab.</li><li>If both are true, prints Job.</li><li>Otherwise (at least one condition failed)…</li><li>…prints No Job.</li></ol>
+<h4>Boolean variable + ternary</h4>
+<pre><code class="language-python">salary = int(input())
+facility = input()
+eligible = salary &gt; 10 and facility == &quot;cab&quot;
+print(&quot;Job&quot; if eligible else &quot;No Job&quot;)</code></pre>
+<ol class="seo-explain"><li>Reads the salary (in lakhs) from input and converts it to an integer.</li><li>Reads the facility type from input.</li><li>Stores whether both conditions are true in a boolean variable called eligible.</li><li>Prints Job if eligible is true, otherwise prints No Job — all in one line using a ternary expression.</li></ol>
+<h4>all() over conditions</h4>
+<pre><code class="language-python">salary = int(input())
+facility = input()
+conditions = [salary &gt; 10, facility == &quot;cab&quot;]
+print(&quot;Job&quot; if all(conditions) else &quot;No Job&quot;)</code></pre>
+<ol class="seo-explain"><li>Reads the salary (in lakhs) from input and converts it to an integer.</li><li>Reads the facility type from input.</li><li>Stores each individual condition&#39;s true/false result in a list called conditions.</li><li>Prints Job only if all() of the conditions are true, otherwise prints No Job.</li></ol>
+</details>
+<details class="seo-lang">
+<summary><h3>Job Application Eligibility Check in JavaScript — 1 solution</h3></summary>
+<h4>if / else with &amp;&amp;</h4>
+<pre><code class="language-javascript">const lines = require(&quot;fs&quot;).readFileSync(0, &quot;utf8&quot;).split(&quot;\n&quot;);
+const salary = parseInt(lines[0]);
+const facility = lines[1];
+if (salary &gt; 10 &amp;&amp; facility === &quot;cab&quot;) {
+    console.log(&quot;Job&quot;);
+} else {
+    console.log(&quot;No Job&quot;);
+}</code></pre>
+<ol class="seo-explain"><li>Reads all input and splits it into lines.</li><li>Reads the salary as a number.</li><li>Reads the facility text.</li><li>Both conditions must be true: salary strictly above 10 and the facility is cab.</li><li>Prints Job.</li><li>Prints No Job.</li></ol>
+</details>
+<details class="seo-lang">
+<summary><h3>Job Application Eligibility Check in Java — 1 solution</h3></summary>
+<h4>if / else with &amp;&amp;</h4>
+<pre><code class="language-java">import java.util.Scanner;
+public class Main {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        int salary = Integer.parseInt(sc.nextLine());
+        String facility = sc.nextLine();
+        if (salary &gt; 10 &amp;&amp; facility.equals(&quot;cab&quot;)) {
+            System.out.println(&quot;Job&quot;);
+        } else {
+            System.out.println(&quot;No Job&quot;);
+        }
+    }
+}</code></pre>
+<ol class="seo-explain"><li>Imports a class from Java&#39;s standard library.</li><li>Every Java program lives inside a class.</li><li>main is where the program starts running.</li><li>Creates a Scanner that reads standard input.</li><li>Reads the salary as an int.</li><li>Reads the facility text.</li><li>Both conditions must be true: salary strictly above 10 and the facility is cab.</li><li>Prints Job.</li><li>Prints No Job.</li></ol>
+</details>
+<details class="seo-lang">
+<summary><h3>Job Application Eligibility Check in C++ — 1 solution</h3></summary>
+<h4>if / else with &amp;&amp;</h4>
+<pre><code class="language-cpp">#include &lt;iostream&gt;
+#include &lt;string&gt;
+using namespace std;
+int main() {
+    int salary;
+    string facility;
+    cin &gt;&gt; salary;
+    cin.ignore();
+    getline(cin, facility);
+    if (salary &gt; 10 &amp;&amp; facility == &quot;cab&quot;) {
+        cout &lt;&lt; &quot;Job&quot; &lt;&lt; endl;
+    } else {
+        cout &lt;&lt; &quot;No Job&quot; &lt;&lt; endl;
+    }
+    return 0;
+}</code></pre>
+<ol class="seo-explain"><li>Includes a standard C++ header.</li><li>Includes a standard C++ header.</li><li>Lets us write cin/cout/string without the std:: prefix.</li><li>main is where the program starts running.</li><li>Holds the salary.</li><li>Holds the facility text.</li><li>Reads the salary.</li><li>Skips the newline left after the number.</li><li>Reads the whole facility line (it may contain a space).</li><li>Both conditions must be true: salary strictly above 10 and the facility is cab.</li><li>Prints Job.</li><li>Prints No Job.</li><li>Tells the operating system the program finished successfully.</li></ol>
+</details>
+<details class="seo-lang">
+<summary><h3>Job Application Eligibility Check in C — 1 solution</h3></summary>
+<h4>if / else with &amp;&amp;</h4>
+<pre><code class="language-c">#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+int main() {
+    int salary;
+    char facility[50];
+    scanf(&quot;%d&quot;, &amp;salary);
+    scanf(&quot; %[^\n]&quot;, facility);
+    if (salary &gt; 10 &amp;&amp; strcmp(facility, &quot;cab&quot;) == 0) {
+        printf(&quot;Job\n&quot;);
+    } else {
+        printf(&quot;No Job\n&quot;);
+    }
+    return 0;
+}</code></pre>
+<ol class="seo-explain"><li>Includes a standard C header.</li><li>Includes a standard C header.</li><li>main is where the program starts running.</li><li>Holds the salary.</li><li>Holds the facility text.</li><li>Reads the salary.</li><li>Reads the whole facility line (it may contain a space).</li><li>Both conditions must be true: salary strictly above 10 and the facility is cab.</li><li>Prints Job.</li><li>Prints No Job.</li><li>Tells the operating system the program finished successfully.</li></ol>
+</details>
+<details class="seo-lang">
+<summary><h3>Job Application Eligibility Check in TypeScript — 1 solution</h3></summary>
+<h4>if / else with &amp;&amp;</h4>
+<pre><code class="language-typescript">const lines: string[] = require(&quot;fs&quot;).readFileSync(0, &quot;utf8&quot;).split(&quot;\n&quot;);
+const salary: number = parseInt(lines[0]);
+const facility: string = lines[1];
+if (salary &gt; 10 &amp;&amp; facility === &quot;cab&quot;) {
+    console.log(&quot;Job&quot;);
+} else {
+    console.log(&quot;No Job&quot;);
+}</code></pre>
+<ol class="seo-explain"><li>Reads all input and splits it into an array of line strings.</li><li>Reads the salary as a number.</li><li>Reads the facility text.</li><li>Both conditions must be true: salary strictly above 10 and the facility is cab.</li><li>Prints Job.</li><li>Prints No Job.</li></ol>
+</details>
+<details class="seo-lang">
+<summary><h3>Job Application Eligibility Check in Go — 1 solution</h3></summary>
+<h4>if / else with &amp;&amp;</h4>
+<pre><code class="language-go">package main
+import (
+    &quot;bufio&quot;
+    &quot;fmt&quot;
+    &quot;os&quot;
+    &quot;strconv&quot;
+)
+func main() {
+    scanner := bufio.NewScanner(os.Stdin)
+    scanner.Scan()
+    salary, _ := strconv.Atoi(scanner.Text())
+    scanner.Scan()
+    facility := scanner.Text()
+    if salary &gt; 10 &amp;&amp; facility == &quot;cab&quot; {
+        fmt.Println(&quot;Job&quot;)
+    } else {
+        fmt.Println(&quot;No Job&quot;)
+    }
+}</code></pre>
+<ol class="seo-explain"><li>Every Go program starts in package main.</li><li>Imports the standard-library packages we need.</li><li>main is where the program starts running.</li><li>Creates a scanner that reads input line by line.</li><li>Reads the first line.</li><li>Converts the salary line to an int.</li><li>Reads the second line.</li><li>Stores the facility text.</li><li>Both conditions must be true: salary strictly above 10 and the facility is cab.</li><li>Prints Job.</li><li>Prints No Job.</li></ol>
+</details>
+<details class="seo-lang">
+<summary><h3>Job Application Eligibility Check in Rust — 1 solution</h3></summary>
+<h4>if / else with &amp;&amp;</h4>
+<pre><code class="language-rust">use std::io;
+fn main() {
+    let mut first = String::new();
+    let mut second = String::new();
+    io::stdin().read_line(&amp;mut first).unwrap();
+    io::stdin().read_line(&amp;mut second).unwrap();
+    let salary: i32 = first.trim().parse().unwrap();
+    let facility = second.trim();
+    if salary &gt; 10 &amp;&amp; facility == &quot;cab&quot; {
+        println!(&quot;Job&quot;);
+    } else {
+        println!(&quot;No Job&quot;);
+    }
+}</code></pre>
+<ol class="seo-explain"><li>Brings the input/output tools into scope.</li><li>main is where the program starts running.</li><li>Buffer for the salary line.</li><li>Buffer for the facility line.</li><li>Reads the salary line.</li><li>Reads the facility line.</li><li>Parses the salary.</li><li>Removes the trailing newline from the facility text.</li><li>Both conditions must be true: salary strictly above 10 and the facility is cab.</li><li>Prints Job.</li><li>Prints No Job.</li></ol>
+</details>
+<details class="seo-lang">
+<summary><h3>Job Application Eligibility Check in Kotlin — 1 solution</h3></summary>
+<h4>if / else with &amp;&amp;</h4>
+<pre><code class="language-kotlin">fun main() {
+    val salary = readLine()!!.trim().toInt()
+    val facility = readLine()!!.trim()
+    if (salary &gt; 10 &amp;&amp; facility == &quot;cab&quot;) {
+        println(&quot;Job&quot;)
+    } else {
+        println(&quot;No Job&quot;)
+    }
+}</code></pre>
+<ol class="seo-explain"><li>main is where the program starts running.</li><li>Reads the salary as an Int.</li><li>Reads the facility text.</li><li>Both conditions must be true: salary strictly above 10 and the facility is cab.</li><li>Prints Job.</li><li>Prints No Job.</li></ol>
+</details>
+<details class="seo-lang">
+<summary><h3>Job Application Eligibility Check in Swift — 1 solution</h3></summary>
+<h4>if / else with &amp;&amp;</h4>
+<pre><code class="language-swift">let salary = Int(readLine()!)!
+let facility = readLine()!
+if salary &gt; 10 &amp;&amp; facility == &quot;cab&quot; {
+    print(&quot;Job&quot;)
+} else {
+    print(&quot;No Job&quot;)
+}</code></pre>
+<ol class="seo-explain"><li>Reads the salary as an Int.</li><li>Reads the facility text.</li><li>Both conditions must be true: salary strictly above 10 and the facility is cab.</li><li>Prints Job.</li><li>Prints No Job.</li></ol>
+</details>
+<details class="seo-lang">
+<summary><h3>Job Application Eligibility Check in PHP — 1 solution</h3></summary>
+<h4>if / else with &amp;&amp;</h4>
+<pre><code class="language-php">&lt;?php
+$salary = (int) trim(fgets(STDIN));
+$facility = trim(fgets(STDIN));
+if ($salary &gt; 10 &amp;&amp; $facility === &quot;cab&quot;) {
+    echo &quot;Job\n&quot;;
+} else {
+    echo &quot;No Job\n&quot;;
+}</code></pre>
+<ol class="seo-explain"><li>Opens PHP mode.</li><li>Reads the salary as an integer.</li><li>Reads the facility text.</li><li>Both conditions must be true: salary strictly above 10 and the facility is cab.</li><li>Prints Job.</li><li>Prints No Job.</li></ol>
+</details>
+<details class="seo-lang">
+<summary><h3>Job Application Eligibility Check in C# — 1 solution</h3></summary>
+<h4>if / else with &amp;&amp;</h4>
+<pre><code class="language-csharp">using System;
+class Program {
+    static void Main() {
+        int salary = int.Parse(Console.ReadLine());
+        string facility = Console.ReadLine();
+        if (salary &gt; 10 &amp;&amp; facility == &quot;cab&quot;) {
+            Console.WriteLine(&quot;Job&quot;);
+        } else {
+            Console.WriteLine(&quot;No Job&quot;);
+        }
+    }
+}</code></pre>
+<ol class="seo-explain"><li>Imports the System namespace (Console, Math, ...).</li><li>Every C# program lives inside a class.</li><li>Main is where the program starts running.</li><li>Reads the salary as an int.</li><li>Reads the facility text.</li><li>Both conditions must be true: salary strictly above 10 and the facility is cab.</li><li>Prints Job.</li><li>Prints No Job.</li></ol>
+</details>
+<details class="seo-lang">
+<summary><h3>Job Application Eligibility Check in Ruby — 1 solution</h3></summary>
+<h4>if / else with &amp;&amp;</h4>
+<pre><code class="language-ruby">salary = gets.to_i
+facility = gets.chomp
+if salary &gt; 10 &amp;&amp; facility == &quot;cab&quot;
+  puts &quot;Job&quot;
+else
+  puts &quot;No Job&quot;
+end</code></pre>
+<ol class="seo-explain"><li>Reads the salary as an integer.</li><li>Reads the facility text.</li><li>Both conditions must be true: salary strictly above 10 and the facility is cab.</li><li>Prints Job.</li><li>Prints No Job.</li></ol>
+</details>
+
+  <h2>How to practise this problem</h2>
+  <p>Rocket Typing turns every coding problem into typing practice. Pick your language in the editor toolbar, then choose <b>With Code</b> to type a reference solution in that language MonkeyType-style — your WPM, accuracy and consistency are tracked live — or <b>Without Code</b> to write your own. <b>Submit</b> runs your program against the sample and hidden test cases right in your browser.</p>
+
+  <h2>Frequently asked questions</h2>
+  <div class="seo-faq-q">How do you check two conditions in Python, Java and C?</div><p>Python and Ruby use and (Ruby also allows &amp;&amp;); Java, C, C++, JavaScript, Go, Rust, Kotlin, Swift, PHP and C# use &amp;&amp;. Both parts must be true for the block to run.</p><div class="seo-faq-q">How do you compare strings in Java and C?</div><p>In Java use facility.equals(&quot;cab&quot;) — == would compare object references. In C use strcmp(facility, &quot;cab&quot;) == 0. In Python, JavaScript, C++, Go, Rust, Kotlin, Swift, C# and Ruby a plain == compares the text.</p><div class="seo-faq-q">Why does a salary of 10 print No Job?</div><p>The rule is salary &gt; 10, which is strictly greater than. 10 is not greater than 10, so the condition fails.</p>
+
+  <h2>More coding problems</h2>
+  <div id="related-problems"><p><a class="seo-link" href="./">Browse all coding practice problems</a></p></div>
+  <a class="seo-btn" href="./#problems">All coding problems →</a>
+</main>
+
+<!-- ══ RESULT OVERLAY ══ -->
+<div id="result-overlay">
+  <div class="result-card">
+    <button class="result-close" onclick="closeResult()">✕</button>
+
+    <div class="result-status-banner" id="res-banner">
+      <div id="res-banner-title">—</div>
+      <div class="status-sub" id="res-banner-sub">—</div>
+    </div>
+
+    <!-- Two-column layout: submission + typing stats on the left, graphs on the right -->
+    <div class="result-body-grid">
+
+      <!-- LEFT COLUMN: status stats + typing analytics numbers -->
+      <div class="result-col result-col-left">
+        <div class="result-grid" id="res-grid"><!-- JS filled --></div>
+
+        <div class="result-section-title">Typing Analytics</div>
+        <div class="paste-warn" id="paste-warn">⚠️ Paste detected. Typing analytics may not be accurate.</div>
+        <div class="typing-analytics-grid">
+          <div class="analytics-box"><h5>WPM</h5><div class="analytics-val" id="ra-wpm">—</div><div class="analytics-sub">Words per minute</div></div>
+          <div class="analytics-box"><h5>Accuracy</h5><div class="analytics-val" id="ra-acc">—</div><div class="analytics-sub">Correct keystrokes</div></div>
+          <div class="analytics-box"><h5>Consistency</h5><div class="analytics-val" id="ra-con">—</div><div class="analytics-sub">Speed variation score</div></div>
+          <div class="analytics-box"><h5>Active Time</h5><div class="analytics-val" id="ra-time">—</div><div class="analytics-sub">Time actively typing</div></div>
+          <div class="analytics-box"><h5>Keystrokes</h5><div class="analytics-val" id="ra-ks">—</div><div class="analytics-sub">Total key presses</div></div>
+          <div class="analytics-box"><h5>Backspaces</h5><div class="analytics-val" id="ra-bs">—</div><div class="analytics-sub">Corrections made</div></div>
+        </div>
+      </div>
+
+      <!-- RIGHT COLUMN: graphs -->
+      <div class="result-col result-col-right">
+        <div class="chart-wrap">
+          <h5>Typing Speed Over Time (WPM)</h5>
+          <canvas id="wpm-chart"></canvas>
+        </div>
+        <div class="chart-wrap">
+          <h5>Keystroke Timeline</h5>
+          <canvas id="ks-chart"></canvas>
+        </div>
+      </div>
+
+    </div><!-- /result-body-grid -->
+
+    <div class="result-actions">
+      <button class="btn-retry" onclick="closeResult()">Try Again</button>
+      <button class="btn-next"  onclick="nextProblem()">Next Problem →</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast container -->
+<div class="toast-container" id="toast-container"></div>
+
+<!-- This problem's data: question + reference solutions per language (read by problem-app.js / practice-engine.js) -->
+<script>
+window.ROCKET_PROBLEM = {"file":"job-application-eligibility-check.html","h1":"Job Application Eligibility Check","question":{"id":10,"title":"Job Application Eligibility Check","difficulty":"Easy","topic":"Conditions","timeLimit":"1 sec","memoryLimit":"256 MB","description":"A company is hiring and has set two specific eligibility conditions for applicants:\n\n1. The applicant's **salary must be greater than 10 lakhs** (i.e., salary > 10).\n2. The company must provide a **cab facility** (i.e., the facility is `\"cab\"`).\n\nOnly if **both** conditions are satisfied should the applicant apply. Otherwise, they should not.\n\nYou are given the salary and the facility type. Determine whether the applicant should apply for the job.","inputFormat":"• First line: an integer representing the salary in lakhs (e.g., `15`)\n• Second line: a string representing the facility type (e.g., `cab` or `no cab`)","outputFormat":"Print exactly one of:\n- `Job` — if salary > 10 AND facility is `cab`\n- `No Job` — otherwise","constraints":"• 1 ≤ salary ≤ 100\n• The facility string is either `cab` or `no cab` (lowercase).","sampleInput":"15\ncab","sampleOutput":"Job","explanation":"Salary is 15 (which is > 10) and the facility is `cab`. Both conditions are met, so the output is `Job`.","hint":"Use a single `if` statement with the `and` operator to check both conditions at once.","allowedSyntax":["input","int","print","if","else","and","comparison","string"],"testCases":[{"input":"15\ncab","expectedOutput":"Job"}],"hiddenTestCases":[{"input":"5\nno cab","expectedOutput":"No Job"},{"input":"11\ncab","expectedOutput":"Job"},{"input":"10\ncab","expectedOutput":"No Job"},{"input":"20\nno cab","expectedOutput":"No Job"},{"input":"1\ncab","expectedOutput":"No Job"}]}};
+window.__rocketSolutions = {"10":{"python":[{"name":"if / else","code":"salary = int(input())\nfacility = input()\nif salary > 10 and facility == \"cab\":\n    print(\"Job\")\nelse:\n    print(\"No Job\")","explain":["Reads the salary (in lakhs) from input and converts it to an integer.","Reads the facility type from input, e.g. cab or no cab.","Checks both conditions at once: salary greater than 10 AND facility equal to cab.","If both are true, prints Job.","Otherwise (at least one condition failed)…","…prints No Job."]},{"name":"Boolean variable + ternary","code":"salary = int(input())\nfacility = input()\neligible = salary > 10 and facility == \"cab\"\nprint(\"Job\" if eligible else \"No Job\")","explain":["Reads the salary (in lakhs) from input and converts it to an integer.","Reads the facility type from input.","Stores whether both conditions are true in a boolean variable called eligible.","Prints Job if eligible is true, otherwise prints No Job — all in one line using a ternary expression."]},{"name":"all() over conditions","code":"salary = int(input())\nfacility = input()\nconditions = [salary > 10, facility == \"cab\"]\nprint(\"Job\" if all(conditions) else \"No Job\")","explain":["Reads the salary (in lakhs) from input and converts it to an integer.","Reads the facility type from input.","Stores each individual condition's true/false result in a list called conditions.","Prints Job only if all() of the conditions are true, otherwise prints No Job."]}],"javascript":[{"name":"if / else with &&","code":"const lines = require(\"fs\").readFileSync(0, \"utf8\").split(\"\\n\");\nconst salary = parseInt(lines[0]);\nconst facility = lines[1];\nif (salary > 10 && facility === \"cab\") {\n    console.log(\"Job\");\n} else {\n    console.log(\"No Job\");\n}","explain":["Reads all input and splits it into lines.","Reads the salary as a number.","Reads the facility text.","Both conditions must be true: salary strictly above 10 and the facility is cab.","Prints Job.","","Prints No Job.",""]}],"java":[{"name":"if / else with &&","code":"import java.util.Scanner;\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int salary = Integer.parseInt(sc.nextLine());\n        String facility = sc.nextLine();\n        if (salary > 10 && facility.equals(\"cab\")) {\n            System.out.println(\"Job\");\n        } else {\n            System.out.println(\"No Job\");\n        }\n    }\n}","explain":["Imports a class from Java's standard library.","Every Java program lives inside a class.","main is where the program starts running.","Creates a Scanner that reads standard input.","Reads the salary as an int.","Reads the facility text.","Both conditions must be true: salary strictly above 10 and the facility is cab.","Prints Job.","","Prints No Job.","","",""]}],"cpp":[{"name":"if / else with &&","code":"#include <iostream>\n#include <string>\nusing namespace std;\nint main() {\n    int salary;\n    string facility;\n    cin >> salary;\n    cin.ignore();\n    getline(cin, facility);\n    if (salary > 10 && facility == \"cab\") {\n        cout << \"Job\" << endl;\n    } else {\n        cout << \"No Job\" << endl;\n    }\n    return 0;\n}","explain":["Includes a standard C++ header.","Includes a standard C++ header.","Lets us write cin/cout/string without the std:: prefix.","main is where the program starts running.","Holds the salary.","Holds the facility text.","Reads the salary.","Skips the newline left after the number.","Reads the whole facility line (it may contain a space).","Both conditions must be true: salary strictly above 10 and the facility is cab.","Prints Job.","","Prints No Job.","","Tells the operating system the program finished successfully.",""]}],"c":[{"name":"if / else with &&","code":"#include <stdio.h>\n#include <string.h>\nint main() {\n    int salary;\n    char facility[50];\n    scanf(\"%d\", &salary);\n    scanf(\" %[^\\n]\", facility);\n    if (salary > 10 && strcmp(facility, \"cab\") == 0) {\n        printf(\"Job\\n\");\n    } else {\n        printf(\"No Job\\n\");\n    }\n    return 0;\n}","explain":["Includes a standard C header.","Includes a standard C header.","main is where the program starts running.","Holds the salary.","Holds the facility text.","Reads the salary.","Reads the whole facility line (it may contain a space).","Both conditions must be true: salary strictly above 10 and the facility is cab.","Prints Job.","","Prints No Job.","","Tells the operating system the program finished successfully.",""]}],"typescript":[{"name":"if / else with &&","code":"const lines: string[] = require(\"fs\").readFileSync(0, \"utf8\").split(\"\\n\");\nconst salary: number = parseInt(lines[0]);\nconst facility: string = lines[1];\nif (salary > 10 && facility === \"cab\") {\n    console.log(\"Job\");\n} else {\n    console.log(\"No Job\");\n}","explain":["Reads all input and splits it into an array of line strings.","Reads the salary as a number.","Reads the facility text.","Both conditions must be true: salary strictly above 10 and the facility is cab.","Prints Job.","","Prints No Job.",""]}],"go":[{"name":"if / else with &&","code":"package main\nimport (\n    \"bufio\"\n    \"fmt\"\n    \"os\"\n    \"strconv\"\n)\nfunc main() {\n    scanner := bufio.NewScanner(os.Stdin)\n    scanner.Scan()\n    salary, _ := strconv.Atoi(scanner.Text())\n    scanner.Scan()\n    facility := scanner.Text()\n    if salary > 10 && facility == \"cab\" {\n        fmt.Println(\"Job\")\n    } else {\n        fmt.Println(\"No Job\")\n    }\n}","explain":["Every Go program starts in package main.","Imports the standard-library packages we need.","","","","","","main is where the program starts running.","Creates a scanner that reads input line by line.","Reads the first line.","Converts the salary line to an int.","Reads the second line.","Stores the facility text.","Both conditions must be true: salary strictly above 10 and the facility is cab.","Prints Job.","","Prints No Job.","",""]}],"rust":[{"name":"if / else with &&","code":"use std::io;\nfn main() {\n    let mut first = String::new();\n    let mut second = String::new();\n    io::stdin().read_line(&mut first).unwrap();\n    io::stdin().read_line(&mut second).unwrap();\n    let salary: i32 = first.trim().parse().unwrap();\n    let facility = second.trim();\n    if salary > 10 && facility == \"cab\" {\n        println!(\"Job\");\n    } else {\n        println!(\"No Job\");\n    }\n}","explain":["Brings the input/output tools into scope.","main is where the program starts running.","Buffer for the salary line.","Buffer for the facility line.","Reads the salary line.","Reads the facility line.","Parses the salary.","Removes the trailing newline from the facility text.","Both conditions must be true: salary strictly above 10 and the facility is cab.","Prints Job.","","Prints No Job.","",""]}],"kotlin":[{"name":"if / else with &&","code":"fun main() {\n    val salary = readLine()!!.trim().toInt()\n    val facility = readLine()!!.trim()\n    if (salary > 10 && facility == \"cab\") {\n        println(\"Job\")\n    } else {\n        println(\"No Job\")\n    }\n}","explain":["main is where the program starts running.","Reads the salary as an Int.","Reads the facility text.","Both conditions must be true: salary strictly above 10 and the facility is cab.","Prints Job.","","Prints No Job.","",""]}],"swift":[{"name":"if / else with &&","code":"let salary = Int(readLine()!)!\nlet facility = readLine()!\nif salary > 10 && facility == \"cab\" {\n    print(\"Job\")\n} else {\n    print(\"No Job\")\n}","explain":["Reads the salary as an Int.","Reads the facility text.","Both conditions must be true: salary strictly above 10 and the facility is cab.","Prints Job.","","Prints No Job.",""]}],"php":[{"name":"if / else with &&","code":"<?php\n$salary = (int) trim(fgets(STDIN));\n$facility = trim(fgets(STDIN));\nif ($salary > 10 && $facility === \"cab\") {\n    echo \"Job\\n\";\n} else {\n    echo \"No Job\\n\";\n}","explain":["Opens PHP mode.","Reads the salary as an integer.","Reads the facility text.","Both conditions must be true: salary strictly above 10 and the facility is cab.","Prints Job.","","Prints No Job.",""]}],"csharp":[{"name":"if / else with &&","code":"using System;\nclass Program {\n    static void Main() {\n        int salary = int.Parse(Console.ReadLine());\n        string facility = Console.ReadLine();\n        if (salary > 10 && facility == \"cab\") {\n            Console.WriteLine(\"Job\");\n        } else {\n            Console.WriteLine(\"No Job\");\n        }\n    }\n}","explain":["Imports the System namespace (Console, Math, ...).","Every C# program lives inside a class.","Main is where the program starts running.","Reads the salary as an int.","Reads the facility text.","Both conditions must be true: salary strictly above 10 and the facility is cab.","Prints Job.","","Prints No Job.","","",""]}],"ruby":[{"name":"if / else with &&","code":"salary = gets.to_i\nfacility = gets.chomp\nif salary > 10 && facility == \"cab\"\n  puts \"Job\"\nelse\n  puts \"No Job\"\nend","explain":["Reads the salary as an integer.","Reads the facility text.","Both conditions must be true: salary strictly above 10 and the facility is cab.","Prints Job.","","Prints No Job.",""]}]}};
+</script>
+
+<!-- Monaco loader (deferred; the editor itself is fetched at idle time) -->
+<script>var require = { paths: { vs: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs' } };</script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs/loader.min.js"></script>
+<!-- Shared runtime, cached across all problem pages. Keep this order: coding-core -> problem-app -> practice-engine.
+     The ../compilers/*.js files and Chart.js are loaded lazily by problem-app.js (not listed here on purpose). -->
+<script defer src="coding-core.js"></script>
+<script defer src="problem-app.js"></script>
+<script defer src="practice-engine.js"></script>
+</body>
+</html>

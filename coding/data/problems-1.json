@@ -1,0 +1,97 @@
+{
+  "chunk": 1,
+  "limit": 100,
+  "count": 10,
+  "problems": [
+    {
+      "id": 1,
+      "title": "Print Hello World",
+      "file": "print-hello-world-program.html",
+      "difficulty": "Easy",
+      "topic": "Basics",
+      "languages": 13,
+      "methods": 38
+    },
+    {
+      "id": 2,
+      "title": "Basic Arithmetic Operations",
+      "file": "basic-arithmetic-operations.html",
+      "difficulty": "Easy",
+      "topic": "Math",
+      "languages": 13,
+      "methods": 16
+    },
+    {
+      "id": 3,
+      "title": "Concatenate Two Strings",
+      "file": "concatenate-two-strings.html",
+      "difficulty": "Easy",
+      "topic": "Strings",
+      "languages": 13,
+      "methods": 17
+    },
+    {
+      "id": 4,
+      "title": "Repeat a Word N Times",
+      "file": "repeat-a-word-n-times.html",
+      "difficulty": "Easy",
+      "topic": "Strings",
+      "languages": 13,
+      "methods": 16
+    },
+    {
+      "id": 5,
+      "title": "Find the Length of a String",
+      "file": "find-length-of-a-string.html",
+      "difficulty": "Easy",
+      "topic": "Strings",
+      "languages": 13,
+      "methods": 15
+    },
+    {
+      "id": 6,
+      "title": "Print the First Character of a String",
+      "file": "print-first-character-of-a-string.html",
+      "difficulty": "Easy",
+      "topic": "Strings",
+      "languages": 13,
+      "methods": 15
+    },
+    {
+      "id": 7,
+      "title": "Remove the Last Character of a String",
+      "file": "remove-last-character-of-a-string.html",
+      "difficulty": "Easy",
+      "topic": "Strings",
+      "languages": 13,
+      "methods": 15
+    },
+    {
+      "id": 8,
+      "title": "Add Two Numbers Given as Strings",
+      "file": "add-two-numbers-given-as-strings.html",
+      "difficulty": "Easy",
+      "topic": "Math",
+      "languages": 13,
+      "methods": 16
+    },
+    {
+      "id": 9,
+      "title": "Compare Two Numbers",
+      "file": "compare-two-numbers.html",
+      "difficulty": "Easy",
+      "topic": "Conditions",
+      "languages": 13,
+      "methods": 15
+    },
+    {
+      "id": 10,
+      "title": "Job Application Eligibility Check",
+      "file": "job-application-eligibility-check.html",
+      "difficulty": "Easy",
+      "topic": "Conditions",
+      "languages": 13,
+      "methods": 15
+    }
+  ]
+}

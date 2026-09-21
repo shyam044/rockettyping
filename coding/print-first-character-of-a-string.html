@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>First Character of a String in Python, Java, C++ &amp; More | Rocket Typing</title>
+<meta name="description" content="Print the first character of a string in 13 languages – s[0] in Python, charAt(0) in Java, s[0] in C and more. Learn zero-based indexing and type each solution.">
+<meta name="keywords" content="print first character of a string, get first character of string python, charAt java, first character of string c++, string indexing, zero based indexing, first letter of a string">
+<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+<link rel="canonical" href="https://www.rockettyping.com/coding/print-first-character-of-a-string">
+<meta http-equiv="Content-Security-Policy" content="object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<meta property="og:type" content="article">
+<meta property="og:title" content="First Character of a String in Python, Java, C++ &amp; More | Rocket Typing">
+<meta property="og:description" content="Print the first character of a string in 13 languages – s[0] in Python, charAt(0) in Java, s[0] in C and more. Learn zero-based indexing and type each solution.">
+<meta property="og:url" content="https://www.rockettyping.com/coding/print-first-character-of-a-string">
+<meta property="og:image" content="https://www.rockettyping.com/images/og-banner.webp">
+<meta property="og:site_name" content="Rocket Typing">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="First Character of a String in Python, Java, C++ &amp; More | Rocket Typing">
+<meta name="twitter:description" content="Print the first character of a string in 13 languages – s[0] in Python, charAt(0) in Java, s[0] in C and more. Learn zero-based indexing and type each solution.">
+<meta name="twitter:image" content="https://www.rockettyping.com/images/og-banner.webp">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "LearningResource",
+  "name": "Print the First Character of a String — Coding Practice in 13 Languages",
+  "description": "Print the first character of a string in 13 languages – s[0] in Python, charAt(0) in Java, s[0] in C and more. Learn zero-based indexing and type each solution.",
+  "educationalLevel": "Beginner",
+  "learningResourceType": "Interactive coding exercise",
+  "teaches": "Print the First Character of a String in 13 programming languages (Python, JavaScript, Java, C, C++, TypeScript, Go, Rust, Kotlin, Swift, PHP, C# and Ruby)",
+  "inLanguage": "en",
+  "isAccessibleForFree": true,
+  "isPartOf": {
+    "@type": "Course",
+    "name": "Free Coding Practice with Typing Speed Test",
+    "url": "https://www.rockettyping.com/coding/"
+  },
+  "provider": {
+    "@type": "Organization",
+    "name": "Rocket Typing",
+    "sameAs": "https://www.rockettyping.com"
+  },
+  "url": "https://www.rockettyping.com/coding/print-first-character-of-a-string"
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "How do you get the first character of a string in Python and Java?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Python: s[0]. Java: s.charAt(0). For \"Hello\" both give \"H\"."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Why does indexing start at 0?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "An index measures the offset from the start of the string, so the first character is at offset 0. In Python, negative indexes count from the end: s[-1] is the last character."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is the difference between s[0] and s[:1] in Python?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "s[0] returns the character and raises an IndexError on an empty string. s[:1] returns a one-character string and gives an empty string instead of an error when s is empty."
+      }
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://www.rockettyping.com/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Coding Practice",
+      "item": "https://www.rockettyping.com/coding/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": "Print the First Character of a String",
+      "item": "https://www.rockettyping.com/coding/print-first-character-of-a-string"
+    }
+  ]
+}
+</script>
+<link rel="icon" type="image/png" sizes="32x32" href="../images/favicon-32.webp">
+<link rel="icon" type="image/png" sizes="16x16" href="../images/favicon-16.webp">
+<link rel="apple-touch-icon" href="../images/logo-192.webp">
+<meta name="theme-color" content="#0a0a23">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@300;400;500;700&family=Inter:wght@300;400;500;600;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@300;400;500;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"></noscript>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-136SVFZRDF"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-136SVFZRDF');</script>
+<link rel="stylesheet" href="coding.css">
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+<!-- Monaco's stylesheet: loaded without blocking first paint (the data-name attribute is what Monaco's loader looks for) -->
+<link rel="stylesheet" media="print" onload="this.media='all'" data-name="vs/editor/editor.main" href="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs/editor/editor.main.min.css">
+<script type="text/javascript" async="async" data-noptimize="1" data-cfasync="false" src="//scripts.scriptwrapper.com/tags/31b6b722-d3b7-49a8-acd3-2264f19c9dc5.js"></script>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="/" class="nav-logo"><span class="rocket">🚀</span>Rocket<span>Typing</span></a>
+  <div class="nav-links">
+    <button class="nav-btn" onclick="goHome()">⌨️ Typing Test</button>
+    <a href="./#dashboard" class="nav-btn">Dashboard</a>
+    <a href="./#problems" class="nav-btn active">Problems</a>
+    <a href="./#profile" class="nav-btn">Profile</a>
+  </div>
+</nav>
+
+<div id="app">
+
+  <!-- ══ WORKSPACE VIEW ══ -->
+  <div id="view-workspace" class="view active">
+    <!-- Left: problem description -->
+    <div class="workspace-sidebar">
+      <div class="sidebar-tabs">
+        <button class="sidebar-tab active" onclick="setSidebarTab('desc',this)">Description</button>
+        <button class="sidebar-tab" onclick="setSidebarTab('notes',this)">Notes</button>
+        <button class="sidebar-tab" onclick="setSidebarTab('hint',this)">Hint</button>
+      </div>
+      <div class="sidebar-content" id="sidebar-desc" data-prerendered="1">
+    <div class="prob-meta">
+      <h1>#6 Print the First Character of a String</h1>
+      <span class="badge easy">Easy</span>
+      <span class="meta-pill">⏱ 1 sec</span>
+      <span class="meta-pill">💾 256 MB</span>
+      <span class="meta-pill">🏷 Strings</span>
+      <button onclick="toggleBookmark(6)" id="bm-btn-6" style="background:none;border:1px solid var(--border);color:var(--text2);padding:4px 10px;border-radius:5px;cursor:pointer;font-size:11px">🔖 Bookmark</button>
+    </div>
+    <div class="prob-section"><h2>Problem Statement</h2><div class="prob-text">You are given a string. Extract and print only its <strong>first character</strong>.<br><br>In programming, individual characters inside a string are accessed using their <strong>index</strong> — a position number that starts at 0. The first character is always at index 0.</div></div>
+    <div class="prob-section"><h2>Input Format</h2><div class="prob-text">A single non-empty string on one line.</div></div>
+    <div class="prob-section"><h2>Output Format</h2><div class="prob-text">Print exactly one character — the first character of the input string.</div></div>
+    <div class="prob-section"><h2>Constraints</h2><div class="prob-text">• The string length is between 1 and 200 characters.<br>• The string contains at least one character.</div></div>
+    <div class="prob-section"><h2>Sample Input</h2><div class="io-box">Hello</div></div>
+    <div class="prob-section"><h2>Sample Output</h2><div class="io-box">H</div></div>
+    <div class="prob-section"><h2>Explanation</h2><div class="prob-text">The string <code>Hello</code> has the character <code>H</code> at index 0. Printing index 0 gives <code>H</code>.</div></div>
+  </div>
+      <div class="sidebar-content" id="sidebar-notes" style="display:none">
+        <textarea id="notes-area" placeholder="Write your personal notes for this problem…"
+          style="width:100%;height:calc(100% - 0px);background:transparent;border:none;outline:none;color:var(--text);font-family:var(--font-mono);font-size:12px;resize:none;line-height:1.7"
+          oninput="saveNote()"></textarea>
+      </div>
+      <div class="sidebar-content" id="sidebar-hint" style="display:none">
+        <div class="hint-box" id="hint-content">In Python, use square bracket indexing: `print(s[0])`.</div>
+      </div>
+    </div>
+
+    <!-- Right: editor + output -->
+    <div class="workspace-main">
+      <div class="editor-toolbar">
+        <select class="lang-select" id="lang-select" onchange="changeLanguage()">
+          <option value="python">Python</option>
+          <option value="javascript">JavaScript</option>
+          <option value="java">Java</option>
+          <option value="cpp">C++</option>
+          <option value="c">C</option>
+          <option value="typescript">TypeScript</option>
+          <option value="go">Go</option>
+          <option value="rust">Rust</option>
+          <option value="kotlin">Kotlin</option>
+          <option value="swift">Swift</option>
+          <option value="php">PHP</option>
+          <option value="csharp">C#</option>
+          <option value="ruby">Ruby</option>
+        </select>
+
+        <button class="editor-btn" onclick="resetCode()" title="Reset code">↺ Reset</button>
+        <button class="editor-btn" onclick="copyCode()"  title="Copy code">📋 Copy</button>
+        <button class="editor-btn" onclick="downloadCode()" title="Download">⬇ Save</button>
+        <button class="editor-btn" onclick="uploadCode()"   title="Upload file">⬆ Upload</button>
+        <input type="file" id="file-upload" accept=".py,.js,.java,.cpp,.c,.ts,.go,.rs,.kt,.swift,.php,.cs,.rb" style="display:none" onchange="handleUpload(event)">
+
+        <button class="editor-btn mic" id="mic-btn" onclick="toggleMic()" title="Voice to Code">🎤 Voice</button>
+
+        <div class="toolbar-spacer"></div>
+
+        <span class="timer-display" id="workspace-timer">00:00</span>
+        <span class="autosave-dot" id="autosave-dot"></span>
+
+        <button class="editor-btn run"    id="run-btn"    onclick="runCode()">▶ Run</button>
+        <button class="editor-btn submit" id="submit-btn" onclick="submitCode()">⚡ Submit</button>
+      </div>
+
+      <!-- Monaco -->
+      <div class="editor-wrap">
+        <div id="monaco-editor"></div>
+        <!-- Mic panel -->
+        <div class="mic-panel" id="mic-panel">
+          <h4>🎤 Voice to Code</h4>
+          <div class="mic-transcript" id="mic-transcript">Say something…</div>
+          <div class="mic-controls">
+            <button class="mic-ctrl" onclick="pauseMic()">⏸ Pause</button>
+            <button class="mic-ctrl" onclick="resumeMic()">▶ Resume</button>
+            <button class="mic-ctrl" onclick="stopMic()">⏹ Stop</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Output panel -->
+      <div class="output-panel">
+        <div class="output-tabs">
+          <button class="output-tab active" onclick="setOutputTab('output',this)">Output</button>
+          <button class="output-tab" onclick="setOutputTab('testcases',this)">Test Cases</button>
+          <button class="output-tab" onclick="setOutputTab('console',this)">Console</button>
+        </div>
+        <div class="output-body" id="output-output">
+          <div class="output-line dim">Click "Run" to execute your code against sample test cases.</div>
+        </div>
+        <div class="output-body" id="output-testcases" style="display:none">
+          <div class="output-line dim">No test results yet.</div>
+        </div>
+        <div class="output-body" id="output-console" style="display:none">
+          <div class="output-line dim">Console output will appear here.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+</div><!-- #app -->
+
+<main class="seo-content" id="seo-content">
+  <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a> / <a href="./">Coding Practice</a> / Print the First Character of a String</nav>
+
+  <h2>About this problem: Print the First Character of a String</h2>
+  <p>Characters inside a string are addressed by <b>index</b>, and in most languages indexing starts at 0, so the first character is <code>s[0]</code>. This exercise reads a string and prints only its first character.</p><p>Python, JavaScript, C, C++, Kotlin, PHP, C#, Ruby and Go index directly, Java uses <code>charAt(0)</code>, and Rust and Swift use <code>chars().next()</code> or <code>first</code> because their strings are not indexed by number.</p>
+  <div class="seo-facts">
+    <span class="badge easy">Easy</span>
+    <span class="meta-pill">🏷 Strings</span>
+    <span class="meta-pill">13 languages</span>
+    <span class="meta-pill">15 reference solutions</span>
+  </div>
+  <div class="lang-chips"><span class="meta-pill">Python</span><span class="meta-pill">JavaScript</span><span class="meta-pill">Java</span><span class="meta-pill">C++</span><span class="meta-pill">C</span><span class="meta-pill">TypeScript</span><span class="meta-pill">Go</span><span class="meta-pill">Rust</span><span class="meta-pill">Kotlin</span><span class="meta-pill">Swift</span><span class="meta-pill">PHP</span><span class="meta-pill">C#</span><span class="meta-pill">Ruby</span></div>
+
+  <h2>Print the First Character of a String — solutions in 13 languages</h2>
+<details class="seo-lang" open>
+<summary><h3>Print the First Character of a String in Python — 3 solutions</h3></summary>
+<h4>Index [0]</h4>
+<pre><code class="language-python">s = input()
+print(s[0])</code></pre>
+<ol class="seo-explain"><li>Reads a string from input and stores it as s.</li><li>Prints the character at index 0 — the first character of s.</li></ol>
+<h4>Slice [:1]</h4>
+<pre><code class="language-python">s = input()
+print(s[:1])</code></pre>
+<ol class="seo-explain"><li>Reads a string from input and stores it as s.</li><li>Prints a slice containing only the first character, from the start up to (not including) index 1.</li></ol>
+<h4>Loop + break</h4>
+<pre><code class="language-python">s = input()
+for ch in s:
+    print(ch)
+    break</code></pre>
+<ol class="seo-explain"><li>Reads a string from input and stores it as s.</li><li>Starts looping over every character in s…</li><li>…printing the current character…</li><li>…then immediately breaks out of the loop, so only the first character ever gets printed.</li></ol>
+</details>
+<details class="seo-lang">
+<summary><h3>Print the First Character of a String in JavaScript — 1 solution</h3></summary>
+<h4>Direct approach</h4>
+<pre><code class="language-javascript">const lines = require(&quot;fs&quot;).readFileSync(0, &quot;utf8&quot;).split(&quot;\n&quot;);
+const s = lines[0];
+console.log(s[0]);</code></pre>
+<ol class="seo-explain"><li>Reads all input and splits it into lines.</li><li>Stores the input line.</li><li>Prints the character at index 0.</li></ol>
+</details>
+<details class="seo-lang">
+<summary><h3>Print the First Character of a String in Java — 1 solution</h3></summary>
+<h4>Direct approach</h4>
+<pre><code class="language-java">import java.util.Scanner;
+public class Main {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        String s = sc.nextLine();
+        System.out.println(s.charAt(0));
+    }
+}</code></pre>
+<ol class="seo-explain"><li>Imports a class from Java&#39;s standard library.</li><li>Every Java program lives inside a class.</li><li>main is where the program starts running.</li><li>Creates a Scanner that reads standard input.</li><li>Reads the whole line.</li><li>Prints the character at index 0.</li></ol>
+</details>
+<details class="seo-lang">
+<summary><h3>Print the First Character of a String in C++ — 1 solution</h3></summary>
+<h4>Direct approach</h4>
+<pre><code class="language-cpp">#include &lt;iostream&gt;
+#include &lt;string&gt;
+using namespace std;
+int main() {
+    string s;
+    getline(cin, s);
+    cout &lt;&lt; s[0] &lt;&lt; endl;
+    return 0;
+}</code></pre>
+<ol class="seo-explain"><li>Includes a standard C++ header.</li><li>Includes a standard C++ header.</li><li>Lets us write cin/cout/string without the std:: prefix.</li><li>main is where the program starts running.</li><li>Holds the input line.</li><li>Reads the whole line, spaces included.</li><li>Prints the character at index 0.</li><li>Tells the operating system the program finished successfully.</li></ol>
+</details>
+<details class="seo-lang">
+<summary><h3>Print the First Character of a String in C — 1 solution</h3></summary>
+<h4>Direct approach</h4>
+<pre><code class="language-c">#include &lt;stdio.h&gt;
+int main() {
+    char s[200];
+    scanf(&quot;%[^\n]&quot;, s);
+    printf(&quot;%c\n&quot;, s[0]);
+    return 0;
+}</code></pre>
+<ol class="seo-explain"><li>Includes a standard C header.</li><li>main is where the program starts running.</li><li>Holds the input line.</li><li>Reads everything up to the end of the line, spaces included.</li><li>Prints the character at index 0.</li><li>Tells the operating system the program finished successfully.</li></ol>
+</details>
+<details class="seo-lang">
+<summary><h3>Print the First Character of a String in TypeScript — 1 solution</h3></summary>
+<h4>Direct approach</h4>
+<pre><code class="language-typescript">const lines: string[] = require(&quot;fs&quot;).readFileSync(0, &quot;utf8&quot;).split(&quot;\n&quot;);
+const s: string = lines[0];
+console.log(s[0]);</code></pre>
+<ol class="seo-explain"><li>Reads all input and splits it into an array of line strings.</li><li>Stores the input line.</li><li>Prints the character at index 0.</li></ol>
+</details>
+<details class="seo-lang">
+<summary><h3>Print the First Character of a String in Go — 1 solution</h3></summary>
+<h4>Direct approach</h4>
+<pre><code class="language-go">package main
+import (
+    &quot;bufio&quot;
+    &quot;fmt&quot;
+    &quot;os&quot;
+)
+func main() {
+    scanner := bufio.NewScanner(os.Stdin)
+    scanner.Scan()
+    s := scanner.Text()
+    fmt.Println(string(s[0]))
+}</code></pre>
+<ol class="seo-explain"><li>Every Go program starts in package main.</li><li>Imports the standard-library packages we need.</li><li>main is where the program starts running.</li><li>Creates a scanner that reads input line by line.</li><li>Reads the next line.</li><li>Gets the line as a string.</li><li>Prints the character at index 0.</li></ol>
+</details>
+<details class="seo-lang">
+<summary><h3>Print the First Character of a String in Rust — 1 solution</h3></summary>
+<h4>Direct approach</h4>
+<pre><code class="language-rust">use std::io;
+fn main() {
+    let mut s = String::new();
+    io::stdin().read_line(&amp;mut s).unwrap();
+    let s = s.trim_end();
+    println!(&quot;{}&quot;, s.chars().next().unwrap());
+}</code></pre>
+<ol class="seo-explain"><li>Brings the input/output tools into scope.</li><li>main is where the program starts running.</li><li>Creates an empty String for the input line.</li><li>Reads one line from standard input.</li><li>Removes the trailing newline.</li><li>Prints the character at index 0.</li></ol>
+</details>
+<details class="seo-lang">
+<summary><h3>Print the First Character of a String in Kotlin — 1 solution</h3></summary>
+<h4>Direct approach</h4>
+<pre><code class="language-kotlin">fun main() {
+    val s = readLine()!!
+    println(s[0])
+}</code></pre>
+<ol class="seo-explain"><li>main is where the program starts running.</li><li>Reads the whole line.</li><li>Prints the character at index 0.</li></ol>
+</details>
+<details class="seo-lang">
+<summary><h3>Print the First Character of a String in Swift — 1 solution</h3></summary>
+<h4>Direct approach</h4>
+<pre><code class="language-swift">let s = readLine()!
+print(s.first!)</code></pre>
+<ol class="seo-explain"><li>Reads the whole line.</li><li>Prints the character at index 0.</li></ol>
+</details>
+<details class="seo-lang">
+<summary><h3>Print the First Character of a String in PHP — 1 solution</h3></summary>
+<h4>Direct approach</h4>
+<pre><code class="language-php">&lt;?php
+$s = rtrim(fgets(STDIN), &quot;\r\n&quot;);
+echo $s[0], &quot;\n&quot;;</code></pre>
+<ol class="seo-explain"><li>Opens PHP mode.</li><li>Reads the line and removes the trailing newline.</li><li>Prints the character at index 0.</li></ol>
+</details>
+<details class="seo-lang">
+<summary><h3>Print the First Character of a String in C# — 1 solution</h3></summary>
+<h4>Direct approach</h4>
+<pre><code class="language-csharp">using System;
+class Program {
+    static void Main() {
+        string s = Console.ReadLine();
+        Console.WriteLine(s[0]);
+    }
+}</code></pre>
+<ol class="seo-explain"><li>Imports the System namespace (Console, Math, ...).</li><li>Every C# program lives inside a class.</li><li>Main is where the program starts running.</li><li>Reads the whole line.</li><li>Prints the character at index 0.</li></ol>
+</details>
+<details class="seo-lang">
+<summary><h3>Print the First Character of a String in Ruby — 1 solution</h3></summary>
+<h4>Direct approach</h4>
+<pre><code class="language-ruby">s = gets.chomp
+puts s[0]</code></pre>
+<ol class="seo-explain"><li>Reads the line (chomp removes the newline).</li><li>Prints the character at index 0.</li></ol>
+</details>
+
+  <h2>How to practise this problem</h2>
+  <p>Rocket Typing turns every coding problem into typing practice. Pick your language in the editor toolbar, then choose <b>With Code</b> to type a reference solution in that language MonkeyType-style — your WPM, accuracy and consistency are tracked live — or <b>Without Code</b> to write your own. <b>Submit</b> runs your program against the sample and hidden test cases right in your browser.</p>
+
+  <h2>Frequently asked questions</h2>
+  <div class="seo-faq-q">How do you get the first character of a string in Python and Java?</div><p>Python: s[0]. Java: s.charAt(0). For &quot;Hello&quot; both give &quot;H&quot;.</p><div class="seo-faq-q">Why does indexing start at 0?</div><p>An index measures the offset from the start of the string, so the first character is at offset 0. In Python, negative indexes count from the end: s[-1] is the last character.</p><div class="seo-faq-q">What is the difference between s[0] and s[:1] in Python?</div><p>s[0] returns the character and raises an IndexError on an empty string. s[:1] returns a one-character string and gives an empty string instead of an error when s is empty.</p>
+
+  <h2>More coding problems</h2>
+  <div id="related-problems"><p><a class="seo-link" href="./">Browse all coding practice problems</a></p></div>
+  <a class="seo-btn" href="./#problems">All coding problems →</a>
+</main>
+
+<!-- ══ RESULT OVERLAY ══ -->
+<div id="result-overlay">
+  <div class="result-card">
+    <button class="result-close" onclick="closeResult()">✕</button>
+
+    <div class="result-status-banner" id="res-banner">
+      <div id="res-banner-title">—</div>
+      <div class="status-sub" id="res-banner-sub">—</div>
+    </div>
+
+    <!-- Two-column layout: submission + typing stats on the left, graphs on the right -->
+    <div class="result-body-grid">
+
+      <!-- LEFT COLUMN: status stats + typing analytics numbers -->
+      <div class="result-col result-col-left">
+        <div class="result-grid" id="res-grid"><!-- JS filled --></div>
+
+        <div class="result-section-title">Typing Analytics</div>
+        <div class="paste-warn" id="paste-warn">⚠️ Paste detected. Typing analytics may not be accurate.</div>
+        <div class="typing-analytics-grid">
+          <div class="analytics-box"><h5>WPM</h5><div class="analytics-val" id="ra-wpm">—</div><div class="analytics-sub">Words per minute</div></div>
+          <div class="analytics-box"><h5>Accuracy</h5><div class="analytics-val" id="ra-acc">—</div><div class="analytics-sub">Correct keystrokes</div></div>
+          <div class="analytics-box"><h5>Consistency</h5><div class="analytics-val" id="ra-con">—</div><div class="analytics-sub">Speed variation score</div></div>
+          <div class="analytics-box"><h5>Active Time</h5><div class="analytics-val" id="ra-time">—</div><div class="analytics-sub">Time actively typing</div></div>
+          <div class="analytics-box"><h5>Keystrokes</h5><div class="analytics-val" id="ra-ks">—</div><div class="analytics-sub">Total key presses</div></div>
+          <div class="analytics-box"><h5>Backspaces</h5><div class="analytics-val" id="ra-bs">—</div><div class="analytics-sub">Corrections made</div></div>
+        </div>
+      </div>
+
+      <!-- RIGHT COLUMN: graphs -->
+      <div class="result-col result-col-right">
+        <div class="chart-wrap">
+          <h5>Typing Speed Over Time (WPM)</h5>
+          <canvas id="wpm-chart"></canvas>
+        </div>
+        <div class="chart-wrap">
+          <h5>Keystroke Timeline</h5>
+          <canvas id="ks-chart"></canvas>
+        </div>
+      </div>
+
+    </div><!-- /result-body-grid -->
+
+    <div class="result-actions">
+      <button class="btn-retry" onclick="closeResult()">Try Again</button>
+      <button class="btn-next"  onclick="nextProblem()">Next Problem →</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast container -->
+<div class="toast-container" id="toast-container"></div>
+
+<!-- This problem's data: question + reference solutions per language (read by problem-app.js / practice-engine.js) -->
+<script>
+window.ROCKET_PROBLEM = {"file":"print-first-character-of-a-string.html","h1":"Print the First Character of a String","question":{"id":6,"title":"Print the First Character of a String","difficulty":"Easy","topic":"Strings","timeLimit":"1 sec","memoryLimit":"256 MB","description":"You are given a string. Extract and print only its **first character**.\n\nIn programming, individual characters inside a string are accessed using their **index** — a position number that starts at 0. The first character is always at index 0.","inputFormat":"A single non-empty string on one line.","outputFormat":"Print exactly one character — the first character of the input string.","constraints":"• The string length is between 1 and 200 characters.\n• The string contains at least one character.","sampleInput":"Hello","sampleOutput":"H","explanation":"The string `Hello` has the character `H` at index 0. Printing index 0 gives `H`.","hint":"In Python, use square bracket indexing: `print(s[0])`.","allowedSyntax":["input","print","string","indexing"],"testCases":[{"input":"Hello","expectedOutput":"H"}],"hiddenTestCases":[{"input":"Rocket","expectedOutput":"R"},{"input":"Python","expectedOutput":"P"},{"input":"apple","expectedOutput":"a"},{"input":"Z","expectedOutput":"Z"}]}};
+window.__rocketSolutions = {"6":{"python":[{"name":"Index [0]","code":"s = input()\nprint(s[0])","explain":["Reads a string from input and stores it as s.","Prints the character at index 0 — the first character of s."]},{"name":"Slice [:1]","code":"s = input()\nprint(s[:1])","explain":["Reads a string from input and stores it as s.","Prints a slice containing only the first character, from the start up to (not including) index 1."]},{"name":"Loop + break","code":"s = input()\nfor ch in s:\n    print(ch)\n    break","explain":["Reads a string from input and stores it as s.","Starts looping over every character in s…","…printing the current character…","…then immediately breaks out of the loop, so only the first character ever gets printed."]}],"javascript":[{"name":"Direct approach","code":"const lines = require(\"fs\").readFileSync(0, \"utf8\").split(\"\\n\");\nconst s = lines[0];\nconsole.log(s[0]);","explain":["Reads all input and splits it into lines.","Stores the input line.","Prints the character at index 0."]}],"java":[{"name":"Direct approach","code":"import java.util.Scanner;\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        String s = sc.nextLine();\n        System.out.println(s.charAt(0));\n    }\n}","explain":["Imports a class from Java's standard library.","Every Java program lives inside a class.","main is where the program starts running.","Creates a Scanner that reads standard input.","Reads the whole line.","Prints the character at index 0.","",""]}],"cpp":[{"name":"Direct approach","code":"#include <iostream>\n#include <string>\nusing namespace std;\nint main() {\n    string s;\n    getline(cin, s);\n    cout << s[0] << endl;\n    return 0;\n}","explain":["Includes a standard C++ header.","Includes a standard C++ header.","Lets us write cin/cout/string without the std:: prefix.","main is where the program starts running.","Holds the input line.","Reads the whole line, spaces included.","Prints the character at index 0.","Tells the operating system the program finished successfully.",""]}],"c":[{"name":"Direct approach","code":"#include <stdio.h>\nint main() {\n    char s[200];\n    scanf(\"%[^\\n]\", s);\n    printf(\"%c\\n\", s[0]);\n    return 0;\n}","explain":["Includes a standard C header.","main is where the program starts running.","Holds the input line.","Reads everything up to the end of the line, spaces included.","Prints the character at index 0.","Tells the operating system the program finished successfully.",""]}],"typescript":[{"name":"Direct approach","code":"const lines: string[] = require(\"fs\").readFileSync(0, \"utf8\").split(\"\\n\");\nconst s: string = lines[0];\nconsole.log(s[0]);","explain":["Reads all input and splits it into an array of line strings.","Stores the input line.","Prints the character at index 0."]}],"go":[{"name":"Direct approach","code":"package main\nimport (\n    \"bufio\"\n    \"fmt\"\n    \"os\"\n)\nfunc main() {\n    scanner := bufio.NewScanner(os.Stdin)\n    scanner.Scan()\n    s := scanner.Text()\n    fmt.Println(string(s[0]))\n}","explain":["Every Go program starts in package main.","Imports the standard-library packages we need.","","","","","main is where the program starts running.","Creates a scanner that reads input line by line.","Reads the next line.","Gets the line as a string.","Prints the character at index 0.",""]}],"rust":[{"name":"Direct approach","code":"use std::io;\nfn main() {\n    let mut s = String::new();\n    io::stdin().read_line(&mut s).unwrap();\n    let s = s.trim_end();\n    println!(\"{}\", s.chars().next().unwrap());\n}","explain":["Brings the input/output tools into scope.","main is where the program starts running.","Creates an empty String for the input line.","Reads one line from standard input.","Removes the trailing newline.","Prints the character at index 0.",""]}],"kotlin":[{"name":"Direct approach","code":"fun main() {\n    val s = readLine()!!\n    println(s[0])\n}","explain":["main is where the program starts running.","Reads the whole line.","Prints the character at index 0.",""]}],"swift":[{"name":"Direct approach","code":"let s = readLine()!\nprint(s.first!)","explain":["Reads the whole line.","Prints the character at index 0."]}],"php":[{"name":"Direct approach","code":"<?php\n$s = rtrim(fgets(STDIN), \"\\r\\n\");\necho $s[0], \"\\n\";","explain":["Opens PHP mode.","Reads the line and removes the trailing newline.","Prints the character at index 0."]}],"csharp":[{"name":"Direct approach","code":"using System;\nclass Program {\n    static void Main() {\n        string s = Console.ReadLine();\n        Console.WriteLine(s[0]);\n    }\n}","explain":["Imports the System namespace (Console, Math, ...).","Every C# program lives inside a class.","Main is where the program starts running.","Reads the whole line.","Prints the character at index 0.","",""]}],"ruby":[{"name":"Direct approach","code":"s = gets.chomp\nputs s[0]","explain":["Reads the line (chomp removes the newline).","Prints the character at index 0."]}]}};
+</script>
+
+<!-- Monaco loader (deferred; the editor itself is fetched at idle time) -->
+<script>var require = { paths: { vs: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs' } };</script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs/loader.min.js"></script>
+<!-- Shared runtime, cached across all problem pages. Keep this order: coding-core -> problem-app -> practice-engine.
+     The ../compilers/*.js files and Chart.js are loaded lazily by problem-app.js (not listed here on purpose). -->
+<script defer src="coding-core.js"></script>
+<script defer src="problem-app.js"></script>
+<script defer src="practice-engine.js"></script>
+</body>
+</html>

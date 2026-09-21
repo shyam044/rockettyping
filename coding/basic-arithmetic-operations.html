@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Arithmetic Operations in Python, Java, C++ &amp; More | Rocket Typing</title>
+<meta name="description" content="Read two integers and print sum, difference, product, integer division, remainder and power in 13 languages – Python, Java, C++, JavaScript, Go and more.">
+<meta name="keywords" content="basic arithmetic operations, arithmetic operators in python, java arithmetic program, c++ arithmetic operators, integer division, modulo operator, power operator, add subtract multiply divide program">
+<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+<link rel="canonical" href="https://www.rockettyping.com/coding/basic-arithmetic-operations">
+<meta http-equiv="Content-Security-Policy" content="object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Arithmetic Operations in Python, Java, C++ &amp; More | Rocket Typing">
+<meta property="og:description" content="Read two integers and print sum, difference, product, integer division, remainder and power in 13 languages – Python, Java, C++, JavaScript, Go and more.">
+<meta property="og:url" content="https://www.rockettyping.com/coding/basic-arithmetic-operations">
+<meta property="og:image" content="https://www.rockettyping.com/images/og-banner.webp">
+<meta property="og:site_name" content="Rocket Typing">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Arithmetic Operations in Python, Java, C++ &amp; More | Rocket Typing">
+<meta name="twitter:description" content="Read two integers and print sum, difference, product, integer division, remainder and power in 13 languages – Python, Java, C++, JavaScript, Go and more.">
+<meta name="twitter:image" content="https://www.rockettyping.com/images/og-banner.webp">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "LearningResource",
+  "name": "Basic Arithmetic Operations — Coding Practice in 13 Languages",
+  "description": "Read two integers and print sum, difference, product, integer division, remainder and power in 13 languages – Python, Java, C++, JavaScript, Go and more.",
+  "educationalLevel": "Beginner",
+  "learningResourceType": "Interactive coding exercise",
+  "teaches": "Basic Arithmetic Operations in 13 programming languages (Python, JavaScript, Java, C, C++, TypeScript, Go, Rust, Kotlin, Swift, PHP, C# and Ruby)",
+  "inLanguage": "en",
+  "isAccessibleForFree": true,
+  "isPartOf": {
+    "@type": "Course",
+    "name": "Free Coding Practice with Typing Speed Test",
+    "url": "https://www.rockettyping.com/coding/"
+  },
+  "provider": {
+    "@type": "Organization",
+    "name": "Rocket Typing",
+    "sameAs": "https://www.rockettyping.com"
+  },
+  "url": "https://www.rockettyping.com/coding/basic-arithmetic-operations"
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "How do you do integer division in Python, Java and C++?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Python uses the // operator. In Java, C, C++, Go, C#, Kotlin and Swift, dividing two integers with / already drops the fraction. JavaScript has no integer type, so Math.floor(a / b) is used. For positive numbers these all give the same result."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How do you calculate a power in different languages?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Python, Ruby, JavaScript, TypeScript and PHP have the ** operator. Java uses Math.pow, C and C++ use pow(), Go uses math.Pow, C# uses Math.Pow and Rust integers have a .pow() method."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Why do some solutions print the power with %.0f?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "100 to the power of 10 is 100000000000000000000, which does not fit in a 64-bit integer. Languages that compute powers as floating-point numbers print it in full when formatted with no decimals, Rust uses a 128-bit integer, and Python and Ruby integers grow automatically."
+      }
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://www.rockettyping.com/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Coding Practice",
+      "item": "https://www.rockettyping.com/coding/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": "Basic Arithmetic Operations",
+      "item": "https://www.rockettyping.com/coding/basic-arithmetic-operations"
+    }
+  ]
+}
+</script>
+<link rel="icon" type="image/png" sizes="32x32" href="../images/favicon-32.webp">
+<link rel="icon" type="image/png" sizes="16x16" href="../images/favicon-16.webp">
+<link rel="apple-touch-icon" href="../images/logo-192.webp">
+<meta name="theme-color" content="#0a0a23">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@300;400;500;700&family=Inter:wght@300;400;500;600;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@300;400;500;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"></noscript>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-136SVFZRDF"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-136SVFZRDF');</script>
+<link rel="stylesheet" href="coding.css">
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+<!-- Monaco's stylesheet: loaded without blocking first paint (the data-name attribute is what Monaco's loader looks for) -->
+<link rel="stylesheet" media="print" onload="this.media='all'" data-name="vs/editor/editor.main" href="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs/editor/editor.main.min.css">
+<script type="text/javascript" async="async" data-noptimize="1" data-cfasync="false" src="//scripts.scriptwrapper.com/tags/31b6b722-d3b7-49a8-acd3-2264f19c9dc5.js"></script>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="/" class="nav-logo"><span class="rocket">🚀</span>Rocket<span>Typing</span></a>
+  <div class="nav-links">
+    <button class="nav-btn" onclick="goHome()">⌨️ Typing Test</button>
+    <a href="./#dashboard" class="nav-btn">Dashboard</a>
+    <a href="./#problems" class="nav-btn active">Problems</a>
+    <a href="./#profile" class="nav-btn">Profile</a>
+  </div>
+</nav>
+
+<div id="app">
+
+  <!-- ══ WORKSPACE VIEW ══ -->
+  <div id="view-workspace" class="view active">
+    <!-- Left: problem description -->
+    <div class="workspace-sidebar">
+      <div class="sidebar-tabs">
+        <button class="sidebar-tab active" onclick="setSidebarTab('desc',this)">Description</button>
+        <button class="sidebar-tab" onclick="setSidebarTab('notes',this)">Notes</button>
+        <button class="sidebar-tab" onclick="setSidebarTab('hint',this)">Hint</button>
+      </div>
+      <div class="sidebar-content" id="sidebar-desc" data-prerendered="1">
+    <div class="prob-meta">
+      <h1>#2 Basic Arithmetic Operations</h1>
+      <span class="badge easy">Easy</span>
+      <span class="meta-pill">⏱ 1 sec</span>
+      <span class="meta-pill">💾 256 MB</span>
+      <span class="meta-pill">🏷 Math</span>
+      <button onclick="toggleBookmark(2)" id="bm-btn-2" style="background:none;border:1px solid var(--border);color:var(--text2);padding:4px 10px;border-radius:5px;cursor:pointer;font-size:11px">🔖 Bookmark</button>
+    </div>
+    <div class="prob-section"><h2>Problem Statement</h2><div class="prob-text">You are given two integers. Perform the following six arithmetic operations on them and print each result on a separate line, in the exact order listed:<br><br>1. <strong>Addition</strong> — the sum of the two numbers<br>2. <strong>Subtraction</strong> — the first number minus the second<br>3. <strong>Multiplication</strong> — the product of the two numbers<br>4. <strong>Division</strong> — the first number divided by the second (integer division — discard any remainder)<br>5. <strong>Modulo</strong> — the remainder when the first number is divided by the second<br>6. <strong>Power</strong> — the result of raising the first number to the power of the second</div></div>
+    <div class="prob-section"><h2>Input Format</h2><div class="prob-text">Two integers <code>a</code> and <code>b</code> are given on two separate lines.</div></div>
+    <div class="prob-section"><h2>Output Format</h2><div class="prob-text">Print exactly six lines, one result per operation, in the order:<div class="io-box">a + b
+a - b
+a * b
+a / b   (integer division)
+a % b
+a ^ b</div></div></div>
+    <div class="prob-section"><h2>Constraints</h2><div class="prob-text">• 1 ≤ a, b ≤ 100<br>• b ≠ 0 (division by zero will not be tested)<br>• For the Power operation, the result fits within a standard integer.</div></div>
+    <div class="prob-section"><h2>Sample Input</h2><div class="io-box">10
+3</div></div>
+    <div class="prob-section"><h2>Sample Output</h2><div class="io-box">13
+7
+30
+3
+1
+1000</div></div>
+    <div class="prob-section"><h2>Explanation</h2><div class="prob-text">With a = 10 and b = 3:<br>• 10 + 3 = 13<br>• 10 − 3 = 7<br>• 10 × 3 = 30<br>• 10 ÷ 3 = 3  (integer division; remainder is dropped)<br>• 10 mod 3 = 1  (10 = 3×3 + 1)<br>• 10³ = 1000</div></div>
+  </div>
+      <div class="sidebar-content" id="sidebar-notes" style="display:none">
+        <textarea id="notes-area" placeholder="Write your personal notes for this problem…"
+          style="width:100%;height:calc(100% - 0px);background:transparent;border:none;outline:none;color:var(--text);font-family:var(--font-mono);font-size:12px;resize:none;line-height:1.7"
+          oninput="saveNote()"></textarea>
+      </div>
+      <div class="sidebar-content" id="sidebar-hint" style="display:none">
+        <div class="hint-box" id="hint-content">In Python, integer division uses `//` and power uses `**`.</div>
+      </div>
+    </div>
+
+    <!-- Right: editor + output -->
+    <div class="workspace-main">
+      <div class="editor-toolbar">
+        <select class="lang-select" id="lang-select" onchange="changeLanguage()">
+          <option value="python">Python</option>
+          <option value="javascript">JavaScript</option>
+          <option value="java">Java</option>
+          <option value="cpp">C++</option>
+          <option value="c">C</option>
+          <option value="typescript">TypeScript</option>
+          <option value="go">Go</option>
+          <option value="rust">Rust</option>
+          <option value="kotlin">Kotlin</option>
+          <option value="swift">Swift</option>
+          <option value="php">PHP</option>
+          <option value="csharp">C#</option>
+          <option value="ruby">Ruby</option>
+        </select>
+
+        <button class="editor-btn" onclick="resetCode()" title="Reset code">↺ Reset</button>
+        <button class="editor-btn" onclick="copyCode()"  title="Copy code">📋 Copy</button>
+        <button class="editor-btn" onclick="downloadCode()" title="Download">⬇ Save</button>
+        <button class="editor-btn" onclick="uploadCode()"   title="Upload file">⬆ Upload</button>
+        <input type="file" id="file-upload" accept=".py,.js,.java,.cpp,.c,.ts,.go,.rs,.kt,.swift,.php,.cs,.rb" style="display:none" onchange="handleUpload(event)">
+
+        <button class="editor-btn mic" id="mic-btn" onclick="toggleMic()" title="Voice to Code">🎤 Voice</button>
+
+        <div class="toolbar-spacer"></div>
+
+        <span class="timer-display" id="workspace-timer">00:00</span>
+        <span class="autosave-dot" id="autosave-dot"></span>
+
+        <button class="editor-btn run"    id="run-btn"    onclick="runCode()">▶ Run</button>
+        <button class="editor-btn submit" id="submit-btn" onclick="submitCode()">⚡ Submit</button>
+      </div>
+
+      <!-- Monaco -->
+      <div class="editor-wrap">
+        <div id="monaco-editor"></div>
+        <!-- Mic panel -->
+        <div class="mic-panel" id="mic-panel">
+          <h4>🎤 Voice to Code</h4>
+          <div class="mic-transcript" id="mic-transcript">Say something…</div>
+          <div class="mic-controls">
+            <button class="mic-ctrl" onclick="pauseMic()">⏸ Pause</button>
+            <button class="mic-ctrl" onclick="resumeMic()">▶ Resume</button>
+            <button class="mic-ctrl" onclick="stopMic()">⏹ Stop</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Output panel -->
+      <div class="output-panel">
+        <div class="output-tabs">
+          <button class="output-tab active" onclick="setOutputTab('output',this)">Output</button>
+          <button class="output-tab" onclick="setOutputTab('testcases',this)">Test Cases</button>
+          <button class="output-tab" onclick="setOutputTab('console',this)">Console</button>
+        </div>
+        <div class="output-body" id="output-output">
+          <div class="output-line dim">Click "Run" to execute your code against sample test cases.</div>
+        </div>
+        <div class="output-body" id="output-testcases" style="display:none">
+          <div class="output-line dim">No test results yet.</div>
+        </div>
+        <div class="output-body" id="output-console" style="display:none">
+          <div class="output-line dim">Console output will appear here.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+</div><!-- #app -->
+
+<main class="seo-content" id="seo-content">
+  <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a> / <a href="./">Coding Practice</a> / Basic Arithmetic Operations</nav>
+
+  <h2>About this problem: Basic Arithmetic Operations</h2>
+  <p>This exercise covers the six core arithmetic operations in one program: addition, subtraction, multiplication, integer division, remainder (modulo) and power. You read two integers, then print each result on its own line in the required order.</p><p>It is a compact way to compare how languages handle operators — for example Python's <code>//</code> and <code>**</code> against Java's <code>Math.pow</code> or C's <code>pow()</code>. Reference solutions are provided in all 13 languages.</p>
+  <div class="seo-facts">
+    <span class="badge easy">Easy</span>
+    <span class="meta-pill">🏷 Math</span>
+    <span class="meta-pill">13 languages</span>
+    <span class="meta-pill">16 reference solutions</span>
+  </div>
+  <div class="lang-chips"><span class="meta-pill">Python</span><span class="meta-pill">JavaScript</span><span class="meta-pill">Java</span><span class="meta-pill">C++</span><span class="meta-pill">C</span><span class="meta-pill">TypeScript</span><span class="meta-pill">Go</span><span class="meta-pill">Rust</span><span class="meta-pill">Kotlin</span><span class="meta-pill">Swift</span><span class="meta-pill">PHP</span><span class="meta-pill">C#</span><span class="meta-pill">Ruby</span></div>
+
+  <h2>Basic Arithmetic Operations — solutions in 13 languages</h2>
+<details class="seo-lang" open>
+<summary><h3>Basic Arithmetic Operations in Python — 4 solutions</h3></summary>
+<h4>Sequential print statements</h4>
+<pre><code class="language-python">a = int(input())
+b = int(input())
+print(a + b)
+print(a - b)
+print(a * b)
+print(a // b)
+print(a % b)
+print(a ** b)</code></pre>
+<ol class="seo-explain"><li>Reads the first number from input and stores it as <code>a</code>.</li><li>Reads the second number from input and stores it as <code>b</code>.</li><li>Prints the sum of a and b.</li><li>Prints the first number minus the second.</li><li>Prints the product of a and b.</li><li>Prints integer division: a divided by b, remainder dropped.</li><li>Prints the remainder when a is divided by b.</li><li>Prints a raised to the power of b.</li></ol>
+<h4>List of results + for loop</h4>
+<pre><code class="language-python">a = int(input())
+b = int(input())
+results = [a + b, a - b, a * b, a // b, a % b, a ** b]
+for r in results:
+    print(r)</code></pre>
+<ol class="seo-explain"><li>Reads the first number from input and converts it to an integer.</li><li>Reads the second number from input and converts it to an integer.</li><li>Builds a list holding all six operation results, in order.</li><li>Loops over each result in the list…</li><li>…and prints it on its own line.</li></ol>
+<h4>f-string per line</h4>
+<pre><code class="language-python">a = int(input())
+b = int(input())
+print(f&quot;{a + b}&quot;)
+print(f&quot;{a - b}&quot;)
+print(f&quot;{a * b}&quot;)
+print(f&quot;{a // b}&quot;)
+print(f&quot;{a % b}&quot;)
+print(f&quot;{a ** b}&quot;)</code></pre>
+<ol class="seo-explain"><li>Reads the first number from input and converts it to an integer.</li><li>Reads the second number from input and converts it to an integer.</li><li>Prints the sum, using an f-string to evaluate a + b inline.</li><li>Prints the difference the same way.</li><li>Prints the product the same way.</li><li>Prints the integer division result the same way.</li><li>Prints the remainder the same way.</li><li>Prints a raised to the power of b the same way.</li></ol>
+<h4>Joined with newlines</h4>
+<pre><code class="language-python">a = int(input())
+b = int(input())
+vals = [a + b, a - b, a * b, a // b, a % b, a ** b]
+print(&quot;\n&quot;.join(str(v) for v in vals))</code></pre>
+<ol class="seo-explain"><li>Reads the first number from input and converts it to an integer.</li><li>Reads the second number from input and converts it to an integer.</li><li>Builds a list holding all six operation results, in order.</li><li>Converts each result to a string, joins them with newlines, and prints them all at once.</li></ol>
+</details>
+<details class="seo-lang">
+<summary><h3>Basic Arithmetic Operations in JavaScript — 1 solution</h3></summary>
+<h4>Math operators</h4>
+<pre><code class="language-javascript">const lines = require(&quot;fs&quot;).readFileSync(0, &quot;utf8&quot;).split(&quot;\n&quot;);
+const a = parseInt(lines[0]);
+const b = parseInt(lines[1]);
+console.log(a + b);
+console.log(a - b);
+console.log(a * b);
+console.log(Math.floor(a / b));
+console.log(a % b);
+console.log(a ** b);</code></pre>
+<ol class="seo-explain"><li>Reads all input and splits it into lines.</li><li>Converts the first line to an integer.</li><li>Converts the second line to an integer.</li><li>Prints the sum.</li><li>Prints the difference.</li><li>Prints the product.</li><li>Divides, then rounds down to get integer division.</li><li>Prints the remainder.</li><li>Prints a raised to the power b.</li></ol>
+</details>
+<details class="seo-lang">
+<summary><h3>Basic Arithmetic Operations in Java — 1 solution</h3></summary>
+<h4>Scanner + Math.pow</h4>
+<pre><code class="language-java">import java.util.Scanner;
+public class Main {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        int a = sc.nextInt();
+        int b = sc.nextInt();
+        System.out.println(a + b);
+        System.out.println(a - b);
+        System.out.println(a * b);
+        System.out.println(a / b);
+        System.out.println(a % b);
+        System.out.printf(&quot;%.0f%n&quot;, Math.pow(a, b));
+    }
+}</code></pre>
+<ol class="seo-explain"><li>Imports a class from Java&#39;s standard library.</li><li>Every Java program lives inside a class.</li><li>main is where the program starts running.</li><li>Creates a Scanner that reads standard input.</li><li>Reads the first integer.</li><li>Reads the second integer.</li><li>Prints the sum.</li><li>Prints the difference.</li><li>Prints the product.</li><li>int / int is integer division in Java.</li><li>Prints the remainder.</li><li>Math.pow returns a double; %.0f prints it with no decimals.</li></ol>
+</details>
+<details class="seo-lang">
+<summary><h3>Basic Arithmetic Operations in C++ — 1 solution</h3></summary>
+<h4>cin + pow</h4>
+<pre><code class="language-cpp">#include &lt;iostream&gt;
+#include &lt;cmath&gt;
+#include &lt;iomanip&gt;
+using namespace std;
+int main() {
+    int a, b;
+    cin &gt;&gt; a &gt;&gt; b;
+    cout &lt;&lt; a + b &lt;&lt; endl;
+    cout &lt;&lt; a - b &lt;&lt; endl;
+    cout &lt;&lt; a * b &lt;&lt; endl;
+    cout &lt;&lt; a / b &lt;&lt; endl;
+    cout &lt;&lt; a % b &lt;&lt; endl;
+    cout &lt;&lt; fixed &lt;&lt; setprecision(0) &lt;&lt; pow(a, b) &lt;&lt; endl;
+    return 0;
+}</code></pre>
+<ol class="seo-explain"><li>Includes a standard C++ header.</li><li>Includes a standard C++ header.</li><li>Includes a standard C++ header.</li><li>Lets us write cin/cout/string without the std:: prefix.</li><li>main is where the program starts running.</li><li>Declares two integers.</li><li>Reads both numbers from input.</li><li>Prints the sum.</li><li>Prints the difference.</li><li>Prints the product.</li><li>int / int is integer division in C++.</li><li>Prints the remainder.</li><li>pow returns a double; fixed + setprecision(0) prints it in full.</li><li>Tells the operating system the program finished successfully.</li></ol>
+</details>
+<details class="seo-lang">
+<summary><h3>Basic Arithmetic Operations in C — 1 solution</h3></summary>
+<h4>scanf + pow</h4>
+<pre><code class="language-c">#include &lt;stdio.h&gt;
+#include &lt;math.h&gt;
+int main() {
+    int a, b;
+    scanf(&quot;%d %d&quot;, &amp;a, &amp;b);
+    printf(&quot;%d\n&quot;, a + b);
+    printf(&quot;%d\n&quot;, a - b);
+    printf(&quot;%d\n&quot;, a * b);
+    printf(&quot;%d\n&quot;, a / b);
+    printf(&quot;%d\n&quot;, a % b);
+    printf(&quot;%.0f\n&quot;, pow(a, b));
+    return 0;
+}</code></pre>
+<ol class="seo-explain"><li>Includes a standard C header.</li><li>Includes a standard C header.</li><li>main is where the program starts running.</li><li>Declares two integers.</li><li>Reads both numbers from input.</li><li>Prints the sum.</li><li>Prints the difference.</li><li>Prints the product.</li><li>int / int is integer division in C.</li><li>Prints the remainder.</li><li>pow returns a double; %.0f prints it with no decimals.</li><li>Tells the operating system the program finished successfully.</li></ol>
+</details>
+<details class="seo-lang">
+<summary><h3>Basic Arithmetic Operations in TypeScript — 1 solution</h3></summary>
+<h4>Math operators</h4>
+<pre><code class="language-typescript">const lines: string[] = require(&quot;fs&quot;).readFileSync(0, &quot;utf8&quot;).split(&quot;\n&quot;);
+const a: number = parseInt(lines[0]);
+const b: number = parseInt(lines[1]);
+console.log(a + b);
+console.log(a - b);
+console.log(a * b);
+console.log(Math.floor(a / b));
+console.log(a % b);
+console.log(a ** b);</code></pre>
+<ol class="seo-explain"><li>Reads all input and splits it into an array of line strings.</li><li>Converts the first line to a number.</li><li>Converts the second line to a number.</li><li>Prints the sum.</li><li>Prints the difference.</li><li>Prints the product.</li><li>Divides, then rounds down to get integer division.</li><li>Prints the remainder.</li><li>Prints a raised to the power b.</li></ol>
+</details>
+<details class="seo-lang">
+<summary><h3>Basic Arithmetic Operations in Go — 1 solution</h3></summary>
+<h4>fmt.Scan + math.Pow</h4>
+<pre><code class="language-go">package main
+import (
+    &quot;fmt&quot;
+    &quot;math&quot;
+)
+func main() {
+    var a, b int
+    fmt.Scan(&amp;a, &amp;b)
+    fmt.Println(a + b)
+    fmt.Println(a - b)
+    fmt.Println(a * b)
+    fmt.Println(a / b)
+    fmt.Println(a % b)
+    fmt.Printf(&quot;%.0f\n&quot;, math.Pow(float64(a), float64(b)))
+}</code></pre>
+<ol class="seo-explain"><li>Every Go program starts in package main.</li><li>Imports the standard-library packages we need.</li><li>main is where the program starts running.</li><li>Declares two integers.</li><li>Reads both numbers from input.</li><li>Prints the sum.</li><li>Prints the difference.</li><li>Prints the product.</li><li>Integer division in Go.</li><li>Prints the remainder.</li><li>math.Pow works on float64; %.0f prints it in full.</li></ol>
+</details>
+<details class="seo-lang">
+<summary><h3>Basic Arithmetic Operations in Rust — 1 solution</h3></summary>
+<h4>i128 + pow</h4>
+<pre><code class="language-rust">use std::io::{self, Read};
+fn main() {
+    let mut text = String::new();
+    io::stdin().read_to_string(&amp;mut text).unwrap();
+    let mut it = text.split_whitespace();
+    let a: i128 = it.next().unwrap().parse().unwrap();
+    let b: i128 = it.next().unwrap().parse().unwrap();
+    println!(&quot;{}&quot;, a + b);
+    println!(&quot;{}&quot;, a - b);
+    println!(&quot;{}&quot;, a * b);
+    println!(&quot;{}&quot;, a / b);
+    println!(&quot;{}&quot;, a % b);
+    println!(&quot;{}&quot;, a.pow(b as u32));
+}</code></pre>
+<ol class="seo-explain"><li>Brings the input/output tools into scope.</li><li>main is where the program starts running.</li><li>Creates an empty String to hold the input.</li><li>Reads everything from standard input.</li><li>Splits the input into whitespace-separated tokens.</li><li>Parses the first token as a 128-bit integer.</li><li>Parses the second token as a 128-bit integer.</li><li>Prints the sum.</li><li>Prints the difference.</li><li>Prints the product.</li><li>Integer division.</li><li>Prints the remainder.</li><li>pow raises a to the power b; i128 is big enough for 100^10.</li></ol>
+</details>
+<details class="seo-lang">
+<summary><h3>Basic Arithmetic Operations in Kotlin — 1 solution</h3></summary>
+<h4>readLine + Math.pow</h4>
+<pre><code class="language-kotlin">fun main() {
+    val a = readLine()!!.trim().toInt()
+    val b = readLine()!!.trim().toInt()
+    println(a + b)
+    println(a - b)
+    println(a * b)
+    println(a / b)
+    println(a % b)
+    println(&quot;%.0f&quot;.format(Math.pow(a.toDouble(), b.toDouble())))
+}</code></pre>
+<ol class="seo-explain"><li>main is where the program starts running.</li><li>Reads the first line and converts it to Int.</li><li>Reads the second line and converts it to Int.</li><li>Prints the sum.</li><li>Prints the difference.</li><li>Prints the product.</li><li>Int / Int is integer division in Kotlin.</li><li>Prints the remainder.</li><li>Math.pow needs doubles; format prints the result with no decimals.</li></ol>
+</details>
+<details class="seo-lang">
+<summary><h3>Basic Arithmetic Operations in Swift — 1 solution</h3></summary>
+<h4>readLine + pow</h4>
+<pre><code class="language-swift">import Foundation
+let a = Int(readLine()!)!
+let b = Int(readLine()!)!
+print(a + b)
+print(a - b)
+print(a * b)
+print(a / b)
+print(a % b)
+print(String(format: &quot;%.0f&quot;, pow(Double(a), Double(b))))</code></pre>
+<ol class="seo-explain"><li>Foundation provides pow and String(format:).</li><li>Reads the first line and converts it to Int.</li><li>Reads the second line and converts it to Int.</li><li>Prints the sum.</li><li>Prints the difference.</li><li>Prints the product.</li><li>Int / Int is integer division in Swift.</li><li>Prints the remainder.</li><li>pow works on Double; the format prints it with no decimals.</li></ol>
+</details>
+<details class="seo-lang">
+<summary><h3>Basic Arithmetic Operations in PHP — 1 solution</h3></summary>
+<h4>intdiv + **</h4>
+<pre><code class="language-php">&lt;?php
+$a = (int) trim(fgets(STDIN));
+$b = (int) trim(fgets(STDIN));
+echo $a + $b, &quot;\n&quot;;
+echo $a - $b, &quot;\n&quot;;
+echo $a * $b, &quot;\n&quot;;
+echo intdiv($a, $b), &quot;\n&quot;;
+echo $a % $b, &quot;\n&quot;;
+printf(&quot;%.0f\n&quot;, $a ** $b);</code></pre>
+<ol class="seo-explain"><li>Opens PHP mode.</li><li>Reads the first line and casts it to an integer.</li><li>Reads the second line and casts it to an integer.</li><li>Prints the sum.</li><li>Prints the difference.</li><li>Prints the product.</li><li>intdiv gives integer division.</li><li>Prints the remainder.</li><li>** raises to a power; %.0f prints large results in full.</li></ol>
+</details>
+<details class="seo-lang">
+<summary><h3>Basic Arithmetic Operations in C# — 1 solution</h3></summary>
+<h4>Console + Math.Pow</h4>
+<pre><code class="language-csharp">using System;
+class Program {
+    static void Main() {
+        int a = int.Parse(Console.ReadLine());
+        int b = int.Parse(Console.ReadLine());
+        Console.WriteLine(a + b);
+        Console.WriteLine(a - b);
+        Console.WriteLine(a * b);
+        Console.WriteLine(a / b);
+        Console.WriteLine(a % b);
+        Console.WriteLine(Math.Pow(a, b).ToString(&quot;F0&quot;));
+    }
+}</code></pre>
+<ol class="seo-explain"><li>Imports the System namespace (Console, Math, ...).</li><li>Every C# program lives inside a class.</li><li>Main is where the program starts running.</li><li>Reads the first line and parses it as an int.</li><li>Reads the second line and parses it as an int.</li><li>Prints the sum.</li><li>Prints the difference.</li><li>Prints the product.</li><li>int / int is integer division in C#.</li><li>Prints the remainder.</li><li>Math.Pow returns a double; &quot;F0&quot; prints it with no decimals.</li></ol>
+</details>
+<details class="seo-lang">
+<summary><h3>Basic Arithmetic Operations in Ruby — 1 solution</h3></summary>
+<h4>gets + **</h4>
+<pre><code class="language-ruby">a = gets.to_i
+b = gets.to_i
+puts a + b
+puts a - b
+puts a * b
+puts a / b
+puts a % b
+puts a ** b</code></pre>
+<ol class="seo-explain"><li>Reads the first line and converts it to an integer.</li><li>Reads the second line and converts it to an integer.</li><li>Prints the sum.</li><li>Prints the difference.</li><li>Prints the product.</li><li>Integer / integer is integer division in Ruby.</li><li>Prints the remainder.</li><li>Prints a raised to the power b (Ruby integers never overflow).</li></ol>
+</details>
+
+  <h2>How to practise this problem</h2>
+  <p>Rocket Typing turns every coding problem into typing practice. Pick your language in the editor toolbar, then choose <b>With Code</b> to type a reference solution in that language MonkeyType-style — your WPM, accuracy and consistency are tracked live — or <b>Without Code</b> to write your own. <b>Submit</b> runs your program against the sample and hidden test cases right in your browser.</p>
+
+  <h2>Frequently asked questions</h2>
+  <div class="seo-faq-q">How do you do integer division in Python, Java and C++?</div><p>Python uses the // operator. In Java, C, C++, Go, C#, Kotlin and Swift, dividing two integers with / already drops the fraction. JavaScript has no integer type, so Math.floor(a / b) is used. For positive numbers these all give the same result.</p><div class="seo-faq-q">How do you calculate a power in different languages?</div><p>Python, Ruby, JavaScript, TypeScript and PHP have the ** operator. Java uses Math.pow, C and C++ use pow(), Go uses math.Pow, C# uses Math.Pow and Rust integers have a .pow() method.</p><div class="seo-faq-q">Why do some solutions print the power with %.0f?</div><p>100 to the power of 10 is 100000000000000000000, which does not fit in a 64-bit integer. Languages that compute powers as floating-point numbers print it in full when formatted with no decimals, Rust uses a 128-bit integer, and Python and Ruby integers grow automatically.</p>
+
+  <h2>More coding problems</h2>
+  <div id="related-problems"><p><a class="seo-link" href="./">Browse all coding practice problems</a></p></div>
+  <a class="seo-btn" href="./#problems">All coding problems →</a>
+</main>
+
+<!-- ══ RESULT OVERLAY ══ -->
+<div id="result-overlay">
+  <div class="result-card">
+    <button class="result-close" onclick="closeResult()">✕</button>
+
+    <div class="result-status-banner" id="res-banner">
+      <div id="res-banner-title">—</div>
+      <div class="status-sub" id="res-banner-sub">—</div>
+    </div>
+
+    <!-- Two-column layout: submission + typing stats on the left, graphs on the right -->
+    <div class="result-body-grid">
+
+      <!-- LEFT COLUMN: status stats + typing analytics numbers -->
+      <div class="result-col result-col-left">
+        <div class="result-grid" id="res-grid"><!-- JS filled --></div>
+
+        <div class="result-section-title">Typing Analytics</div>
+        <div class="paste-warn" id="paste-warn">⚠️ Paste detected. Typing analytics may not be accurate.</div>
+        <div class="typing-analytics-grid">
+          <div class="analytics-box"><h5>WPM</h5><div class="analytics-val" id="ra-wpm">—</div><div class="analytics-sub">Words per minute</div></div>
+          <div class="analytics-box"><h5>Accuracy</h5><div class="analytics-val" id="ra-acc">—</div><div class="analytics-sub">Correct keystrokes</div></div>
+          <div class="analytics-box"><h5>Consistency</h5><div class="analytics-val" id="ra-con">—</div><div class="analytics-sub">Speed variation score</div></div>
+          <div class="analytics-box"><h5>Active Time</h5><div class="analytics-val" id="ra-time">—</div><div class="analytics-sub">Time actively typing</div></div>
+          <div class="analytics-box"><h5>Keystrokes</h5><div class="analytics-val" id="ra-ks">—</div><div class="analytics-sub">Total key presses</div></div>
+          <div class="analytics-box"><h5>Backspaces</h5><div class="analytics-val" id="ra-bs">—</div><div class="analytics-sub">Corrections made</div></div>
+        </div>
+      </div>
+
+      <!-- RIGHT COLUMN: graphs -->
+      <div class="result-col result-col-right">
+        <div class="chart-wrap">
+          <h5>Typing Speed Over Time (WPM)</h5>
+          <canvas id="wpm-chart"></canvas>
+        </div>
+        <div class="chart-wrap">
+          <h5>Keystroke Timeline</h5>
+          <canvas id="ks-chart"></canvas>
+        </div>
+      </div>
+
+    </div><!-- /result-body-grid -->
+
+    <div class="result-actions">
+      <button class="btn-retry" onclick="closeResult()">Try Again</button>
+      <button class="btn-next"  onclick="nextProblem()">Next Problem →</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast container -->
+<div class="toast-container" id="toast-container"></div>
+
+<!-- This problem's data: question + reference solutions per language (read by problem-app.js / practice-engine.js) -->
+<script>
+window.ROCKET_PROBLEM = {"file":"basic-arithmetic-operations.html","h1":"Basic Arithmetic Operations","question":{"id":2,"title":"Basic Arithmetic Operations","difficulty":"Easy","topic":"Math","timeLimit":"1 sec","memoryLimit":"256 MB","description":"You are given two integers. Perform the following six arithmetic operations on them and print each result on a separate line, in the exact order listed:\n\n1. **Addition** — the sum of the two numbers\n2. **Subtraction** — the first number minus the second\n3. **Multiplication** — the product of the two numbers\n4. **Division** — the first number divided by the second (integer division — discard any remainder)\n5. **Modulo** — the remainder when the first number is divided by the second\n6. **Power** — the result of raising the first number to the power of the second","inputFormat":"Two integers `a` and `b` are given on two separate lines.","outputFormat":"Print exactly six lines, one result per operation, in the order:\n```\na + b\na - b\na * b\na / b   (integer division)\na % b\na ^ b\n```","constraints":"• 1 ≤ a, b ≤ 100\n• b ≠ 0 (division by zero will not be tested)\n• For the Power operation, the result fits within a standard integer.","sampleInput":"10\n3","sampleOutput":"13\n7\n30\n3\n1\n1000","explanation":"With a = 10 and b = 3:\n• 10 + 3 = 13\n• 10 − 3 = 7\n• 10 × 3 = 30\n• 10 ÷ 3 = 3  (integer division; remainder is dropped)\n• 10 mod 3 = 1  (10 = 3×3 + 1)\n• 10³ = 1000","hint":"In Python, integer division uses `//` and power uses `**`.","allowedSyntax":["input","int","print","arithmetic"],"testCases":[{"input":"10\n3","expectedOutput":"13\n7\n30\n3\n1\n1000"}],"hiddenTestCases":[{"input":"5\n2","expectedOutput":"7\n3\n10\n2\n1\n25"},{"input":"8\n4","expectedOutput":"12\n4\n32\n2\n0\n4096"},{"input":"7\n3","expectedOutput":"10\n4\n21\n2\n1\n343"},{"input":"100\n10","expectedOutput":"110\n90\n1000\n10\n0\n100000000000000000000"}]}};
+window.__rocketSolutions = {"2":{"python":[{"name":"Sequential print statements","code":"a = int(input())\nb = int(input())\nprint(a + b)\nprint(a - b)\nprint(a * b)\nprint(a // b)\nprint(a % b)\nprint(a ** b)","explain":["Reads the first number from input and stores it as `a`.","Reads the second number from input and stores it as `b`.","Prints the sum of a and b.","Prints the first number minus the second.","Prints the product of a and b.","Prints integer division: a divided by b, remainder dropped.","Prints the remainder when a is divided by b.","Prints a raised to the power of b."]},{"name":"List of results + for loop","code":"a = int(input())\nb = int(input())\nresults = [a + b, a - b, a * b, a // b, a % b, a ** b]\nfor r in results:\n    print(r)","explain":["Reads the first number from input and converts it to an integer.","Reads the second number from input and converts it to an integer.","Builds a list holding all six operation results, in order.","Loops over each result in the list…","…and prints it on its own line."]},{"name":"f-string per line","code":"a = int(input())\nb = int(input())\nprint(f\"{a + b}\")\nprint(f\"{a - b}\")\nprint(f\"{a * b}\")\nprint(f\"{a // b}\")\nprint(f\"{a % b}\")\nprint(f\"{a ** b}\")","explain":["Reads the first number from input and converts it to an integer.","Reads the second number from input and converts it to an integer.","Prints the sum, using an f-string to evaluate a + b inline.","Prints the difference the same way.","Prints the product the same way.","Prints the integer division result the same way.","Prints the remainder the same way.","Prints a raised to the power of b the same way."]},{"name":"Joined with newlines","code":"a = int(input())\nb = int(input())\nvals = [a + b, a - b, a * b, a // b, a % b, a ** b]\nprint(\"\\n\".join(str(v) for v in vals))","explain":["Reads the first number from input and converts it to an integer.","Reads the second number from input and converts it to an integer.","Builds a list holding all six operation results, in order.","Converts each result to a string, joins them with newlines, and prints them all at once."]}],"javascript":[{"name":"Math operators","code":"const lines = require(\"fs\").readFileSync(0, \"utf8\").split(\"\\n\");\nconst a = parseInt(lines[0]);\nconst b = parseInt(lines[1]);\nconsole.log(a + b);\nconsole.log(a - b);\nconsole.log(a * b);\nconsole.log(Math.floor(a / b));\nconsole.log(a % b);\nconsole.log(a ** b);","explain":["Reads all input and splits it into lines.","Converts the first line to an integer.","Converts the second line to an integer.","Prints the sum.","Prints the difference.","Prints the product.","Divides, then rounds down to get integer division.","Prints the remainder.","Prints a raised to the power b."]}],"java":[{"name":"Scanner + Math.pow","code":"import java.util.Scanner;\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int a = sc.nextInt();\n        int b = sc.nextInt();\n        System.out.println(a + b);\n        System.out.println(a - b);\n        System.out.println(a * b);\n        System.out.println(a / b);\n        System.out.println(a % b);\n        System.out.printf(\"%.0f%n\", Math.pow(a, b));\n    }\n}","explain":["Imports a class from Java's standard library.","Every Java program lives inside a class.","main is where the program starts running.","Creates a Scanner that reads standard input.","Reads the first integer.","Reads the second integer.","Prints the sum.","Prints the difference.","Prints the product.","int / int is integer division in Java.","Prints the remainder.","Math.pow returns a double; %.0f prints it with no decimals.","",""]}],"cpp":[{"name":"cin + pow","code":"#include <iostream>\n#include <cmath>\n#include <iomanip>\nusing namespace std;\nint main() {\n    int a, b;\n    cin >> a >> b;\n    cout << a + b << endl;\n    cout << a - b << endl;\n    cout << a * b << endl;\n    cout << a / b << endl;\n    cout << a % b << endl;\n    cout << fixed << setprecision(0) << pow(a, b) << endl;\n    return 0;\n}","explain":["Includes a standard C++ header.","Includes a standard C++ header.","Includes a standard C++ header.","Lets us write cin/cout/string without the std:: prefix.","main is where the program starts running.","Declares two integers.","Reads both numbers from input.","Prints the sum.","Prints the difference.","Prints the product.","int / int is integer division in C++.","Prints the remainder.","pow returns a double; fixed + setprecision(0) prints it in full.","Tells the operating system the program finished successfully.",""]}],"c":[{"name":"scanf + pow","code":"#include <stdio.h>\n#include <math.h>\nint main() {\n    int a, b;\n    scanf(\"%d %d\", &a, &b);\n    printf(\"%d\\n\", a + b);\n    printf(\"%d\\n\", a - b);\n    printf(\"%d\\n\", a * b);\n    printf(\"%d\\n\", a / b);\n    printf(\"%d\\n\", a % b);\n    printf(\"%.0f\\n\", pow(a, b));\n    return 0;\n}","explain":["Includes a standard C header.","Includes a standard C header.","main is where the program starts running.","Declares two integers.","Reads both numbers from input.","Prints the sum.","Prints the difference.","Prints the product.","int / int is integer division in C.","Prints the remainder.","pow returns a double; %.0f prints it with no decimals.","Tells the operating system the program finished successfully.",""]}],"typescript":[{"name":"Math operators","code":"const lines: string[] = require(\"fs\").readFileSync(0, \"utf8\").split(\"\\n\");\nconst a: number = parseInt(lines[0]);\nconst b: number = parseInt(lines[1]);\nconsole.log(a + b);\nconsole.log(a - b);\nconsole.log(a * b);\nconsole.log(Math.floor(a / b));\nconsole.log(a % b);\nconsole.log(a ** b);","explain":["Reads all input and splits it into an array of line strings.","Converts the first line to a number.","Converts the second line to a number.","Prints the sum.","Prints the difference.","Prints the product.","Divides, then rounds down to get integer division.","Prints the remainder.","Prints a raised to the power b."]}],"go":[{"name":"fmt.Scan + math.Pow","code":"package main\nimport (\n    \"fmt\"\n    \"math\"\n)\nfunc main() {\n    var a, b int\n    fmt.Scan(&a, &b)\n    fmt.Println(a + b)\n    fmt.Println(a - b)\n    fmt.Println(a * b)\n    fmt.Println(a / b)\n    fmt.Println(a % b)\n    fmt.Printf(\"%.0f\\n\", math.Pow(float64(a), float64(b)))\n}","explain":["Every Go program starts in package main.","Imports the standard-library packages we need.","","","","main is where the program starts running.","Declares two integers.","Reads both numbers from input.","Prints the sum.","Prints the difference.","Prints the product.","Integer division in Go.","Prints the remainder.","math.Pow works on float64; %.0f prints it in full.",""]}],"rust":[{"name":"i128 + pow","code":"use std::io::{self, Read};\nfn main() {\n    let mut text = String::new();\n    io::stdin().read_to_string(&mut text).unwrap();\n    let mut it = text.split_whitespace();\n    let a: i128 = it.next().unwrap().parse().unwrap();\n    let b: i128 = it.next().unwrap().parse().unwrap();\n    println!(\"{}\", a + b);\n    println!(\"{}\", a - b);\n    println!(\"{}\", a * b);\n    println!(\"{}\", a / b);\n    println!(\"{}\", a % b);\n    println!(\"{}\", a.pow(b as u32));\n}","explain":["Brings the input/output tools into scope.","main is where the program starts running.","Creates an empty String to hold the input.","Reads everything from standard input.","Splits the input into whitespace-separated tokens.","Parses the first token as a 128-bit integer.","Parses the second token as a 128-bit integer.","Prints the sum.","Prints the difference.","Prints the product.","Integer division.","Prints the remainder.","pow raises a to the power b; i128 is big enough for 100^10.",""]}],"kotlin":[{"name":"readLine + Math.pow","code":"fun main() {\n    val a = readLine()!!.trim().toInt()\n    val b = readLine()!!.trim().toInt()\n    println(a + b)\n    println(a - b)\n    println(a * b)\n    println(a / b)\n    println(a % b)\n    println(\"%.0f\".format(Math.pow(a.toDouble(), b.toDouble())))\n}","explain":["main is where the program starts running.","Reads the first line and converts it to Int.","Reads the second line and converts it to Int.","Prints the sum.","Prints the difference.","Prints the product.","Int / Int is integer division in Kotlin.","Prints the remainder.","Math.pow needs doubles; format prints the result with no decimals.",""]}],"swift":[{"name":"readLine + pow","code":"import Foundation\nlet a = Int(readLine()!)!\nlet b = Int(readLine()!)!\nprint(a + b)\nprint(a - b)\nprint(a * b)\nprint(a / b)\nprint(a % b)\nprint(String(format: \"%.0f\", pow(Double(a), Double(b))))","explain":["Foundation provides pow and String(format:).","Reads the first line and converts it to Int.","Reads the second line and converts it to Int.","Prints the sum.","Prints the difference.","Prints the product.","Int / Int is integer division in Swift.","Prints the remainder.","pow works on Double; the format prints it with no decimals."]}],"php":[{"name":"intdiv + **","code":"<?php\n$a = (int) trim(fgets(STDIN));\n$b = (int) trim(fgets(STDIN));\necho $a + $b, \"\\n\";\necho $a - $b, \"\\n\";\necho $a * $b, \"\\n\";\necho intdiv($a, $b), \"\\n\";\necho $a % $b, \"\\n\";\nprintf(\"%.0f\\n\", $a ** $b);","explain":["Opens PHP mode.","Reads the first line and casts it to an integer.","Reads the second line and casts it to an integer.","Prints the sum.","Prints the difference.","Prints the product.","intdiv gives integer division.","Prints the remainder.","** raises to a power; %.0f prints large results in full."]}],"csharp":[{"name":"Console + Math.Pow","code":"using System;\nclass Program {\n    static void Main() {\n        int a = int.Parse(Console.ReadLine());\n        int b = int.Parse(Console.ReadLine());\n        Console.WriteLine(a + b);\n        Console.WriteLine(a - b);\n        Console.WriteLine(a * b);\n        Console.WriteLine(a / b);\n        Console.WriteLine(a % b);\n        Console.WriteLine(Math.Pow(a, b).ToString(\"F0\"));\n    }\n}","explain":["Imports the System namespace (Console, Math, ...).","Every C# program lives inside a class.","Main is where the program starts running.","Reads the first line and parses it as an int.","Reads the second line and parses it as an int.","Prints the sum.","Prints the difference.","Prints the product.","int / int is integer division in C#.","Prints the remainder.","Math.Pow returns a double; \"F0\" prints it with no decimals.","",""]}],"ruby":[{"name":"gets + **","code":"a = gets.to_i\nb = gets.to_i\nputs a + b\nputs a - b\nputs a * b\nputs a / b\nputs a % b\nputs a ** b","explain":["Reads the first line and converts it to an integer.","Reads the second line and converts it to an integer.","Prints the sum.","Prints the difference.","Prints the product.","Integer / integer is integer division in Ruby.","Prints the remainder.","Prints a raised to the power b (Ruby integers never overflow)."]}]}};
+</script>
+
+<!-- Monaco loader (deferred; the editor itself is fetched at idle time) -->
+<script>var require = { paths: { vs: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs' } };</script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs/loader.min.js"></script>
+<!-- Shared runtime, cached across all problem pages. Keep this order: coding-core -> problem-app -> practice-engine.
+     The ../compilers/*.js files and Chart.js are loaded lazily by problem-app.js (not listed here on purpose). -->
+<script defer src="coding-core.js"></script>
+<script defer src="problem-app.js"></script>
+<script defer src="practice-engine.js"></script>
+</body>
+</html>
