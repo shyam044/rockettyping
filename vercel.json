@@ -13,6 +13,12 @@
     },
 
     {
+      "source": "/ads.txt",
+      "destination": "https://adstxt.journeymv.com/sites/31b6b722-d3b7-49a8-acd3-2264f19c9dc5/ads.txt",
+      "permanent": true
+    },
+
+    {
       "source": "/blog/:slug.html",
       "destination": "/blog/:slug",
       "permanent": true
