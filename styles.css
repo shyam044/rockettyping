@@ -24,9 +24,15 @@ body {
 body.test-running #intro-text,
 body.test-running #page-title,
 body.test-running #sunday-champ-nav,
-body.test-running #header-auth-btn,
-body.test-running #rt-settings-btn,
-body.test-running #rt-settings-panel {
+body.test-running #header-auth-btn {
+    display: none !important;
+}
+
+/* Settings gear/panel are appended under <html> (not <body>) so a
+   transform the ad network puts on <body> can't break their fixed
+   positioning — so they need their own html-scoped selector here. */
+html.test-running #rt-settings-btn,
+html.test-running #rt-settings-panel {
     display: none !important;
 }
 
@@ -79,10 +85,13 @@ body::before {
     border-radius: 20px;
     padding: 20px;
     max-width: 1400px;
-    margin: 20px auto;
+    /* Top gap removed (was 20px) so the whole layout sits higher and stays
+       clear of the Mediavine ad slot anchored at the bottom of the viewport;
+       bottom margin kept for breathing room below the card. */
+    margin: 0 auto 20px;
     position: relative;
     z-index: 2;
-    min-height: calc(100vh - 40px);
+    min-height: calc(100vh - 20px);
     box-sizing: border-box;
     transition: min-height 0.45s cubic-bezier(0.34,1.56,0.64,1),
                 padding-bottom 0.35s ease;
@@ -100,7 +109,7 @@ body::before {
 
 #test-config {
     position: absolute;
-    top: 60px;
+    top: 35px;
     left: 50%;
     transform: translateX(-50%);
     display: flex;
@@ -136,7 +145,7 @@ body::before {
     display: none;
     width: 100%;
     max-width: 1300px;
-    margin: 190px auto 0;
+    margin: 175px auto 0;
     gap: 28px;
     justify-content: center;
     z-index: 30;
@@ -168,7 +177,7 @@ body::before {
 
 #timer {
     position: absolute;
-    top: 110px;
+    top: 95px;
     left: 50%;
     transform: translateX(-50%);
     font-size: 48px;
@@ -200,7 +209,7 @@ body::before {
    starts, not just the outer box edge. Live WPM's centered top-of-page spot
    (set below) is unaffected — only the counter's position was wrong. */
 body.test-running #timer {
-    top: 160px;
+    top: 145px;
     left: 20px;
     right: 20px;
     width: auto;
@@ -230,7 +239,7 @@ body.test-running #live-wpm-display {
     justify-content: center;
     left: 20px;
     right: 20px;
-    top: 20px;
+    top: 5px;
     max-width: 1300px;
     margin: 0 auto;
     box-sizing: border-box;
@@ -238,7 +247,7 @@ body.test-running #live-wpm-display {
 
 #difficulty-container {
     position: absolute;
-    top: 90px;
+    top: 75px;
     right: 15px;
     display: flex;
     align-items: center;
@@ -293,7 +302,7 @@ body.test-running #live-wpm-display {
     /* Compress the typing area */
     width: 100%;
     max-width: 1300px;      /* Adjust between 1000–1300px */
-    margin: 170px auto 0;   /* Center horizontally */
+    margin: 155px auto 0;   /* Center horizontally */
 
     user-select: none;
     position: relative;

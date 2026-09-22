@@ -1284,12 +1284,12 @@ footer a:hover{color:var(--rt-main) !important;}
 .km-musk-ring::before{background:conic-gradient(var(--rt-main) 0deg,var(--rt-main2) 90deg,var(--rt-main2) 150deg,rgba(var(--rt-main-rgb),0.15) 200deg,var(--rt-main) 360deg) !important;}
 
 /* ── Settings gear + panel (Color / Custom) ── */
-#rt-settings-btn{position:fixed;right:20px;bottom:20px;width:50px;height:50px;border-radius:50%;
+#rt-settings-btn{position:fixed;right:20px;bottom:40px;width:50px;height:50px;border-radius:50%;
     background:linear-gradient(135deg,var(--rt-main),var(--rt-main2));border:2px solid rgba(255,255,255,0.18);
     color:var(--rt-bg);font-size:21px;cursor:pointer;z-index:9990;box-shadow:0 4px 20px rgba(0,0,0,0.5);
     transition:transform .2s;}
 #rt-settings-btn:hover{transform:scale(1.08) rotate(25deg);}
-#rt-settings-panel{display:none;position:fixed;right:20px;bottom:82px;width:310px;max-width:calc(100vw - 40px);
+#rt-settings-panel{display:none;position:fixed;right:20px;bottom:102px;width:310px;max-width:calc(100vw - 40px);
     max-height:70vh;overflow-y:auto;background:#12122a;border:1px solid rgba(226,183,20,0.3);border-radius:16px;
     padding:16px;z-index:9991;box-shadow:0 20px 60px rgba(0,0,0,0.65);font-family:'Roboto Mono',monospace;}
 #rt-settings-panel.open{display:block;}
@@ -1575,10 +1575,10 @@ html.rt-custom-bg-pending body::before{display:none !important;}
     <div id="rt-bg-overlay" aria-hidden="true"></div>
 
     <div id="app" role="main" aria-label="Rocket Typing speed test application">
-  <h1 id="page-title" style="text-align:center; color:#e2b714; font-family:'Roboto Mono',monospace; font-size:15px; letter-spacing:1px; margin: 0 0 8px 0; opacity:0.7;">🚀 Free Typing Speed Test — Improve Your WPM</h1>
+  <h1 id="page-title" style="position:absolute; width:1px; height:1px; margin:-1px; padding:0; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0;">🚀 Free Typing Speed Test — Improve Your WPM</h1>
 
         <header id="main-header"
-            style="position:absolute; top:20px; left:20px; right:20px; display:flex; align-items:flex-start; justify-content:space-between; z-index:10;">
+            style="position:absolute; top:2px; left:20px; right:20px; display:flex; align-items:flex-start; justify-content:space-between; z-index:10;">
   <div onclick="resetTest()" 
      style="cursor:pointer; display:flex; flex-direction:column; align-items:flex-start;">
 
@@ -1613,7 +1613,7 @@ html.rt-custom-bg-pending body::before{display:none !important;}
         </div>
     </div>
             <!-- Right-side header group: Login/Signup + Leaderboard side by side -->
-<div id="header-right-group" style="display:flex;align-items:center;gap:8px;z-index:35;position:relative;top:-13px;">
+<div id="header-right-group" style="display:flex;align-items:center;gap:8px;z-index:35;position:relative;top:-3px;">
     <div id="header-auth-btn" style="display:flex;align-items:center;"></div>
     <button id="leaderboard-btn" style="position:static;top:auto;right:auto;z-index:auto;">
         🏆 <span style="margin-left:6px">LEADERBOARD</span>
@@ -1621,7 +1621,7 @@ html.rt-custom-bg-pending body::before{display:none !important;}
 </div>
         </header>
         <div id="intro-text"
-            style="position: absolute; top: 140px; left: 50%; transform: translateX(-50%); text-align: center; max-width: 600px; color: #cccccc; font-size: 16px; line-height: 1.4; opacity: 0.9; z-index: 1;">
+            style="position: absolute; top: 110px; left: 50%; transform: translateX(-50%); text-align: center; max-width: 600px; color: #cccccc; font-size: 16px; line-height: 1.4; opacity: 0.9; z-index: 1;">
 
         </div>
         <div id="test-config" style="gap:8px;">
@@ -4367,7 +4367,15 @@ function buildPanel(){
                 '<p class="rt-hint" id="rt-bg-empty-hint" style="display:none;">No background images added yet — check back soon.</p>' +
             '</div>' +
         '</div>';
-    document.body.appendChild(wrap);
+    // Appended to <html> rather than <body> on purpose: if a third-party
+    // script (e.g. the Mediavine ad tag) ever applies a transform/filter to
+    // <body> — a common technique for sticky/anchor ad compositing — any
+    // position:fixed element inside <body> stops being fixed to the
+    // viewport and starts scrolling with the page instead. Attaching this
+    // panel to <html> (body's own parent, not a descendant of it) keeps it
+    // outside that broken containing block, so it stays pinned regardless
+    // of what body does.
+    document.documentElement.appendChild(wrap);
 
     var grid = document.getElementById('rt-theme-grid');
     THEMES.forEach(function(t){

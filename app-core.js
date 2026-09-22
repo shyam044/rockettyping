@@ -1202,6 +1202,9 @@ if (!testActive && !testEnded && e.key.length === 1) {
 
         // === HIDE DISTRACTIONS WHILE TYPING ===
         document.body.classList.add('test-running');
+        // Settings gear/panel live under <html> (see buildPanel), so mirror
+        // the class there too or "html.test-running #rt-settings-btn" won't match.
+        document.documentElement.classList.add('test-running');
 
         // Hide keymap toggle button during typing
         var kmToggleRow = document.getElementById('km-toggle-row');
@@ -1408,6 +1411,7 @@ if (!testActive && !testEnded && e.key.length === 1) {
                 setTimeout(function() {
                     document.body.classList.add('typing-active');
                     document.body.classList.add('test-running');
+                    document.documentElement.classList.add('test-running');
                     var kmToggleRow = document.getElementById('km-toggle-row');
                     if (kmToggleRow) kmToggleRow.classList.add('km-toggle-hidden');
                     var kmScoresPanel = document.getElementById('km-scores-panel');
@@ -2375,6 +2379,7 @@ if (!testActive && !testEnded && e.key.length === 1) {
             document.getElementById("intro-text").style.display = "block";
             document.body.classList.remove('typing-active'); // PERF: restore bg animations
             document.body.classList.remove('test-running');  // PERF: reveal all header elements
+            document.documentElement.classList.remove('test-running');
             document.getElementById("test-config").style.display = "flex";
             document.getElementById("difficulty-container").style.display = "flex";
             document.getElementById("timer").style.display = "block";

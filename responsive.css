@@ -539,7 +539,7 @@ img { max-width: 100%; }
 
     body { font-size: 14px; }
 
-    #app { padding: 10px; border-radius: 10px; margin: 8px auto; }
+    #app { padding: 10px; border-radius: 10px; margin: 0 auto 8px; }
 
     #main-header img[alt="Rocket Typing"] { width: 76px !important; }
 
