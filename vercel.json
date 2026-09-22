@@ -106,6 +106,72 @@
       "source": "/coding.html",
       "destination": "/coding",
       "permanent": true
+    },
+
+    {
+      "source": "/coding/:slug.html",
+      "destination": "/coding/:slug",
+      "permanent": true
+    },
+
+    {
+      "source": "/coding/print-hello-world-in-python",
+      "destination": "/coding/print-hello-world-program",
+      "permanent": true
+    },
+
+    {
+      "source": "/coding/basic-arithmetic-operations-in-python",
+      "destination": "/coding/basic-arithmetic-operations",
+      "permanent": true
+    },
+
+    {
+      "source": "/coding/concatenate-two-strings-in-python",
+      "destination": "/coding/concatenate-two-strings",
+      "permanent": true
+    },
+
+    {
+      "source": "/coding/repeat-a-word-n-times-in-python",
+      "destination": "/coding/repeat-a-word-n-times",
+      "permanent": true
+    },
+
+    {
+      "source": "/coding/find-length-of-a-string-in-python",
+      "destination": "/coding/find-length-of-a-string",
+      "permanent": true
+    },
+
+    {
+      "source": "/coding/print-first-character-of-a-string-in-python",
+      "destination": "/coding/print-first-character-of-a-string",
+      "permanent": true
+    },
+
+    {
+      "source": "/coding/remove-last-character-of-a-string-in-python",
+      "destination": "/coding/remove-last-character-of-a-string",
+      "permanent": true
+    },
+
+    {
+      "source": "/coding/add-two-numbers-given-as-strings-in-python",
+      "destination": "/coding/add-two-numbers-given-as-strings",
+      "permanent": true
+    },
+
+    {
+      "source": "/coding/compare-two-numbers-in-python",
+      "destination": "/coding/compare-two-numbers",
+      "permanent": true
+    },
+
+    {
+      "source": "/coding/job-application-eligibility-check-in-python",
+      "destination": "/coding/job-application-eligibility-check",
+      "permanent": true
     }
   ],
 
@@ -183,6 +249,11 @@
     {
       "source": "/coding",
       "destination": "/coding/index.html"
+    },
+
+    {
+      "source": "/coding/:slug",
+      "destination": "/coding/:slug.html"
     }
   ],
 
@@ -277,6 +348,30 @@
         {
           "key": "Cache-Control",
           "value": "public, max-age=0, must-revalidate, stale-while-revalidate=86400"
+        }
+      ]
+    },
+
+    {
+      "source": "/coding/:slug",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, must-revalidate, stale-while-revalidate=86400"
+        }
+      ]
+    },
+
+    {
+      "source": "/coding/data/(.*)\\.json",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=60, s-maxage=300, stale-while-revalidate=86400"
+        },
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
         }
       ]
     },
