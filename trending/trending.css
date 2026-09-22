@@ -351,7 +351,7 @@
 
 .tr-startbar {
   position: sticky;
-  bottom: 16px;
+  bottom: 120px;
   display: flex;
   justify-content: center;
   margin-top: 30px;
@@ -503,8 +503,8 @@ body.tr-hide-chrome .tr-footer-links {
   border-radius: var(--tr-radius);
   padding: clamp(16px, 4vw, 26px);
   position: relative;
-  max-height: 70vh;
-  max-height: 70dvh; /* dynamic viewport height — follows the visible area as the on-screen keyboard opens/closes, instead of the stale pre-keyboard 70vh */
+  max-height: 60vh;
+  max-height: 60dvh; /* dynamic viewport height — follows the visible area as the on-screen keyboard opens/closes, instead of the stale pre-keyboard 70vh */
 
   user-select: none;
   cursor: text;
