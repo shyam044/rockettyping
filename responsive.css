@@ -727,7 +727,6 @@ img { max-width: 100%; }
     /* Toggle btn */
     #km-toggle-btn { font-size: 10px; padding: 5px 10px; }
 }
-
 /* ════════════════════════════════════════════════════════════════
    LANDSCAPE PHONES  (short + narrow: max-height 480px, max-width 900px)
    Keep keymap and score badges from dominating vertical space.
