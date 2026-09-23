@@ -1,3 +1,21 @@
+/* ── Guard against third-party scripts breaking position:fixed ──────────
+   Any inline `transform` (or `perspective`/`filter`) placed on <html> or
+   <body> — most commonly by an ad network's sticky/anchor-ad compositing
+   script, exactly like the Mediavine one this page already carries — turns
+   that element into the containing block for EVERY position:fixed
+   descendant on the page, including the settings gear and any HUD element
+   the user has custom-positioned. The symptom is a "fixed" element that
+   visibly drifts/scrolls along with the page instead of staying pinned.
+   A stylesheet `!important` beats a plain inline style (which is how these
+   scripts normally set it), so this reliably cancels it out. See also the
+   matching MutationObserver guard in index.html, which catches the rarer
+   case of a script using `!important` inline. ── */
+html, body {
+    transform: none !important;
+    -webkit-transform: none !important;
+    perspective: none !important;
+}
+
 body {
     background: #0d1117;
     color: #c9d1d9;
@@ -109,7 +127,7 @@ body::before {
 
 #test-config {
     position: absolute;
-    top: 35px;
+    top: 45px;
     left: 50%;
     transform: translateX(-50%);
     display: flex;
@@ -247,7 +265,7 @@ body.test-running #live-wpm-display {
 
 #difficulty-container {
     position: absolute;
-    top: 75px;
+    top: 95px;
     right: 15px;
     display: flex;
     align-items: center;
