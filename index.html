@@ -194,8 +194,8 @@
     <link rel="dns-prefetch" href="https://flagcdn.com">
     <!-- Preload critical assets: logo image + main stylesheet -->
     <link rel="preload" as="image" href="/images/rocket-typing-logo.webp" fetchpriority="high">
-    <link rel="preload" href="styles.css?v=1" as="style">
-    <link rel="preload" href="responsive.css?v=1" as="style">
+    <link rel="preload" href="styles.css" as="style">
+    <link rel="preload" href="responsive.css" as="style">
     <!-- ═══════════════════════════════════════════════════════════════════
          INLINE CRITICAL CSS  — rendered before any external stylesheet.
          RULE: every layout-affecting property that also exists in styles.css
@@ -313,11 +313,11 @@
          appear ~300-500 ms after first paint — invisible to users at normal reading
          speed, and completely invisible when already cached.
          ──────────────────────────────────────────────────────────────────────────── -->
-    <link rel="stylesheet" href="styles.css?v=1"     media="print" onload="this.onload=null;this.media='all'">
-    <link rel="stylesheet" href="responsive.css?v=1" media="print" onload="this.onload=null;this.media='all'">
+    <link rel="stylesheet" href="styles.css"     media="print" onload="this.onload=null;this.media='all'">
+    <link rel="stylesheet" href="responsive.css" media="print" onload="this.onload=null;this.media='all'">
     <noscript>
-        <link rel="stylesheet" href="styles.css?v=1">
-        <link rel="stylesheet" href="responsive.css?v=1">
+        <link rel="stylesheet" href="styles.css">
+        <link rel="stylesheet" href="responsive.css">
     </noscript>
     <!-- Font Awesome removed: the whole 6.6.0 icon library (100+ KB + an extra
          third-party connection) was being loaded on this page to render exactly
@@ -1008,6 +1008,19 @@ body.test-running #app #page-title {
     justify-content: center;
     min-height: 30px;
     margin-bottom: 8px;
+    transition: min-height 0.3s ease, margin-bottom 0.3s ease;
+}
+/* While typing, both toggle buttons inside are already faded out
+   (.km-toggle-hidden / .km-sound-hidden) — but visibility:hidden alone
+   still reserves their box space, leaving a dead gap between the typing
+   text and the keymap+hands below. This collapses that reserved space
+   too, so the keymap slides up flush under the typing area; removing
+   the class (test end / reset) smoothly restores the original spacing
+   and the toggle row along with it. Toggled by app-core.js at the same
+   4 moments as .km-toggle-hidden / .km-sound-hidden. */
+#km-header.km-header-compact {
+    min-height: 0;
+    margin-bottom: -35px;
 }
 #km-sound-btn {
     position: absolute;
@@ -1027,10 +1040,18 @@ body.test-running #app #page-title {
     font-weight: 700;
     letter-spacing: 0.5px;
     color: #9aa0a8;
-    transition: background 0.2s, border-color 0.2s;
+    transition: background 0.2s, border-color 0.2s, opacity 0.25s ease, visibility 0.25s ease;
 }
 #km-sound-btn:hover { background: rgba(255,255,255,0.09); border-color: rgba(255,255,255,0.22); }
 #km-sound-icon { font-size: 13px; line-height: 1; }
+
+/* Hidden during typing — same fade-out treatment as #km-toggle-row
+   (.km-toggle-hidden above), toggled by app-core.js at the same moments. */
+#km-sound-btn.km-sound-hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
 
 /* ── Collapsible: Keyboard/Hands + Mouse (hidden when keymap is OFF) ── */
 #km-collapsible {
@@ -1578,7 +1599,7 @@ html.rt-custom-bg-pending body::before{display:none !important;}
   <h1 id="page-title" style="position:absolute; width:1px; height:1px; margin:-1px; padding:0; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0;">🚀 Free Typing Speed Test — Improve Your WPM</h1>
 
         <header id="main-header"
-            style="position:absolute; top:2px; left:20px; right:20px; display:flex; align-items:flex-start; justify-content:space-between; z-index:10;">
+            style="position:absolute; top:5px; left:20px; right:20px; display:flex; align-items:flex-start; justify-content:space-between; z-index:10;">
   <div onclick="resetTest()" 
      style="cursor:pointer; display:flex; flex-direction:column; align-items:flex-start;">
 
@@ -1588,7 +1609,7 @@ html.rt-custom-bg-pending body::before{display:none !important;}
         <button onclick="window.location.href='/game'" class="play-game-btn">
             GAME
         </button>
-        <button onclick="window.location.href='/coding/'" class="learn-type-btn">
+        <button onclick="window.location.href='/coding'" class="learn-type-btn">
             CODE
         </button>
         <button onclick="window.location.href='/learn'" class="learn-type-btn">
@@ -1613,7 +1634,7 @@ html.rt-custom-bg-pending body::before{display:none !important;}
         </div>
     </div>
             <!-- Right-side header group: Login/Signup + Leaderboard side by side -->
-<div id="header-right-group" style="display:flex;align-items:center;gap:8px;z-index:35;position:relative;top:-3px;">
+<div id="header-right-group" style="display:flex;align-items:center;gap:8px;z-index:35;position:relative;top:5px;">
     <div id="header-auth-btn" style="display:flex;align-items:center;"></div>
     <button id="leaderboard-btn" style="position:static;top:auto;right:auto;z-index:auto;">
         🏆 <span style="margin-left:6px">LEADERBOARD</span>
@@ -1621,7 +1642,7 @@ html.rt-custom-bg-pending body::before{display:none !important;}
 </div>
         </header>
         <div id="intro-text"
-            style="position: absolute; top: 110px; left: 50%; transform: translateX(-50%); text-align: center; max-width: 600px; color: #cccccc; font-size: 16px; line-height: 1.4; opacity: 0.9; z-index: 1;">
+            style="position: absolute; top: 125px; left: 50%; transform: translateX(-50%); text-align: center; max-width: 600px; color: #cccccc; font-size: 16px; line-height: 1.4; opacity: 0.9; z-index: 1;">
 
         </div>
         <div id="test-config" style="gap:8px;">
@@ -2792,7 +2813,7 @@ window.deleteUser = deleteUser;
         })();
     </script>
     <script src="vocabulary.js?v=3"></script>
-    <script src="app-core.js?v=2"></script>
+    <script src="app-core.js?v=1"></script>
     <script>
 (function() {
     const isSunday = new Date().getDay() === 0;
@@ -3924,13 +3945,50 @@ var shapeHandles = {};
 var historyStack = [];
 var historyIndex = -1;
 
+var _targetNodeCache = null;
 function getTargets(){
-    return HUD_TARGETS.map(function(t){ return { key:t.key, label:t.label, node:document.querySelector(t.sel) }; })
-                       .filter(function(t){ return !!t.node; });
+    if (!_targetNodeCache) {
+        _targetNodeCache = HUD_TARGETS
+            .map(function(t){ return { key:t.key, label:t.label, node:document.querySelector(t.sel) }; })
+            .filter(function(t){ return !!t.node; });
+    }
+    return _targetNodeCache;
 }
 
 function loadHudPositions(){
     try { return JSON.parse(localStorage.getItem('rt_hud_pos') || '{}'); } catch(e){ return {}; }
+}
+
+/* ── Runtime guard against third-party scripts breaking position:fixed ──
+   The matching CSS rule (html, body { transform:none!important } in
+   styles.css) already blocks the common case — a script setting the
+   inline style directly. But some ad-network scripts set that inline
+   style WITH their own !important, which — same origin, same importance —
+   can still beat ours depending on load order. This is the belt-and-
+   suspenders fix: watch <html>/<body>'s style attribute and forcibly
+   strip the offending properties the instant one appears, via JS rather
+   than the cascade, so it can never win either way. Without this, any
+   position:fixed element on the page (the settings gear, or any HUD
+   element the user has custom-positioned) would silently start
+   scrolling along with the page instead of staying pinned. */
+function guardFixedPositioning(){
+    var offenders = ['transform', 'perspective', 'webkitTransform'];
+    function scrub(el){
+        if (!el) return;
+        offenders.forEach(function(prop){
+            var v = el.style[prop];
+            if (v && v !== 'none') {
+                el.style.setProperty(prop.replace(/[A-Z]/g, function(c){ return '-' + c.toLowerCase(); }), 'none', 'important');
+            }
+        });
+    }
+    function watch(el){
+        if (!el || !window.MutationObserver) return;
+        scrub(el);
+        new MutationObserver(function(){ scrub(el); }).observe(el, { attributes: true, attributeFilter: ['style'] });
+    }
+    watch(document.documentElement);
+    watch(document.body);
 }
 
 function setNodeTransform(node, scale){
@@ -3945,6 +4003,22 @@ function setNodeTransform(node, scale){
     node.dataset.rtScale = scale || 1;
 }
 
+/* Sets an inline style with !important. Needed because responsive.css has
+   several tablet/phone media-query rules on these exact elements — e.g.
+   "#live-wpm-display{position:static!important}", "#timer{top:0!important}"
+   — written for the DEFAULT (non-customized) mobile layout. A stylesheet's
+   !important always beats a plain inline style, no matter what JS sets, so
+   at <=900px those rules were silently overriding the HUD system's
+   position:fixed/left/top every time — which is exactly why a saved custom
+   position "came along" on scroll instead of staying put: the element
+   wasn't actually fixed at all at that width, it was back in normal flow.
+   An inline !important is the one thing that legitimately outranks a
+   stylesheet !important regardless of selector or source order, so every
+   property the HUD system sets on a customized element goes through here. */
+function setImportant(node, prop, value){
+    node.style.setProperty(prop, value, 'important');
+}
+
 /* Converts an element to free-floating position:fixed. The FIRST time this
    runs on a given element, its exact original inline `style` attribute is
    captured so resetHudPositions() can restore it byte-for-byte later —
@@ -3957,10 +4031,38 @@ function makeFixed(node){
     if (node.dataset.rtOrigStyle === undefined) {
         node.dataset.rtOrigStyle = node.getAttribute('style') || '';
     }
-    node.style.position = 'fixed';
-    node.style.margin = '0';
-    node.style.right = 'auto'; node.style.bottom = 'auto';
-    node.style.zIndex = 500;
+    // Escape a transform the ad network's script may apply to <body> (a
+    // common technique for sticky/anchor ad compositing). A transform on
+    // ANY ancestor turns position:fixed into "fixed relative to that
+    // ancestor" instead of the viewport. Moving the node to be a direct
+    // child of <html> — body's own parent, not a descendant of it — keeps
+    // it outside that broken containing block, the same fix used for the
+    // settings gear. A tiny invisible marker is left in its original spot
+    // so the node can be put back exactly where it came from on reset/undo.
+    if (node.parentNode && node.parentNode !== document.documentElement) {
+        if (!node._rtPlaceholder) {
+            var ph = document.createComment('rt-hud-slot:' + (node.id || ''));
+            node.parentNode.insertBefore(ph, node);
+            node._rtPlaceholder = ph;
+        }
+        document.documentElement.appendChild(node);
+    }
+    setImportant(node, 'position', 'fixed');
+    setImportant(node, 'margin', '0');
+    setImportant(node, 'right', 'auto');
+    setImportant(node, 'bottom', 'auto');
+    setImportant(node, 'z-index', '500');
+}
+
+/* Undoes the reparenting makeFixed() does above — puts the node back as a
+   child of whatever it was originally next to, right where its placeholder
+   comment marks the spot, then removes that marker. */
+function restoreOriginalParent(node){
+    if (node._rtPlaceholder && node._rtPlaceholder.parentNode) {
+        node._rtPlaceholder.parentNode.insertBefore(node, node._rtPlaceholder);
+        node._rtPlaceholder.parentNode.removeChild(node._rtPlaceholder);
+    }
+    delete node._rtPlaceholder;
 }
 
 function applySavedHudPositions(){
@@ -3969,8 +4071,17 @@ function applySavedHudPositions(){
         var pos = saved[t.key];
         if (!pos) return;
         makeFixed(t.node);
-        t.node.style.left = pos.leftPct + '%';
-        t.node.style.top  = pos.topPct + '%';
+        // Prefer the pixel offset (see persistTarget below) — a raw px value
+        // on a position:fixed element is never recomputed against the
+        // viewport, so it can't drift. Percentages are kept only as a
+        // fallback for layouts saved before this fix.
+        if (typeof pos.leftPx === 'number' && typeof pos.topPx === 'number') {
+            setImportant(t.node, 'left', pos.leftPx + 'px');
+            setImportant(t.node, 'top',  pos.topPx + 'px');
+        } else {
+            setImportant(t.node, 'left', pos.leftPct + '%');
+            setImportant(t.node, 'top',  pos.topPct + '%');
+        }
         setNodeTransform(t.node, pos.scale || 1);
     });
 }
@@ -3980,6 +4091,7 @@ function resetHudPositions(){
     getTargets().forEach(function(t){
         var n = t.node;
         if (n.dataset.rtOrigStyle !== undefined) {
+            restoreOriginalParent(n);
             if (n.dataset.rtOrigStyle === '') n.removeAttribute('style');
             else n.setAttribute('style', n.dataset.rtOrigStyle);
             delete n.dataset.rtOrigStyle;
@@ -4003,7 +4115,16 @@ function persistTarget(t){
     var rect = n.getBoundingClientRect();
     var scale = parseFloat(n.dataset.rtScale) || 1;
     var saved = loadHudPositions();
+    // leftPx/topPx are the exact viewport-relative offset and are what
+    // applySavedHudPositions() now applies — a percentage of
+    // window.innerWidth/innerHeight gets RE-RESOLVED against whatever the
+    // viewport size happens to be at paint time, and on mobile that size
+    // briefly shrinks/grows as the address bar hides while scrolling, which
+    // is exactly what made a "fixed" element visibly creep while scrolling.
+    // leftPct/topPct are kept only so older saved layouts still load.
     saved[t.key] = {
+        leftPx:  rect.left,
+        topPx:   rect.top,
         leftPct: (rect.left / window.innerWidth) * 100,
         topPct:  (rect.top  / window.innerHeight) * 100,
         scale:   scale
@@ -4022,7 +4143,7 @@ function showToast(msg){
     if (!t) {
         t = document.createElement('div');
         t.id = 'rt-save-toast';
-        document.body.appendChild(t);
+        document.documentElement.appendChild(t);
     }
     t.textContent = msg;
     t.classList.add('show');
@@ -4034,8 +4155,7 @@ function createMoveHandle(t){
     var h = document.createElement('div');
     h.className = 'rt-hud-handle';
     h.textContent = '⠿';
-    h.title = 'Drag to move: ' + t.label;
-    document.body.appendChild(h);
+    document.documentElement.appendChild(h);
     h.addEventListener('pointerdown', function(e){ e.preventDefault(); e.stopPropagation(); startMove(t, e); });
     return h;
 }
@@ -4043,8 +4163,7 @@ function createResizeHandle(t){
     var h = document.createElement('div');
     h.className = 'rt-hud-resize';
     h.textContent = '⤡';
-    h.title = 'Drag to resize: ' + t.label;
-    document.body.appendChild(h);
+    document.documentElement.appendChild(h);
     h.addEventListener('pointerdown', function(e){ e.preventDefault(); e.stopPropagation(); startResize(t, e); });
     return h;
 }
@@ -4082,7 +4201,7 @@ function ensureShapePopup(){
                    LIVE_WPM_SHAPE_LABELS[s] +
                '</button>';
     }).join('');
-    document.body.appendChild(p);
+    document.documentElement.appendChild(p);
     p.querySelectorAll('.rt-wpm-shape-opt').forEach(function(btn){
         btn.addEventListener('click', function(e){
             e.preventDefault(); e.stopPropagation();
@@ -4120,8 +4239,7 @@ function createShapeHandle(t){
     var h = document.createElement('div');
     h.className = 'rt-hud-shape';
     h.textContent = '◈';
-    h.title = 'Change Live WPM shape';
-    document.body.appendChild(h);
+    document.documentElement.appendChild(h);
     h.addEventListener('pointerdown', function(e){ e.preventDefault(); e.stopPropagation(); });
     h.addEventListener('click', function(e){ e.preventDefault(); e.stopPropagation(); toggleShapePopup(h); });
     return h;
@@ -4130,8 +4248,8 @@ function createShapeHandle(t){
 function startMove(t, e){
     var rect = t.node.getBoundingClientRect();
     makeFixed(t.node);
-    t.node.style.left = rect.left + 'px';
-    t.node.style.top  = rect.top + 'px';
+    setImportant(t.node, 'left', rect.left + 'px');
+    setImportant(t.node, 'top',  rect.top + 'px');
     if (!t.node.dataset.rtScale) setNodeTransform(t.node, 1);
     dragInfo = { t: t, startX: e.clientX, startY: e.clientY, origLeft: rect.left, origTop: rect.top };
 }
@@ -4140,7 +4258,7 @@ function startResize(t, e){
     // the resize dot first, without needing to move the element first.
     var rect = t.node.getBoundingClientRect();
     makeFixed(t.node);
-    if (!t.node.style.left) { t.node.style.left = rect.left + 'px'; t.node.style.top = rect.top + 'px'; }
+    if (!t.node.style.left) { setImportant(t.node, 'left', rect.left + 'px'); setImportant(t.node, 'top', rect.top + 'px'); }
     var startScale = parseFloat(t.node.dataset.rtScale) || 1;
     resizeInfo = { t: t, startX: e.clientX, startY: e.clientY, startScale: startScale };
 }
@@ -4162,8 +4280,8 @@ document.addEventListener('pointermove', function(e){
         var dy = e.clientY - dragInfo.startY;
         var newLeft = Math.max(-n.offsetWidth*0.3, Math.min(dragInfo.origLeft + dx, window.innerWidth - n.offsetWidth*0.5));
         var newTop  = Math.max(0, Math.min(dragInfo.origTop + dy, window.innerHeight - 24));
-        n.style.left = newLeft + 'px';
-        n.style.top  = newTop + 'px';
+        setImportant(n, 'left', newLeft + 'px');
+        setImportant(n, 'top',  newTop + 'px');
         positionHandle(dragInfo.t);
     }
     if (resizeInfo) {
@@ -4217,10 +4335,11 @@ function applySnapshot(snap){
         var s = snap[t.key];
         if (s) {
             makeFixed(n);
-            n.style.left = s.left;
-            n.style.top  = s.top;
+            setImportant(n, 'left', s.left);
+            setImportant(n, 'top',  s.top);
             setNodeTransform(n, s.scale);
         } else if (n.dataset.rtOrigStyle !== undefined) {
+            restoreOriginalParent(n);
             if (n.dataset.rtOrigStyle === '') n.removeAttribute('style');
             else n.setAttribute('style', n.dataset.rtOrigStyle);
             delete n.dataset.rtOrigStyle;
@@ -4560,6 +4679,7 @@ function buildPanel(){
 }
 
 function init(){
+    guardFixedPositioning();
     applySavedHudPositions();
     applyLiveWpmShape(getSavedLiveWpmShape(), false);
     buildPanel();
