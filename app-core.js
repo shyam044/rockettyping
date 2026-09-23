@@ -1210,6 +1210,14 @@ if (!testActive && !testEnded && e.key.length === 1) {
         var kmToggleRow = document.getElementById('km-toggle-row');
         if (kmToggleRow) kmToggleRow.classList.add('km-toggle-hidden');
 
+        // Hide sound toggle button + collapse the header's reserved space
+        // during typing, same as the keymap toggle — the keymap+hands slide
+        // up right under the typing text with no leftover gap.
+        var kmSoundBtn = document.getElementById('km-sound-btn');
+        if (kmSoundBtn) kmSoundBtn.classList.add('km-sound-hidden');
+        var kmHeader = document.getElementById('km-header');
+        if (kmHeader) kmHeader.classList.add('km-header-compact');
+
         // Hide Musk & Elon score badges during typing
         var kmScoresPanel = document.getElementById('km-scores-panel');
         if (kmScoresPanel) kmScoresPanel.classList.add('km-scores-hidden');
@@ -1414,6 +1422,10 @@ if (!testActive && !testEnded && e.key.length === 1) {
                     document.documentElement.classList.add('test-running');
                     var kmToggleRow = document.getElementById('km-toggle-row');
                     if (kmToggleRow) kmToggleRow.classList.add('km-toggle-hidden');
+                    var kmSoundBtn = document.getElementById('km-sound-btn');
+                    if (kmSoundBtn) kmSoundBtn.classList.add('km-sound-hidden');
+                    var kmHeader = document.getElementById('km-header');
+                    if (kmHeader) kmHeader.classList.add('km-header-compact');
                     var kmScoresPanel = document.getElementById('km-scores-panel');
                     if (kmScoresPanel) kmScoresPanel.classList.add('km-scores-hidden');
                     document.getElementById("test-config").style.display = "none";
@@ -1897,6 +1909,10 @@ if (!testActive && !testEnded && e.key.length === 1) {
             // Show keymap toggle button once test is finished
             var kmToggleRowEnd = document.getElementById('km-toggle-row');
             if (kmToggleRowEnd) kmToggleRowEnd.classList.remove('km-toggle-hidden');
+            var kmSoundBtnEnd = document.getElementById('km-sound-btn');
+            if (kmSoundBtnEnd) kmSoundBtnEnd.classList.remove('km-sound-hidden');
+            var kmHeaderEnd = document.getElementById('km-header');
+            if (kmHeaderEnd) kmHeaderEnd.classList.remove('km-header-compact');
 
             // Count-up animations (super satisfying)
             setTimeout(() => {
@@ -2395,6 +2411,10 @@ if (!testActive && !testEnded && e.key.length === 1) {
             // Show keymap toggle button again after test
             var kmToggleRow = document.getElementById('km-toggle-row');
             if (kmToggleRow) kmToggleRow.classList.remove('km-toggle-hidden');
+            var kmSoundBtn = document.getElementById('km-sound-btn');
+            if (kmSoundBtn) kmSoundBtn.classList.remove('km-sound-hidden');
+            var kmHeader = document.getElementById('km-header');
+            if (kmHeader) kmHeader.classList.remove('km-header-compact');
 
             // Show Musk & Elon score badges again after test — with gain animation
             var kmScoresPanel = document.getElementById('km-scores-panel');
