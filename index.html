@@ -194,8 +194,8 @@
     <link rel="dns-prefetch" href="https://flagcdn.com">
     <!-- Preload critical assets: logo image + main stylesheet -->
     <link rel="preload" as="image" href="/images/rocket-typing-logo.webp" fetchpriority="high">
-    <link rel="preload" href="styles.css?v=20260923" as="style">
-    <link rel="preload" href="responsive.css?v=20260923" as="style">
+    <link rel="preload" href="styles.css" as="style">
+    <link rel="preload" href="responsive.css" as="style">
     <!-- ═══════════════════════════════════════════════════════════════════
          INLINE CRITICAL CSS  — rendered before any external stylesheet.
          RULE: every layout-affecting property that also exists in styles.css
@@ -313,11 +313,11 @@
          appear ~300-500 ms after first paint — invisible to users at normal reading
          speed, and completely invisible when already cached.
          ──────────────────────────────────────────────────────────────────────────── -->
-    <link rel="stylesheet" href="styles.css?v=20260923"     media="print" onload="this.onload=null;this.media='all'">
-    <link rel="stylesheet" href="responsive.css?v=20260923" media="print" onload="this.onload=null;this.media='all'">
+    <link rel="stylesheet" href="styles.css"     media="print" onload="this.onload=null;this.media='all'">
+    <link rel="stylesheet" href="responsive.css" media="print" onload="this.onload=null;this.media='all'">
     <noscript>
-        <link rel="stylesheet" href="styles.css?v=20260923">
-        <link rel="stylesheet" href="responsive.css?v=20260923">
+        <link rel="stylesheet" href="styles.css">
+        <link rel="stylesheet" href="responsive.css">
     </noscript>
     <!-- Font Awesome removed: the whole 6.6.0 icon library (100+ KB + an extra
          third-party connection) was being loaded on this page to render exactly
@@ -3778,7 +3778,15 @@ var BACKGROUNDS = [
         src: '/backgrounds/videos/martial-artists-sparring-fight-background.webm',
         poster: '/backgrounds/videos/martial-artists-sparring-fight-background-poster.webp',
         thumb: '/backgrounds/videos/martial-artists-sparring-fight-background-thumb.webp'
-    }
+    },
+        {
+        id:'rocket-launch-earth',
+        name:'Rocket Launch: Earth',
+        type:'video',
+        src: '/backgrounds/videos/rocket-launch-from-earth-background.webm',
+        poster: '/backgrounds/videos/rocket-launch-from-earth-background-poster.webp',
+        thumb: '/backgrounds/videos/rocket-launch-from-earth-background-thumb.webp'
+    },
     // Images use: { id:'…', name:'…', type:'image', src:'/backgrounds/images/your-seo-file-name.webp', thumb:'(same file, or a smaller version)' }
 ];
 
