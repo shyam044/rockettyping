@@ -398,7 +398,13 @@ body::before {
   background: var(--glass2); border: 1px solid var(--border); padding: 5px 12px; border-radius: 7px;
 }
 
-.editor-wrap { flex: 1; position: relative; }
+.editor-wrap {
+  flex: 0 0 450px;
+  height: 400px;
+  position: relative;
+}
+
+
 #monaco-editor { width: 100%; height: 100%; }
 
 /* Bottom panel */
@@ -444,6 +450,7 @@ body::before {
   background: var(--bg2); border: 1px solid var(--border);
   border-radius: var(--radius-lg); padding: 32px;
   max-width: 1040px; width: 100%; position: relative;
+  min-height: 850px;
   box-shadow: 0 0 60px rgba(255,215,0,0.15);
   animation: result-in 0.35s cubic-bezier(0.34,1.56,0.64,1);
 }
