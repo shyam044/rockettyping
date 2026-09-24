@@ -205,5 +205,14 @@
     "excerpt": "Astronomers have discovered the first clear stellar stream from a globular cluster outside the Milky Way, named Oyashio, in the ultra-diffuse galaxy UGC 9050-Dw1 about 115 million light-years away, giving scientists a new way to measure dark matter in distant galaxies.",
     "category": "Science / Space",
     "readMinutes": 4
+  },
+  {
+    "date": "2026-09-24",
+    "slug": "ai-discovers-mysterious-dna-enzyme-system-2026",
+    "url": "/trending/ai-discovers-mysterious-dna-enzyme-system-2026",
+    "title": "AI Finds a Mysterious DNA Enzyme System on Its Own",
+    "excerpt": "An AI system called Claude, made by Anthropic, helped scientists discover a previously unnoticed biological system called ART (array-associated reverse transcriptases). About 950 AI agents searched over 200,000 enzymes and found a CRISPR-like pattern, later confirmed in the lab.",
+    "category": "Technology",
+    "readMinutes": 4
   }
 ]
