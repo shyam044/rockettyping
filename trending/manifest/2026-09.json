@@ -214,5 +214,14 @@
     "excerpt": "An AI system called Claude, made by Anthropic, helped scientists discover a previously unnoticed biological system called ART (array-associated reverse transcriptases). About 950 AI agents searched over 200,000 enzymes and found a CRISPR-like pattern, later confirmed in the lab.",
     "category": "Technology",
     "readMinutes": 4
+  },
+    {
+    "date": "2026-09-25",
+    "slug": "alphafold-database-viral-protein-structures-expansion-2026",
+    "url": "/trending/alphafold-database-viral-protein-structures-expansion-2026",
+    "title": "AlphaFold Expands Its Database with Viral Protein Structures",
+    "excerpt": "The AlphaFold Database has added AI-predicted protein structures from more than 2,800 viruses, including mpox, measles, and hepatitis B, with over 8,000 protein pairs and about 30% appearing to be previously unknown interactions, aimed at pandemic preparedness.",
+    "category": "Science / Health",
+    "readMinutes": 3
   }
 ]
