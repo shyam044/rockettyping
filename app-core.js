@@ -18,17 +18,11 @@ let config = {
         config.lineMode = savedConfig.lineMode === 1 || savedConfig.lineMode === 2 || savedConfig.lineMode === 3
             ? savedConfig.lineMode : config.lineMode;
         document.querySelectorAll('.mode').forEach(b => b.classList.remove('active'));
-        // Kick off the lazy quotes.js load: right away if this returning user's
-        // saved mode is Quotes (so the real database is ready before the fallback
-        // pool would otherwise be used), otherwise during browser idle time so it
-        // costs nothing against initial load/interactivity but is warm by the
-        // time anyone clicks the Quotes tab.
+        // quotes.js (~330KB) is only needed by Quotes mode. Load it right away only if
+        // this returning user's saved mode is Quotes; everyone else downloads it the
+        // moment they click the Quotes tab (see the mode-button handler below).
         if (config.mode === 'quotes') {
             loadQuotesDB();
-        } else if ('requestIdleCallback' in window) {
-            requestIdleCallback(function () { loadQuotesDB(); }, { timeout: 4000 });
-        } else {
-            setTimeout(function () { loadQuotesDB(); }, 2000);
         }
         // ==================== NEW DIFFICULTY BUTTONS ====================
         function initDifficultyButtons() {
@@ -169,7 +163,13 @@ let config = {
                 saveConfig();
                 /* Ensure the quotes database is loading the instant the user shows
                    intent to use Quotes mode — a no-op if it's already loaded/loading. */
-                if (config.mode === 'quotes') loadQuotesDB();
+                if (config.mode === 'quotes') {
+                    var _quotesWereReady = typeof QUOTES_ALL !== 'undefined';
+                    loadQuotesDB(function () {
+                        // first click only: swap the tiny fallback pool for the real database
+                        if (!_quotesWereReady && config.mode === 'quotes') resetTest();
+                    });
+                }
                 /* Hide attribution bar immediately when leaving quotes mode */
                 if (config.mode !== 'quotes') setQuoteAuthor('');
                 toggleDifficultyVsQuoteLengthUI();
