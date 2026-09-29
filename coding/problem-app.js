@@ -89,14 +89,30 @@ const TypingTracker = (() => {
   }
 
   function stats() {
+    // WPM uses real wall-clock elapsed time from the first keystroke —
+    // same formula the main typing-test page uses (charCount/5 divided by
+    // minutes elapsed). It intentionally does NOT exclude "idle" gaps
+    // anymore: that exclusion only ever got applied retroactively, on the
+    // NEXT keystroke after a pause (see the old idleMs logic below), so a
+    // long pause was still counted as active time while it was happening
+    // (silently dragging the number down), then the instant you typed
+    // again the whole pause got subtracted in one lump — visibly spiking
+    // WPM upward right when you resumed. Using plain elapsed time means a
+    // 10-minute pause now correctly and immediately lowers WPM, with no
+    // jump either way. Time matters, continuously, exactly as expected.
     const elapsedMs = data.startTime ? (Date.now() - data.startTime) : 0;
-    const activeMs  = Math.max(0, elapsedMs - data.idleMs);
-    const activeMins = activeMs / 1000 / 60;
-    const wpm = activeMins > 0 ? Math.round(data.charCount / 5 / activeMins) : 0;
+    const elapsedMins = elapsedMs / 1000 / 60;
+    const wpm = elapsedMins > 0 ? Math.round(data.charCount / 5 / elapsedMins) : 0;
     const total = data.keystrokes;
     const accuracy = total > 0 ? Math.round(((total - data.backspaces) / total) * 100) : 100;
 
-    // Consistency: 100 - coefficient of variation of intervals
+    // Consistency: 100 - coefficient of variation of the keystroke
+    // intervals — deliberately still excludes long pauses (gap > 3s,
+    // tracked in data.intervals vs data.idleMs by recordKey below). This
+    // is a different question from WPM above: it's asking "how even was
+    // your rhythm WHILE actively typing", so one long thinking pause
+    // shouldn't wreck an otherwise-smooth typing rhythm score. It has no
+    // effect on the WPM/time numbers, which always use the real clock.
     let consistency = 100;
     if (data.intervals.length > 2) {
       const mean = data.intervals.reduce((a,b)=>a+b,0) / data.intervals.length;
@@ -110,7 +126,7 @@ const TypingTracker = (() => {
       keystrokes: total,
       backspaces: data.backspaces,
       charCount: data.charCount,
-      elapsedMs, activeMs, idleMs: data.idleMs,
+      elapsedMs, idleMs: data.idleMs,
       pasteDetected: data.pasteDetected,
       wpmSamples: data.wpmSamples,
       ksSamples: data.ksSamples,
@@ -124,7 +140,7 @@ const TypingTracker = (() => {
 
 /* ══════════════════════════════
    LAZY LOADING  (page speed)
-   The 15 compiler files, Chart.js and Monaco are NOT downloaded/executed while the
+   The 15 compiler files and Monaco are NOT downloaded/executed while the
    page is loading. They start at browser-idle time (or the moment they are needed),
    so the problem text and start screen appear instantly, and they are cached for
    every later problem page.
@@ -132,8 +148,6 @@ const TypingTracker = (() => {
 const COMPILER_FILES = ['core-engine', 'adapter-utils', 'python-compiler', 'javascript-compiler', 'typescript-compiler',
   'java-compiler', 'cpp-compiler', 'c-compiler', 'go-compiler', 'rust-compiler', 'kotlin-compiler',
   'swift-compiler', 'csharp-compiler', 'php-compiler', 'ruby-compiler', 'registry'];   // keep this order
-const CHARTJS_URL = 'https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js';
-
 function whenIdle(fn, timeout) {
   if ('requestIdleCallback' in window) window.requestIdleCallback(fn, { timeout });
   else setTimeout(fn, Math.min(timeout, 1500));
@@ -150,12 +164,6 @@ let compilersPromise = null;
 function ensureCompilers() {
   if (!compilersPromise) compilersPromise = loadScripts(COMPILER_FILES.map(f => `${CODING_BASE}../compilers/${f}.js`));
   return compilersPromise;
-}
-let chartPromise = null;
-function ensureChart() {
-  if (window.Chart) return Promise.resolve();
-  if (!chartPromise) chartPromise = loadScripts([CHARTJS_URL]);
-  return chartPromise;
 }
 
 /* ══════════════════════════════
@@ -388,64 +396,174 @@ function startTimer() {
 function stopTimer() { clearInterval(timerInterval); }
 
 /* ══════════════════════════════
-   CHARTS
+   CHARTS — hand-drawn on <canvas>, no external library.
+   Same plain-canvas approach as the main typing-test result screen's
+   Rocket Chart (grid + axis labels drawn manually, then a line or bar
+   series on top) instead of pulling in Chart.js for two small graphs.
 ══════════════════════════════ */
-let wpmChart = null;
-let ksChart  = null;
+let _lastTypingStatsForChart = null;
 
-function renderCharts(typingStats) {
-  if (typeof Chart === 'undefined') return;   // Chart.js failed to load — the numbers above still show
-  const wpmCtx = document.getElementById('wpm-chart').getContext('2d');
-  const ksCtx  = document.getElementById('ks-chart').getContext('2d');
+function _chartLabelsAndData(typingStats) {
+  const wpmSamples = typingStats.wpmSamples || [];
+  const ksSamples  = typingStats.ksSamples  || [];
+  const labels = wpmSamples.map((_, i) => `${(i + 1) * 3}s`);
+  const wpmData = wpmSamples.map(s => s.wpm);
+  const ksData  = ksSamples.map(s => s.ks);
 
-  if (wpmChart) wpmChart.destroy();
-  if (ksChart)  ksChart.destroy();
-
-  const labels = typingStats.wpmSamples.map((_, i) => `${(i+1)*3}s`);
-  const wpmData = typingStats.wpmSamples.map(s => s.wpm);
-  const ksData  = typingStats.ksSamples.map(s => s.ks);
-
-  // Pad if not enough samples
   const fallbackLabels = ['Start', 'Mid', 'End'];
   const usedLabels = labels.length > 0 ? labels : fallbackLabels;
   const usedWpm    = wpmData.length > 0 ? wpmData : [typingStats.wpm, typingStats.wpm, typingStats.wpm];
-  const usedKs     = ksData.length  > 0 ? ksData  : [0, Math.floor(typingStats.keystrokes/2), typingStats.keystrokes];
+  const usedKs     = ksData.length  > 0 ? ksData  : [0, Math.floor(typingStats.keystrokes / 2), typingStats.keystrokes];
+  return { usedLabels, usedWpm, usedKs };
+}
 
-  wpmChart = new Chart(wpmCtx, {
-    type: 'line',
-    data: {
-      labels: usedLabels,
-      datasets: [{ label:'WPM', data: usedWpm,
-        borderColor: '#00e6cc', backgroundColor: 'rgba(0,230,204,0.1)',
-        tension: 0.4, fill: true, pointRadius: 3, pointBackgroundColor: '#00e6cc' }]
-    },
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      plugins: { legend: { display: false } },
-      scales: {
-        x: { ticks: { color:'#8b949e', font:{size:10} }, grid: { color:'rgba(255,255,255,0.04)' } },
-        y: { ticks: { color:'#8b949e', font:{size:10} }, grid: { color:'rgba(255,255,255,0.06)' }, beginAtZero: true }
-      }
-    }
+// Grid background + gridlines + axis labels, shared by both charts below.
+function _drawChartGrid(ctx, W, H, PAD, maxVal, labels) {
+  const cW = W - PAD.left - PAD.right;
+  const cH = H - PAD.top - PAD.bottom;
+
+  ctx.save();
+  ctx.fillStyle = 'rgba(0,0,0,0.22)';
+  ctx.beginPath();
+  if (ctx.roundRect) ctx.roundRect(PAD.left, PAD.top, cW, cH, 6);
+  else ctx.rect(PAD.left, PAD.top, cW, cH);
+  ctx.fill();
+  ctx.restore();
+
+  ctx.font = "9px 'Roboto Mono', monospace";
+  ctx.textAlign = 'right';
+  for (let g = 0; g <= 4; g++) {
+    const v = Math.round(maxVal * (1 - g / 4));
+    const y = PAD.top + (g / 4) * cH;
+    ctx.strokeStyle = 'rgba(255,255,255,0.06)';
+    ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(PAD.left, y); ctx.lineTo(PAD.left + cW, y); ctx.stroke();
+    ctx.fillStyle = 'rgba(255,255,255,0.42)';
+    ctx.fillText(v, PAD.left - 4, y + 3);
+  }
+
+  const n = labels.length;
+  const step = n <= 8 ? 1 : Math.ceil(n / 8);
+  ctx.textAlign = 'center';
+  ctx.fillStyle = 'rgba(255,255,255,0.36)';
+  for (let i = 0; i < n; i += step) {
+    const x = PAD.left + (n === 1 ? cW / 2 : (i / (n - 1)) * cW);
+    ctx.fillText(labels[i], x, H - 6);
+  }
+
+  ctx.strokeStyle = 'rgba(255,255,255,0.14)';
+  ctx.lineWidth = 1.5;
+  ctx.beginPath();
+  ctx.moveTo(PAD.left, PAD.top);
+  ctx.lineTo(PAD.left, PAD.top + cH);
+  ctx.lineTo(PAD.left + cW, PAD.top + cH);
+  ctx.stroke();
+
+  return { cW, cH };
+}
+
+// "Typing Speed Over Time (WPM)" — filled line chart.
+function drawWpmLineChart(canvas, labels, values, color) {
+  if (!canvas) return;
+  const W = canvas.parentElement.clientWidth || canvas.offsetWidth || 400;
+  const H = 140;
+  canvas.width = W; canvas.height = H;
+  const ctx = canvas.getContext('2d');
+  const PAD = { top: 12, right: 12, bottom: 20, left: 30 };
+  const maxVal = Math.max(...values, 10) * 1.2;
+  const { cW, cH } = _drawChartGrid(ctx, W, H, PAD, maxVal, labels);
+
+  const n = values.length;
+  const getX = i => PAD.left + (n === 1 ? cW / 2 : (i / (n - 1)) * cW);
+  const getY = v => PAD.top + cH - (Math.max(0, Math.min(v, maxVal)) / maxVal) * cH;
+
+  // Filled area under the line
+  ctx.save();
+  ctx.beginPath();
+  ctx.moveTo(getX(0), PAD.top + cH);
+  values.forEach((v, i) => ctx.lineTo(getX(i), getY(v)));
+  ctx.lineTo(getX(n - 1), PAD.top + cH);
+  ctx.closePath();
+  const grad = ctx.createLinearGradient(0, PAD.top, 0, PAD.top + cH);
+  grad.addColorStop(0, color.fill1);
+  grad.addColorStop(1, color.fill2);
+  ctx.fillStyle = grad;
+  ctx.fill();
+  ctx.restore();
+
+  // Line
+  ctx.save();
+  ctx.strokeStyle = color.line;
+  ctx.lineWidth = 2.2;
+  ctx.lineJoin = 'round'; ctx.lineCap = 'round';
+  ctx.beginPath();
+  values.forEach((v, i) => i === 0 ? ctx.moveTo(getX(i), getY(v)) : ctx.lineTo(getX(i), getY(v)));
+  ctx.stroke();
+  ctx.restore();
+
+  // Point markers
+  ctx.save();
+  ctx.fillStyle = color.line;
+  values.forEach((v, i) => {
+    ctx.beginPath();
+    ctx.arc(getX(i), getY(v), 3, 0, Math.PI * 2);
+    ctx.fill();
   });
+  ctx.restore();
+}
 
-  ksChart = new Chart(ksCtx, {
-    type: 'bar',
-    data: {
-      labels: usedLabels,
-      datasets: [{ label:'Keystrokes', data: usedKs,
-        backgroundColor: 'rgba(255,153,0,0.4)', borderColor: '#ff9900', borderWidth: 1, borderRadius: 3 }]
-    },
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      plugins: { legend: { display: false } },
-      scales: {
-        x: { ticks: { color:'#8b949e', font:{size:10} }, grid: { color:'rgba(255,255,255,0.04)' } },
-        y: { ticks: { color:'#8b949e', font:{size:10} }, grid: { color:'rgba(255,255,255,0.06)' }, beginAtZero: true }
-      }
-    }
+// "Keystroke Timeline" — bar chart of cumulative keystrokes per sample.
+function drawKeystrokeBarChart(canvas, labels, values, color) {
+  if (!canvas) return;
+  const W = canvas.parentElement.clientWidth || canvas.offsetWidth || 400;
+  const H = 140;
+  canvas.width = W; canvas.height = H;
+  const ctx = canvas.getContext('2d');
+  const PAD = { top: 12, right: 12, bottom: 20, left: 30 };
+  const maxVal = Math.max(...values, 10) * 1.15;
+  const { cW, cH } = _drawChartGrid(ctx, W, H, PAD, maxVal, labels);
+
+  const n = values.length;
+  const slot = cW / n;
+  const barW = Math.max(4, slot * 0.55);
+
+  ctx.save();
+  values.forEach((v, i) => {
+    const x = PAD.left + i * slot + (slot - barW) / 2;
+    const barH = (Math.max(0, v) / maxVal) * cH;
+    const y = PAD.top + cH - barH;
+    ctx.fillStyle = color.fill;
+    ctx.strokeStyle = color.line;
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    if (ctx.roundRect) ctx.roundRect(x, y, barW, barH, 3);
+    else ctx.rect(x, y, barW, barH);
+    ctx.fill();
+    ctx.stroke();
+  });
+  ctx.restore();
+}
+
+function renderCharts(typingStats) {
+  _lastTypingStatsForChart = typingStats;
+  const wpmCanvas = document.getElementById('wpm-chart');
+  const ksCanvas  = document.getElementById('ks-chart');
+  const { usedLabels, usedWpm, usedKs } = _chartLabelsAndData(typingStats);
+
+  drawWpmLineChart(wpmCanvas, usedLabels, usedWpm, {
+    line: '#00e6cc', fill1: 'rgba(0,230,204,0.28)', fill2: 'rgba(0,230,204,0.02)'
+  });
+  drawKeystrokeBarChart(ksCanvas, usedLabels, usedKs, {
+    fill: 'rgba(255,153,0,0.4)', line: '#ff9900'
   });
 }
+
+// Canvas pixel size is read from the container's width at draw time (there's
+// no Chart.js "responsive" mode doing this automatically anymore), so redraw
+// on resize using whatever stats were last rendered.
+window.addEventListener('resize', () => {
+  if (_lastTypingStatsForChart) renderCharts(_lastTypingStatsForChart);
+});
 
 /* ══════════════════════════════
    UI HELPERS
@@ -797,7 +915,7 @@ function showResult(accepted, passed, total, runtime, lang, code, typing) {
     <div class="result-stat cyan-val"><div class="result-stat-val">${runtime}ms</div><div class="result-stat-lbl">Runtime</div></div>
     <div class="result-stat orange-val"><div class="result-stat-val">${lang}</div><div class="result-stat-lbl">Language</div></div>
     <div class="result-stat green-val"><div class="result-stat-val">${codeLen}</div><div class="result-stat-lbl">Characters</div></div>
-    <div class="result-stat purple-val"><div class="result-stat-val">${Math.round(typing.activeMs/1000)}s</div><div class="result-stat-lbl">Time Spent</div></div>
+    <div class="result-stat purple-val"><div class="result-stat-val">${Math.round(typing.elapsedMs/1000)}s</div><div class="result-stat-lbl">Time Spent</div></div>
     <div class="result-stat"><div class="result-stat-val">${typing.pasteDetected ? '⚠️ Yes' : '✅ No'}</div><div class="result-stat-lbl">Paste Used</div></div>
   `;
 
@@ -808,14 +926,14 @@ function showResult(accepted, passed, total, runtime, lang, code, typing) {
   document.getElementById('ra-wpm').textContent  = `${typing.wpm}`;
   document.getElementById('ra-acc').textContent  = `${typing.accuracy}%`;
   document.getElementById('ra-con').textContent  = `${typing.consistency}%`;
-  document.getElementById('ra-time').textContent = `${Math.round(typing.activeMs/1000)}s`;
+  document.getElementById('ra-time').textContent = `${Math.round(typing.elapsedMs/1000)}s`;
   document.getElementById('ra-ks').textContent   = typing.keystrokes;
   document.getElementById('ra-bs').textContent   = typing.backspaces;
 
   document.getElementById('result-overlay').classList.add('open');
 
-  // Charts (defer for animation)
-  setTimeout(() => ensureChart().then(() => renderCharts(typing)), 100);
+  // Charts (defer for animation) — hand-drawn on canvas, no library to load.
+  setTimeout(() => renderCharts(typing), 100);
 }
 
 function closeResult() {
