@@ -519,7 +519,14 @@ body::before {
 
 .chart-wrap { background: var(--glass2); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; margin-bottom: 16px; }
 .chart-wrap h5 { font-size: 11px; color: var(--text2); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 12px; }
-.chart-wrap canvas { max-height: 140px; }
+/* Chart.js (responsive:true, maintainAspectRatio:false) sizes the canvas off its
+   PARENT's height. .chart-wrap itself has no fixed height (it just wraps to fit
+   its content), so without this box the parent has nothing to measure and the
+   canvas renders at 0 height — the Chart instance is created with no error, but
+   nothing is visible. This box gives Chart.js a real, positioned, fixed-height
+   parent to size against. */
+.chart-canvas-box { position: relative; height: 140px; width: 100%; }
+.chart-canvas-box canvas { max-height: 140px; }
 
 .result-actions { display: flex; gap: 10px; justify-content: center; margin-top: 20px; }
 .result-actions button {
