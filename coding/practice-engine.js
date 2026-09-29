@@ -22,10 +22,10 @@
  * found through ProblemIndex.getNeighbors() (coding-core.js).
  *
  * "With Code" mode replaces the Monaco editor's visible area with a
- * MonkeyType-style typing widget: the reference solution is rendered
+ * typing widget: the reference solution is rendered
  * character-by-character (dim/untyped, green/correct, red/incorrect,
  * highlighted cursor on the current character). The user types with a
- * real cursor into a focused, invisible input — exactly like MonkeyType.
+ * real cursor into a focused, invisible input.
  * Every keystroke is mirrored live into the real Monaco editor underneath,
  * so Run / Submit / judging keep working completely unchanged.
  *
@@ -113,7 +113,7 @@
   let _origStartTimer   = null; // the platform's real startTimer(), called only once a mode is picked
   let _origTrackerStart = null; // the platform's real TypingTracker.start(), same idea
 
-  // MonkeyType-style: the visible clock (and the typing-tracker's stats)
+  // the visible clock (and the typing-tracker's stats)
   // only start counting on the user's FIRST real keystroke of an attempt —
   // not the moment With Code / Without Code / Start is clicked. `timerStarted`
   // guards against starting it more than once per attempt; it's reset back
@@ -176,7 +176,7 @@
   }
 
   // Starts the visible clock the moment the user's first real keystroke of
-  // an attempt lands — MonkeyType-style — and never fires twice per attempt.
+  // an attempt lands — and never fires twice per attempt.
   function startClockOnce() {
     if (timerStarted) return;
     timerStarted = true;
@@ -184,19 +184,38 @@
     showLiveWpm();
   }
 
-  // ── Live WPM circular readout ────────────────────────────────────────────
+  // ── Live WPM ──────────────────────────────────────────────────────────
   // Polls the platform's own TypingTracker.stats() every 300ms — reusing its
   // WPM math means the live number always agrees with the final result
   // screen. Works for both modes: "With Code" records keys via tryType()/
   // acceptChar(), "Without Code" records them via Monaco's onKeyDown (both
   // already call TypingTracker.recordKey elsewhere), so stats() reflects
   // whichever mode is actually running without any extra plumbing here.
+  //
+  // `attemptActive` tracks whether an attempt is currently in progress (the
+  // polling interval is running) — separate from whether the number is
+  // currently VISIBLE, which also flips off/on as the mouse moves (see
+  // pauseLiveWpmVisual()/resumeLiveWpmVisual() + the document-level
+  // mousemove/keydown listeners below).
+  let attemptActive = false;
+
+  function setTopBarBlur(on) {
+    const bar1 = document.getElementById("mode-toggle-bar");
+    const bar2 = document.getElementById("problem-nav-bar");
+    const siteNav = document.querySelector(".nav");
+    if (bar1) bar1.classList.toggle("rt-topbar-blur", on);
+    if (bar2) bar2.classList.toggle("rt-topbar-blur", on);
+    if (siteNav) siteNav.classList.toggle("rt-topbar-blur", on);
+  }
+
   function showLiveWpm() {
+    attemptActive = true;
     const el = document.getElementById("live-wpm-display");
     const numEl = document.getElementById("live-wpm-number");
     if (!el) return;
     el.style.display = "block";
     el.classList.add("show");
+    setTopBarBlur(true);
     if (numEl) { numEl.textContent = "0"; numEl.className = "live-wpm-number"; }
 
     if (liveWpmInterval) clearInterval(liveWpmInterval);
@@ -205,8 +224,8 @@
       if (!tracker || typeof tracker.stats !== "function") return;
       const stats = tracker.stats();
       // Skip the first fraction-of-a-second reading — divide-by-tiny-elapsed
-      // math makes it spike wildly before settling (same guard MonkeyType uses).
-      if (stats.activeMs < 600) return;
+      // math makes it spike wildly before settling.
+      if (stats.elapsedMs < 600) return;
       const numEl2 = document.getElementById("live-wpm-number");
       if (!numEl2) return;
       numEl2.textContent = stats.wpm;
@@ -216,12 +235,33 @@
   }
 
   function hideLiveWpm() {
+    attemptActive = false;
     if (liveWpmInterval) { clearInterval(liveWpmInterval); liveWpmInterval = null; }
     const el = document.getElementById("live-wpm-display");
     const numEl = document.getElementById("live-wpm-number");
     if (el) { el.style.display = "none"; el.classList.remove("show"); }
+    setTopBarBlur(false);
     if (numEl) { numEl.textContent = "0"; numEl.className = "live-wpm-number"; }
   }
+
+  // Mouse moved during an active attempt — hide the number + un-blur the
+  // top bar (interval keeps running underneath, so the number is instantly
+  // correct again the moment it's shown).
+  function pauseLiveWpmVisual() {
+    const el = document.getElementById("live-wpm-display");
+    if (el) el.classList.remove("show");
+    setTopBarBlur(false);
+  }
+  // A real keystroke landed again after a mouse-triggered pause — bring
+  // the number + blur back.
+  function resumeLiveWpmVisual() {
+    if (!attemptActive) return;
+    const el = document.getElementById("live-wpm-display");
+    if (el) el.classList.add("show");
+    setTopBarBlur(true);
+  }
+  document.addEventListener("mousemove", () => { if (attemptActive) pauseLiveWpmVisual(); }, { passive: true });
+  document.addEventListener("keydown", () => { if (attemptActive) resumeLiveWpmVisual(); }, true);
 
   // "Without Code" mode types straight into Monaco, so the clock needs its
   // own keydown hook there (the "With Code" widget starts the clock from
@@ -489,7 +529,7 @@
       }
       #tp-change-method:hover { color: var(--gold, #ffd700); border-color: rgba(255,215,0,.35); }
 
-      /* ── MonkeyType-style typing widget ── */
+      /* typing widget ── */
       #type-practice-wrap {
         position: absolute; inset: 0; display: none; flex-direction: column;
         background: #0a0a23; z-index: 5;
@@ -511,7 +551,7 @@
       }
       .tp-current { color: var(--text, #c9d1d9); }
 
-      /* Real MonkeyType-style caret — a moving bar, not a background highlight */
+      /* Real caret — a moving bar, not a background highlight */
       #caret {
         position: absolute;
         background: var(--cyan, #00e6cc);
@@ -666,55 +706,48 @@
         background: var(--gold, #ffd700);
       }
 
-      /* ── Live WPM circular readout — shown once typing starts, MonkeyType-style ── */
+      /* ── Live WPM — plain number, centered over the top bar ──────────────
+         Shown once typing starts, hidden again the
+         instant the mouse moves, and re-shown on the next keystroke. See
+         showLiveWpm()/pauseLiveWpmVisual()/resumeLiveWpmVisual() in JS. */
       #live-wpm-display {
         display: none;
-        position: absolute;
-        top: 14px; right: 14px;
-        z-index: 8;
+        position: fixed;
+        /* Centered, horizontally, over the combined problem-nav-bar +
+           mode-toggle-bar strip that sits right under the site nav
+           (--nav-h). Vertical center sits right at the boundary between
+           the site nav and that strip, so the (now much bigger) number
+           extends up into the site nav as well as down over the toolbar
+           strip — instead of being cramped into just the toolbar's own
+           ~40px row height. */
+        top: var(--nav-h, 58px);
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 200;
         pointer-events: none;
+        opacity: 0;
+        transition: opacity 0.22s ease;
       }
-      #live-wpm-display.show {
-        animation: tp-livewpm-popin 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-      }
-      .live-wpm-circle {
-        width: 64px; height: 64px; border-radius: 50%;
-        position: relative; display: flex; align-items: center; justify-content: center;
-        background: radial-gradient(circle at 38% 32%,
-          rgba(255,215,0,0.22) 0%, rgba(255,215,0,0.06) 55%, rgba(10,10,35,0.85) 100%);
-        box-shadow:
-          0 0 0 2px rgba(255,215,0,0.5),
-          0 0 14px rgba(255,215,0,0.3),
-          inset 0 0 14px rgba(255,215,0,0.08);
-        animation: tp-livewpm-breathe 2.4s ease-in-out infinite;
-      }
-      .live-wpm-ring {
-        position: absolute; inset: -3px; border-radius: 50%;
-        border: 2px solid transparent;
-        border-top-color: var(--gold, #ffd700);
-        border-right-color: rgba(255,215,0,0.4);
-        animation: tp-livewpm-spin 2s linear infinite;
-      }
-      .live-wpm-inner {
-        display: flex; flex-direction: column; align-items: center; justify-content: center;
-        line-height: 1; position: relative; z-index: 1;
-      }
+      #live-wpm-display.show { opacity: 1; }
       .live-wpm-number {
-        font-family: var(--font-mono, monospace); font-size: 18px; font-weight: 900;
-        color: var(--gold, #ffd700); letter-spacing: -0.5px;
-        text-shadow: 0 0 10px rgba(255,215,0,0.7);
+        font-family: var(--font-mono, monospace); font-size: 110px; font-weight: 900;
+        color: var(--gold, #ffd700); letter-spacing: -2px; line-height: 1;
+        text-shadow: 0 0 24px rgba(255,215,0,0.75), 0 0 54px rgba(255,215,0,0.35);
         transition: color 0.3s ease;
       }
-      .live-wpm-label {
-        font-family: var(--font-ui, sans-serif); font-size: 7px; font-weight: 700;
-        color: rgba(255,215,0,0.7); letter-spacing: 1.6px; text-transform: uppercase;
+      .live-wpm-number.fast  { color: var(--green, #00c896); text-shadow: 0 0 24px rgba(0,200,150,0.75), 0 0 54px rgba(0,200,150,0.3); }
+      .live-wpm-number.great { color: var(--gold, #ffd700); text-shadow: 0 0 24px rgba(255,215,0,0.75), 0 0 54px rgba(255,215,0,0.3); }
+      .live-wpm-number.slow  { color: var(--red, #ff4c4c); text-shadow: 0 0 22px rgba(255,76,76,0.65), 0 0 48px rgba(255,76,76,0.28); }
+
+      /* Blurs the top strip (site nav + Prev/Next Problem + Practice Mode
+         bar) while the live WPM number is showing over it. */
+      #problem-nav-bar.rt-topbar-blur,
+      #mode-toggle-bar.rt-topbar-blur,
+      .nav.rt-topbar-blur {
+        filter: blur(5px);
+        transition: filter 0.22s ease;
       }
-      .live-wpm-number.fast  { color: var(--green, #00c896); text-shadow: 0 0 12px rgba(0,200,150,0.7); }
-      .live-wpm-number.great { color: var(--gold, #ffd700); text-shadow: 0 0 12px rgba(255,215,0,0.7); }
-      .live-wpm-number.slow  { color: var(--red, #ff4c4c); text-shadow: 0 0 10px rgba(255,76,76,0.6); }
-      @keyframes tp-livewpm-breathe { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
-      @keyframes tp-livewpm-spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-      @keyframes tp-livewpm-popin { from { opacity: 0; transform: scale(0.6); } to { opacity: 1; transform: scale(1); } }
+      #problem-nav-bar, #mode-toggle-bar { transition: filter 0.22s ease; }
     `;
     document.head.appendChild(style);
   }
@@ -745,7 +778,7 @@
       <button type="button" class="mode-box" id="mode-box-with">
         <span class="mode-box-icon">📄</span>
         <span class="mode-box-title">With Code</span>
-        <span class="mode-box-sub">Pick an approach and type it out, MonkeyType-style</span>
+        <span class="mode-box-sub">Pick an approach and type it out</span>
       </button>
       <button type="button" class="mode-box" id="mode-box-without">
         <span class="mode-box-icon">⌨️</span>
@@ -755,22 +788,16 @@
     `;
     editorWrap.appendChild(select);
 
-    // Live WPM circular readout — hidden until the first real keystroke of
-    // an attempt (see startClockOnce()/showLiveWpm()); floats above both the
-    // "With Code" typing widget and the plain Monaco editor equally, since
-    // it's a direct sibling appended to editorWrap.
-    const liveWpm = document.createElement("div");
-    liveWpm.id = "live-wpm-display";
-    liveWpm.innerHTML = `
-      <div class="live-wpm-circle">
-        <div class="live-wpm-ring"></div>
-        <div class="live-wpm-inner">
-          <span class="live-wpm-number" id="live-wpm-number">0</span>
-          <span class="live-wpm-label">WPM</span>
-        </div>
-      </div>
-    `;
-    editorWrap.appendChild(liveWpm);
+    // Live WPM — plain number, hidden until the first real keystroke of an
+    // attempt (see startClockOnce()/showLiveWpm()). Appended to <body>
+    // directly (not editorWrap) since it's position:fixed and centered over
+    // the top bar, not over the editor.
+    if (!document.getElementById("live-wpm-display")) {
+      const liveWpm = document.createElement("div");
+      liveWpm.id = "live-wpm-display";
+      liveWpm.innerHTML = `<span class="live-wpm-number" id="live-wpm-number">0</span>`;
+      document.body.appendChild(liveWpm);
+    }
 
     // Method picker — shown when a question has more than one reference approach
     const methodSelect = document.createElement("div");
@@ -895,9 +922,23 @@
     textEl.addEventListener("click", () => hidden.focus());
     wrap.addEventListener("click", () => hidden.focus());
     hidden.addEventListener("keydown", handleTypingKeydown);
-    hidden.addEventListener("blur", () => {
-      // keep focus in the typing widget while it's active
-      if (currentMode === "with") setTimeout(() => hidden.focus(), 0);
+    hidden.addEventListener("blur", (e) => {
+      // Keep focus in the typing widget — but ONLY when it lost focus to
+      // nothing in particular (e.g. the page background). If focus is
+      // headed to another real control (the language <select>, Run/
+      // Submit/Reset/Copy/Save/Upload, the mic button, a sidebar tab...),
+      // let it go there. Stealing focus back unconditionally here is what
+      // made the language <select> "blink" and refuse to open: clicking it
+      // fired this blur handler, which immediately (setTimeout(0)) snapped
+      // focus back to the hidden textarea — closing the browser's native
+      // dropdown before a click on any option could ever register.
+      const next = e.relatedTarget;
+      const wentToControl = next && (
+        next.tagName === "SELECT" || next.tagName === "BUTTON" ||
+        next.tagName === "INPUT"  || next.tagName === "TEXTAREA" ||
+        next.tagName === "A" || next.closest("select, button, input, textarea, a, [tabindex]")
+      );
+      if (currentMode === "with" && !wentToControl) setTimeout(() => hidden.focus(), 0);
     });
 
     document.getElementById("mode-btn-with")
@@ -1026,7 +1067,7 @@
   function handleTypingKeydown(e) {
     if (currentMode !== "with" || !targetText) return;
 
-    // MonkeyType-style: the clock starts on the very first real keystroke
+    // the clock starts on the very first real keystroke
     // of the attempt, not when the widget first appears.
     startClockOnce();
 
@@ -1069,7 +1110,7 @@
   // Only accepts (and advances the cursor on) a character that exactly
   // matches the next expected character. A wrong key press never moves the
   // cursor — it just flashes the current character red until the user
-  // types it correctly, MonkeyType "stop on mistake" style.
+  // types it correctly,"stop on mistake" style.
   function tryType(ch) {
     if (typedIndex >= targetText.length) return false;
     const expected = targetText[typedIndex];
@@ -1222,7 +1263,7 @@
     }
   }
 
-  // Positions the real #caret bar over the current character, MonkeyType-style.
+  // Positions the real #caret bar over the current character.
   function moveCaret() {
     const textEl = document.getElementById("type-practice-text");
     const caret = document.getElementById("caret");
@@ -1386,7 +1427,7 @@
     if (codeBox) codeBox.innerHTML = ""; // reset so next preview starts clean
   }
 
-  // Actually builds/shows the MonkeyType-style typing widget and starts the
+  // Actually builds/shows the typing widget and starts the
   // clock. Called either straight from setMode() (method has no `explain`
   // data — old behaviour, unchanged) or from the explain preview's Start
   // button (extra.largeFont makes the reference text render at 36px).
@@ -1407,7 +1448,7 @@
     autoSubmitted = false;
 
     // The visible clock and typing-tracker only start counting once the
-    // user's first real keystroke lands — MonkeyType-style — not the
+    // user's first real keystroke lands — not the
     // instant the typing widget appears.
     resetClockForNewAttempt();
     // Auto-fill any indentation the very first row starts with (matches the
@@ -1443,7 +1484,7 @@
     if (opts && opts.notify) {
       const toast = safe("toast");
       if (typeof toast === "function") {
-        toast("With Code: type the highlighted reference — just like MonkeyType.", "info");
+        toast("With Code: type the highlighted reference", "info");
       }
     }
   }
@@ -1494,7 +1535,7 @@
       currentMode = mode;
 
       // The visible clock and typing-tracker only start counting once the
-      // user's first real keystroke lands in the editor — MonkeyType-style —
+      // user's first real keystroke lands in the editor  
       // not the instant Without Code is picked.
       resetClockForNewAttempt();
       attachMonacoTimerHook();
