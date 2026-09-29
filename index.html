@@ -194,8 +194,8 @@
     <link rel="dns-prefetch" href="https://flagcdn.com">
     <!-- Preload critical assets: logo image + main stylesheet -->
     <link rel="preload" as="image" href="/images/rocket-typing-logo.webp" fetchpriority="high">
-    <link rel="preload" href="styles.css" as="style">
-    <link rel="preload" href="responsive.css" as="style">
+    <link rel="preload" href="styles.css?v=20260927" as="style">
+    <link rel="preload" href="responsive.css?v=20260927" as="style">
     <!-- ═══════════════════════════════════════════════════════════════════
          INLINE CRITICAL CSS  — rendered before any external stylesheet.
          RULE: every layout-affecting property that also exists in styles.css
@@ -298,9 +298,6 @@
         /* down), not a translateX() nudge, so there's nothing to mirror here for   */
         /* first-paint stability. #km-elon-badge{transform:none!important} below    */
         /* cancels styles.css's old translateX(50px) rule so it can't reappear.     */
-        /* Ad slots: zero height until an ad is injected, centered when filled */
-        .rt-ad-slot{display:block;width:100%;text-align:center;margin:16px auto 0;overflow:hidden}
-        .rt-ad-slot:empty{margin:0}
     </style>
 
     <!-- ── Main stylesheets: NON-BLOCKING ─────────────────────────────────────────
@@ -316,11 +313,11 @@
          appear ~300-500 ms after first paint — invisible to users at normal reading
          speed, and completely invisible when already cached.
          ──────────────────────────────────────────────────────────────────────────── -->
-    <link rel="stylesheet" href="styles.css"     media="print" onload="this.onload=null;this.media='all'">
-    <link rel="stylesheet" href="responsive.css" media="print" onload="this.onload=null;this.media='all'">
+    <link rel="stylesheet" href="styles.css?v=20260927"     media="print" onload="this.onload=null;this.media='all'">
+    <link rel="stylesheet" href="responsive.css?v=20260927" media="print" onload="this.onload=null;this.media='all'">
     <noscript>
-        <link rel="stylesheet" href="styles.css">
-        <link rel="stylesheet" href="responsive.css">
+        <link rel="stylesheet" href="styles.css?v=20260927">
+        <link rel="stylesheet" href="responsive.css?v=20260927">
     </noscript>
     <!-- Font Awesome removed: the whole 6.6.0 icon library (100+ KB + an extra
          third-party connection) was being loaded on this page to render exactly
@@ -1740,8 +1737,6 @@ html.rt-custom-bg-pending body::before{display:none !important;}
 ═══════════════════════════════════════════════════════════════ -->
 
 <!-- Outer row: [Score Badges] [Keymap Box] -->
-<!-- Journey/Mediavine content landmark (.lesson-seo = your dashboard's Content Selector). Must appear ONCE per page. -->
-<div id="journey-content" class="lesson-seo">
 <div id="km-outer-row">
 
     <!-- ── LEFT: Musk Score + Elon Score Badges (OUTSIDE keymap box) ── -->
@@ -1837,12 +1832,6 @@ html.rt-custom-bg-pending body::before{display:none !important;}
 
 </div><!-- #km-outer-row -->
 
-<!-- AD SLOT 1: directly below the keymap (visible on page load). Empty until the ad script fills it. -->
-<div id="rt-ad-keymap" class="rt-ad-slot">
-    <div class="content_desktop_hint"></div>
-    <div class="content_mobile_hint"></div>
-</div>
-
 <div id="result" style="display: none;">
     <!-- MAIN ROW: stats LEFT + chart RIGHT -->
     <div class="result-layout">
@@ -1927,10 +1916,7 @@ html.rt-custom-bg-pending body::before{display:none !important;}
             </div>
         </div>
     </div>
-    <!-- AD SLOT 2: bottom of the result screen (only visible after a test finishes). -->
-    <div id="rt-ad-result" class="rt-ad-slot"></div>
 </div>
-</div><!-- #journey-content -->
 
 
 
