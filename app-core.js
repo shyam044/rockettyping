@@ -1643,10 +1643,8 @@ if (!testActive && !testEnded && e.key.length === 1) {
         function startTimer() {
             startTime = Date.now();
             window._lastTestStartTime = startTime; // Musk Score: track start
-            // ── Live WPM: show circle, hide Sunday Champ ──
+            // ── Live WPM: show circle ──
             var liveWpmEl   = document.getElementById('live-wpm-display');
-            var sundayChamp = document.getElementById('sunday-champ-nav');
-            if (sundayChamp) sundayChamp.style.display = 'none';
             if (liveWpmEl)  { liveWpmEl.style.display = 'block'; liveWpmEl.classList.add('show'); }
             // kick off live WPM updater
             if (window._liveWpmInterval) clearInterval(window._liveWpmInterval);
@@ -2383,12 +2381,10 @@ if (!testActive && !testEnded && e.key.length === 1) {
         }
 
         function resetTest() {
-            // ── Live WPM: stop updater, hide circle, restore Sunday Champ ──
+            // ── Live WPM: stop updater, hide circle ──
             if (window._liveWpmInterval) { clearInterval(window._liveWpmInterval); window._liveWpmInterval = null; }
             var liveWpmEl   = document.getElementById('live-wpm-display');
-            var sundayChamp = document.getElementById('sunday-champ-nav');
             if (liveWpmEl)  { liveWpmEl.style.display = 'none'; liveWpmEl.classList.remove('show'); }
-            if (sundayChamp) sundayChamp.style.display = 'block';
             var numEl = document.getElementById('live-wpm-number');
             if (numEl) { numEl.textContent = '0'; numEl.className = 'live-wpm-number'; }
 
@@ -2404,7 +2400,6 @@ if (!testActive && !testEnded && e.key.length === 1) {
             document.getElementById("play-game").style.display = "flex";
                 // === SHOW DISTRACTIONS AGAIN AFTER TEST ===
     document.getElementById("page-title").style.display = "block";           // ← new
-    document.getElementById("sunday-champ-nav").style.display = "block";     // ← new
     if (document.getElementById("header-auth-btn")) {
         document.getElementById("header-auth-btn").style.display = "flex";   // ← new
     }

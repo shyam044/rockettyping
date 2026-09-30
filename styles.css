@@ -41,7 +41,6 @@ body {
    recalculations. A single class toggle is 1 recalc. */
 body.test-running #intro-text,
 body.test-running #page-title,
-body.test-running #sunday-champ-nav,
 body.test-running #header-auth-btn {
     display: none !important;
 }
@@ -1133,42 +1132,6 @@ footer a:hover { color: #e2b714; }
     z-index: 2;
     box-shadow: 0 0 25px #ff9900, 0 10px 25px rgba(226, 183, 20, 0.6);
     background-position: 100% 100%;
-}
-
-/* Sunday Champ + Trending row — sits directly below the GAME/CODE/LEARN
-   box, Sunday Champ on the left and Trending on the right (per sketch).
-   Lives inside #sunday-champ-nav so it inherits its existing position
-   below #play-game without touching that layout. */
-#second-row-nav {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 14px;
-    flex-wrap: wrap;
-}
-
-#trending-nav-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    background: rgba(255, 107, 53, 0.12);
-    color: #ff6b35;
-    border: 2px solid rgba(255, 107, 53, 0.5);
-    border-radius: 50px;
-    padding: 10px 18px;
-    font-family: 'Roboto Mono', monospace;
-    font-size: 13px;
-    font-weight: 900;
-    letter-spacing: 1.5px;
-    cursor: pointer;
-    white-space: nowrap;
-    transition: all 0.2s;
-}
-
-#trending-nav-btn:hover {
-    transform: translateY(-3px);
-    background: rgba(255, 107, 53, 0.22);
-    box-shadow: 0 0 20px rgba(255, 107, 53, 0.4);
 }
 
 @keyframes glowPulseLearn {

@@ -180,19 +180,6 @@ img { max-width: 100%; }
         margin: 0 !important;
     }
 
-    /* Sunday Champ + Trending row — center and allow wrap on tablets */
-    #second-row-nav {
-        justify-content: center;
-        width: 100%;
-        gap: 10px !important;
-    }
-
-    #sunday-champ-btn,
-    #trending-nav-btn {
-        font-size: 12px;
-        padding: 9px 16px;
-    }
-
     /* Live WPM */
     #live-wpm-display {
         position: static !important;
@@ -388,23 +375,6 @@ img { max-width: 100%; }
         white-space: normal;
     }
 
-    /* Sunday Champ + Trending row — stack full-width on small phones so
-       neither button gets squeezed or truncated */
-    #second-row-nav {
-        flex-direction: column;
-        align-items: stretch;
-        width: 100%;
-        gap: 8px !important;
-    }
-
-    #sunday-champ-btn,
-    #trending-nav-btn {
-        justify-content: center;
-        width: 100%;
-        font-size: 12px;
-        padding: 10px 14px;
-    }
-
     .live-wpm-circle { width: 68px; height: 68px; }
     .live-wpm-number { font-size: 18px; }
     .live-wpm-label  { font-size: 8px; }
@@ -548,13 +518,6 @@ img { max-width: 100%; }
         padding: 9px 14px;
         font-size: 11px;
         gap: 6px;
-    }
-
-    #second-row-nav { gap: 8px !important; }
-    #sunday-champ-btn,
-    #trending-nav-btn {
-        padding: 9px 14px;
-        font-size: 11px;
     }
 
     #intro-text { font-size: 12.5px; }
@@ -727,6 +690,7 @@ img { max-width: 100%; }
     /* Toggle btn */
     #km-toggle-btn { font-size: 10px; padding: 5px 10px; }
 }
+
 /* ════════════════════════════════════════════════════════════════
    LANDSCAPE PHONES  (short + narrow: max-height 480px, max-width 900px)
    Keep keymap and score badges from dominating vertical space.
