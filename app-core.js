@@ -4103,8 +4103,10 @@ function _animateMuskGain(prevScore, delta, newScore) {
     var badge  = document.getElementById('km-musk-badge');
     if (!numEl || !badge) return;
 
-    // Step 1: briefly show OLD score
-    numEl.textContent = prevScore;
+    // Step 1: briefly show OLD score (compact, e.g. 1011 -> "1.0K";
+    // the exact number only appears in the hover/tap tooltip)
+    var tipEl = document.getElementById('km-musk-exact');
+    numEl.textContent = formatMuskCompact(prevScore);
 
     // Step 2: after a short pause, create the floating "+N" chip
     setTimeout(function() {
@@ -4124,7 +4126,9 @@ function _animateMuskGain(prevScore, delta, newScore) {
 
         // Step 3: after chip is midway, update the number with a pop
         setTimeout(function() {
-            numEl.textContent = newScore;
+            numEl.textContent = formatMuskCompact(newScore);
+            numEl.setAttribute('data-raw', newScore);
+            if (tipEl) tipEl.textContent = _rtCommaFormat(Math.floor(newScore));
             numEl.classList.remove('km-pop');
             void numEl.offsetWidth;
             numEl.classList.add('km-pop');
