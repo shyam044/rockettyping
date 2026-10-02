@@ -19,32 +19,26 @@
     },
 
     {
+      "source": "/certificate/index.html",
+      "destination": "/certificate",
+      "permanent": true
+    },
+
+    {
+      "source": "/certificate/:slug.html",
+      "destination": "/certificate/:slug",
+      "permanent": true
+    },
+
+    {
       "source": "/blog/:slug.html",
       "destination": "/blog/:slug",
       "permanent": true
     },
 
     {
-      "source": "/trending/:slug.html",
-      "destination": "/trending/:slug",
-      "permanent": true
-    },
-
-    {
       "source": "/learn/:slug.html",
       "destination": "/learn/:slug",
-      "permanent": true
-    },
-
-    {
-      "source": "/trending.html",
-      "destination": "/trending",
-      "permanent": true
-    },
-
-    {
-      "source": "/test.html",
-      "destination": "/test",
       "permanent": true
     },
 
@@ -177,28 +171,23 @@
 
   "rewrites": [
     {
+      "source": "/certificate",
+      "destination": "/certificate/index.html"
+    },
+
+    {
+      "source": "/certificate/:slug",
+      "destination": "/certificate/:slug.html"
+    },
+
+    {
       "source": "/blog/:slug",
       "destination": "/blog/:slug.html"
     },
 
     {
-      "source": "/trending/:slug",
-      "destination": "/trending/:slug.html"
-    },
-
-    {
       "source": "/learn/:slug",
       "destination": "/learn/:slug.html"
-    },
-
-    {
-      "source": "/trending",
-      "destination": "/trending/trending.html"
-    },
-
-    {
-      "source": "/test",
-      "destination": "/test.html"
     },
 
     {
@@ -303,7 +292,7 @@
     },
 
     {
-      "source": "/(test|game|about|privacy|blog|terms|contact|learn|leaderboard|profile|coding)",
+      "source": "/(game|about|privacy|blog|terms|contact|learn|leaderboard|profile|coding|certificate)",
       "headers": [
         {
           "key": "Cache-Control",
@@ -323,26 +312,6 @@
     },
 
     {
-      "source": "/trending",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=0, must-revalidate, stale-while-revalidate=86400"
-        }
-      ]
-    },
-
-    {
-      "source": "/trending/:slug",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=300, must-revalidate, stale-while-revalidate=86400"
-        }
-      ]
-    },
-
-    {
       "source": "/learn/:slug",
       "headers": [
         {
@@ -354,6 +323,16 @@
 
     {
       "source": "/coding/:slug",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, must-revalidate, stale-while-revalidate=86400"
+        }
+      ]
+    },
+
+    {
+      "source": "/certificate/:slug",
       "headers": [
         {
           "key": "Cache-Control",
@@ -402,30 +381,6 @@
         {
           "key": "Cache-Control",
           "value": "public, max-age=2592000, stale-while-revalidate=86400"
-        }
-      ]
-    },
-
-    {
-      "source": "/trending/images/(.*)",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=2592000, stale-while-revalidate=86400"
-        }
-      ]
-    },
-
-    {
-      "source": "/trending/manifest.json",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=60, s-maxage=300, stale-while-revalidate=86400"
-        },
-        {
-          "key": "Content-Type",
-          "value": "application/json; charset=utf-8"
         }
       ]
     },
