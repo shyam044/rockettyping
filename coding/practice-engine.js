@@ -22,10 +22,10 @@
  * found through ProblemIndex.getNeighbors() (coding-core.js).
  *
  * "With Code" mode replaces the Monaco editor's visible area with a
- * typing widget: the reference solution is rendered
+ * MonkeyType-style typing widget: the reference solution is rendered
  * character-by-character (dim/untyped, green/correct, red/incorrect,
  * highlighted cursor on the current character). The user types with a
- * real cursor into a focused, invisible input.
+ * real cursor into a focused, invisible input — exactly like MonkeyType.
  * Every keystroke is mirrored live into the real Monaco editor underneath,
  * so Run / Submit / judging keep working completely unchanged.
  *
@@ -113,7 +113,7 @@
   let _origStartTimer   = null; // the platform's real startTimer(), called only once a mode is picked
   let _origTrackerStart = null; // the platform's real TypingTracker.start(), same idea
 
-  // the visible clock (and the typing-tracker's stats)
+  // MonkeyType-style: the visible clock (and the typing-tracker's stats)
   // only start counting on the user's FIRST real keystroke of an attempt —
   // not the moment With Code / Without Code / Start is clicked. `timerStarted`
   // guards against starting it more than once per attempt; it's reset back
@@ -176,7 +176,7 @@
   }
 
   // Starts the visible clock the moment the user's first real keystroke of
-  // an attempt lands — and never fires twice per attempt.
+  // an attempt lands — MonkeyType-style — and never fires twice per attempt.
   function startClockOnce() {
     if (timerStarted) return;
     timerStarted = true;
@@ -224,7 +224,7 @@
       if (!tracker || typeof tracker.stats !== "function") return;
       const stats = tracker.stats();
       // Skip the first fraction-of-a-second reading — divide-by-tiny-elapsed
-      // math makes it spike wildly before settling.
+      // math makes it spike wildly before settling (same guard MonkeyType uses).
       if (stats.elapsedMs < 600) return;
       const numEl2 = document.getElementById("live-wpm-number");
       if (!numEl2) return;
@@ -445,6 +445,16 @@
         opacity: .35; cursor: not-allowed; color: var(--text2, #8b949e);
       }
       .mode-btn:disabled:hover { border-color: var(--border, rgba(255,215,0,0.18)); }
+      /* Solutions button — distinct cyan accent so it reads as "jump to
+         reference" rather than a third practice mode next to it. Never
+         gets the gold .active treatment (it doesn't toggle any state). */
+      .mode-btn-solutions {
+        border-color: rgba(0,230,204,0.3); color: var(--cyan, #00e6cc);
+      }
+      .mode-btn-solutions:hover {
+        color: var(--cyan, #00e6cc); border-color: rgba(0,230,204,0.6);
+        background: rgba(0,230,204,0.08);
+      }
       .mode-progress {
         margin-left: auto; font-family: var(--font-mono, monospace);
         font-size: 12px; color: var(--text2, #8b949e);
@@ -529,7 +539,7 @@
       }
       #tp-change-method:hover { color: var(--gold, #ffd700); border-color: rgba(255,215,0,.35); }
 
-      /* typing widget ── */
+      /* ── MonkeyType-style typing widget ── */
       #type-practice-wrap {
         position: absolute; inset: 0; display: none; flex-direction: column;
         background: #0a0a23; z-index: 5;
@@ -551,7 +561,7 @@
       }
       .tp-current { color: var(--text, #c9d1d9); }
 
-      /* Real caret — a moving bar, not a background highlight */
+      /* Real MonkeyType-style caret — a moving bar, not a background highlight */
       #caret {
         position: absolute;
         background: var(--cyan, #00e6cc);
@@ -707,7 +717,7 @@
       }
 
       /* ── Live WPM — plain number, centered over the top bar ──────────────
-         Shown once typing starts, hidden again the
+         Shown once typing starts (MonkeyType-style), hidden again the
          instant the mouse moves, and re-shown on the next keystroke. See
          showLiveWpm()/pauseLiveWpmVisual()/resumeLiveWpmVisual() in JS. */
       #live-wpm-display {
@@ -766,6 +776,7 @@
       <span class="mode-toggle-label">Practice Mode</span>
       <button type="button" class="mode-btn" id="mode-btn-with">📄 With Code</button>
       <button type="button" class="mode-btn" id="mode-btn-without">⌨️ Without Code</button>
+      <button type="button" class="mode-btn mode-btn-solutions" id="mode-btn-solutions">📚 Solutions</button>
       <span class="mode-progress" id="mode-progress"></span>
     `;
     main.insertBefore(bar, main.firstChild);
@@ -778,7 +789,7 @@
       <button type="button" class="mode-box" id="mode-box-with">
         <span class="mode-box-icon">📄</span>
         <span class="mode-box-title">With Code</span>
-        <span class="mode-box-sub">Pick an approach and type it out</span>
+        <span class="mode-box-sub">Pick an approach and type it out, MonkeyType-style</span>
       </button>
       <button type="button" class="mode-box" id="mode-box-without">
         <span class="mode-box-icon">⌨️</span>
@@ -945,10 +956,29 @@
       .addEventListener("click", () => setMode("with", { notify: true, methodIndex: 0 }));
     document.getElementById("mode-btn-without")
       .addEventListener("click", () => setMode("without", { notify: true }));
+    document.getElementById("mode-btn-solutions")
+      .addEventListener("click", scrollToSolutions);
     document.getElementById("mode-box-with")
       .addEventListener("click", () => setMode("with", { notify: true, methodIndex: 0 }));
     document.getElementById("mode-box-without")
       .addEventListener("click", () => setMode("without", { notify: true }));
+  }
+
+  // ── "Solutions" button — scrolls the page down to the SEO section that
+  // lists every language's reference solution (the <details> blocks under
+  // #seo-content, e.g. "Print Hello World Program — solutions in 13
+  // languages"). Works on every problem page unchanged, since it finds the
+  // heading by its text instead of needing a matching id per page.
+  function scrollToSolutions() {
+    const container = document.getElementById("seo-content");
+    if (!container) return;
+    const heading = Array.from(container.querySelectorAll("h2"))
+      .find((h) => /solutions in \d+ languages?/i.test(h.textContent || ""));
+    const target = heading || container;
+    const navEl = document.querySelector(".nav");
+    const offset = (navEl ? navEl.offsetHeight : 58) + 12; // clears the sticky top nav
+    const y = target.getBoundingClientRect().top + window.pageYOffset - offset;
+    window.scrollTo({ top: Math.max(0, y), behavior: "smooth" });
   }
 
   // Shows the list of available methods/approaches for the current question.
@@ -1067,7 +1097,7 @@
   function handleTypingKeydown(e) {
     if (currentMode !== "with" || !targetText) return;
 
-    // the clock starts on the very first real keystroke
+    // MonkeyType-style: the clock starts on the very first real keystroke
     // of the attempt, not when the widget first appears.
     startClockOnce();
 
@@ -1110,7 +1140,7 @@
   // Only accepts (and advances the cursor on) a character that exactly
   // matches the next expected character. A wrong key press never moves the
   // cursor — it just flashes the current character red until the user
-  // types it correctly,"stop on mistake" style.
+  // types it correctly, MonkeyType "stop on mistake" style.
   function tryType(ch) {
     if (typedIndex >= targetText.length) return false;
     const expected = targetText[typedIndex];
@@ -1263,7 +1293,7 @@
     }
   }
 
-  // Positions the real #caret bar over the current character.
+  // Positions the real #caret bar over the current character, MonkeyType-style.
   function moveCaret() {
     const textEl = document.getElementById("type-practice-text");
     const caret = document.getElementById("caret");
@@ -1427,7 +1457,7 @@
     if (codeBox) codeBox.innerHTML = ""; // reset so next preview starts clean
   }
 
-  // Actually builds/shows the typing widget and starts the
+  // Actually builds/shows the MonkeyType-style typing widget and starts the
   // clock. Called either straight from setMode() (method has no `explain`
   // data — old behaviour, unchanged) or from the explain preview's Start
   // button (extra.largeFont makes the reference text render at 36px).
@@ -1448,7 +1478,7 @@
     autoSubmitted = false;
 
     // The visible clock and typing-tracker only start counting once the
-    // user's first real keystroke lands — not the
+    // user's first real keystroke lands — MonkeyType-style — not the
     // instant the typing widget appears.
     resetClockForNewAttempt();
     // Auto-fill any indentation the very first row starts with (matches the
@@ -1484,7 +1514,7 @@
     if (opts && opts.notify) {
       const toast = safe("toast");
       if (typeof toast === "function") {
-        toast("With Code: type the highlighted reference", "info");
+        toast("With Code: type the highlighted reference — just like MonkeyType.", "info");
       }
     }
   }
@@ -1535,7 +1565,7 @@
       currentMode = mode;
 
       // The visible clock and typing-tracker only start counting once the
-      // user's first real keystroke lands in the editor  
+      // user's first real keystroke lands in the editor — MonkeyType-style —
       // not the instant Without Code is picked.
       resetClockForNewAttempt();
       attachMonacoTimerHook();
