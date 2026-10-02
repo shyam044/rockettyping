@@ -1134,6 +1134,84 @@ footer a:hover { color: #e2b714; }
     background-position: 100% 100%;
 }
 
+/* Certificate button - sits directly under GAME | CODE | LEARN (inside #play-game,
+   so it hides while typing and returns after the test, exactly like the other three) */
+#play-game button:nth-child(3) {
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+
+#play-game .rt-cert-btn {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    margin-top: 5px;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    padding: 9px 14px;
+    overflow: hidden;
+    font-family: 'Roboto Mono', monospace;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 1.6px;
+    text-transform: uppercase;
+    text-decoration: none;
+    white-space: nowrap;
+    color: var(--rt-main, #e2b714);
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.015)), #0f1030;
+    border: 1px solid rgba(var(--rt-main-rgb, 226, 183, 20), 0.55);
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.25s, border-color 0.25s, color 0.25s;
+}
+
+#play-game .rt-cert-btn .rt-cert-ico { flex: none; }
+
+#play-game .rt-cert-btn em {
+    font-style: normal;
+    font-size: 9px;
+    font-weight: 900;
+    letter-spacing: 1px;
+    line-height: 1;
+    padding: 3px 6px;
+    border-radius: 20px;
+    color: #0a0a23;
+    background: linear-gradient(135deg, #ff9900, #e2b714);
+}
+
+#play-game .rt-cert-btn::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: -60%;
+    width: 40%;
+    background: linear-gradient(105deg, transparent, rgba(255, 255, 255, 0.22), transparent);
+    transform: skewX(-20deg);
+    transition: left 0.6s ease;
+    pointer-events: none;
+}
+
+#play-game .rt-cert-btn:hover,
+#play-game .rt-cert-btn:focus-visible {
+    transform: translateY(-2px);
+    color: #fff;
+    border-color: var(--rt-main, #e2b714);
+    box-shadow: 0 0 18px rgba(var(--rt-main-rgb, 226, 183, 20), 0.35), 0 8px 20px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+    outline: none;
+}
+
+#play-game .rt-cert-btn:hover::after,
+#play-game .rt-cert-btn:focus-visible::after { left: 130%; }
+
+@media (prefers-reduced-motion: reduce) {
+    #play-game .rt-cert-btn, #play-game .rt-cert-btn::after { transition: none; }
+}
+
 @keyframes glowPulseLearn {
     from { opacity: 0.88; }
     to   { opacity: 1; }
