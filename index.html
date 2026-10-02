@@ -194,8 +194,8 @@
     <link rel="dns-prefetch" href="https://flagcdn.com">
     <!-- Preload critical assets: logo image + main stylesheet -->
     <link rel="preload" as="image" href="/images/rocket-typing-logo.webp" fetchpriority="high">
-    <link rel="preload" href="styles.css?v=20260927" as="style">
-    <link rel="preload" href="responsive.css?v=20260927" as="style">
+    <link rel="preload" href="styles.css?v=20261002" as="style">
+    <link rel="preload" href="responsive.css?v=20261002" as="style">
     <!-- ═══════════════════════════════════════════════════════════════════
          INLINE CRITICAL CSS  — rendered before any external stylesheet.
          RULE: every layout-affecting property that also exists in styles.css
@@ -313,11 +313,11 @@
          appear ~300-500 ms after first paint — invisible to users at normal reading
          speed, and completely invisible when already cached.
          ──────────────────────────────────────────────────────────────────────────── -->
-    <link rel="stylesheet" href="styles.css?v=20260927"     media="print" onload="this.onload=null;this.media='all'">
-    <link rel="stylesheet" href="responsive.css?v=20260927" media="print" onload="this.onload=null;this.media='all'">
+    <link rel="stylesheet" href="styles.css?v=20261002"     media="print" onload="this.onload=null;this.media='all'">
+    <link rel="stylesheet" href="responsive.css?v=20261002" media="print" onload="this.onload=null;this.media='all'">
     <noscript>
-        <link rel="stylesheet" href="styles.css?v=20260927">
-        <link rel="stylesheet" href="responsive.css?v=20260927">
+        <link rel="stylesheet" href="styles.css?v=20261002">
+        <link rel="stylesheet" href="responsive.css?v=20261002">
     </noscript>
     <!-- Font Awesome removed: the whole 6.6.0 icon library (100+ KB + an extra
          third-party connection) was being loaded on this page to render exactly
@@ -1615,6 +1615,11 @@ html.rt-custom-bg-pending body::before{display:none !important;}
         <button onclick="window.location.href='/learn'" class="learn-type-btn">
             LEARN
         </button>
+        <a href="/certificate" class="rt-cert-btn" aria-label="Typing test certificate - get your typing certificate" onclick="event.stopPropagation()">
+            <svg class="rt-cert-ico" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="9" r="6"/><path d="M8.5 14.2 7 22l5-3 5 3-1.5-7.8"/></svg>
+            <span>CERTIFICATE</span>
+            <em>NEW</em>
+        </a>
     </div>
 
 </div>
