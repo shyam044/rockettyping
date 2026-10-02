@@ -752,6 +752,75 @@ function clearBtnBusy(id) {
   if (btn.dataset.origLabel) btn.innerHTML = btn.dataset.origLabel;
 }
 
+/* ── RUN WITH CUSTOM INPUT ──
+   Lets you actually test code that reads input yourself, e.g.
+     a = input()
+     print(a)
+   Type "hello" into the Input box below, press Enter (or the button), and
+   "hello" is what your program's input() call receives — the raw output is
+   shown as-is, with no comparison against the fixed sample/hidden test
+   cases (that's still what Run/Submit do). ── */
+function buildCustomInputPanel() {
+  if (document.getElementById('stdin-panel')) return;
+  const tabs = document.querySelector('.output-tabs');
+  if (!tabs || !tabs.parentElement) return;
+
+  const panel = document.createElement('div');
+  panel.id = 'stdin-panel';
+  panel.className = 'stdin-panel';
+  panel.innerHTML = `
+    <label for="stdin-input" class="stdin-label">Your Input (stdin)</label>
+    <textarea id="stdin-input" class="stdin-textarea" rows="2"
+      placeholder="Type the input your program should read — e.g. hello — then press Enter to run (Shift+Enter for a new line)"></textarea>
+    <button type="button" class="editor-btn run" id="stdin-run-btn" onclick="runWithCustomInput()">▶ Run with Input</button>
+  `;
+  tabs.parentElement.insertBefore(panel, tabs);
+
+  document.getElementById('stdin-input').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      runWithCustomInput();
+    }
+  });
+}
+
+async function runWithCustomInput() {
+  if (!currentQuestion || !monacoEditor) return;
+  const code = monacoEditor.getValue().trim();
+  const lang = document.getElementById('lang-select').value;
+  const inputEl = document.getElementById('stdin-input');
+  const input = inputEl ? inputEl.value : '';
+
+  if (!code) { toast('Write some code first.', 'error'); return; }
+  await ensureCompilers();
+
+  AppState.setSavedCode(currentQuestion.id, lang, code);
+  setBtnBusy('stdin-run-btn', 'Running…');
+  document.getElementById('output-output').innerHTML =
+    `<div class="output-line running">⏳ Running your ${langLabel(lang)} code with your input…</div>`;
+  setOutputTab('output', document.querySelector('.output-tab'));
+
+  try {
+    const startMs = performance.now();
+    const res = CompilerRegistry.run(lang, code, input);
+    const ms = (performance.now() - startMs).toFixed(1);
+
+    let outputHtml = '';
+    if (!res.ok) {
+      outputHtml = `<div class="output-line error">❌ ${res.errorType || 'Error'}: ${escapeHtml(res.error || 'Runtime error')}</div>`;
+      if (res.output) outputHtml += `<div class="output-line dim">stdout so far:\n${escapeHtml(res.output)}</div>`;
+    } else {
+      outputHtml = `<div class="output-line">${escapeHtml(res.output) || '(no output)'}</div>`;
+      outputHtml += `<div class="output-line dim">⏱ ${ms}ms · ${langLabel(lang)} · your input</div>`;
+    }
+    document.getElementById('output-output').innerHTML = outputHtml;
+  } catch (err) {
+    document.getElementById('output-output').innerHTML = `<div class="output-line error">❌ Unexpected error: ${escapeHtml(err.message)}</div>`;
+  } finally {
+    clearBtnBusy('stdin-run-btn');
+  }
+}
+
 /* ── RUN CODE ──
    Compiles/interprets the REAL language via CompilerRegistry (100%
    against the sample test cases, with live progress feedback. ── */
@@ -1033,6 +1102,7 @@ function startProblemPage() {
   }
   openProblem(data.question.id);
   renderRelated();
+  buildCustomInputPanel();
   // Heavy pieces start when the browser is idle (or earlier, when the user picks a mode).
   whenIdle(() => { try { initMonaco(); } catch (e) { console.warn('[Rocket Coding] Monaco failed to load:', e); } }, 1800);
   whenIdle(ensureCompilers, 4000);
