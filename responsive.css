@@ -708,3 +708,16 @@ img { max-width: 100%; }
     .km-score-lbl   { display: none; }
     #km-scores-panel { padding-bottom: 0; gap: 8px; }
 }
+
+/* Certificate button - stacked layouts (#play-game becomes static) */
+@media (max-width: 900px) {
+    #play-game .rt-cert-btn {
+        position: static;
+        flex: 0 0 100%;
+        margin-top: -4px;
+        padding: 10px 14px;
+    }
+}
+@media (max-width: 480px) {
+    #play-game .rt-cert-btn { padding: 9px 12px; font-size: 11px; }
+}
