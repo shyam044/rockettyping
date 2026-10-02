@@ -1,7 +1,7 @@
 {
   "chunk": 1,
   "limit": 100,
-  "count": 10,
+  "count": 20,
   "problems": [
     {
       "id": 1,
@@ -90,6 +90,96 @@
       "file": "job-application-eligibility-check.html",
       "difficulty": "Easy",
       "topic": "Conditions",
+      "languages": 13,
+      "methods": 15
+    },
+    {
+      "id": 11,
+      "title": "Print N Numbers",
+      "file": "print-numbers-from-1-to-n.html",
+      "difficulty": "Easy",
+      "topic": "Loops",
+      "languages": 13,
+      "methods": 15
+    },
+    {
+      "id": 12,
+      "title": "Alternate Letters From Second Character",
+      "file": "alternate-characters-of-a-string.html",
+      "difficulty": "Easy",
+      "topic": "Strings",
+      "languages": 13,
+      "methods": 15
+    },
+    {
+      "id": 13,
+      "title": "Check If Input Is a Digit",
+      "file": "check-if-string-is-a-digit.html",
+      "difficulty": "Easy",
+      "topic": "Strings",
+      "languages": 13,
+      "methods": 15
+    },
+    {
+      "id": 14,
+      "title": "Remove Non-Alphabetic Characters",
+      "file": "remove-non-alphabetic-characters.html",
+      "difficulty": "Easy",
+      "topic": "Strings",
+      "languages": 13,
+      "methods": 15
+    },
+    {
+      "id": 15,
+      "title": "Replace Comma With 'and'",
+      "file": "replace-comma-with-and.html",
+      "difficulty": "Easy",
+      "topic": "Strings",
+      "languages": 13,
+      "methods": 15
+    },
+    {
+      "id": 16,
+      "title": "Check If Input Is a Website",
+      "file": "check-if-string-is-a-website.html",
+      "difficulty": "Easy",
+      "topic": "Strings",
+      "languages": 13,
+      "methods": 15
+    },
+    {
+      "id": 17,
+      "title": "Format Two Words",
+      "file": "uppercase-and-lowercase-two-words.html",
+      "difficulty": "Easy",
+      "topic": "Strings",
+      "languages": 13,
+      "methods": 15
+    },
+    {
+      "id": 18,
+      "title": "ASCII Value And Character Conversion",
+      "file": "ascii-value-and-character-conversion.html",
+      "difficulty": "Easy",
+      "topic": "Strings",
+      "languages": 13,
+      "methods": 15
+    },
+    {
+      "id": 19,
+      "title": "Prime Numbers Up To N",
+      "file": "print-prime-numbers-up-to-n.html",
+      "difficulty": "Medium",
+      "topic": "Math",
+      "languages": 13,
+      "methods": 15
+    },
+    {
+      "id": 20,
+      "title": "Increment Second List Element",
+      "file": "increment-second-element-of-a-list.html",
+      "difficulty": "Easy",
+      "topic": "Lists",
       "languages": 13,
       "methods": 15
     }
