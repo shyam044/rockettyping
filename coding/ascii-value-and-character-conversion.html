@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ASCII Value and Character Conversion in Python, Java, C++ &amp; More | Rocket Typing</title>
+<meta name="description" content="Convert a character to its ASCII value and an integer back to a character in 13 languages – Python&#x27;s ord()/chr(), and the equivalent in Java, C++, JavaScript and more.">
+<meta name="keywords" content="python ord chr, ascii value of character, char to int conversion, chr function, coding practice characters">
+<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+<link rel="canonical" href="https://www.rockettyping.com/coding/ascii-value-and-character-conversion">
+<meta http-equiv="Content-Security-Policy" content="object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ASCII Value and Character Conversion in Python, Java, C++ &amp; More | Rocket Typing">
+<meta property="og:description" content="Convert a character to its ASCII value and an integer back to a character in 13 languages – Python&#x27;s ord()/chr(), and the equivalent in Java, C++, JavaScript and more.">
+<meta property="og:url" content="https://www.rockettyping.com/coding/ascii-value-and-character-conversion">
+<meta property="og:image" content="https://www.rockettyping.com/images/og-banner.webp">
+<meta property="og:site_name" content="Rocket Typing">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="ASCII Value and Character Conversion in Python, Java, C++ &amp; More | Rocket Typing">
+<meta name="twitter:description" content="Convert a character to its ASCII value and an integer back to a character in 13 languages – Python&#x27;s ord()/chr(), and the equivalent in Java, C++, JavaScript and more.">
+<meta name="twitter:image" content="https://www.rockettyping.com/images/og-banner.webp">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "LearningResource",
+  "name": "ASCII Value And Character Conversion — Coding Practice in 13 Languages",
+  "description": "Convert a character to its ASCII value and an integer back to a character in 13 languages – Python's ord()/chr(), and the equivalent in Java, C++, JavaScript and more.",
+  "educationalLevel": "Beginner",
+  "learningResourceType": "Interactive coding exercise",
+  "teaches": "ASCII Value And Character Conversion in 13 programming languages (Python, JavaScript, Java, C, C++, TypeScript, Go, Rust, Kotlin, Swift, PHP, C# and Ruby)",
+  "inLanguage": "en",
+  "isAccessibleForFree": true,
+  "isPartOf": {
+    "@type": "Course",
+    "name": "Free Coding Practice with Typing Speed Test",
+    "url": "https://www.rockettyping.com/coding/"
+  },
+  "provider": {
+    "@type": "Organization",
+    "name": "Rocket Typing",
+    "sameAs": "https://www.rockettyping.com"
+  },
+  "url": "https://www.rockettyping.com/coding/ascii-value-and-character-conversion"
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "What does ord() do in Python?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "ord(c) takes a single character and returns its ASCII (Unicode) code point as an integer — ord(\"A\") is 65."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What does chr() do in Python?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "chr(n) is the opposite of ord(): it takes an integer code point and returns the character it represents — chr(98) is \"b\"."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How do other languages do this?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Most languages let you cast a character straight to an integer and back (int c, char n in C/C++/Java/C#), or provide helpers like JavaScript's charCodeAt()/fromCharCode()."
+      }
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://www.rockettyping.com/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Coding Practice",
+      "item": "https://www.rockettyping.com/coding/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": "ASCII Value And Character Conversion",
+      "item": "https://www.rockettyping.com/coding/ascii-value-and-character-conversion"
+    }
+  ]
+}
+</script>
+<link rel="icon" type="image/png" sizes="32x32" href="../images/favicon-32.webp">
+<link rel="icon" type="image/png" sizes="16x16" href="../images/favicon-16.webp">
+<link rel="apple-touch-icon" href="../images/logo-192.webp">
+<meta name="theme-color" content="#0a0a23">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@300;400;500;700&family=Inter:wght@300;400;500;600;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@300;400;500;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"></noscript>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-136SVFZRDF"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-136SVFZRDF');</script>
+<link rel="stylesheet" href="coding.css">
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+<!-- Monaco's stylesheet: loaded without blocking first paint (the data-name attribute is what Monaco's loader looks for) -->
+<link rel="stylesheet" media="print" onload="this.media='all'" data-name="vs/editor/editor.main" href="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs/editor/editor.main.min.css">
+<script type="text/javascript" async="async" data-noptimize="1" data-cfasync="false" src="//scripts.scriptwrapper.com/tags/31b6b722-d3b7-49a8-acd3-2264f19c9dc5.js"></script>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="/" class="nav-logo"><span class="rocket">🚀</span>Rocket<span>Typing</span></a>
+  <div class="nav-links">
+    <button class="nav-btn" onclick="goHome()">⌨️ Typing Test</button>
+    <a href="./#dashboard" class="nav-btn">Dashboard</a>
+    <a href="./#problems" class="nav-btn active">Problems</a>
+    <a href="./#profile" class="nav-btn">Profile</a>
+  </div>
+</nav>
+
+<div id="app">
+
+  <!-- ══ WORKSPACE VIEW ══ -->
+  <div id="view-workspace" class="view active">
+    <!-- Left: problem description -->
+    <div class="workspace-sidebar">
+      <div class="sidebar-tabs">
+        <button class="sidebar-tab active" onclick="setSidebarTab('desc',this)">Description</button>
+        <button class="sidebar-tab" onclick="setSidebarTab('notes',this)">Notes</button>
+        <button class="sidebar-tab" onclick="setSidebarTab('hint',this)">Hint</button>
+      </div>
+      <div class="sidebar-content" id="sidebar-desc" data-prerendered="1">
+    <div class="prob-meta">
+      <h1>#18 ASCII Value And Character Conversion</h1>
+      <span class="badge easy">Easy</span>
+      <span class="meta-pill">⏱ 1 sec</span>
+      <span class="meta-pill">💾 256 MB</span>
+      <span class="meta-pill">🏷 Strings</span>
+      <button onclick="toggleBookmark(18)" id="bm-btn-18" style="background:none;border:1px solid var(--border);color:var(--text2);padding:4px 10px;border-radius:5px;cursor:pointer;font-size:11px">🔖 Bookmark</button>
+    </div>
+    <div class="prob-section"><h2>Problem Statement</h2><div class="prob-text">You are given a single character and an integer. Print the ASCII value of the given character, then print the character corresponding to the given integer&#x27;s ASCII value.</div></div>
+    <div class="prob-section"><h2>Input Format</h2><div class="prob-text">• First line: a single character <code>c</code><br>• Second line: an integer <code>n</code></div></div>
+    <div class="prob-section"><h2>Output Format</h2><div class="prob-text">Print two lines:<br>1. The ASCII value of <code>c</code><br>2. The character whose ASCII value is <code>n</code></div></div>
+    <div class="prob-section"><h2>Constraints</h2><div class="prob-text">• c is a single printable character.<br>• 0 ≤ n ≤ 127</div></div>
+    <div class="prob-section"><h2>Sample Input</h2><div class="io-box">A
+98</div></div>
+    <div class="prob-section"><h2>Sample Output</h2><div class="io-box">65
+b</div></div>
+    <div class="prob-section"><h2>Explanation</h2><div class="prob-text">The ASCII value of &quot;A&quot; is 65, and the character with ASCII value 98 is &quot;b&quot;.</div></div>
+  </div>
+      <div class="sidebar-content" id="sidebar-notes" style="display:none">
+        <textarea id="notes-area" placeholder="Write your personal notes for this problem…"
+          style="width:100%;height:calc(100% - 0px);background:transparent;border:none;outline:none;color:var(--text);font-family:var(--font-mono);font-size:12px;resize:none;line-height:1.7"
+          oninput="saveNote()"></textarea>
+      </div>
+      <div class="sidebar-content" id="sidebar-hint" style="display:none">
+        <div class="hint-box" id="hint-content"><code>ord(c)</code> gives a character&#x27;s ASCII value; <code>chr(n)</code> gives the character for a given ASCII value.</div>
+      </div>
+    </div>
+
+    <!-- Right: editor + output -->
+    <div class="workspace-main">
+      <div class="editor-toolbar">
+        <select class="lang-select" id="lang-select" onchange="changeLanguage()">
+          <option value="python">Python</option>
+          <option value="javascript">JavaScript</option>
+          <option value="java">Java</option>
+          <option value="cpp">C++</option>
+          <option value="c">C</option>
+          <option value="typescript">TypeScript</option>
+          <option value="go">Go</option>
+          <option value="rust">Rust</option>
+          <option value="kotlin">Kotlin</option>
+          <option value="swift">Swift</option>
+          <option value="php">PHP</option>
+          <option value="csharp">C#</option>
+          <option value="ruby">Ruby</option>
+        </select>
+
+        <button class="editor-btn" onclick="resetCode()" title="Reset code">↺ Reset</button>
+        <button class="editor-btn" onclick="copyCode()"  title="Copy code">📋 Copy</button>
+        <button class="editor-btn" onclick="downloadCode()" title="Download">⬇ Save</button>
+        <button class="editor-btn" onclick="uploadCode()"   title="Upload file">⬆ Upload</button>
+        <input type="file" id="file-upload" accept=".py,.js,.java,.cpp,.c,.ts,.go,.rs,.kt,.swift,.php,.cs,.rb" style="display:none" onchange="handleUpload(event)">
+
+        <button class="editor-btn mic" id="mic-btn" onclick="toggleMic()" title="Voice to Code">🎤 Voice</button>
+
+        <div class="toolbar-spacer"></div>
+
+        <span class="timer-display" id="workspace-timer">00:00</span>
+        <span class="autosave-dot" id="autosave-dot"></span>
+
+        <button class="editor-btn run"    id="run-btn"    onclick="runCode()">▶ Run</button>
+        <button class="editor-btn submit" id="submit-btn" onclick="submitCode()">⚡ Submit</button>
+      </div>
+
+      <!-- Monaco -->
+      <div class="editor-wrap">
+        <div id="monaco-editor"></div>
+        <!-- Mic panel -->
+        <div class="mic-panel" id="mic-panel">
+          <h4>🎤 Voice to Code</h4>
+          <div class="mic-transcript" id="mic-transcript">Say something…</div>
+          <div class="mic-controls">
+            <button class="mic-ctrl" onclick="pauseMic()">⏸ Pause</button>
+            <button class="mic-ctrl" onclick="resumeMic()">▶ Resume</button>
+            <button class="mic-ctrl" onclick="stopMic()">⏹ Stop</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Output panel -->
+      <div class="output-panel">
+        <div class="output-tabs">
+          <button class="output-tab active" onclick="setOutputTab('output',this)">Output</button>
+          <button class="output-tab" onclick="setOutputTab('testcases',this)">Test Cases</button>
+          <button class="output-tab" onclick="setOutputTab('console',this)">Console</button>
+        </div>
+        <div class="output-body" id="output-output">
+          <div class="output-line dim">Click "Run" to execute your code against sample test cases.</div>
+        </div>
+        <div class="output-body" id="output-testcases" style="display:none">
+          <div class="output-line dim">No test results yet.</div>
+        </div>
+        <div class="output-body" id="output-console" style="display:none">
+          <div class="output-line dim">Console output will appear here.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+</div><!-- #app -->
+
+<main class="seo-content" id="seo-content">
+  <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a> / <a href="./">Coding Practice</a> / ASCII Value And Character Conversion</nav>
+
+  <h2>About this problem: ASCII Value And Character Conversion</h2>
+  <p>Every character a computer stores is really just a number under the hood (its ASCII/Unicode code point) — converting between a character and that number is a fundamental skill for anything involving character-level logic.</p><p>Python's <code>ord()</code> goes character → number, and <code>chr()</code> goes number → character; every other language has a direct equivalent (casting a char to int in Java/C++/C#, <code>charCodeAt</code>/<code>fromCharCode</code> in JavaScript). Solutions in all 13 languages are shown below, plus three Python variations.</p>
+  <div class="seo-facts">
+    <span class="badge easy">Easy</span>
+    <span class="meta-pill">🏷 Strings</span>
+    <span class="meta-pill">13 languages</span>
+    <span class="meta-pill">15 reference solutions</span>
+  </div>
+  <div class="lang-chips"><span class="meta-pill">Python</span><span class="meta-pill">JavaScript</span><span class="meta-pill">Java</span><span class="meta-pill">C++</span><span class="meta-pill">C</span><span class="meta-pill">TypeScript</span><span class="meta-pill">Go</span><span class="meta-pill">Rust</span><span class="meta-pill">Kotlin</span><span class="meta-pill">Swift</span><span class="meta-pill">PHP</span><span class="meta-pill">C#</span><span class="meta-pill">Ruby</span></div>
+
+  <h2>ASCII Value And Character Conversion — solutions in 13 languages</h2>
+<details class="seo-lang" open>
+<summary><h3>ASCII Value And Character Conversion in Python — 3 solutions</h3></summary>
+<h4>ord() and chr()</h4>
+<pre><code class="language-python">ch = input()
+num = int(input())
+print(ord(ch))
+print(chr(num))</code></pre>
+<ol class="seo-explain"><li>Reads a single character from input and stores it as ch.</li><li>Reads an integer from input and stores it as num.</li><li>Prints the ASCII value of ch.</li><li>Prints the character corresponding to the ASCII value num.</li></ol>
+<h4>Intermediate variables</h4>
+<pre><code class="language-python">ch = input()
+num = int(input())
+ascii_val = ord(ch)
+new_char = chr(num)
+print(ascii_val)
+print(new_char)</code></pre>
+<ol class="seo-explain"><li>Reads a single character from input and stores it as ch.</li><li>Reads an integer from input and stores it as num.</li><li>Stores the ASCII value of ch in ascii_val.</li><li>Stores the character for the ASCII value num in new_char.</li><li>Prints ascii_val.</li><li>Prints new_char.</li></ol>
+<h4>Single combined string</h4>
+<pre><code class="language-python">ch = input()
+num = int(input())
+result = str(ord(ch)) + &quot;\n&quot; + str(chr(num))
+print(result)</code></pre>
+<ol class="seo-explain"><li>Reads a single character from input and stores it as ch.</li><li>Reads an integer from input and stores it as num.</li><li>Builds one string containing the ASCII value of ch and the character for num, separated by a newline.</li><li>Prints the combined result in a single call.</li></ol>
+</details>
+<details class="seo-lang">
+<summary><h3>ASCII Value And Character Conversion in JavaScript — 1 solution</h3></summary>
+<h4>charCodeAt() + fromCharCode()</h4>
+<pre><code class="language-javascript">const lines = require(&quot;fs&quot;).readFileSync(0, &quot;utf8&quot;).split(&quot;\n&quot;);
+const c = lines[0].trim();
+const n = parseInt(lines[1].trim());
+console.log(c.charCodeAt(0));
+console.log(String.fromCharCode(n));</code></pre>
+<ol class="seo-explain"><li>Reads all input and splits it into lines.</li><li>Takes the character from the first line.</li><li>Takes the integer from the second line.</li><li>Prints the character&#x27;s ASCII code with charCodeAt(0).</li><li>Prints the character for that code with String.fromCharCode().</li></ol>
+</details>
+<details class="seo-lang">
+<summary><h3>ASCII Value And Character Conversion in Java — 1 solution</h3></summary>
+<h4>int/char casting</h4>
+<pre><code class="language-java">import java.util.Scanner;
+public class Main {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        char c = sc.nextLine().trim().charAt(0);
+        int n = Integer.parseInt(sc.nextLine().trim());
+        System.out.println((int) c);
+        System.out.println((char) n);
+    }
+}</code></pre>
+<ol class="seo-explain"><li>Reads the character from the first line.</li><li>Reads the integer from the second line.</li><li>Casts the character to an int to get its ASCII value.</li><li>Casts the integer to a char to get the matching character.</li><li>Prints both results.</li></ol>
+</details>
+<details class="seo-lang">
+<summary><h3>ASCII Value And Character Conversion in C++ — 1 solution</h3></summary>
+<h4>int/char casting</h4>
+<pre><code class="language-cpp">#include &lt;iostream&gt;
+using namespace std;
+int main() {
+    char c;
+    int n;
+    cin &gt;&gt; c &gt;&gt; n;
+    cout &lt;&lt; (int)c &lt;&lt; endl;
+    cout &lt;&lt; (char)n &lt;&lt; endl;
+    return 0;
+}</code></pre>
+<ol class="seo-explain"><li>Reads a character and an integer directly with cin.</li><li>Casts the character to an int to print its ASCII value.</li><li>Casts the integer to a char to print the matching character.</li></ol>
+</details>
+<details class="seo-lang">
+<summary><h3>ASCII Value And Character Conversion in C — 1 solution</h3></summary>
+<h4>int/char casting</h4>
+<pre><code class="language-c">#include &lt;stdio.h&gt;
+int main() {
+    char c;
+    int n;
+    scanf(&quot; %c %d&quot;, &amp;c, &amp;n);
+    printf(&quot;%d\n&quot;, (int)c);
+    printf(&quot;%c\n&quot;, (char)n);
+    return 0;
+}</code></pre>
+<ol class="seo-explain"><li>Reads a character and an integer with scanf (the leading space skips whitespace before %c).</li><li>Casts the character to an int and prints its ASCII value.</li><li>Casts the integer to a char and prints the matching character.</li></ol>
+</details>
+<details class="seo-lang">
+<summary><h3>ASCII Value And Character Conversion in TypeScript — 1 solution</h3></summary>
+<h4>charCodeAt() + fromCharCode()</h4>
+<pre><code class="language-typescript">const lines: string[] = require(&quot;fs&quot;).readFileSync(0, &quot;utf8&quot;).split(&quot;\n&quot;);
+const c: string = lines[0].trim();
+const n: number = parseInt(lines[1].trim());
+console.log(c.charCodeAt(0));
+console.log(String.fromCharCode(n));</code></pre>
+<ol class="seo-explain"><li>Reads all input and splits it into lines.</li><li>Takes the character from the first line and the number from the second.</li><li>Prints the character&#x27;s ASCII code.</li><li>Prints the character for that code.</li></ol>
+</details>
+<details class="seo-lang">
+<summary><h3>ASCII Value And Character Conversion in Go — 1 solution</h3></summary>
+<h4>rune conversion</h4>
+<pre><code class="language-go">package main
+import &quot;fmt&quot;
+func main() {
+    var c string
+    var n int
+    fmt.Scan(&amp;c, &amp;n)
+    fmt.Println(int(c[0]))
+    fmt.Println(string(rune(n)))
+}</code></pre>
+<ol class="seo-explain"><li>Reads a one-character string and an integer.</li><li>Converts the first byte of the string to an int and prints it.</li><li>Converts the integer to a rune and then a string, and prints it.</li></ol>
+</details>
+<details class="seo-lang">
+<summary><h3>ASCII Value And Character Conversion in Rust — 1 solution</h3></summary>
+<h4>as u32 / char::from_u32</h4>
+<pre><code class="language-rust">use std::io::{self, Read};
+fn main() {
+    let mut text = String::new();
+    io::stdin().read_to_string(&amp;mut text).unwrap();
+    let mut it = text.split_whitespace();
+    let c = it.next().unwrap().chars().next().unwrap();
+    let n: u32 = it.next().unwrap().parse().unwrap();
+    println!(&quot;{}&quot;, c as u32);
+    println!(&quot;{}&quot;, char::from_u32(n).unwrap());
+}</code></pre>
+<ol class="seo-explain"><li>Reads all of standard input.</li><li>Splits it into whitespace-separated tokens.</li><li>Takes the first character of the first token.</li><li>Parses the second token as a u32.</li><li>Prints the character&#x27;s numeric value, then the character for that value.</li></ol>
+</details>
+<details class="seo-lang">
+<summary><h3>ASCII Value And Character Conversion in Kotlin — 1 solution</h3></summary>
+<h4>.code and .toChar()</h4>
+<pre><code class="language-kotlin">fun main() {
+    val c = readLine()!!.trim()[0]
+    val n = readLine()!!.trim().toInt()
+    println(c.code)
+    println(n.toChar())
+}</code></pre>
+<ol class="seo-explain"><li>Reads the first character from the first line.</li><li>Reads the integer from the second line.</li><li>Prints the character&#x27;s code with .code.</li><li>Prints the character for that code with .toChar().</li></ol>
+</details>
+<details class="seo-lang">
+<summary><h3>ASCII Value And Character Conversion in Swift — 1 solution</h3></summary>
+<h4>asciiValue + UnicodeScalar</h4>
+<pre><code class="language-swift">let c = Array(readLine()!)[0]
+let n = Int(readLine()!)!
+print(c.asciiValue!)
+print(Character(UnicodeScalar(n)!))</code></pre>
+<ol class="seo-explain"><li>Reads the first character from the first line.</li><li>Reads the integer from the second line.</li><li>Prints the character&#x27;s ASCII value.</li><li>Builds a Character from the integer&#x27;s Unicode scalar and prints it.</li></ol>
+</details>
+<details class="seo-lang">
+<summary><h3>ASCII Value And Character Conversion in PHP — 1 solution</h3></summary>
+<h4>ord() and chr()</h4>
+<pre><code class="language-php">&lt;?php
+$c = trim(fgets(STDIN));
+$n = intval(trim(fgets(STDIN)));
+echo ord($c), &quot;\n&quot;;
+echo chr($n), &quot;\n&quot;;</code></pre>
+<ol class="seo-explain"><li>Reads the character from the first line.</li><li>Reads the integer from the second line.</li><li>Prints the character&#x27;s ASCII value with ord().</li><li>Prints the character for that value with chr().</li></ol>
+</details>
+<details class="seo-lang">
+<summary><h3>ASCII Value And Character Conversion in C# — 1 solution</h3></summary>
+<h4>int/char casting</h4>
+<pre><code class="language-csharp">using System;
+class Program {
+    static void Main() {
+        char c = Console.ReadLine().Trim()[0];
+        int n = int.Parse(Console.ReadLine().Trim());
+        Console.WriteLine((int)c);
+        Console.WriteLine((char)n);
+    }
+}</code></pre>
+<ol class="seo-explain"><li>Reads the character from the first line.</li><li>Reads the integer from the second line.</li><li>Casts the character to an int and prints its ASCII value.</li><li>Casts the integer to a char and prints the matching character.</li></ol>
+</details>
+<details class="seo-lang">
+<summary><h3>ASCII Value And Character Conversion in Ruby — 1 solution</h3></summary>
+<h4>ord and chr</h4>
+<pre><code class="language-ruby">c = gets.chomp
+n = gets.chomp.to_i
+puts c.ord
+puts n.chr</code></pre>
+<ol class="seo-explain"><li>Reads the character from the first line.</li><li>Reads the integer from the second line.</li><li>Prints the character&#x27;s ASCII value with .ord.</li><li>Prints the character for that value with .chr.</li></ol>
+</details>
+  <h2>Frequently Asked Questions</h2>
+  <div class="seo-faq">
+    <div class="seo-faq-item"><h4>What does ord() do in Python?</h4><p>ord(c) takes a single character and returns its ASCII (Unicode) code point as an integer — ord(&quot;A&quot;) is 65.</p></div>
+    <div class="seo-faq-item"><h4>What does chr() do in Python?</h4><p>chr(n) is the opposite of ord(): it takes an integer code point and returns the character it represents — chr(98) is &quot;b&quot;.</p></div>
+    <div class="seo-faq-item"><h4>How do other languages do this?</h4><p>Most languages let you cast a character straight to an integer and back (int c, char n in C/C++/Java/C#), or provide helpers like JavaScript&#x27;s charCodeAt()/fromCharCode().</p></div>
+  </div>
+</main>
+
+<!-- ══ RESULT OVERLAY ══ -->
+<div id="result-overlay">
+  <div class="result-card">
+    <button class="result-close" onclick="closeResult()">✕</button>
+
+    <div class="result-status-banner" id="res-banner">
+      <div id="res-banner-title">—</div>
+      <div class="status-sub" id="res-banner-sub">—</div>
+    </div>
+
+    <!-- Two-column layout: submission + typing stats on the left, graphs on the right -->
+    <div class="result-body-grid">
+
+      <!-- LEFT COLUMN: status stats + typing analytics numbers -->
+      <div class="result-col result-col-left">
+        <div class="result-grid" id="res-grid"><!-- JS filled --></div>
+
+        <div class="result-section-title">Typing Analytics</div>
+        <div class="paste-warn" id="paste-warn">⚠️ Paste detected. Typing analytics may not be accurate.</div>
+        <div class="typing-analytics-grid">
+          <div class="analytics-box"><h5>WPM</h5><div class="analytics-val" id="ra-wpm">—</div><div class="analytics-sub">Words per minute</div></div>
+          <div class="analytics-box"><h5>Accuracy</h5><div class="analytics-val" id="ra-acc">—</div><div class="analytics-sub">Correct keystrokes</div></div>
+          <div class="analytics-box"><h5>Consistency</h5><div class="analytics-val" id="ra-con">—</div><div class="analytics-sub">Speed variation score</div></div>
+          <div class="analytics-box"><h5>Active Time</h5><div class="analytics-val" id="ra-time">—</div><div class="analytics-sub">Time actively typing</div></div>
+          <div class="analytics-box"><h5>Keystrokes</h5><div class="analytics-val" id="ra-ks">—</div><div class="analytics-sub">Total key presses</div></div>
+          <div class="analytics-box"><h5>Backspaces</h5><div class="analytics-val" id="ra-bs">—</div><div class="analytics-sub">Corrections made</div></div>
+        </div>
+      </div>
+
+      <!-- RIGHT COLUMN: graphs -->
+      <div class="result-col result-col-right">
+        <div class="chart-wrap">
+          <h5>Typing Speed Over Time (WPM)</h5>
+          <div class="chart-canvas-box"><canvas id="wpm-chart"></canvas></div>
+        </div>
+        <div class="chart-wrap">
+          <h5>Keystroke Timeline</h5>
+          <div class="chart-canvas-box"><canvas id="ks-chart"></canvas></div>
+        </div>
+      </div>
+
+    </div><!-- /result-body-grid -->
+
+    <div class="result-actions">
+      <button class="btn-retry" onclick="closeResult()">Try Again</button>
+      <button class="btn-next"  onclick="nextProblem()">Next Problem →</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast container -->
+<div class="toast-container" id="toast-container"></div>
+
+<!-- This problem's data: question + reference solutions per language (read by problem-app.js / practice-engine.js) -->
+<script>
+window.ROCKET_PROBLEM = {"file": "ascii-value-and-character-conversion.html", "h1": "ASCII Value And Character Conversion", "question": {"id": 18, "title": "ASCII Value And Character Conversion", "difficulty": "Easy", "topic": "Strings", "timeLimit": "1 sec", "memoryLimit": "256 MB", "description": "You are given a single character and an integer. Print the ASCII value of the given character, then print the character corresponding to the given integer's ASCII value.", "inputFormat": "• First line: a single character `c`\n• Second line: an integer `n`", "outputFormat": "Print two lines:\n1. The ASCII value of `c`\n2. The character whose ASCII value is `n`", "constraints": "• c is a single printable character.\n• 0 ≤ n ≤ 127", "sampleInput": "A\n98", "sampleOutput": "65\nb", "explanation": "The ASCII value of \"A\" is 65, and the character with ASCII value 98 is \"b\".", "hint": "`ord(c)` gives a character's ASCII value; `chr(n)` gives the character for a given ASCII value.", "allowedSyntax": ["input", "int", "print", "ord", "chr"], "testCases": [{"input": "A\n98", "expectedOutput": "65\nb"}], "hiddenTestCases": [{"input": "a\n65", "expectedOutput": "97\nA"}, {"input": "Z\n97", "expectedOutput": "90\na"}, {"input": "5\n48", "expectedOutput": "53\n0"}, {"input": "m\n77", "expectedOutput": "109\nM"}]}};
+window.__rocketSolutions = {"18": {"python": [{"name": "ord() and chr()", "code": "ch = input()\nnum = int(input())\nprint(ord(ch))\nprint(chr(num))", "explain": ["Reads a single character from input and stores it as ch.", "Reads an integer from input and stores it as num.", "Prints the ASCII value of ch.", "Prints the character corresponding to the ASCII value num."]}, {"name": "Intermediate variables", "code": "ch = input()\nnum = int(input())\nascii_val = ord(ch)\nnew_char = chr(num)\nprint(ascii_val)\nprint(new_char)", "explain": ["Reads a single character from input and stores it as ch.", "Reads an integer from input and stores it as num.", "Stores the ASCII value of ch in ascii_val.", "Stores the character for the ASCII value num in new_char.", "Prints ascii_val.", "Prints new_char."]}, {"name": "Single combined string", "code": "ch = input()\nnum = int(input())\nresult = str(ord(ch)) + \"\\n\" + str(chr(num))\nprint(result)", "explain": ["Reads a single character from input and stores it as ch.", "Reads an integer from input and stores it as num.", "Builds one string containing the ASCII value of ch and the character for num, separated by a newline.", "Prints the combined result in a single call."]}], "javascript": [{"name": "charCodeAt() + fromCharCode()", "code": "const lines = require(\"fs\").readFileSync(0, \"utf8\").split(\"\\n\");\nconst c = lines[0].trim();\nconst n = parseInt(lines[1].trim());\nconsole.log(c.charCodeAt(0));\nconsole.log(String.fromCharCode(n));", "explain": ["Reads all input and splits it into lines.", "Takes the character from the first line.", "Takes the integer from the second line.", "Prints the character's ASCII code with charCodeAt(0).", "Prints the character for that code with String.fromCharCode()."]}], "java": [{"name": "int/char casting", "code": "import java.util.Scanner;\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        char c = sc.nextLine().trim().charAt(0);\n        int n = Integer.parseInt(sc.nextLine().trim());\n        System.out.println((int) c);\n        System.out.println((char) n);\n    }\n}", "explain": ["Reads the character from the first line.", "Reads the integer from the second line.", "Casts the character to an int to get its ASCII value.", "Casts the integer to a char to get the matching character.", "Prints both results."]}], "cpp": [{"name": "int/char casting", "code": "#include <iostream>\nusing namespace std;\nint main() {\n    char c;\n    int n;\n    cin >> c >> n;\n    cout << (int)c << endl;\n    cout << (char)n << endl;\n    return 0;\n}", "explain": ["Reads a character and an integer directly with cin.", "Casts the character to an int to print its ASCII value.", "Casts the integer to a char to print the matching character."]}], "c": [{"name": "int/char casting", "code": "#include <stdio.h>\nint main() {\n    char c;\n    int n;\n    scanf(\" %c %d\", &c, &n);\n    printf(\"%d\\n\", (int)c);\n    printf(\"%c\\n\", (char)n);\n    return 0;\n}", "explain": ["Reads a character and an integer with scanf (the leading space skips whitespace before %c).", "Casts the character to an int and prints its ASCII value.", "Casts the integer to a char and prints the matching character."]}], "typescript": [{"name": "charCodeAt() + fromCharCode()", "code": "const lines: string[] = require(\"fs\").readFileSync(0, \"utf8\").split(\"\\n\");\nconst c: string = lines[0].trim();\nconst n: number = parseInt(lines[1].trim());\nconsole.log(c.charCodeAt(0));\nconsole.log(String.fromCharCode(n));", "explain": ["Reads all input and splits it into lines.", "Takes the character from the first line and the number from the second.", "Prints the character's ASCII code.", "Prints the character for that code."]}], "go": [{"name": "rune conversion", "code": "package main\nimport \"fmt\"\nfunc main() {\n    var c string\n    var n int\n    fmt.Scan(&c, &n)\n    fmt.Println(int(c[0]))\n    fmt.Println(string(rune(n)))\n}", "explain": ["Reads a one-character string and an integer.", "Converts the first byte of the string to an int and prints it.", "Converts the integer to a rune and then a string, and prints it."]}], "rust": [{"name": "as u32 / char::from_u32", "code": "use std::io::{self, Read};\nfn main() {\n    let mut text = String::new();\n    io::stdin().read_to_string(&mut text).unwrap();\n    let mut it = text.split_whitespace();\n    let c = it.next().unwrap().chars().next().unwrap();\n    let n: u32 = it.next().unwrap().parse().unwrap();\n    println!(\"{}\", c as u32);\n    println!(\"{}\", char::from_u32(n).unwrap());\n}", "explain": ["Reads all of standard input.", "Splits it into whitespace-separated tokens.", "Takes the first character of the first token.", "Parses the second token as a u32.", "Prints the character's numeric value, then the character for that value."]}], "kotlin": [{"name": ".code and .toChar()", "code": "fun main() {\n    val c = readLine()!!.trim()[0]\n    val n = readLine()!!.trim().toInt()\n    println(c.code)\n    println(n.toChar())\n}", "explain": ["Reads the first character from the first line.", "Reads the integer from the second line.", "Prints the character's code with .code.", "Prints the character for that code with .toChar()."]}], "swift": [{"name": "asciiValue + UnicodeScalar", "code": "let c = Array(readLine()!)[0]\nlet n = Int(readLine()!)!\nprint(c.asciiValue!)\nprint(Character(UnicodeScalar(n)!))", "explain": ["Reads the first character from the first line.", "Reads the integer from the second line.", "Prints the character's ASCII value.", "Builds a Character from the integer's Unicode scalar and prints it."]}], "php": [{"name": "ord() and chr()", "code": "<?php\n$c = trim(fgets(STDIN));\n$n = intval(trim(fgets(STDIN)));\necho ord($c), \"\\n\";\necho chr($n), \"\\n\";", "explain": ["Reads the character from the first line.", "Reads the integer from the second line.", "Prints the character's ASCII value with ord().", "Prints the character for that value with chr()."]}], "csharp": [{"name": "int/char casting", "code": "using System;\nclass Program {\n    static void Main() {\n        char c = Console.ReadLine().Trim()[0];\n        int n = int.Parse(Console.ReadLine().Trim());\n        Console.WriteLine((int)c);\n        Console.WriteLine((char)n);\n    }\n}", "explain": ["Reads the character from the first line.", "Reads the integer from the second line.", "Casts the character to an int and prints its ASCII value.", "Casts the integer to a char and prints the matching character."]}], "ruby": [{"name": "ord and chr", "code": "c = gets.chomp\nn = gets.chomp.to_i\nputs c.ord\nputs n.chr", "explain": ["Reads the character from the first line.", "Reads the integer from the second line.", "Prints the character's ASCII value with .ord.", "Prints the character for that value with .chr."]}]}};
+</script>
+
+<!-- Monaco loader (deferred; the editor itself is fetched at idle time) -->
+<script>var require = { paths: { vs: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs' } };</script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs/loader.min.js"></script>
+<!-- Shared runtime, cached across all problem pages. Keep this order: coding-core -> problem-app -> practice-engine.
+     The ../compilers/*.js files are loaded lazily by problem-app.js (not listed here on purpose). -->
+<script defer src="coding-core.js"></script>
+<script defer src="problem-app.js"></script>
+<script defer src="practice-engine.js"></script>
+</body>
+</html>

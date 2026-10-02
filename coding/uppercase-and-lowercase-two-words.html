@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Uppercase First Word, Lowercase Second Word in 13 Languages | Rocket Typing</title>
+<meta name="description" content="Convert the first of two words to uppercase and the second to lowercase in 13 languages – Python split()+upper()/lower(), f-strings, and the equivalent in Java, C++ and more.">
+<meta name="keywords" content="python upper lower string, format two words, split string by space, tuple unpacking python, coding practice strings">
+<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+<link rel="canonical" href="https://www.rockettyping.com/coding/uppercase-and-lowercase-two-words">
+<meta http-equiv="Content-Security-Policy" content="object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Uppercase First Word, Lowercase Second Word in 13 Languages | Rocket Typing">
+<meta property="og:description" content="Convert the first of two words to uppercase and the second to lowercase in 13 languages – Python split()+upper()/lower(), f-strings, and the equivalent in Java, C++ and more.">
+<meta property="og:url" content="https://www.rockettyping.com/coding/uppercase-and-lowercase-two-words">
+<meta property="og:image" content="https://www.rockettyping.com/images/og-banner.webp">
+<meta property="og:site_name" content="Rocket Typing">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Uppercase First Word, Lowercase Second Word in 13 Languages | Rocket Typing">
+<meta name="twitter:description" content="Convert the first of two words to uppercase and the second to lowercase in 13 languages – Python split()+upper()/lower(), f-strings, and the equivalent in Java, C++ and more.">
+<meta name="twitter:image" content="https://www.rockettyping.com/images/og-banner.webp">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "LearningResource",
+  "name": "Format Two Words — Coding Practice in 13 Languages",
+  "description": "Convert the first of two words to uppercase and the second to lowercase in 13 languages – Python split()+upper()/lower(), f-strings, and the equivalent in Java, C++ and more.",
+  "educationalLevel": "Beginner",
+  "learningResourceType": "Interactive coding exercise",
+  "teaches": "Format Two Words in 13 programming languages (Python, JavaScript, Java, C, C++, TypeScript, Go, Rust, Kotlin, Swift, PHP, C# and Ruby)",
+  "inLanguage": "en",
+  "isAccessibleForFree": true,
+  "isPartOf": {
+    "@type": "Course",
+    "name": "Free Coding Practice with Typing Speed Test",
+    "url": "https://www.rockettyping.com/coding/"
+  },
+  "provider": {
+    "@type": "Organization",
+    "name": "Rocket Typing",
+    "sameAs": "https://www.rockettyping.com"
+  },
+  "url": "https://www.rockettyping.com/coding/uppercase-and-lowercase-two-words"
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "How do you split a line into two words in Python?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Call s.split(\" \") to split on the space, giving a list of two strings, or unpack directly with a, b = s.split(\" \")."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What's the difference between .upper() and .capitalize()?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": ".upper() makes every character uppercase. .capitalize() only uppercases the first character and lowercases the rest. This problem needs the whole word uppercased, so .upper() is correct."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I do this in one line with an f-string?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes: print(f\"{a.upper()} {b.lower()}\") formats both converted words into one string in a single statement."
+      }
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://www.rockettyping.com/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Coding Practice",
+      "item": "https://www.rockettyping.com/coding/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": "Format Two Words",
+      "item": "https://www.rockettyping.com/coding/uppercase-and-lowercase-two-words"
+    }
+  ]
+}
+</script>
+<link rel="icon" type="image/png" sizes="32x32" href="../images/favicon-32.webp">
+<link rel="icon" type="image/png" sizes="16x16" href="../images/favicon-16.webp">
+<link rel="apple-touch-icon" href="../images/logo-192.webp">
+<meta name="theme-color" content="#0a0a23">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@300;400;500;700&family=Inter:wght@300;400;500;600;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@300;400;500;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"></noscript>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-136SVFZRDF"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-136SVFZRDF');</script>
+<link rel="stylesheet" href="coding.css">
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+<!-- Monaco's stylesheet: loaded without blocking first paint (the data-name attribute is what Monaco's loader looks for) -->
+<link rel="stylesheet" media="print" onload="this.media='all'" data-name="vs/editor/editor.main" href="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs/editor/editor.main.min.css">
+<script type="text/javascript" async="async" data-noptimize="1" data-cfasync="false" src="//scripts.scriptwrapper.com/tags/31b6b722-d3b7-49a8-acd3-2264f19c9dc5.js"></script>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="/" class="nav-logo"><span class="rocket">🚀</span>Rocket<span>Typing</span></a>
+  <div class="nav-links">
+    <button class="nav-btn" onclick="goHome()">⌨️ Typing Test</button>
+    <a href="./#dashboard" class="nav-btn">Dashboard</a>
+    <a href="./#problems" class="nav-btn active">Problems</a>
+    <a href="./#profile" class="nav-btn">Profile</a>
+  </div>
+</nav>
+
+<div id="app">
+
+  <!-- ══ WORKSPACE VIEW ══ -->
+  <div id="view-workspace" class="view active">
+    <!-- Left: problem description -->
+    <div class="workspace-sidebar">
+      <div class="sidebar-tabs">
+        <button class="sidebar-tab active" onclick="setSidebarTab('desc',this)">Description</button>
+        <button class="sidebar-tab" onclick="setSidebarTab('notes',this)">Notes</button>
+        <button class="sidebar-tab" onclick="setSidebarTab('hint',this)">Hint</button>
+      </div>
+      <div class="sidebar-content" id="sidebar-desc" data-prerendered="1">
+    <div class="prob-meta">
+      <h1>#17 Format Two Words</h1>
+      <span class="badge easy">Easy</span>
+      <span class="meta-pill">⏱ 1 sec</span>
+      <span class="meta-pill">💾 256 MB</span>
+      <span class="meta-pill">🏷 Strings</span>
+      <button onclick="toggleBookmark(17)" id="bm-btn-17" style="background:none;border:1px solid var(--border);color:var(--text2);padding:4px 10px;border-radius:5px;cursor:pointer;font-size:11px">🔖 Bookmark</button>
+    </div>
+    <div class="prob-section"><h2>Problem Statement</h2><div class="prob-text">You are given two words separated by a single space, on one line. Convert the first word to uppercase and the second word to lowercase, then print them separated by a space.</div></div>
+    <div class="prob-section"><h2>Input Format</h2><div class="prob-text">A single line containing two words separated by a space.</div></div>
+    <div class="prob-section"><h2>Output Format</h2><div class="prob-text">Print the uppercased first word and the lowercased second word, separated by a single space.</div></div>
+    <div class="prob-section"><h2>Constraints</h2><div class="prob-text">• Each word contains 1 to 30 letters.</div></div>
+    <div class="prob-section"><h2>Sample Input</h2><div class="io-box">Hello World</div></div>
+    <div class="prob-section"><h2>Sample Output</h2><div class="io-box">HELLO world</div></div>
+    <div class="prob-section"><h2>Explanation</h2><div class="prob-text">&quot;Hello&quot; becomes &quot;HELLO&quot; (uppercase) and &quot;World&quot; becomes &quot;world&quot; (lowercase), printed with a space between them.</div></div>
+  </div>
+      <div class="sidebar-content" id="sidebar-notes" style="display:none">
+        <textarea id="notes-area" placeholder="Write your personal notes for this problem…"
+          style="width:100%;height:calc(100% - 0px);background:transparent;border:none;outline:none;color:var(--text);font-family:var(--font-mono);font-size:12px;resize:none;line-height:1.7"
+          oninput="saveNote()"></textarea>
+      </div>
+      <div class="sidebar-content" id="sidebar-hint" style="display:none">
+        <div class="hint-box" id="hint-content">Split the line on the space to get the two words, then apply <code>.upper()</code> and <code>.lower()</code>.</div>
+      </div>
+    </div>
+
+    <!-- Right: editor + output -->
+    <div class="workspace-main">
+      <div class="editor-toolbar">
+        <select class="lang-select" id="lang-select" onchange="changeLanguage()">
+          <option value="python">Python</option>
+          <option value="javascript">JavaScript</option>
+          <option value="java">Java</option>
+          <option value="cpp">C++</option>
+          <option value="c">C</option>
+          <option value="typescript">TypeScript</option>
+          <option value="go">Go</option>
+          <option value="rust">Rust</option>
+          <option value="kotlin">Kotlin</option>
+          <option value="swift">Swift</option>
+          <option value="php">PHP</option>
+          <option value="csharp">C#</option>
+          <option value="ruby">Ruby</option>
+        </select>
+
+        <button class="editor-btn" onclick="resetCode()" title="Reset code">↺ Reset</button>
+        <button class="editor-btn" onclick="copyCode()"  title="Copy code">📋 Copy</button>
+        <button class="editor-btn" onclick="downloadCode()" title="Download">⬇ Save</button>
+        <button class="editor-btn" onclick="uploadCode()"   title="Upload file">⬆ Upload</button>
+        <input type="file" id="file-upload" accept=".py,.js,.java,.cpp,.c,.ts,.go,.rs,.kt,.swift,.php,.cs,.rb" style="display:none" onchange="handleUpload(event)">
+
+        <button class="editor-btn mic" id="mic-btn" onclick="toggleMic()" title="Voice to Code">🎤 Voice</button>
+
+        <div class="toolbar-spacer"></div>
+
+        <span class="timer-display" id="workspace-timer">00:00</span>
+        <span class="autosave-dot" id="autosave-dot"></span>
+
+        <button class="editor-btn run"    id="run-btn"    onclick="runCode()">▶ Run</button>
+        <button class="editor-btn submit" id="submit-btn" onclick="submitCode()">⚡ Submit</button>
+      </div>
+
+      <!-- Monaco -->
+      <div class="editor-wrap">
+        <div id="monaco-editor"></div>
+        <!-- Mic panel -->
+        <div class="mic-panel" id="mic-panel">
+          <h4>🎤 Voice to Code</h4>
+          <div class="mic-transcript" id="mic-transcript">Say something…</div>
+          <div class="mic-controls">
+            <button class="mic-ctrl" onclick="pauseMic()">⏸ Pause</button>
+            <button class="mic-ctrl" onclick="resumeMic()">▶ Resume</button>
+            <button class="mic-ctrl" onclick="stopMic()">⏹ Stop</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Output panel -->
+      <div class="output-panel">
+        <div class="output-tabs">
+          <button class="output-tab active" onclick="setOutputTab('output',this)">Output</button>
+          <button class="output-tab" onclick="setOutputTab('testcases',this)">Test Cases</button>
+          <button class="output-tab" onclick="setOutputTab('console',this)">Console</button>
+        </div>
+        <div class="output-body" id="output-output">
+          <div class="output-line dim">Click "Run" to execute your code against sample test cases.</div>
+        </div>
+        <div class="output-body" id="output-testcases" style="display:none">
+          <div class="output-line dim">No test results yet.</div>
+        </div>
+        <div class="output-body" id="output-console" style="display:none">
+          <div class="output-line dim">Console output will appear here.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+</div><!-- #app -->
+
+<main class="seo-content" id="seo-content">
+  <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a> / <a href="./">Coding Practice</a> / Format Two Words</nav>
+
+  <h2>About this problem: Format Two Words</h2>
+  <p>Reading two words from one line and formatting each one differently — uppercase the first, lowercase the second — combines two everyday skills: splitting a line into tokens, and changing letter case.</p><p>Python splits on the space, then applies <code>.upper()</code> and <code>.lower()</code> to each half (optionally with tuple unpacking or an f-string); every other language offers the same pair of case-conversion methods. Solutions in all 13 languages are shown below, plus three Python variations.</p>
+  <div class="seo-facts">
+    <span class="badge easy">Easy</span>
+    <span class="meta-pill">🏷 Strings</span>
+    <span class="meta-pill">13 languages</span>
+    <span class="meta-pill">15 reference solutions</span>
+  </div>
+  <div class="lang-chips"><span class="meta-pill">Python</span><span class="meta-pill">JavaScript</span><span class="meta-pill">Java</span><span class="meta-pill">C++</span><span class="meta-pill">C</span><span class="meta-pill">TypeScript</span><span class="meta-pill">Go</span><span class="meta-pill">Rust</span><span class="meta-pill">Kotlin</span><span class="meta-pill">Swift</span><span class="meta-pill">PHP</span><span class="meta-pill">C#</span><span class="meta-pill">Ruby</span></div>
+
+  <h2>Format Two Words — solutions in 13 languages</h2>
+<details class="seo-lang" open>
+<summary><h3>Format Two Words in Python — 3 solutions</h3></summary>
+<h4>split(&quot; &quot;) + upper() / lower()</h4>
+<pre><code class="language-python">s = input()
+words = s.split(&quot; &quot;)
+print(words[0].upper() + &quot; &quot; + words[1].lower())</code></pre>
+<ol class="seo-explain"><li>Reads a line from input and stores it as s.</li><li>Splits it into two words on the space.</li><li>Prints the first word in uppercase, a space, then the second word in lowercase.</li></ol>
+<h4>Tuple unpacking</h4>
+<pre><code class="language-python">s = input()
+a, b = s.split(&quot; &quot;)
+print(a.upper() + &quot; &quot; + b.lower())</code></pre>
+<ol class="seo-explain"><li>Reads a line from input and stores it as s.</li><li>Splits it on the space and unpacks the two words directly into a and b.</li><li>Prints a in uppercase, a space, then b in lowercase.</li></ol>
+<h4>f-string</h4>
+<pre><code class="language-python">s = input()
+a, b = s.split(&quot; &quot;)
+print(f&quot;{a.upper()} {b.lower()}&quot;)</code></pre>
+<ol class="seo-explain"><li>Reads a line from input and stores it as s.</li><li>Splits it on the space and unpacks the two words into a and b.</li><li>Uses an f-string to place the uppercased a and lowercased b side by side.</li></ol>
+</details>
+<details class="seo-lang">
+<summary><h3>Format Two Words in JavaScript — 1 solution</h3></summary>
+<h4>split() + upper/lower</h4>
+<pre><code class="language-javascript">const s = require(&quot;fs&quot;).readFileSync(0, &quot;utf8&quot;).trim();
+const [a, b] = s.split(&quot; &quot;);
+console.log(a.toUpperCase() + &quot; &quot; + b.toLowerCase());</code></pre>
+<ol class="seo-explain"><li>Reads and trims the input string.</li><li>Splits it into two words on the space.</li><li>Prints the first word uppercased, a space, then the second word lowercased.</li></ol>
+</details>
+<details class="seo-lang">
+<summary><h3>Format Two Words in Java — 1 solution</h3></summary>
+<h4>split() + toUpperCase/toLowerCase</h4>
+<pre><code class="language-java">import java.util.Scanner;
+public class Main {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        String s = sc.nextLine().trim();
+        String[] parts = s.split(&quot; &quot;);
+        System.out.println(parts[0].toUpperCase() + &quot; &quot; + parts[1].toLowerCase());
+    }
+}</code></pre>
+<ol class="seo-explain"><li>Reads and trims the input line.</li><li>Splits it into two words on the space.</li><li>Prints the first word uppercased, a space, then the second word lowercased.</li></ol>
+</details>
+<details class="seo-lang">
+<summary><h3>Format Two Words in C++ — 1 solution</h3></summary>
+<h4>cin &gt;&gt; + toupper/tolower</h4>
+<pre><code class="language-cpp">#include &lt;iostream&gt;
+#include &lt;string&gt;
+#include &lt;cctype&gt;
+using namespace std;
+int main() {
+    string a, b;
+    cin &gt;&gt; a &gt;&gt; b;
+    for (char &amp;c : a) c = toupper((unsigned char)c);
+    for (char &amp;c : b) c = tolower((unsigned char)c);
+    cout &lt;&lt; a &lt;&lt; &quot; &quot; &lt;&lt; b &lt;&lt; endl;
+    return 0;
+}</code></pre>
+<ol class="seo-explain"><li>Reads the two words directly with cin &gt;&gt;.</li><li>Converts every character of the first word to uppercase.</li><li>Converts every character of the second word to lowercase.</li><li>Prints both words with a space between them.</li></ol>
+</details>
+<details class="seo-lang">
+<summary><h3>Format Two Words in C — 1 solution</h3></summary>
+<h4>scanf + toupper/tolower</h4>
+<pre><code class="language-c">#include &lt;stdio.h&gt;
+#include &lt;ctype.h&gt;
+int main() {
+    char a[35], b[35];
+    scanf(&quot;%s %s&quot;, a, b);
+    for (int i = 0; a[i]; i++) a[i] = toupper((unsigned char)a[i]);
+    for (int i = 0; b[i]; i++) b[i] = tolower((unsigned char)b[i]);
+    printf(&quot;%s %s\n&quot;, a, b);
+    return 0;
+}</code></pre>
+<ol class="seo-explain"><li>Reads the two words directly with scanf.</li><li>Converts every character of the first word to uppercase.</li><li>Converts every character of the second word to lowercase.</li><li>Prints both words with a space between them.</li></ol>
+</details>
+<details class="seo-lang">
+<summary><h3>Format Two Words in TypeScript — 1 solution</h3></summary>
+<h4>split() + upper/lower</h4>
+<pre><code class="language-typescript">const s: string = require(&quot;fs&quot;).readFileSync(0, &quot;utf8&quot;).trim();
+const [a, b]: string[] = s.split(&quot; &quot;);
+console.log(a.toUpperCase() + &quot; &quot; + b.toLowerCase());</code></pre>
+<ol class="seo-explain"><li>Reads and trims the input string.</li><li>Splits it into two words on the space.</li><li>Prints the first word uppercased, a space, then the second word lowercased.</li></ol>
+</details>
+<details class="seo-lang">
+<summary><h3>Format Two Words in Go — 1 solution</h3></summary>
+<h4>strings.Split + ToUpper/ToLower</h4>
+<pre><code class="language-go">package main
+import (
+    &quot;bufio&quot;
+    &quot;fmt&quot;
+    &quot;os&quot;
+    &quot;strings&quot;
+)
+func main() {
+    reader := bufio.NewReader(os.Stdin)
+    s, _ := reader.ReadString(&#x27;\n&#x27;)
+    s = strings.TrimSpace(s)
+    parts := strings.Split(s, &quot; &quot;)
+    fmt.Println(strings.ToUpper(parts[0]) + &quot; &quot; + strings.ToLower(parts[1]))
+}</code></pre>
+<ol class="seo-explain"><li>Reads a line and trims whitespace.</li><li>Splits it into two words on the space.</li><li>Prints the first word uppercased, a space, then the second word lowercased.</li></ol>
+</details>
+<details class="seo-lang">
+<summary><h3>Format Two Words in Rust — 1 solution</h3></summary>
+<h4>split_whitespace()</h4>
+<pre><code class="language-rust">use std::io::{self, Read};
+fn main() {
+    let mut text = String::new();
+    io::stdin().read_to_string(&amp;mut text).unwrap();
+    let s = text.trim();
+    let mut parts = s.split_whitespace();
+    let a = parts.next().unwrap();
+    let b = parts.next().unwrap();
+    println!(&quot;{} {}&quot;, a.to_uppercase(), b.to_lowercase());
+}</code></pre>
+<ol class="seo-explain"><li>Reads all of standard input and trims it.</li><li>Splits it into whitespace-separated tokens.</li><li>Takes the first token as a and the second as b.</li><li>Prints a uppercased, a space, then b lowercased.</li></ol>
+</details>
+<details class="seo-lang">
+<summary><h3>Format Two Words in Kotlin — 1 solution</h3></summary>
+<h4>Destructuring + uppercase/lowercase</h4>
+<pre><code class="language-kotlin">fun main() {
+    val (a, b) = readLine()!!.trim().split(&quot; &quot;)
+    println(a.uppercase() + &quot; &quot; + b.lowercase())
+}</code></pre>
+<ol class="seo-explain"><li>Reads and trims the input line.</li><li>Splits it into two words and destructures them into a and b.</li><li>Prints a uppercased, a space, then b lowercased.</li></ol>
+</details>
+<details class="seo-lang">
+<summary><h3>Format Two Words in Swift — 1 solution</h3></summary>
+<h4>split(separator:)</h4>
+<pre><code class="language-swift">let parts = readLine()!.split(separator: &quot; &quot;)
+let a = parts[0].uppercased()
+let b = parts[1].lowercased()
+print(&quot;\(a) \(b)&quot;)</code></pre>
+<ol class="seo-explain"><li>Reads the input line and splits it on the space.</li><li>Uppercases the first word.</li><li>Lowercases the second word.</li><li>Prints both words with a space between them.</li></ol>
+</details>
+<details class="seo-lang">
+<summary><h3>Format Two Words in PHP — 1 solution</h3></summary>
+<h4>explode() + strtoupper/strtolower</h4>
+<pre><code class="language-php">&lt;?php
+$s = trim(fgets(STDIN));
+list($a, $b) = explode(&quot; &quot;, $s);
+echo strtoupper($a), &quot; &quot;, strtolower($b), &quot;\n&quot;;</code></pre>
+<ol class="seo-explain"><li>Reads and trims the input string.</li><li>Splits it into two words on the space.</li><li>Prints the first word uppercased, a space, then the second word lowercased.</li></ol>
+</details>
+<details class="seo-lang">
+<summary><h3>Format Two Words in C# — 1 solution</h3></summary>
+<h4>Split() + ToUpper/ToLower</h4>
+<pre><code class="language-csharp">using System;
+class Program {
+    static void Main() {
+        string s = Console.ReadLine().Trim();
+        string[] parts = s.Split(&#x27; &#x27;);
+        Console.WriteLine(parts[0].ToUpper() + &quot; &quot; + parts[1].ToLower());
+    }
+}</code></pre>
+<ol class="seo-explain"><li>Reads and trims the input string.</li><li>Splits it into two words on the space.</li><li>Prints the first word uppercased, a space, then the second word lowercased.</li></ol>
+</details>
+<details class="seo-lang">
+<summary><h3>Format Two Words in Ruby — 1 solution</h3></summary>
+<h4>split + upcase/downcase</h4>
+<pre><code class="language-ruby">a, b = gets.chomp.split(&quot; &quot;)
+puts &quot;#{a.upcase} #{b.downcase}&quot;</code></pre>
+<ol class="seo-explain"><li>Reads the line, splits it on the space, and unpacks it into a and b.</li><li>Builds a string with a uppercased and b lowercased.</li><li>Prints the result.</li></ol>
+</details>
+  <h2>Frequently Asked Questions</h2>
+  <div class="seo-faq">
+    <div class="seo-faq-item"><h4>How do you split a line into two words in Python?</h4><p>Call s.split(&quot; &quot;) to split on the space, giving a list of two strings, or unpack directly with a, b = s.split(&quot; &quot;).</p></div>
+    <div class="seo-faq-item"><h4>What&#x27;s the difference between .upper() and .capitalize()?</h4><p>.upper() makes every character uppercase. .capitalize() only uppercases the first character and lowercases the rest. This problem needs the whole word uppercased, so .upper() is correct.</p></div>
+    <div class="seo-faq-item"><h4>Can I do this in one line with an f-string?</h4><p>Yes: print(f&quot;{a.upper()} {b.lower()}&quot;) formats both converted words into one string in a single statement.</p></div>
+  </div>
+</main>
+
+<!-- ══ RESULT OVERLAY ══ -->
+<div id="result-overlay">
+  <div class="result-card">
+    <button class="result-close" onclick="closeResult()">✕</button>
+
+    <div class="result-status-banner" id="res-banner">
+      <div id="res-banner-title">—</div>
+      <div class="status-sub" id="res-banner-sub">—</div>
+    </div>
+
+    <!-- Two-column layout: submission + typing stats on the left, graphs on the right -->
+    <div class="result-body-grid">
+
+      <!-- LEFT COLUMN: status stats + typing analytics numbers -->
+      <div class="result-col result-col-left">
+        <div class="result-grid" id="res-grid"><!-- JS filled --></div>
+
+        <div class="result-section-title">Typing Analytics</div>
+        <div class="paste-warn" id="paste-warn">⚠️ Paste detected. Typing analytics may not be accurate.</div>
+        <div class="typing-analytics-grid">
+          <div class="analytics-box"><h5>WPM</h5><div class="analytics-val" id="ra-wpm">—</div><div class="analytics-sub">Words per minute</div></div>
+          <div class="analytics-box"><h5>Accuracy</h5><div class="analytics-val" id="ra-acc">—</div><div class="analytics-sub">Correct keystrokes</div></div>
+          <div class="analytics-box"><h5>Consistency</h5><div class="analytics-val" id="ra-con">—</div><div class="analytics-sub">Speed variation score</div></div>
+          <div class="analytics-box"><h5>Active Time</h5><div class="analytics-val" id="ra-time">—</div><div class="analytics-sub">Time actively typing</div></div>
+          <div class="analytics-box"><h5>Keystrokes</h5><div class="analytics-val" id="ra-ks">—</div><div class="analytics-sub">Total key presses</div></div>
+          <div class="analytics-box"><h5>Backspaces</h5><div class="analytics-val" id="ra-bs">—</div><div class="analytics-sub">Corrections made</div></div>
+        </div>
+      </div>
+
+      <!-- RIGHT COLUMN: graphs -->
+      <div class="result-col result-col-right">
+        <div class="chart-wrap">
+          <h5>Typing Speed Over Time (WPM)</h5>
+          <div class="chart-canvas-box"><canvas id="wpm-chart"></canvas></div>
+        </div>
+        <div class="chart-wrap">
+          <h5>Keystroke Timeline</h5>
+          <div class="chart-canvas-box"><canvas id="ks-chart"></canvas></div>
+        </div>
+      </div>
+
+    </div><!-- /result-body-grid -->
+
+    <div class="result-actions">
+      <button class="btn-retry" onclick="closeResult()">Try Again</button>
+      <button class="btn-next"  onclick="nextProblem()">Next Problem →</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast container -->
+<div class="toast-container" id="toast-container"></div>
+
+<!-- This problem's data: question + reference solutions per language (read by problem-app.js / practice-engine.js) -->
+<script>
+window.ROCKET_PROBLEM = {"file": "uppercase-and-lowercase-two-words.html", "h1": "Format Two Words", "question": {"id": 17, "title": "Format Two Words", "difficulty": "Easy", "topic": "Strings", "timeLimit": "1 sec", "memoryLimit": "256 MB", "description": "You are given two words separated by a single space, on one line. Convert the first word to uppercase and the second word to lowercase, then print them separated by a space.", "inputFormat": "A single line containing two words separated by a space.", "outputFormat": "Print the uppercased first word and the lowercased second word, separated by a single space.", "constraints": "• Each word contains 1 to 30 letters.", "sampleInput": "Hello World", "sampleOutput": "HELLO world", "explanation": "\"Hello\" becomes \"HELLO\" (uppercase) and \"World\" becomes \"world\" (lowercase), printed with a space between them.", "hint": "Split the line on the space to get the two words, then apply `.upper()` and `.lower()`.", "allowedSyntax": ["input", "print", "string", "split", "upper", "lower"], "testCases": [{"input": "Hello World", "expectedOutput": "HELLO world"}], "hiddenTestCases": [{"input": "python JAVA", "expectedOutput": "PYTHON java"}, {"input": "Rocket Typing", "expectedOutput": "ROCKET typing"}, {"input": "AbC dEf", "expectedOutput": "ABC def"}, {"input": "test CASE", "expectedOutput": "TEST case"}]}};
+window.__rocketSolutions = {"17": {"python": [{"name": "split(\" \") + upper() / lower()", "code": "s = input()\nwords = s.split(\" \")\nprint(words[0].upper() + \" \" + words[1].lower())", "explain": ["Reads a line from input and stores it as s.", "Splits it into two words on the space.", "Prints the first word in uppercase, a space, then the second word in lowercase."]}, {"name": "Tuple unpacking", "code": "s = input()\na, b = s.split(\" \")\nprint(a.upper() + \" \" + b.lower())", "explain": ["Reads a line from input and stores it as s.", "Splits it on the space and unpacks the two words directly into a and b.", "Prints a in uppercase, a space, then b in lowercase."]}, {"name": "f-string", "code": "s = input()\na, b = s.split(\" \")\nprint(f\"{a.upper()} {b.lower()}\")", "explain": ["Reads a line from input and stores it as s.", "Splits it on the space and unpacks the two words into a and b.", "Uses an f-string to place the uppercased a and lowercased b side by side."]}], "javascript": [{"name": "split() + upper/lower", "code": "const s = require(\"fs\").readFileSync(0, \"utf8\").trim();\nconst [a, b] = s.split(\" \");\nconsole.log(a.toUpperCase() + \" \" + b.toLowerCase());", "explain": ["Reads and trims the input string.", "Splits it into two words on the space.", "Prints the first word uppercased, a space, then the second word lowercased."]}], "java": [{"name": "split() + toUpperCase/toLowerCase", "code": "import java.util.Scanner;\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        String s = sc.nextLine().trim();\n        String[] parts = s.split(\" \");\n        System.out.println(parts[0].toUpperCase() + \" \" + parts[1].toLowerCase());\n    }\n}", "explain": ["Reads and trims the input line.", "Splits it into two words on the space.", "Prints the first word uppercased, a space, then the second word lowercased."]}], "cpp": [{"name": "cin >> + toupper/tolower", "code": "#include <iostream>\n#include <string>\n#include <cctype>\nusing namespace std;\nint main() {\n    string a, b;\n    cin >> a >> b;\n    for (char &c : a) c = toupper((unsigned char)c);\n    for (char &c : b) c = tolower((unsigned char)c);\n    cout << a << \" \" << b << endl;\n    return 0;\n}", "explain": ["Reads the two words directly with cin >>.", "Converts every character of the first word to uppercase.", "Converts every character of the second word to lowercase.", "Prints both words with a space between them."]}], "c": [{"name": "scanf + toupper/tolower", "code": "#include <stdio.h>\n#include <ctype.h>\nint main() {\n    char a[35], b[35];\n    scanf(\"%s %s\", a, b);\n    for (int i = 0; a[i]; i++) a[i] = toupper((unsigned char)a[i]);\n    for (int i = 0; b[i]; i++) b[i] = tolower((unsigned char)b[i]);\n    printf(\"%s %s\\n\", a, b);\n    return 0;\n}", "explain": ["Reads the two words directly with scanf.", "Converts every character of the first word to uppercase.", "Converts every character of the second word to lowercase.", "Prints both words with a space between them."]}], "typescript": [{"name": "split() + upper/lower", "code": "const s: string = require(\"fs\").readFileSync(0, \"utf8\").trim();\nconst [a, b]: string[] = s.split(\" \");\nconsole.log(a.toUpperCase() + \" \" + b.toLowerCase());", "explain": ["Reads and trims the input string.", "Splits it into two words on the space.", "Prints the first word uppercased, a space, then the second word lowercased."]}], "go": [{"name": "strings.Split + ToUpper/ToLower", "code": "package main\nimport (\n    \"bufio\"\n    \"fmt\"\n    \"os\"\n    \"strings\"\n)\nfunc main() {\n    reader := bufio.NewReader(os.Stdin)\n    s, _ := reader.ReadString('\\n')\n    s = strings.TrimSpace(s)\n    parts := strings.Split(s, \" \")\n    fmt.Println(strings.ToUpper(parts[0]) + \" \" + strings.ToLower(parts[1]))\n}", "explain": ["Reads a line and trims whitespace.", "Splits it into two words on the space.", "Prints the first word uppercased, a space, then the second word lowercased."]}], "rust": [{"name": "split_whitespace()", "code": "use std::io::{self, Read};\nfn main() {\n    let mut text = String::new();\n    io::stdin().read_to_string(&mut text).unwrap();\n    let s = text.trim();\n    let mut parts = s.split_whitespace();\n    let a = parts.next().unwrap();\n    let b = parts.next().unwrap();\n    println!(\"{} {}\", a.to_uppercase(), b.to_lowercase());\n}", "explain": ["Reads all of standard input and trims it.", "Splits it into whitespace-separated tokens.", "Takes the first token as a and the second as b.", "Prints a uppercased, a space, then b lowercased."]}], "kotlin": [{"name": "Destructuring + uppercase/lowercase", "code": "fun main() {\n    val (a, b) = readLine()!!.trim().split(\" \")\n    println(a.uppercase() + \" \" + b.lowercase())\n}", "explain": ["Reads and trims the input line.", "Splits it into two words and destructures them into a and b.", "Prints a uppercased, a space, then b lowercased."]}], "swift": [{"name": "split(separator:)", "code": "let parts = readLine()!.split(separator: \" \")\nlet a = parts[0].uppercased()\nlet b = parts[1].lowercased()\nprint(\"\\(a) \\(b)\")", "explain": ["Reads the input line and splits it on the space.", "Uppercases the first word.", "Lowercases the second word.", "Prints both words with a space between them."]}], "php": [{"name": "explode() + strtoupper/strtolower", "code": "<?php\n$s = trim(fgets(STDIN));\nlist($a, $b) = explode(\" \", $s);\necho strtoupper($a), \" \", strtolower($b), \"\\n\";", "explain": ["Reads and trims the input string.", "Splits it into two words on the space.", "Prints the first word uppercased, a space, then the second word lowercased."]}], "csharp": [{"name": "Split() + ToUpper/ToLower", "code": "using System;\nclass Program {\n    static void Main() {\n        string s = Console.ReadLine().Trim();\n        string[] parts = s.Split(' ');\n        Console.WriteLine(parts[0].ToUpper() + \" \" + parts[1].ToLower());\n    }\n}", "explain": ["Reads and trims the input string.", "Splits it into two words on the space.", "Prints the first word uppercased, a space, then the second word lowercased."]}], "ruby": [{"name": "split + upcase/downcase", "code": "a, b = gets.chomp.split(\" \")\nputs \"#{a.upcase} #{b.downcase}\"", "explain": ["Reads the line, splits it on the space, and unpacks it into a and b.", "Builds a string with a uppercased and b lowercased.", "Prints the result."]}]}};
+</script>
+
+<!-- Monaco loader (deferred; the editor itself is fetched at idle time) -->
+<script>var require = { paths: { vs: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs' } };</script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs/loader.min.js"></script>
+<!-- Shared runtime, cached across all problem pages. Keep this order: coding-core -> problem-app -> practice-engine.
+     The ../compilers/*.js files are loaded lazily by problem-app.js (not listed here on purpose). -->
+<script defer src="coding-core.js"></script>
+<script defer src="problem-app.js"></script>
+<script defer src="practice-engine.js"></script>
+</body>
+</html>

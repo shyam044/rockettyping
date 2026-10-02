@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Check If a String Is a Website URL in Python, Java, C++ &amp; More | Rocket Typing</title>
+<meta name="description" content="Check whether a string starts with &#x27;http&#x27; and ends with &#x27;.com&#x27; in 13 languages – Python startswith()/endswith(), and the equivalent in Java, C++, JavaScript and more.">
+<meta name="keywords" content="python startswith endswith, check url string, validate website string, string prefix suffix, coding practice strings">
+<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+<link rel="canonical" href="https://www.rockettyping.com/coding/check-if-string-is-a-website">
+<meta http-equiv="Content-Security-Policy" content="object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Check If a String Is a Website URL in Python, Java, C++ &amp; More | Rocket Typing">
+<meta property="og:description" content="Check whether a string starts with &#x27;http&#x27; and ends with &#x27;.com&#x27; in 13 languages – Python startswith()/endswith(), and the equivalent in Java, C++, JavaScript and more.">
+<meta property="og:url" content="https://www.rockettyping.com/coding/check-if-string-is-a-website">
+<meta property="og:image" content="https://www.rockettyping.com/images/og-banner.webp">
+<meta property="og:site_name" content="Rocket Typing">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Check If a String Is a Website URL in Python, Java, C++ &amp; More | Rocket Typing">
+<meta name="twitter:description" content="Check whether a string starts with &#x27;http&#x27; and ends with &#x27;.com&#x27; in 13 languages – Python startswith()/endswith(), and the equivalent in Java, C++, JavaScript and more.">
+<meta name="twitter:image" content="https://www.rockettyping.com/images/og-banner.webp">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "LearningResource",
+  "name": "Check If Input Is a Website — Coding Practice in 13 Languages",
+  "description": "Check whether a string starts with 'http' and ends with '.com' in 13 languages – Python startswith()/endswith(), and the equivalent in Java, C++, JavaScript and more.",
+  "educationalLevel": "Beginner",
+  "learningResourceType": "Interactive coding exercise",
+  "teaches": "Check If Input Is a Website in 13 programming languages (Python, JavaScript, Java, C, C++, TypeScript, Go, Rust, Kotlin, Swift, PHP, C# and Ruby)",
+  "inLanguage": "en",
+  "isAccessibleForFree": true,
+  "isPartOf": {
+    "@type": "Course",
+    "name": "Free Coding Practice with Typing Speed Test",
+    "url": "https://www.rockettyping.com/coding/"
+  },
+  "provider": {
+    "@type": "Organization",
+    "name": "Rocket Typing",
+    "sameAs": "https://www.rockettyping.com"
+  },
+  "url": "https://www.rockettyping.com/coding/check-if-string-is-a-website"
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "How do you check the start and end of a string in Python?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Use s.startswith(\"http\") to check the beginning and s.endswith(\".com\") to check the end, combined with and so both conditions must be true."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Why doesn't \"ftp://example.com\" count as a website here?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "It doesn't start with the literal text \"http\" — ftp:// starts with f, not h — so startswith(\"http\") returns False even though it still ends in .com."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Does this also match https:// addresses?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes — \"https\" starts with \"http\" as a substring, so s.startswith(\"http\") is True for both http:// and https:// URLs."
+      }
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://www.rockettyping.com/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Coding Practice",
+      "item": "https://www.rockettyping.com/coding/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": "Check If Input Is a Website",
+      "item": "https://www.rockettyping.com/coding/check-if-string-is-a-website"
+    }
+  ]
+}
+</script>
+<link rel="icon" type="image/png" sizes="32x32" href="../images/favicon-32.webp">
+<link rel="icon" type="image/png" sizes="16x16" href="../images/favicon-16.webp">
+<link rel="apple-touch-icon" href="../images/logo-192.webp">
+<meta name="theme-color" content="#0a0a23">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@300;400;500;700&family=Inter:wght@300;400;500;600;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@300;400;500;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"></noscript>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-136SVFZRDF"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-136SVFZRDF');</script>
+<link rel="stylesheet" href="coding.css">
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+<!-- Monaco's stylesheet: loaded without blocking first paint (the data-name attribute is what Monaco's loader looks for) -->
+<link rel="stylesheet" media="print" onload="this.media='all'" data-name="vs/editor/editor.main" href="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs/editor/editor.main.min.css">
+<script type="text/javascript" async="async" data-noptimize="1" data-cfasync="false" src="//scripts.scriptwrapper.com/tags/31b6b722-d3b7-49a8-acd3-2264f19c9dc5.js"></script>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="/" class="nav-logo"><span class="rocket">🚀</span>Rocket<span>Typing</span></a>
+  <div class="nav-links">
+    <button class="nav-btn" onclick="goHome()">⌨️ Typing Test</button>
+    <a href="./#dashboard" class="nav-btn">Dashboard</a>
+    <a href="./#problems" class="nav-btn active">Problems</a>
+    <a href="./#profile" class="nav-btn">Profile</a>
+  </div>
+</nav>
+
+<div id="app">
+
+  <!-- ══ WORKSPACE VIEW ══ -->
+  <div id="view-workspace" class="view active">
+    <!-- Left: problem description -->
+    <div class="workspace-sidebar">
+      <div class="sidebar-tabs">
+        <button class="sidebar-tab active" onclick="setSidebarTab('desc',this)">Description</button>
+        <button class="sidebar-tab" onclick="setSidebarTab('notes',this)">Notes</button>
+        <button class="sidebar-tab" onclick="setSidebarTab('hint',this)">Hint</button>
+      </div>
+      <div class="sidebar-content" id="sidebar-desc" data-prerendered="1">
+    <div class="prob-meta">
+      <h1>#16 Check If Input Is a Website</h1>
+      <span class="badge easy">Easy</span>
+      <span class="meta-pill">⏱ 1 sec</span>
+      <span class="meta-pill">💾 256 MB</span>
+      <span class="meta-pill">🏷 Strings</span>
+      <button onclick="toggleBookmark(16)" id="bm-btn-16" style="background:none;border:1px solid var(--border);color:var(--text2);padding:4px 10px;border-radius:5px;cursor:pointer;font-size:11px">🔖 Bookmark</button>
+    </div>
+    <div class="prob-section"><h2>Problem Statement</h2><div class="prob-text">You are given a string. Consider it a website if it starts with <code>http</code> (this also covers <code>https</code>) <strong>and</strong> ends with <code>.com</code>. Print <code>Website</code> if both conditions hold, otherwise print <code>Not a Website</code>.</div></div>
+    <div class="prob-section"><h2>Input Format</h2><div class="prob-text">A single string <code>s</code>.</div></div>
+    <div class="prob-section"><h2>Output Format</h2><div class="prob-text">Print exactly one line: either <code>Website</code> or <code>Not a Website</code>.</div></div>
+    <div class="prob-section"><h2>Constraints</h2><div class="prob-text">• 1 ≤ length of s ≤ 100</div></div>
+    <div class="prob-section"><h2>Sample Input</h2><div class="io-box">https://www.google.com</div></div>
+    <div class="prob-section"><h2>Sample Output</h2><div class="io-box">Website</div></div>
+    <div class="prob-section"><h2>Explanation</h2><div class="prob-text">The string starts with &quot;http&quot; and ends with &quot;.com&quot;, so both conditions are satisfied and it prints &quot;Website&quot;.</div></div>
+  </div>
+      <div class="sidebar-content" id="sidebar-notes" style="display:none">
+        <textarea id="notes-area" placeholder="Write your personal notes for this problem…"
+          style="width:100%;height:calc(100% - 0px);background:transparent;border:none;outline:none;color:var(--text);font-family:var(--font-mono);font-size:12px;resize:none;line-height:1.7"
+          oninput="saveNote()"></textarea>
+      </div>
+      <div class="sidebar-content" id="sidebar-hint" style="display:none">
+        <div class="hint-box" id="hint-content">Combine <code>.startswith(&quot;http&quot;)</code> and <code>.endswith(&quot;.com&quot;)</code> with <code>and</code>.</div>
+      </div>
+    </div>
+
+    <!-- Right: editor + output -->
+    <div class="workspace-main">
+      <div class="editor-toolbar">
+        <select class="lang-select" id="lang-select" onchange="changeLanguage()">
+          <option value="python">Python</option>
+          <option value="javascript">JavaScript</option>
+          <option value="java">Java</option>
+          <option value="cpp">C++</option>
+          <option value="c">C</option>
+          <option value="typescript">TypeScript</option>
+          <option value="go">Go</option>
+          <option value="rust">Rust</option>
+          <option value="kotlin">Kotlin</option>
+          <option value="swift">Swift</option>
+          <option value="php">PHP</option>
+          <option value="csharp">C#</option>
+          <option value="ruby">Ruby</option>
+        </select>
+
+        <button class="editor-btn" onclick="resetCode()" title="Reset code">↺ Reset</button>
+        <button class="editor-btn" onclick="copyCode()"  title="Copy code">📋 Copy</button>
+        <button class="editor-btn" onclick="downloadCode()" title="Download">⬇ Save</button>
+        <button class="editor-btn" onclick="uploadCode()"   title="Upload file">⬆ Upload</button>
+        <input type="file" id="file-upload" accept=".py,.js,.java,.cpp,.c,.ts,.go,.rs,.kt,.swift,.php,.cs,.rb" style="display:none" onchange="handleUpload(event)">
+
+        <button class="editor-btn mic" id="mic-btn" onclick="toggleMic()" title="Voice to Code">🎤 Voice</button>
+
+        <div class="toolbar-spacer"></div>
+
+        <span class="timer-display" id="workspace-timer">00:00</span>
+        <span class="autosave-dot" id="autosave-dot"></span>
+
+        <button class="editor-btn run"    id="run-btn"    onclick="runCode()">▶ Run</button>
+        <button class="editor-btn submit" id="submit-btn" onclick="submitCode()">⚡ Submit</button>
+      </div>
+
+      <!-- Monaco -->
+      <div class="editor-wrap">
+        <div id="monaco-editor"></div>
+        <!-- Mic panel -->
+        <div class="mic-panel" id="mic-panel">
+          <h4>🎤 Voice to Code</h4>
+          <div class="mic-transcript" id="mic-transcript">Say something…</div>
+          <div class="mic-controls">
+            <button class="mic-ctrl" onclick="pauseMic()">⏸ Pause</button>
+            <button class="mic-ctrl" onclick="resumeMic()">▶ Resume</button>
+            <button class="mic-ctrl" onclick="stopMic()">⏹ Stop</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Output panel -->
+      <div class="output-panel">
+        <div class="output-tabs">
+          <button class="output-tab active" onclick="setOutputTab('output',this)">Output</button>
+          <button class="output-tab" onclick="setOutputTab('testcases',this)">Test Cases</button>
+          <button class="output-tab" onclick="setOutputTab('console',this)">Console</button>
+        </div>
+        <div class="output-body" id="output-output">
+          <div class="output-line dim">Click "Run" to execute your code against sample test cases.</div>
+        </div>
+        <div class="output-body" id="output-testcases" style="display:none">
+          <div class="output-line dim">No test results yet.</div>
+        </div>
+        <div class="output-body" id="output-console" style="display:none">
+          <div class="output-line dim">Console output will appear here.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+</div><!-- #app -->
+
+<main class="seo-content" id="seo-content">
+  <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a> / <a href="./">Coding Practice</a> / Check If Input Is a Website</nav>
+
+  <h2>About this problem: Check If Input Is a Website</h2>
+  <p>Checking the start and end of a string — here, whether it looks like a web address — is a lightweight pattern that shows up everywhere from URL validation to file-extension checks.</p><p>Python combines <code>.startswith()</code> and <code>.endswith()</code> with <code>and</code>; most other languages expose nearly identical methods (<code>hasPrefix</code>/<code>hasSuffix</code> in Swift, <code>HasPrefix</code>/<code>HasSuffix</code> in Go). Solutions in all 13 languages are shown below, plus three Python variations.</p>
+  <div class="seo-facts">
+    <span class="badge easy">Easy</span>
+    <span class="meta-pill">🏷 Strings</span>
+    <span class="meta-pill">13 languages</span>
+    <span class="meta-pill">15 reference solutions</span>
+  </div>
+  <div class="lang-chips"><span class="meta-pill">Python</span><span class="meta-pill">JavaScript</span><span class="meta-pill">Java</span><span class="meta-pill">C++</span><span class="meta-pill">C</span><span class="meta-pill">TypeScript</span><span class="meta-pill">Go</span><span class="meta-pill">Rust</span><span class="meta-pill">Kotlin</span><span class="meta-pill">Swift</span><span class="meta-pill">PHP</span><span class="meta-pill">C#</span><span class="meta-pill">Ruby</span></div>
+
+  <h2>Check If Input Is a Website — solutions in 13 languages</h2>
+<details class="seo-lang" open>
+<summary><h3>Check If Input Is a Website in Python — 3 solutions</h3></summary>
+<h4>startswith() + endswith()</h4>
+<pre><code class="language-python">s = input()
+if s.startswith(&quot;http&quot;) and s.endswith(&quot;.com&quot;):
+    print(&quot;Website&quot;)
+else:
+    print(&quot;Not a Website&quot;)</code></pre>
+<ol class="seo-explain"><li>Reads a string from input and stores it as s.</li><li>Checks whether s starts with http AND ends with .com.</li><li>If both are true, prints Website.</li><li>Otherwise…</li><li>…prints Not a Website.</li></ol>
+<h4>Slicing comparison</h4>
+<pre><code class="language-python">s = input()
+is_http = s[:4] == &quot;http&quot;
+is_com = s[-4:] == &quot;.com&quot;
+if is_http and is_com:
+    print(&quot;Website&quot;)
+else:
+    print(&quot;Not a Website&quot;)</code></pre>
+<ol class="seo-explain"><li>Reads a string from input and stores it as s.</li><li>Checks whether the first four characters equal http.</li><li>Checks whether the last four characters equal .com.</li><li>If both conditions are true, prints Website.</li><li>Otherwise…</li><li>…prints Not a Website.</li></ol>
+<h4>Ternary expression</h4>
+<pre><code class="language-python">s = input()
+starts_ok = s[0:4] == &quot;http&quot;
+ends_ok = s[len(s) - 4:] == &quot;.com&quot;
+print(&quot;Website&quot; if (starts_ok and ends_ok) else &quot;Not a Website&quot;)</code></pre>
+<ol class="seo-explain"><li>Reads a string from input and stores it as s.</li><li>Checks whether the string starts with http using slicing.</li><li>Checks whether the string ends with .com using slicing based on its length.</li><li>Prints Website if both conditions hold, otherwise prints Not a Website — all in one line.</li></ol>
+</details>
+<details class="seo-lang">
+<summary><h3>Check If Input Is a Website in JavaScript — 1 solution</h3></summary>
+<h4>startsWith() + endsWith()</h4>
+<pre><code class="language-javascript">const s = require(&quot;fs&quot;).readFileSync(0, &quot;utf8&quot;).trim();
+const result = s.startsWith(&quot;http&quot;) &amp;&amp; s.endsWith(&quot;.com&quot;);
+console.log(result ? &quot;Website&quot; : &quot;Not a Website&quot;);</code></pre>
+<ol class="seo-explain"><li>Reads and trims the input string.</li><li>Checks it starts with &quot;http&quot; and ends with &quot;.com&quot;.</li><li>Prints Website or Not a Website based on the result.</li></ol>
+</details>
+<details class="seo-lang">
+<summary><h3>Check If Input Is a Website in Java — 1 solution</h3></summary>
+<h4>startsWith() + endsWith()</h4>
+<pre><code class="language-java">import java.util.Scanner;
+public class Main {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        String s = sc.nextLine().trim();
+        boolean result = s.startsWith(&quot;http&quot;) &amp;&amp; s.endsWith(&quot;.com&quot;);
+        System.out.println(result ? &quot;Website&quot; : &quot;Not a Website&quot;);
+    }
+}</code></pre>
+<ol class="seo-explain"><li>Reads and trims the input string.</li><li>Checks it starts with &quot;http&quot; and ends with &quot;.com&quot;.</li><li>Prints Website or Not a Website based on the result.</li></ol>
+</details>
+<details class="seo-lang">
+<summary><h3>Check If Input Is a Website in C++ — 1 solution</h3></summary>
+<h4>Manual prefix/suffix check</h4>
+<pre><code class="language-cpp">#include &lt;iostream&gt;
+#include &lt;string&gt;
+using namespace std;
+bool startsWith(const string &amp;s, const string &amp;p) {
+    return s.size() &gt;= p.size() &amp;&amp; s.compare(0, p.size(), p) == 0;
+}
+bool endsWith(const string &amp;s, const string &amp;p) {
+    return s.size() &gt;= p.size() &amp;&amp; s.compare(s.size() - p.size(), p.size(), p) == 0;
+}
+int main() {
+    string s;
+    getline(cin, s);
+    bool result = startsWith(s, &quot;http&quot;) &amp;&amp; endsWith(s, &quot;.com&quot;);
+    cout &lt;&lt; (result ? &quot;Website&quot; : &quot;Not a Website&quot;) &lt;&lt; endl;
+    return 0;
+}</code></pre>
+<ol class="seo-explain"><li>Defines a helper to check whether a string starts with a given prefix.</li><li>Defines a helper to check whether a string ends with a given suffix.</li><li>Reads the input line.</li><li>Uses both helpers together and prints the result.</li></ol>
+</details>
+<details class="seo-lang">
+<summary><h3>Check If Input Is a Website in C — 1 solution</h3></summary>
+<h4>strncmp() + strcmp()</h4>
+<pre><code class="language-c">#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+int main() {
+    char s[105];
+    fgets(s, sizeof(s), stdin);
+    s[strcspn(s, &quot;\n&quot;)] = &#x27;\0&#x27;;
+    int len = strlen(s);
+    int startsHttp = strncmp(s, &quot;http&quot;, 4) == 0;
+    int endsCom = len &gt;= 4 &amp;&amp; strcmp(s + len - 4, &quot;.com&quot;) == 0;
+    printf(&quot;%s\n&quot;, (startsHttp &amp;&amp; endsCom) ? &quot;Website&quot; : &quot;Not a Website&quot;);
+    return 0;
+}</code></pre>
+<ol class="seo-explain"><li>Reads a line and strips the trailing newline.</li><li>Checks the first 4 characters against &quot;http&quot; with strncmp().</li><li>Checks the last 4 characters against &quot;.com&quot; with strcmp().</li><li>Prints Website or Not a Website based on the result.</li></ol>
+</details>
+<details class="seo-lang">
+<summary><h3>Check If Input Is a Website in TypeScript — 1 solution</h3></summary>
+<h4>startsWith() + endsWith()</h4>
+<pre><code class="language-typescript">const s: string = require(&quot;fs&quot;).readFileSync(0, &quot;utf8&quot;).trim();
+const result: boolean = s.startsWith(&quot;http&quot;) &amp;&amp; s.endsWith(&quot;.com&quot;);
+console.log(result ? &quot;Website&quot; : &quot;Not a Website&quot;);</code></pre>
+<ol class="seo-explain"><li>Reads and trims the input string.</li><li>Checks it starts with &quot;http&quot; and ends with &quot;.com&quot;.</li><li>Prints Website or Not a Website based on the result.</li></ol>
+</details>
+<details class="seo-lang">
+<summary><h3>Check If Input Is a Website in Go — 1 solution</h3></summary>
+<h4>strings.HasPrefix/HasSuffix</h4>
+<pre><code class="language-go">package main
+import (
+    &quot;bufio&quot;
+    &quot;fmt&quot;
+    &quot;os&quot;
+    &quot;strings&quot;
+)
+func main() {
+    reader := bufio.NewReader(os.Stdin)
+    s, _ := reader.ReadString(&#x27;\n&#x27;)
+    s = strings.TrimSpace(s)
+    result := strings.HasPrefix(s, &quot;http&quot;) &amp;&amp; strings.HasSuffix(s, &quot;.com&quot;)
+    if result {
+        fmt.Println(&quot;Website&quot;)
+    } else {
+        fmt.Println(&quot;Not a Website&quot;)
+    }
+}</code></pre>
+<ol class="seo-explain"><li>Reads a line and trims whitespace.</li><li>Checks the prefix and suffix with strings.HasPrefix/HasSuffix.</li><li>Prints Website or Not a Website based on the result.</li></ol>
+</details>
+<details class="seo-lang">
+<summary><h3>Check If Input Is a Website in Rust — 1 solution</h3></summary>
+<h4>starts_with() + ends_with()</h4>
+<pre><code class="language-rust">use std::io::{self, Read};
+fn main() {
+    let mut text = String::new();
+    io::stdin().read_to_string(&amp;mut text).unwrap();
+    let s = text.trim();
+    let result = s.starts_with(&quot;http&quot;) &amp;&amp; s.ends_with(&quot;.com&quot;);
+    println!(&quot;{}&quot;, if result { &quot;Website&quot; } else { &quot;Not a Website&quot; });
+}</code></pre>
+<ol class="seo-explain"><li>Reads all of standard input and trims it.</li><li>Checks the prefix and suffix with starts_with()/ends_with().</li><li>Prints Website or Not a Website based on the result.</li></ol>
+</details>
+<details class="seo-lang">
+<summary><h3>Check If Input Is a Website in Kotlin — 1 solution</h3></summary>
+<h4>startsWith() + endsWith()</h4>
+<pre><code class="language-kotlin">fun main() {
+    val s = readLine()!!.trim()
+    val result = s.startsWith(&quot;http&quot;) &amp;&amp; s.endsWith(&quot;.com&quot;)
+    println(if (result) &quot;Website&quot; else &quot;Not a Website&quot;)
+}</code></pre>
+<ol class="seo-explain"><li>Reads and trims the input string.</li><li>Checks it starts with &quot;http&quot; and ends with &quot;.com&quot;.</li><li>Prints Website or Not a Website based on the result.</li></ol>
+</details>
+<details class="seo-lang">
+<summary><h3>Check If Input Is a Website in Swift — 1 solution</h3></summary>
+<h4>hasPrefix() + hasSuffix()</h4>
+<pre><code class="language-swift">let s = readLine()!
+let result = s.hasPrefix(&quot;http&quot;) &amp;&amp; s.hasSuffix(&quot;.com&quot;)
+print(result ? &quot;Website&quot; : &quot;Not a Website&quot;)</code></pre>
+<ol class="seo-explain"><li>Reads the input line.</li><li>Checks it starts with &quot;http&quot; and ends with &quot;.com&quot;.</li><li>Prints Website or Not a Website based on the result.</li></ol>
+</details>
+<details class="seo-lang">
+<summary><h3>Check If Input Is a Website in PHP — 1 solution</h3></summary>
+<h4>strpos() + substr()</h4>
+<pre><code class="language-php">&lt;?php
+$s = trim(fgets(STDIN));
+$result = (strpos($s, &quot;http&quot;) === 0) &amp;&amp; (substr($s, -4) === &quot;.com&quot;);
+echo $result ? &quot;Website&quot; : &quot;Not a Website&quot;, &quot;\n&quot;;</code></pre>
+<ol class="seo-explain"><li>Reads and trims the input string.</li><li>Checks &quot;http&quot; appears at position 0 and the last 4 characters equal &quot;.com&quot;.</li><li>Prints Website or Not a Website based on the result.</li></ol>
+</details>
+<details class="seo-lang">
+<summary><h3>Check If Input Is a Website in C# — 1 solution</h3></summary>
+<h4>StartsWith() + EndsWith()</h4>
+<pre><code class="language-csharp">using System;
+class Program {
+    static void Main() {
+        string s = Console.ReadLine().Trim();
+        bool result = s.StartsWith(&quot;http&quot;) &amp;&amp; s.EndsWith(&quot;.com&quot;);
+        Console.WriteLine(result ? &quot;Website&quot; : &quot;Not a Website&quot;);
+    }
+}</code></pre>
+<ol class="seo-explain"><li>Reads and trims the input string.</li><li>Checks it starts with &quot;http&quot; and ends with &quot;.com&quot;.</li><li>Prints Website or Not a Website based on the result.</li></ol>
+</details>
+<details class="seo-lang">
+<summary><h3>Check If Input Is a Website in Ruby — 1 solution</h3></summary>
+<h4>start_with? + end_with?</h4>
+<pre><code class="language-ruby">s = gets.chomp
+result = s.start_with?(&quot;http&quot;) &amp;&amp; s.end_with?(&quot;.com&quot;)
+puts result ? &quot;Website&quot; : &quot;Not a Website&quot;</code></pre>
+<ol class="seo-explain"><li>Reads and strips the input string.</li><li>Checks it starts with &quot;http&quot; and ends with &quot;.com&quot;.</li><li>Prints Website or Not a Website based on the result.</li></ol>
+</details>
+  <h2>Frequently Asked Questions</h2>
+  <div class="seo-faq">
+    <div class="seo-faq-item"><h4>How do you check the start and end of a string in Python?</h4><p>Use s.startswith(&quot;http&quot;) to check the beginning and s.endswith(&quot;.com&quot;) to check the end, combined with and so both conditions must be true.</p></div>
+    <div class="seo-faq-item"><h4>Why doesn&#x27;t &quot;ftp://example.com&quot; count as a website here?</h4><p>It doesn&#x27;t start with the literal text &quot;http&quot; — ftp:// starts with f, not h — so startswith(&quot;http&quot;) returns False even though it still ends in .com.</p></div>
+    <div class="seo-faq-item"><h4>Does this also match https:// addresses?</h4><p>Yes — &quot;https&quot; starts with &quot;http&quot; as a substring, so s.startswith(&quot;http&quot;) is True for both http:// and https:// URLs.</p></div>
+  </div>
+</main>
+
+<!-- ══ RESULT OVERLAY ══ -->
+<div id="result-overlay">
+  <div class="result-card">
+    <button class="result-close" onclick="closeResult()">✕</button>
+
+    <div class="result-status-banner" id="res-banner">
+      <div id="res-banner-title">—</div>
+      <div class="status-sub" id="res-banner-sub">—</div>
+    </div>
+
+    <!-- Two-column layout: submission + typing stats on the left, graphs on the right -->
+    <div class="result-body-grid">
+
+      <!-- LEFT COLUMN: status stats + typing analytics numbers -->
+      <div class="result-col result-col-left">
+        <div class="result-grid" id="res-grid"><!-- JS filled --></div>
+
+        <div class="result-section-title">Typing Analytics</div>
+        <div class="paste-warn" id="paste-warn">⚠️ Paste detected. Typing analytics may not be accurate.</div>
+        <div class="typing-analytics-grid">
+          <div class="analytics-box"><h5>WPM</h5><div class="analytics-val" id="ra-wpm">—</div><div class="analytics-sub">Words per minute</div></div>
+          <div class="analytics-box"><h5>Accuracy</h5><div class="analytics-val" id="ra-acc">—</div><div class="analytics-sub">Correct keystrokes</div></div>
+          <div class="analytics-box"><h5>Consistency</h5><div class="analytics-val" id="ra-con">—</div><div class="analytics-sub">Speed variation score</div></div>
+          <div class="analytics-box"><h5>Active Time</h5><div class="analytics-val" id="ra-time">—</div><div class="analytics-sub">Time actively typing</div></div>
+          <div class="analytics-box"><h5>Keystrokes</h5><div class="analytics-val" id="ra-ks">—</div><div class="analytics-sub">Total key presses</div></div>
+          <div class="analytics-box"><h5>Backspaces</h5><div class="analytics-val" id="ra-bs">—</div><div class="analytics-sub">Corrections made</div></div>
+        </div>
+      </div>
+
+      <!-- RIGHT COLUMN: graphs -->
+      <div class="result-col result-col-right">
+        <div class="chart-wrap">
+          <h5>Typing Speed Over Time (WPM)</h5>
+          <div class="chart-canvas-box"><canvas id="wpm-chart"></canvas></div>
+        </div>
+        <div class="chart-wrap">
+          <h5>Keystroke Timeline</h5>
+          <div class="chart-canvas-box"><canvas id="ks-chart"></canvas></div>
+        </div>
+      </div>
+
+    </div><!-- /result-body-grid -->
+
+    <div class="result-actions">
+      <button class="btn-retry" onclick="closeResult()">Try Again</button>
+      <button class="btn-next"  onclick="nextProblem()">Next Problem →</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast container -->
+<div class="toast-container" id="toast-container"></div>
+
+<!-- This problem's data: question + reference solutions per language (read by problem-app.js / practice-engine.js) -->
+<script>
+window.ROCKET_PROBLEM = {"file": "check-if-string-is-a-website.html", "h1": "Check If Input Is a Website", "question": {"id": 16, "title": "Check If Input Is a Website", "difficulty": "Easy", "topic": "Strings", "timeLimit": "1 sec", "memoryLimit": "256 MB", "description": "You are given a string. Consider it a website if it starts with `http` (this also covers `https`) **and** ends with `.com`. Print `Website` if both conditions hold, otherwise print `Not a Website`.", "inputFormat": "A single string `s`.", "outputFormat": "Print exactly one line: either `Website` or `Not a Website`.", "constraints": "• 1 ≤ length of s ≤ 100", "sampleInput": "https://www.google.com", "sampleOutput": "Website", "explanation": "The string starts with \"http\" and ends with \".com\", so both conditions are satisfied and it prints \"Website\".", "hint": "Combine `.startswith(\"http\")` and `.endswith(\".com\")` with `and`.", "allowedSyntax": ["input", "print", "string", "conditional", "startswith", "endswith"], "testCases": [{"input": "https://www.google.com", "expectedOutput": "Website"}], "hiddenTestCases": [{"input": "http://example.com", "expectedOutput": "Website"}, {"input": "ftp://example.com", "expectedOutput": "Not a Website"}, {"input": "http://example.org", "expectedOutput": "Not a Website"}, {"input": "https://openai.com", "expectedOutput": "Website"}, {"input": "www.test.com", "expectedOutput": "Not a Website"}]}};
+window.__rocketSolutions = {"16": {"python": [{"name": "startswith() + endswith()", "code": "s = input()\nif s.startswith(\"http\") and s.endswith(\".com\"):\n    print(\"Website\")\nelse:\n    print(\"Not a Website\")", "explain": ["Reads a string from input and stores it as s.", "Checks whether s starts with http AND ends with .com.", "If both are true, prints Website.", "Otherwise…", "…prints Not a Website."]}, {"name": "Slicing comparison", "code": "s = input()\nis_http = s[:4] == \"http\"\nis_com = s[-4:] == \".com\"\nif is_http and is_com:\n    print(\"Website\")\nelse:\n    print(\"Not a Website\")", "explain": ["Reads a string from input and stores it as s.", "Checks whether the first four characters equal http.", "Checks whether the last four characters equal .com.", "If both conditions are true, prints Website.", "Otherwise…", "…prints Not a Website."]}, {"name": "Ternary expression", "code": "s = input()\nstarts_ok = s[0:4] == \"http\"\nends_ok = s[len(s) - 4:] == \".com\"\nprint(\"Website\" if (starts_ok and ends_ok) else \"Not a Website\")", "explain": ["Reads a string from input and stores it as s.", "Checks whether the string starts with http using slicing.", "Checks whether the string ends with .com using slicing based on its length.", "Prints Website if both conditions hold, otherwise prints Not a Website — all in one line."]}], "javascript": [{"name": "startsWith() + endsWith()", "code": "const s = require(\"fs\").readFileSync(0, \"utf8\").trim();\nconst result = s.startsWith(\"http\") && s.endsWith(\".com\");\nconsole.log(result ? \"Website\" : \"Not a Website\");", "explain": ["Reads and trims the input string.", "Checks it starts with \"http\" and ends with \".com\".", "Prints Website or Not a Website based on the result."]}], "java": [{"name": "startsWith() + endsWith()", "code": "import java.util.Scanner;\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        String s = sc.nextLine().trim();\n        boolean result = s.startsWith(\"http\") && s.endsWith(\".com\");\n        System.out.println(result ? \"Website\" : \"Not a Website\");\n    }\n}", "explain": ["Reads and trims the input string.", "Checks it starts with \"http\" and ends with \".com\".", "Prints Website or Not a Website based on the result."]}], "cpp": [{"name": "Manual prefix/suffix check", "code": "#include <iostream>\n#include <string>\nusing namespace std;\nbool startsWith(const string &s, const string &p) {\n    return s.size() >= p.size() && s.compare(0, p.size(), p) == 0;\n}\nbool endsWith(const string &s, const string &p) {\n    return s.size() >= p.size() && s.compare(s.size() - p.size(), p.size(), p) == 0;\n}\nint main() {\n    string s;\n    getline(cin, s);\n    bool result = startsWith(s, \"http\") && endsWith(s, \".com\");\n    cout << (result ? \"Website\" : \"Not a Website\") << endl;\n    return 0;\n}", "explain": ["Defines a helper to check whether a string starts with a given prefix.", "Defines a helper to check whether a string ends with a given suffix.", "Reads the input line.", "Uses both helpers together and prints the result."]}], "c": [{"name": "strncmp() + strcmp()", "code": "#include <stdio.h>\n#include <string.h>\nint main() {\n    char s[105];\n    fgets(s, sizeof(s), stdin);\n    s[strcspn(s, \"\\n\")] = '\\0';\n    int len = strlen(s);\n    int startsHttp = strncmp(s, \"http\", 4) == 0;\n    int endsCom = len >= 4 && strcmp(s + len - 4, \".com\") == 0;\n    printf(\"%s\\n\", (startsHttp && endsCom) ? \"Website\" : \"Not a Website\");\n    return 0;\n}", "explain": ["Reads a line and strips the trailing newline.", "Checks the first 4 characters against \"http\" with strncmp().", "Checks the last 4 characters against \".com\" with strcmp().", "Prints Website or Not a Website based on the result."]}], "typescript": [{"name": "startsWith() + endsWith()", "code": "const s: string = require(\"fs\").readFileSync(0, \"utf8\").trim();\nconst result: boolean = s.startsWith(\"http\") && s.endsWith(\".com\");\nconsole.log(result ? \"Website\" : \"Not a Website\");", "explain": ["Reads and trims the input string.", "Checks it starts with \"http\" and ends with \".com\".", "Prints Website or Not a Website based on the result."]}], "go": [{"name": "strings.HasPrefix/HasSuffix", "code": "package main\nimport (\n    \"bufio\"\n    \"fmt\"\n    \"os\"\n    \"strings\"\n)\nfunc main() {\n    reader := bufio.NewReader(os.Stdin)\n    s, _ := reader.ReadString('\\n')\n    s = strings.TrimSpace(s)\n    result := strings.HasPrefix(s, \"http\") && strings.HasSuffix(s, \".com\")\n    if result {\n        fmt.Println(\"Website\")\n    } else {\n        fmt.Println(\"Not a Website\")\n    }\n}", "explain": ["Reads a line and trims whitespace.", "Checks the prefix and suffix with strings.HasPrefix/HasSuffix.", "Prints Website or Not a Website based on the result."]}], "rust": [{"name": "starts_with() + ends_with()", "code": "use std::io::{self, Read};\nfn main() {\n    let mut text = String::new();\n    io::stdin().read_to_string(&mut text).unwrap();\n    let s = text.trim();\n    let result = s.starts_with(\"http\") && s.ends_with(\".com\");\n    println!(\"{}\", if result { \"Website\" } else { \"Not a Website\" });\n}", "explain": ["Reads all of standard input and trims it.", "Checks the prefix and suffix with starts_with()/ends_with().", "Prints Website or Not a Website based on the result."]}], "kotlin": [{"name": "startsWith() + endsWith()", "code": "fun main() {\n    val s = readLine()!!.trim()\n    val result = s.startsWith(\"http\") && s.endsWith(\".com\")\n    println(if (result) \"Website\" else \"Not a Website\")\n}", "explain": ["Reads and trims the input string.", "Checks it starts with \"http\" and ends with \".com\".", "Prints Website or Not a Website based on the result."]}], "swift": [{"name": "hasPrefix() + hasSuffix()", "code": "let s = readLine()!\nlet result = s.hasPrefix(\"http\") && s.hasSuffix(\".com\")\nprint(result ? \"Website\" : \"Not a Website\")", "explain": ["Reads the input line.", "Checks it starts with \"http\" and ends with \".com\".", "Prints Website or Not a Website based on the result."]}], "php": [{"name": "strpos() + substr()", "code": "<?php\n$s = trim(fgets(STDIN));\n$result = (strpos($s, \"http\") === 0) && (substr($s, -4) === \".com\");\necho $result ? \"Website\" : \"Not a Website\", \"\\n\";", "explain": ["Reads and trims the input string.", "Checks \"http\" appears at position 0 and the last 4 characters equal \".com\".", "Prints Website or Not a Website based on the result."]}], "csharp": [{"name": "StartsWith() + EndsWith()", "code": "using System;\nclass Program {\n    static void Main() {\n        string s = Console.ReadLine().Trim();\n        bool result = s.StartsWith(\"http\") && s.EndsWith(\".com\");\n        Console.WriteLine(result ? \"Website\" : \"Not a Website\");\n    }\n}", "explain": ["Reads and trims the input string.", "Checks it starts with \"http\" and ends with \".com\".", "Prints Website or Not a Website based on the result."]}], "ruby": [{"name": "start_with? + end_with?", "code": "s = gets.chomp\nresult = s.start_with?(\"http\") && s.end_with?(\".com\")\nputs result ? \"Website\" : \"Not a Website\"", "explain": ["Reads and strips the input string.", "Checks it starts with \"http\" and ends with \".com\".", "Prints Website or Not a Website based on the result."]}]}};
+</script>
+
+<!-- Monaco loader (deferred; the editor itself is fetched at idle time) -->
+<script>var require = { paths: { vs: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs' } };</script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs/loader.min.js"></script>
+<!-- Shared runtime, cached across all problem pages. Keep this order: coding-core -> problem-app -> practice-engine.
+     The ../compilers/*.js files are loaded lazily by problem-app.js (not listed here on purpose). -->
+<script defer src="coding-core.js"></script>
+<script defer src="problem-app.js"></script>
+<script defer src="practice-engine.js"></script>
+</body>
+</html>

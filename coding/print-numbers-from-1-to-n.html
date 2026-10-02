@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Print Numbers From 1 to N in Python, Java, C++ &amp; More | Rocket Typing</title>
+<meta name="description" content="Print all numbers from 1 to n separated by spaces in 13 languages – range() in Python, a for loop in Java/C++/C, and more. Free coding practice with typing test.">
+<meta name="keywords" content="print numbers 1 to n, python range, for loop practice, print n numbers program, coding practice loops">
+<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+<link rel="canonical" href="https://www.rockettyping.com/coding/print-numbers-from-1-to-n">
+<meta http-equiv="Content-Security-Policy" content="object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Print Numbers From 1 to N in Python, Java, C++ &amp; More | Rocket Typing">
+<meta property="og:description" content="Print all numbers from 1 to n separated by spaces in 13 languages – range() in Python, a for loop in Java/C++/C, and more. Free coding practice with typing test.">
+<meta property="og:url" content="https://www.rockettyping.com/coding/print-numbers-from-1-to-n">
+<meta property="og:image" content="https://www.rockettyping.com/images/og-banner.webp">
+<meta property="og:site_name" content="Rocket Typing">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Print Numbers From 1 to N in Python, Java, C++ &amp; More | Rocket Typing">
+<meta name="twitter:description" content="Print all numbers from 1 to n separated by spaces in 13 languages – range() in Python, a for loop in Java/C++/C, and more. Free coding practice with typing test.">
+<meta name="twitter:image" content="https://www.rockettyping.com/images/og-banner.webp">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "LearningResource",
+  "name": "Print N Numbers — Coding Practice in 13 Languages",
+  "description": "Print all numbers from 1 to n separated by spaces in 13 languages – range() in Python, a for loop in Java/C++/C, and more. Free coding practice with typing test.",
+  "educationalLevel": "Beginner",
+  "learningResourceType": "Interactive coding exercise",
+  "teaches": "Print N Numbers in 13 programming languages (Python, JavaScript, Java, C, C++, TypeScript, Go, Rust, Kotlin, Swift, PHP, C# and Ruby)",
+  "inLanguage": "en",
+  "isAccessibleForFree": true,
+  "isPartOf": {
+    "@type": "Course",
+    "name": "Free Coding Practice with Typing Speed Test",
+    "url": "https://www.rockettyping.com/coding/"
+  },
+  "provider": {
+    "@type": "Organization",
+    "name": "Rocket Typing",
+    "sameAs": "https://www.rockettyping.com"
+  },
+  "url": "https://www.rockettyping.com/coding/print-numbers-from-1-to-n"
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "How do I print numbers from 1 to n in Python?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Use range(1, n + 1) inside a loop, or build a list and join it with spaces: \" \".join(str(x) for x in range(1, n + 1))."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What does range(1, n + 1) do in Python?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "range(1, n + 1) generates numbers starting at 1 and stopping just before n + 1 — so it includes n itself, since range's upper bound is exclusive."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Why use join() instead of printing in a loop?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "print() inside a loop adds a newline after each number by default. Building a list and joining it with \" \" produces all the numbers on one line with single spaces between them in one call."
+      }
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://www.rockettyping.com/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Coding Practice",
+      "item": "https://www.rockettyping.com/coding/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": "Print N Numbers",
+      "item": "https://www.rockettyping.com/coding/print-numbers-from-1-to-n"
+    }
+  ]
+}
+</script>
+<link rel="icon" type="image/png" sizes="32x32" href="../images/favicon-32.webp">
+<link rel="icon" type="image/png" sizes="16x16" href="../images/favicon-16.webp">
+<link rel="apple-touch-icon" href="../images/logo-192.webp">
+<meta name="theme-color" content="#0a0a23">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@300;400;500;700&family=Inter:wght@300;400;500;600;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@300;400;500;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"></noscript>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-136SVFZRDF"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-136SVFZRDF');</script>
+<link rel="stylesheet" href="coding.css">
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+<!-- Monaco's stylesheet: loaded without blocking first paint (the data-name attribute is what Monaco's loader looks for) -->
+<link rel="stylesheet" media="print" onload="this.media='all'" data-name="vs/editor/editor.main" href="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs/editor/editor.main.min.css">
+<script type="text/javascript" async="async" data-noptimize="1" data-cfasync="false" src="//scripts.scriptwrapper.com/tags/31b6b722-d3b7-49a8-acd3-2264f19c9dc5.js"></script>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="/" class="nav-logo"><span class="rocket">🚀</span>Rocket<span>Typing</span></a>
+  <div class="nav-links">
+    <button class="nav-btn" onclick="goHome()">⌨️ Typing Test</button>
+    <a href="./#dashboard" class="nav-btn">Dashboard</a>
+    <a href="./#problems" class="nav-btn active">Problems</a>
+    <a href="./#profile" class="nav-btn">Profile</a>
+  </div>
+</nav>
+
+<div id="app">
+
+  <!-- ══ WORKSPACE VIEW ══ -->
+  <div id="view-workspace" class="view active">
+    <!-- Left: problem description -->
+    <div class="workspace-sidebar">
+      <div class="sidebar-tabs">
+        <button class="sidebar-tab active" onclick="setSidebarTab('desc',this)">Description</button>
+        <button class="sidebar-tab" onclick="setSidebarTab('notes',this)">Notes</button>
+        <button class="sidebar-tab" onclick="setSidebarTab('hint',this)">Hint</button>
+      </div>
+      <div class="sidebar-content" id="sidebar-desc" data-prerendered="1">
+    <div class="prob-meta">
+      <h1>#11 Print N Numbers</h1>
+      <span class="badge easy">Easy</span>
+      <span class="meta-pill">⏱ 1 sec</span>
+      <span class="meta-pill">💾 256 MB</span>
+      <span class="meta-pill">🏷 Loops</span>
+      <button onclick="toggleBookmark(11)" id="bm-btn-11" style="background:none;border:1px solid var(--border);color:var(--text2);padding:4px 10px;border-radius:5px;cursor:pointer;font-size:11px">🔖 Bookmark</button>
+    </div>
+    <div class="prob-section"><h2>Problem Statement</h2><div class="prob-text">You are given an integer <code>n</code>. Print all the numbers from 1 up to and including <code>n</code>, separated by a single space, on one line.</div></div>
+    <div class="prob-section"><h2>Input Format</h2><div class="prob-text">A single integer <code>n</code>.</div></div>
+    <div class="prob-section"><h2>Output Format</h2><div class="prob-text">Print the numbers 1 through <code>n</code>, separated by single spaces, on one line.</div></div>
+    <div class="prob-section"><h2>Constraints</h2><div class="prob-text">• 1 ≤ n ≤ 100</div></div>
+    <div class="prob-section"><h2>Sample Input</h2><div class="io-box">5</div></div>
+    <div class="prob-section"><h2>Sample Output</h2><div class="io-box">1 2 3 4 5</div></div>
+    <div class="prob-section"><h2>Explanation</h2><div class="prob-text">For n = 5, the numbers 1 through 5 are printed in order, each separated by a space.</div></div>
+  </div>
+      <div class="sidebar-content" id="sidebar-notes" style="display:none">
+        <textarea id="notes-area" placeholder="Write your personal notes for this problem…"
+          style="width:100%;height:calc(100% - 0px);background:transparent;border:none;outline:none;color:var(--text);font-family:var(--font-mono);font-size:12px;resize:none;line-height:1.7"
+          oninput="saveNote()"></textarea>
+      </div>
+      <div class="sidebar-content" id="sidebar-hint" style="display:none">
+        <div class="hint-box" id="hint-content">Use <code>range(1, n + 1)</code> to generate the numbers, then join them with spaces.</div>
+      </div>
+    </div>
+
+    <!-- Right: editor + output -->
+    <div class="workspace-main">
+      <div class="editor-toolbar">
+        <select class="lang-select" id="lang-select" onchange="changeLanguage()">
+          <option value="python">Python</option>
+          <option value="javascript">JavaScript</option>
+          <option value="java">Java</option>
+          <option value="cpp">C++</option>
+          <option value="c">C</option>
+          <option value="typescript">TypeScript</option>
+          <option value="go">Go</option>
+          <option value="rust">Rust</option>
+          <option value="kotlin">Kotlin</option>
+          <option value="swift">Swift</option>
+          <option value="php">PHP</option>
+          <option value="csharp">C#</option>
+          <option value="ruby">Ruby</option>
+        </select>
+
+        <button class="editor-btn" onclick="resetCode()" title="Reset code">↺ Reset</button>
+        <button class="editor-btn" onclick="copyCode()"  title="Copy code">📋 Copy</button>
+        <button class="editor-btn" onclick="downloadCode()" title="Download">⬇ Save</button>
+        <button class="editor-btn" onclick="uploadCode()"   title="Upload file">⬆ Upload</button>
+        <input type="file" id="file-upload" accept=".py,.js,.java,.cpp,.c,.ts,.go,.rs,.kt,.swift,.php,.cs,.rb" style="display:none" onchange="handleUpload(event)">
+
+        <button class="editor-btn mic" id="mic-btn" onclick="toggleMic()" title="Voice to Code">🎤 Voice</button>
+
+        <div class="toolbar-spacer"></div>
+
+        <span class="timer-display" id="workspace-timer">00:00</span>
+        <span class="autosave-dot" id="autosave-dot"></span>
+
+        <button class="editor-btn run"    id="run-btn"    onclick="runCode()">▶ Run</button>
+        <button class="editor-btn submit" id="submit-btn" onclick="submitCode()">⚡ Submit</button>
+      </div>
+
+      <!-- Monaco -->
+      <div class="editor-wrap">
+        <div id="monaco-editor"></div>
+        <!-- Mic panel -->
+        <div class="mic-panel" id="mic-panel">
+          <h4>🎤 Voice to Code</h4>
+          <div class="mic-transcript" id="mic-transcript">Say something…</div>
+          <div class="mic-controls">
+            <button class="mic-ctrl" onclick="pauseMic()">⏸ Pause</button>
+            <button class="mic-ctrl" onclick="resumeMic()">▶ Resume</button>
+            <button class="mic-ctrl" onclick="stopMic()">⏹ Stop</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Output panel -->
+      <div class="output-panel">
+        <div class="output-tabs">
+          <button class="output-tab active" onclick="setOutputTab('output',this)">Output</button>
+          <button class="output-tab" onclick="setOutputTab('testcases',this)">Test Cases</button>
+          <button class="output-tab" onclick="setOutputTab('console',this)">Console</button>
+        </div>
+        <div class="output-body" id="output-output">
+          <div class="output-line dim">Click "Run" to execute your code against sample test cases.</div>
+        </div>
+        <div class="output-body" id="output-testcases" style="display:none">
+          <div class="output-line dim">No test results yet.</div>
+        </div>
+        <div class="output-body" id="output-console" style="display:none">
+          <div class="output-line dim">Console output will appear here.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+</div><!-- #app -->
+
+<main class="seo-content" id="seo-content">
+  <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a> / <a href="./">Coding Practice</a> / Print N Numbers</nav>
+
+  <h2>About this problem: Print N Numbers</h2>
+  <p>Looping from 1 up to a given number and printing each value is one of the first things every programmer practices — it's the foundation every other loop-based problem builds on.</p><p>Every language has its own idiom for this: Python's <code>range()</code>, a classic C-style <code>for</code> loop in Java/C++/C/JavaScript, Kotlin and Swift ranges, Rust's <code>1..=n</code>. Solutions in all 13 languages are shown below, plus three Python variations.</p>
+  <div class="seo-facts">
+    <span class="badge easy">Easy</span>
+    <span class="meta-pill">🏷 Loops</span>
+    <span class="meta-pill">13 languages</span>
+    <span class="meta-pill">15 reference solutions</span>
+  </div>
+  <div class="lang-chips"><span class="meta-pill">Python</span><span class="meta-pill">JavaScript</span><span class="meta-pill">Java</span><span class="meta-pill">C++</span><span class="meta-pill">C</span><span class="meta-pill">TypeScript</span><span class="meta-pill">Go</span><span class="meta-pill">Rust</span><span class="meta-pill">Kotlin</span><span class="meta-pill">Swift</span><span class="meta-pill">PHP</span><span class="meta-pill">C#</span><span class="meta-pill">Ruby</span></div>
+
+  <h2>Print N Numbers — solutions in 13 languages</h2>
+<details class="seo-lang" open>
+<summary><h3>Print N Numbers in Python — 3 solutions</h3></summary>
+<h4>range() + join</h4>
+<pre><code class="language-python">n = int(input())
+nums = list(range(1, n + 1))
+print(&quot; &quot;.join(str(x) for x in nums))</code></pre>
+<ol class="seo-explain"><li>Reads n from input and converts it to an integer.</li><li>Builds a list of numbers from 1 up to and including n.</li><li>Converts each number to a string, joins them with spaces, and prints the result.</li></ol>
+<h4>for loop + string building</h4>
+<pre><code class="language-python">n = int(input())
+result = &quot;&quot;
+for i in range(1, n + 1):
+    result += str(i) + &quot; &quot;
+print(result.strip())</code></pre>
+<ol class="seo-explain"><li>Reads n from input and converts it to an integer.</li><li>Starts an empty string to build up the output.</li><li>Loops from 1 to n, appending each number and a trailing space.</li><li>Prints the built string with the extra trailing space trimmed off.</li></ol>
+<h4>while loop + list</h4>
+<pre><code class="language-python">n = int(input())
+nums = []
+i = 1
+while i &lt;= n:
+    nums.append(str(i))
+    i += 1
+print(&quot; &quot;.join(nums))</code></pre>
+<ol class="seo-explain"><li>Reads n from input and converts it to an integer.</li><li>Starts an empty list to collect the numbers as strings.</li><li>Starts a counter at 1.</li><li>While the counter is at most n, appends it (as a string) to the list and increases it by 1.</li><li>Joins all the collected numbers with spaces and prints them.</li></ol>
+</details>
+<details class="seo-lang">
+<summary><h3>Print N Numbers in JavaScript — 1 solution</h3></summary>
+<h4>Array + join</h4>
+<pre><code class="language-javascript">const n = parseInt(require(&quot;fs&quot;).readFileSync(0, &quot;utf8&quot;).trim());
+const nums = [];
+for (let i = 1; i &lt;= n; i++) nums.push(i);
+console.log(nums.join(&quot; &quot;));</code></pre>
+<ol class="seo-explain"><li>Reads n from standard input and converts it to an integer.</li><li>Starts an empty array to collect the numbers.</li><li>Loops from 1 to n, pushing each number into the array.</li><li>Joins the array with spaces and prints the result.</li></ol>
+</details>
+<details class="seo-lang">
+<summary><h3>Print N Numbers in Java — 1 solution</h3></summary>
+<h4>StringBuilder loop</h4>
+<pre><code class="language-java">import java.util.Scanner;
+public class Main {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        int n = Integer.parseInt(sc.nextLine().trim());
+        StringBuilder sb = new StringBuilder();
+        for (int i = 1; i &lt;= n; i++) {
+            if (i &gt; 1) sb.append(&quot; &quot;);
+            sb.append(i);
+        }
+        System.out.println(sb.toString());
+    }
+}</code></pre>
+<ol class="seo-explain"><li>Reads n from input and converts it to an integer.</li><li>Builds the output incrementally with a StringBuilder.</li><li>Loops from 1 to n, adding a space before every number except the first.</li><li>Prints the finished string.</li></ol>
+</details>
+<details class="seo-lang">
+<summary><h3>Print N Numbers in C++ — 1 solution</h3></summary>
+<h4>for loop + cout</h4>
+<pre><code class="language-cpp">#include &lt;iostream&gt;
+using namespace std;
+int main() {
+    int n;
+    cin &gt;&gt; n;
+    for (int i = 1; i &lt;= n; i++) {
+        if (i &gt; 1) cout &lt;&lt; &quot; &quot;;
+        cout &lt;&lt; i;
+    }
+    cout &lt;&lt; endl;
+    return 0;
+}</code></pre>
+<ol class="seo-explain"><li>Reads n from standard input.</li><li>Loops from 1 to n.</li><li>Prints a space before every number except the first.</li><li>Prints each number, then a final newline.</li></ol>
+</details>
+<details class="seo-lang">
+<summary><h3>Print N Numbers in C — 1 solution</h3></summary>
+<h4>for loop + printf</h4>
+<pre><code class="language-c">#include &lt;stdio.h&gt;
+int main() {
+    int n;
+    scanf(&quot;%d&quot;, &amp;n);
+    for (int i = 1; i &lt;= n; i++) {
+        if (i &gt; 1) printf(&quot; &quot;);
+        printf(&quot;%d&quot;, i);
+    }
+    printf(&quot;\n&quot;);
+    return 0;
+}</code></pre>
+<ol class="seo-explain"><li>Reads n from standard input.</li><li>Loops from 1 to n.</li><li>Prints a space before every number except the first.</li><li>Prints each number, then a trailing newline.</li></ol>
+</details>
+<details class="seo-lang">
+<summary><h3>Print N Numbers in TypeScript — 1 solution</h3></summary>
+<h4>Array + join</h4>
+<pre><code class="language-typescript">const n: number = parseInt(require(&quot;fs&quot;).readFileSync(0, &quot;utf8&quot;).trim());
+const nums: number[] = [];
+for (let i = 1; i &lt;= n; i++) nums.push(i);
+console.log(nums.join(&quot; &quot;));</code></pre>
+<ol class="seo-explain"><li>Reads n from standard input and converts it to a number.</li><li>Starts a typed array of numbers.</li><li>Loops from 1 to n, pushing each number in.</li><li>Joins the array with spaces and prints it.</li></ol>
+</details>
+<details class="seo-lang">
+<summary><h3>Print N Numbers in Go — 1 solution</h3></summary>
+<h4>fmt.Print loop</h4>
+<pre><code class="language-go">package main
+import &quot;fmt&quot;
+func main() {
+    var n int
+    fmt.Scan(&amp;n)
+    for i := 1; i &lt;= n; i++ {
+        if i &gt; 1 {
+            fmt.Print(&quot; &quot;)
+        }
+        fmt.Print(i)
+    }
+    fmt.Println()
+}</code></pre>
+<ol class="seo-explain"><li>Every Go program starts in package main.</li><li>Reads n from standard input.</li><li>Loops from 1 to n.</li><li>Prints a space before every number except the first.</li><li>Prints each number, then a final newline.</li></ol>
+</details>
+<details class="seo-lang">
+<summary><h3>Print N Numbers in Rust — 1 solution</h3></summary>
+<h4>Range + join</h4>
+<pre><code class="language-rust">use std::io::{self, Read};
+fn main() {
+    let mut text = String::new();
+    io::stdin().read_to_string(&amp;mut text).unwrap();
+    let n: i32 = text.trim().parse().unwrap();
+    let nums: Vec&lt;String&gt; = (1..=n).map(|i| i.to_string()).collect();
+    println!(&quot;{}&quot;, nums.join(&quot; &quot;));
+}</code></pre>
+<ol class="seo-explain"><li>Reads all of standard input into a String.</li><li>Parses it as an i32.</li><li>Builds the numbers 1 through n as strings using a range and map.</li><li>Joins them with spaces and prints the result.</li></ol>
+</details>
+<details class="seo-lang">
+<summary><h3>Print N Numbers in Kotlin — 1 solution</h3></summary>
+<h4>Range + joinToString</h4>
+<pre><code class="language-kotlin">fun main() {
+    val n = readLine()!!.trim().toInt()
+    val nums = (1..n).joinToString(&quot; &quot;)
+    println(nums)
+}</code></pre>
+<ol class="seo-explain"><li>Reads a line and converts it to an Int.</li><li>Builds a range from 1 to n and joins it into one space-separated string.</li><li>Prints the result.</li></ol>
+</details>
+<details class="seo-lang">
+<summary><h3>Print N Numbers in Swift — 1 solution</h3></summary>
+<h4>Range + joined</h4>
+<pre><code class="language-swift">let n = Int(readLine()!)!
+let nums = (1...n).map { String($0) }
+print(nums.joined(separator: &quot; &quot;))</code></pre>
+<ol class="seo-explain"><li>Reads a line and converts it to an Int.</li><li>Builds the range 1 through n and converts each number to a String.</li><li>Joins them with spaces and prints the result.</li></ol>
+</details>
+<details class="seo-lang">
+<summary><h3>Print N Numbers in PHP — 1 solution</h3></summary>
+<h4>range() + implode</h4>
+<pre><code class="language-php">&lt;?php
+$n = intval(trim(fgets(STDIN)));
+$nums = range(1, $n);
+echo implode(&quot; &quot;, $nums), &quot;\n&quot;;</code></pre>
+<ol class="seo-explain"><li>Reads a line from standard input and converts it to an integer.</li><li>Builds an array of numbers from 1 to n with range().</li><li>Joins them with spaces using implode() and prints the result.</li></ol>
+</details>
+<details class="seo-lang">
+<summary><h3>Print N Numbers in C# — 1 solution</h3></summary>
+<h4>List + string.Join</h4>
+<pre><code class="language-csharp">using System;
+class Program {
+    static void Main() {
+        int n = int.Parse(Console.ReadLine());
+        var nums = new System.Collections.Generic.List&lt;string&gt;();
+        for (int i = 1; i &lt;= n; i++) nums.Add(i.ToString());
+        Console.WriteLine(string.Join(&quot; &quot;, nums));
+    }
+}</code></pre>
+<ol class="seo-explain"><li>Reads a line and parses it as an int.</li><li>Builds a list of the numbers 1 through n as strings.</li><li>Joins them with spaces and prints the result.</li></ol>
+</details>
+<details class="seo-lang">
+<summary><h3>Print N Numbers in Ruby — 1 solution</h3></summary>
+<h4>Range + join</h4>
+<pre><code class="language-ruby">n = gets.to_i
+puts (1..n).to_a.join(&quot; &quot;)</code></pre>
+<ol class="seo-explain"><li>Reads a line and converts it to an integer.</li><li>Builds a range from 1 to n, turns it into an array, joins it with spaces, and prints it.</li></ol>
+</details>
+  <h2>Frequently Asked Questions</h2>
+  <div class="seo-faq">
+    <div class="seo-faq-item"><h4>How do I print numbers from 1 to n in Python?</h4><p>Use range(1, n + 1) inside a loop, or build a list and join it with spaces: &quot; &quot;.join(str(x) for x in range(1, n + 1)).</p></div>
+    <div class="seo-faq-item"><h4>What does range(1, n + 1) do in Python?</h4><p>range(1, n + 1) generates numbers starting at 1 and stopping just before n + 1 — so it includes n itself, since range&#x27;s upper bound is exclusive.</p></div>
+    <div class="seo-faq-item"><h4>Why use join() instead of printing in a loop?</h4><p>print() inside a loop adds a newline after each number by default. Building a list and joining it with &quot; &quot; produces all the numbers on one line with single spaces between them in one call.</p></div>
+  </div>
+</main>
+
+<!-- ══ RESULT OVERLAY ══ -->
+<div id="result-overlay">
+  <div class="result-card">
+    <button class="result-close" onclick="closeResult()">✕</button>
+
+    <div class="result-status-banner" id="res-banner">
+      <div id="res-banner-title">—</div>
+      <div class="status-sub" id="res-banner-sub">—</div>
+    </div>
+
+    <!-- Two-column layout: submission + typing stats on the left, graphs on the right -->
+    <div class="result-body-grid">
+
+      <!-- LEFT COLUMN: status stats + typing analytics numbers -->
+      <div class="result-col result-col-left">
+        <div class="result-grid" id="res-grid"><!-- JS filled --></div>
+
+        <div class="result-section-title">Typing Analytics</div>
+        <div class="paste-warn" id="paste-warn">⚠️ Paste detected. Typing analytics may not be accurate.</div>
+        <div class="typing-analytics-grid">
+          <div class="analytics-box"><h5>WPM</h5><div class="analytics-val" id="ra-wpm">—</div><div class="analytics-sub">Words per minute</div></div>
+          <div class="analytics-box"><h5>Accuracy</h5><div class="analytics-val" id="ra-acc">—</div><div class="analytics-sub">Correct keystrokes</div></div>
+          <div class="analytics-box"><h5>Consistency</h5><div class="analytics-val" id="ra-con">—</div><div class="analytics-sub">Speed variation score</div></div>
+          <div class="analytics-box"><h5>Active Time</h5><div class="analytics-val" id="ra-time">—</div><div class="analytics-sub">Time actively typing</div></div>
+          <div class="analytics-box"><h5>Keystrokes</h5><div class="analytics-val" id="ra-ks">—</div><div class="analytics-sub">Total key presses</div></div>
+          <div class="analytics-box"><h5>Backspaces</h5><div class="analytics-val" id="ra-bs">—</div><div class="analytics-sub">Corrections made</div></div>
+        </div>
+      </div>
+
+      <!-- RIGHT COLUMN: graphs -->
+      <div class="result-col result-col-right">
+        <div class="chart-wrap">
+          <h5>Typing Speed Over Time (WPM)</h5>
+          <div class="chart-canvas-box"><canvas id="wpm-chart"></canvas></div>
+        </div>
+        <div class="chart-wrap">
+          <h5>Keystroke Timeline</h5>
+          <div class="chart-canvas-box"><canvas id="ks-chart"></canvas></div>
+        </div>
+      </div>
+
+    </div><!-- /result-body-grid -->
+
+    <div class="result-actions">
+      <button class="btn-retry" onclick="closeResult()">Try Again</button>
+      <button class="btn-next"  onclick="nextProblem()">Next Problem →</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast container -->
+<div class="toast-container" id="toast-container"></div>
+
+<!-- This problem's data: question + reference solutions per language (read by problem-app.js / practice-engine.js) -->
+<script>
+window.ROCKET_PROBLEM = {"file": "print-numbers-from-1-to-n.html", "h1": "Print N Numbers", "question": {"id": 11, "title": "Print N Numbers", "difficulty": "Easy", "topic": "Loops", "timeLimit": "1 sec", "memoryLimit": "256 MB", "description": "You are given an integer `n`. Print all the numbers from 1 up to and including `n`, separated by a single space, on one line.", "inputFormat": "A single integer `n`.", "outputFormat": "Print the numbers 1 through `n`, separated by single spaces, on one line.", "constraints": "• 1 ≤ n ≤ 100", "sampleInput": "5", "sampleOutput": "1 2 3 4 5", "explanation": "For n = 5, the numbers 1 through 5 are printed in order, each separated by a space.", "hint": "Use `range(1, n + 1)` to generate the numbers, then join them with spaces.", "allowedSyntax": ["input", "int", "print", "loop", "range"], "testCases": [{"input": "5", "expectedOutput": "1 2 3 4 5"}], "hiddenTestCases": [{"input": "1", "expectedOutput": "1"}, {"input": "3", "expectedOutput": "1 2 3"}, {"input": "10", "expectedOutput": "1 2 3 4 5 6 7 8 9 10"}, {"input": "7", "expectedOutput": "1 2 3 4 5 6 7"}]}};
+window.__rocketSolutions = {"11": {"python": [{"name": "range() + join", "code": "n = int(input())\nnums = list(range(1, n + 1))\nprint(\" \".join(str(x) for x in nums))", "explain": ["Reads n from input and converts it to an integer.", "Builds a list of numbers from 1 up to and including n.", "Converts each number to a string, joins them with spaces, and prints the result."]}, {"name": "for loop + string building", "code": "n = int(input())\nresult = \"\"\nfor i in range(1, n + 1):\n    result += str(i) + \" \"\nprint(result.strip())", "explain": ["Reads n from input and converts it to an integer.", "Starts an empty string to build up the output.", "Loops from 1 to n, appending each number and a trailing space.", "Prints the built string with the extra trailing space trimmed off."]}, {"name": "while loop + list", "code": "n = int(input())\nnums = []\ni = 1\nwhile i <= n:\n    nums.append(str(i))\n    i += 1\nprint(\" \".join(nums))", "explain": ["Reads n from input and converts it to an integer.", "Starts an empty list to collect the numbers as strings.", "Starts a counter at 1.", "While the counter is at most n, appends it (as a string) to the list and increases it by 1.", "Joins all the collected numbers with spaces and prints them."]}], "javascript": [{"name": "Array + join", "code": "const n = parseInt(require(\"fs\").readFileSync(0, \"utf8\").trim());\nconst nums = [];\nfor (let i = 1; i <= n; i++) nums.push(i);\nconsole.log(nums.join(\" \"));", "explain": ["Reads n from standard input and converts it to an integer.", "Starts an empty array to collect the numbers.", "Loops from 1 to n, pushing each number into the array.", "Joins the array with spaces and prints the result."]}], "java": [{"name": "StringBuilder loop", "code": "import java.util.Scanner;\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int n = Integer.parseInt(sc.nextLine().trim());\n        StringBuilder sb = new StringBuilder();\n        for (int i = 1; i <= n; i++) {\n            if (i > 1) sb.append(\" \");\n            sb.append(i);\n        }\n        System.out.println(sb.toString());\n    }\n}", "explain": ["Reads n from input and converts it to an integer.", "Builds the output incrementally with a StringBuilder.", "Loops from 1 to n, adding a space before every number except the first.", "Prints the finished string."]}], "cpp": [{"name": "for loop + cout", "code": "#include <iostream>\nusing namespace std;\nint main() {\n    int n;\n    cin >> n;\n    for (int i = 1; i <= n; i++) {\n        if (i > 1) cout << \" \";\n        cout << i;\n    }\n    cout << endl;\n    return 0;\n}", "explain": ["Reads n from standard input.", "Loops from 1 to n.", "Prints a space before every number except the first.", "Prints each number, then a final newline."]}], "c": [{"name": "for loop + printf", "code": "#include <stdio.h>\nint main() {\n    int n;\n    scanf(\"%d\", &n);\n    for (int i = 1; i <= n; i++) {\n        if (i > 1) printf(\" \");\n        printf(\"%d\", i);\n    }\n    printf(\"\\n\");\n    return 0;\n}", "explain": ["Reads n from standard input.", "Loops from 1 to n.", "Prints a space before every number except the first.", "Prints each number, then a trailing newline."]}], "typescript": [{"name": "Array + join", "code": "const n: number = parseInt(require(\"fs\").readFileSync(0, \"utf8\").trim());\nconst nums: number[] = [];\nfor (let i = 1; i <= n; i++) nums.push(i);\nconsole.log(nums.join(\" \"));", "explain": ["Reads n from standard input and converts it to a number.", "Starts a typed array of numbers.", "Loops from 1 to n, pushing each number in.", "Joins the array with spaces and prints it."]}], "go": [{"name": "fmt.Print loop", "code": "package main\nimport \"fmt\"\nfunc main() {\n    var n int\n    fmt.Scan(&n)\n    for i := 1; i <= n; i++ {\n        if i > 1 {\n            fmt.Print(\" \")\n        }\n        fmt.Print(i)\n    }\n    fmt.Println()\n}", "explain": ["Every Go program starts in package main.", "Reads n from standard input.", "Loops from 1 to n.", "Prints a space before every number except the first.", "Prints each number, then a final newline."]}], "rust": [{"name": "Range + join", "code": "use std::io::{self, Read};\nfn main() {\n    let mut text = String::new();\n    io::stdin().read_to_string(&mut text).unwrap();\n    let n: i32 = text.trim().parse().unwrap();\n    let nums: Vec<String> = (1..=n).map(|i| i.to_string()).collect();\n    println!(\"{}\", nums.join(\" \"));\n}", "explain": ["Reads all of standard input into a String.", "Parses it as an i32.", "Builds the numbers 1 through n as strings using a range and map.", "Joins them with spaces and prints the result."]}], "kotlin": [{"name": "Range + joinToString", "code": "fun main() {\n    val n = readLine()!!.trim().toInt()\n    val nums = (1..n).joinToString(\" \")\n    println(nums)\n}", "explain": ["Reads a line and converts it to an Int.", "Builds a range from 1 to n and joins it into one space-separated string.", "Prints the result."]}], "swift": [{"name": "Range + joined", "code": "let n = Int(readLine()!)!\nlet nums = (1...n).map { String($0) }\nprint(nums.joined(separator: \" \"))", "explain": ["Reads a line and converts it to an Int.", "Builds the range 1 through n and converts each number to a String.", "Joins them with spaces and prints the result."]}], "php": [{"name": "range() + implode", "code": "<?php\n$n = intval(trim(fgets(STDIN)));\n$nums = range(1, $n);\necho implode(\" \", $nums), \"\\n\";", "explain": ["Reads a line from standard input and converts it to an integer.", "Builds an array of numbers from 1 to n with range().", "Joins them with spaces using implode() and prints the result."]}], "csharp": [{"name": "List + string.Join", "code": "using System;\nclass Program {\n    static void Main() {\n        int n = int.Parse(Console.ReadLine());\n        var nums = new System.Collections.Generic.List<string>();\n        for (int i = 1; i <= n; i++) nums.Add(i.ToString());\n        Console.WriteLine(string.Join(\" \", nums));\n    }\n}", "explain": ["Reads a line and parses it as an int.", "Builds a list of the numbers 1 through n as strings.", "Joins them with spaces and prints the result."]}], "ruby": [{"name": "Range + join", "code": "n = gets.to_i\nputs (1..n).to_a.join(\" \")", "explain": ["Reads a line and converts it to an integer.", "Builds a range from 1 to n, turns it into an array, joins it with spaces, and prints it."]}]}};
+</script>
+
+<!-- Monaco loader (deferred; the editor itself is fetched at idle time) -->
+<script>var require = { paths: { vs: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs' } };</script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs/loader.min.js"></script>
+<!-- Shared runtime, cached across all problem pages. Keep this order: coding-core -> problem-app -> practice-engine.
+     The ../compilers/*.js files are loaded lazily by problem-app.js (not listed here on purpose). -->
+<script defer src="coding-core.js"></script>
+<script defer src="problem-app.js"></script>
+<script defer src="practice-engine.js"></script>
+</body>
+</html>

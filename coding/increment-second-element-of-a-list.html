@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Increment the Second Element of a List in 13 Languages | Rocket Typing</title>
+<meta name="description" content="Read a list of integers, add 1 to the second element (index 1), and print the modified list in 13 languages – Python list indexing, arrays in Java, C++, C and more.">
+<meta name="keywords" content="python list index, increment list element, modify array element, list indexing practice, coding practice lists">
+<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+<link rel="canonical" href="https://www.rockettyping.com/coding/increment-second-element-of-a-list">
+<meta http-equiv="Content-Security-Policy" content="object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Increment the Second Element of a List in 13 Languages | Rocket Typing">
+<meta property="og:description" content="Read a list of integers, add 1 to the second element (index 1), and print the modified list in 13 languages – Python list indexing, arrays in Java, C++, C and more.">
+<meta property="og:url" content="https://www.rockettyping.com/coding/increment-second-element-of-a-list">
+<meta property="og:image" content="https://www.rockettyping.com/images/og-banner.webp">
+<meta property="og:site_name" content="Rocket Typing">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Increment the Second Element of a List in 13 Languages | Rocket Typing">
+<meta name="twitter:description" content="Read a list of integers, add 1 to the second element (index 1), and print the modified list in 13 languages – Python list indexing, arrays in Java, C++, C and more.">
+<meta name="twitter:image" content="https://www.rockettyping.com/images/og-banner.webp">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "LearningResource",
+  "name": "Increment Second List Element — Coding Practice in 13 Languages",
+  "description": "Read a list of integers, add 1 to the second element (index 1), and print the modified list in 13 languages – Python list indexing, arrays in Java, C++, C and more.",
+  "educationalLevel": "Beginner",
+  "learningResourceType": "Interactive coding exercise",
+  "teaches": "Increment Second List Element in 13 programming languages (Python, JavaScript, Java, C, C++, TypeScript, Go, Rust, Kotlin, Swift, PHP, C# and Ruby)",
+  "inLanguage": "en",
+  "isAccessibleForFree": true,
+  "isPartOf": {
+    "@type": "Course",
+    "name": "Free Coding Practice with Typing Speed Test",
+    "url": "https://www.rockettyping.com/coding/"
+  },
+  "provider": {
+    "@type": "Organization",
+    "name": "Rocket Typing",
+    "sameAs": "https://www.rockettyping.com"
+  },
+  "url": "https://www.rockettyping.com/coding/increment-second-element-of-a-list"
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Why is the second element at index 1, not index 2?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Programming languages almost universally use 0-based indexing — the first element is at index 0, so the second element is at index 1."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How do I read a line of space-separated numbers into a list in Python?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Split the line on spaces to get a list of strings, then convert each one with int(): [int(p) for p in input().split(\" \")] does both in one line."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How do I print a list in Python's [1, 2, 3] format in other languages?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Build the comma-and-space-separated values yourself and wrap them in square brackets — e.g. \"[\" + \", \".join(str(x) for x in arr) + \"]\" — since most other languages don't print arrays that way by default."
+      }
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://www.rockettyping.com/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Coding Practice",
+      "item": "https://www.rockettyping.com/coding/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": "Increment Second List Element",
+      "item": "https://www.rockettyping.com/coding/increment-second-element-of-a-list"
+    }
+  ]
+}
+</script>
+<link rel="icon" type="image/png" sizes="32x32" href="../images/favicon-32.webp">
+<link rel="icon" type="image/png" sizes="16x16" href="../images/favicon-16.webp">
+<link rel="apple-touch-icon" href="../images/logo-192.webp">
+<meta name="theme-color" content="#0a0a23">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@300;400;500;700&family=Inter:wght@300;400;500;600;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@300;400;500;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"></noscript>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-136SVFZRDF"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-136SVFZRDF');</script>
+<link rel="stylesheet" href="coding.css">
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+<!-- Monaco's stylesheet: loaded without blocking first paint (the data-name attribute is what Monaco's loader looks for) -->
+<link rel="stylesheet" media="print" onload="this.media='all'" data-name="vs/editor/editor.main" href="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs/editor/editor.main.min.css">
+<script type="text/javascript" async="async" data-noptimize="1" data-cfasync="false" src="//scripts.scriptwrapper.com/tags/31b6b722-d3b7-49a8-acd3-2264f19c9dc5.js"></script>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="/" class="nav-logo"><span class="rocket">🚀</span>Rocket<span>Typing</span></a>
+  <div class="nav-links">
+    <button class="nav-btn" onclick="goHome()">⌨️ Typing Test</button>
+    <a href="./#dashboard" class="nav-btn">Dashboard</a>
+    <a href="./#problems" class="nav-btn active">Problems</a>
+    <a href="./#profile" class="nav-btn">Profile</a>
+  </div>
+</nav>
+
+<div id="app">
+
+  <!-- ══ WORKSPACE VIEW ══ -->
+  <div id="view-workspace" class="view active">
+    <!-- Left: problem description -->
+    <div class="workspace-sidebar">
+      <div class="sidebar-tabs">
+        <button class="sidebar-tab active" onclick="setSidebarTab('desc',this)">Description</button>
+        <button class="sidebar-tab" onclick="setSidebarTab('notes',this)">Notes</button>
+        <button class="sidebar-tab" onclick="setSidebarTab('hint',this)">Hint</button>
+      </div>
+      <div class="sidebar-content" id="sidebar-desc" data-prerendered="1">
+    <div class="prob-meta">
+      <h1>#20 Increment Second List Element</h1>
+      <span class="badge easy">Easy</span>
+      <span class="meta-pill">⏱ 1 sec</span>
+      <span class="meta-pill">💾 256 MB</span>
+      <span class="meta-pill">🏷 Lists</span>
+      <button onclick="toggleBookmark(20)" id="bm-btn-20" style="background:none;border:1px solid var(--border);color:var(--text2);padding:4px 10px;border-radius:5px;cursor:pointer;font-size:11px">🔖 Bookmark</button>
+    </div>
+    <div class="prob-section"><h2>Problem Statement</h2><div class="prob-text">You are given a list of integers on one line, separated by spaces. Increment the <strong>second element</strong> of the list (index 1) by 1, then print the modified list.</div></div>
+    <div class="prob-section"><h2>Input Format</h2><div class="prob-text">A single line of space-separated integers, with at least 2 numbers.</div></div>
+    <div class="prob-section"><h2>Output Format</h2><div class="prob-text">Print the modified list in standard list format, e.g. <code>[1, 3, 3]</code>.</div></div>
+    <div class="prob-section"><h2>Constraints</h2><div class="prob-text">• 2 ≤ number of elements ≤ 20</div></div>
+    <div class="prob-section"><h2>Sample Input</h2><div class="io-box">1 2 3</div></div>
+    <div class="prob-section"><h2>Sample Output</h2><div class="io-box">[1, 3, 3]</div></div>
+    <div class="prob-section"><h2>Explanation</h2><div class="prob-text">The list is [1, 2, 3]. Its second element (index 1) is 2, so incrementing it by 1 gives [1, 3, 3].</div></div>
+  </div>
+      <div class="sidebar-content" id="sidebar-notes" style="display:none">
+        <textarea id="notes-area" placeholder="Write your personal notes for this problem…"
+          style="width:100%;height:calc(100% - 0px);background:transparent;border:none;outline:none;color:var(--text);font-family:var(--font-mono);font-size:12px;resize:none;line-height:1.7"
+          oninput="saveNote()"></textarea>
+      </div>
+      <div class="sidebar-content" id="sidebar-hint" style="display:none">
+        <div class="hint-box" id="hint-content">Read the line, split it, convert each piece to an integer, then update <code>arr[1]</code> before printing.</div>
+      </div>
+    </div>
+
+    <!-- Right: editor + output -->
+    <div class="workspace-main">
+      <div class="editor-toolbar">
+        <select class="lang-select" id="lang-select" onchange="changeLanguage()">
+          <option value="python">Python</option>
+          <option value="javascript">JavaScript</option>
+          <option value="java">Java</option>
+          <option value="cpp">C++</option>
+          <option value="c">C</option>
+          <option value="typescript">TypeScript</option>
+          <option value="go">Go</option>
+          <option value="rust">Rust</option>
+          <option value="kotlin">Kotlin</option>
+          <option value="swift">Swift</option>
+          <option value="php">PHP</option>
+          <option value="csharp">C#</option>
+          <option value="ruby">Ruby</option>
+        </select>
+
+        <button class="editor-btn" onclick="resetCode()" title="Reset code">↺ Reset</button>
+        <button class="editor-btn" onclick="copyCode()"  title="Copy code">📋 Copy</button>
+        <button class="editor-btn" onclick="downloadCode()" title="Download">⬇ Save</button>
+        <button class="editor-btn" onclick="uploadCode()"   title="Upload file">⬆ Upload</button>
+        <input type="file" id="file-upload" accept=".py,.js,.java,.cpp,.c,.ts,.go,.rs,.kt,.swift,.php,.cs,.rb" style="display:none" onchange="handleUpload(event)">
+
+        <button class="editor-btn mic" id="mic-btn" onclick="toggleMic()" title="Voice to Code">🎤 Voice</button>
+
+        <div class="toolbar-spacer"></div>
+
+        <span class="timer-display" id="workspace-timer">00:00</span>
+        <span class="autosave-dot" id="autosave-dot"></span>
+
+        <button class="editor-btn run"    id="run-btn"    onclick="runCode()">▶ Run</button>
+        <button class="editor-btn submit" id="submit-btn" onclick="submitCode()">⚡ Submit</button>
+      </div>
+
+      <!-- Monaco -->
+      <div class="editor-wrap">
+        <div id="monaco-editor"></div>
+        <!-- Mic panel -->
+        <div class="mic-panel" id="mic-panel">
+          <h4>🎤 Voice to Code</h4>
+          <div class="mic-transcript" id="mic-transcript">Say something…</div>
+          <div class="mic-controls">
+            <button class="mic-ctrl" onclick="pauseMic()">⏸ Pause</button>
+            <button class="mic-ctrl" onclick="resumeMic()">▶ Resume</button>
+            <button class="mic-ctrl" onclick="stopMic()">⏹ Stop</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Output panel -->
+      <div class="output-panel">
+        <div class="output-tabs">
+          <button class="output-tab active" onclick="setOutputTab('output',this)">Output</button>
+          <button class="output-tab" onclick="setOutputTab('testcases',this)">Test Cases</button>
+          <button class="output-tab" onclick="setOutputTab('console',this)">Console</button>
+        </div>
+        <div class="output-body" id="output-output">
+          <div class="output-line dim">Click "Run" to execute your code against sample test cases.</div>
+        </div>
+        <div class="output-body" id="output-testcases" style="display:none">
+          <div class="output-line dim">No test results yet.</div>
+        </div>
+        <div class="output-body" id="output-console" style="display:none">
+          <div class="output-line dim">Console output will appear here.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+</div><!-- #app -->
+
+<main class="seo-content" id="seo-content">
+  <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a> / <a href="./">Coding Practice</a> / Increment Second List Element</nav>
+
+  <h2>About this problem: Increment Second List Element</h2>
+  <p>Reading a line of numbers into a list and updating one specific position by index is the everyday building block behind far more complex array and list manipulation.</p><p>Python reads the line, splits it, converts each piece with <code>int()</code>, and updates <code>arr[1]</code> directly; every other language below builds the equivalent array/list and does the same index update, then prints it in Python's familiar <code>[1, 3, 3]</code> bracket format.</p>
+  <div class="seo-facts">
+    <span class="badge easy">Easy</span>
+    <span class="meta-pill">🏷 Lists</span>
+    <span class="meta-pill">13 languages</span>
+    <span class="meta-pill">15 reference solutions</span>
+  </div>
+  <div class="lang-chips"><span class="meta-pill">Python</span><span class="meta-pill">JavaScript</span><span class="meta-pill">Java</span><span class="meta-pill">C++</span><span class="meta-pill">C</span><span class="meta-pill">TypeScript</span><span class="meta-pill">Go</span><span class="meta-pill">Rust</span><span class="meta-pill">Kotlin</span><span class="meta-pill">Swift</span><span class="meta-pill">PHP</span><span class="meta-pill">C#</span><span class="meta-pill">Ruby</span></div>
+
+  <h2>Increment Second List Element — solutions in 13 languages</h2>
+<details class="seo-lang" open>
+<summary><h3>Increment Second List Element in Python — 3 solutions</h3></summary>
+<h4>Loop + int() conversion</h4>
+<pre><code class="language-python">line = input()
+parts = line.split(&quot; &quot;)
+arr = []
+for p in parts:
+    arr.append(int(p))
+arr[1] = arr[1] + 1
+print(arr)</code></pre>
+<ol class="seo-explain"><li>Reads a line of space-separated numbers from input.</li><li>Splits the line into individual number strings.</li><li>Starts an empty list to hold the converted integers.</li><li>Converts each piece to an integer and adds it to the list.</li><li>Increments the element at index 1 (the second element) by 1.</li><li>Prints the modified list.</li></ol>
+<h4>List comprehension</h4>
+<pre><code class="language-python">arr = [int(p) for p in input().split(&quot; &quot;)]
+arr[1] += 1
+print(arr)</code></pre>
+<ol class="seo-explain"><li>Reads a line, splits it on spaces, and converts every piece to an integer, all in one list.</li><li>Increments the second element (index 1) by 1 using +=.</li><li>Prints the modified list.</li></ol>
+<h4>While loop over tokens</h4>
+<pre><code class="language-python">tokens = input().split(&quot; &quot;)
+arr = []
+i = 0
+while i &lt; len(tokens):
+    arr.append(int(tokens[i]))
+    i += 1
+arr[1] += 1
+print(arr)</code></pre>
+<ol class="seo-explain"><li>Reads a line and splits it into individual number strings.</li><li>Starts an empty list to hold the converted integers, and a counter at 0.</li><li>While there are still tokens left, converts the current one to an integer and appends it.</li><li>Increments the second element (index 1) by 1.</li><li>Prints the modified list.</li></ol>
+</details>
+<details class="seo-lang">
+<summary><h3>Increment Second List Element in JavaScript — 1 solution</h3></summary>
+<h4>map(Number) + join</h4>
+<pre><code class="language-javascript">const parts = require(&quot;fs&quot;).readFileSync(0, &quot;utf8&quot;).trim().split(&quot; &quot;).map(Number);
+parts[1] = parts[1] + 1;
+console.log(&quot;[&quot; + parts.join(&quot;, &quot;) + &quot;]&quot;);</code></pre>
+<ol class="seo-explain"><li>Reads the line, splits it on spaces, and converts every piece to a number.</li><li>Increments the second element (index 1) by 1.</li><li>Builds and prints the result in Python&#x27;s [1, 2, 3] bracket format.</li></ol>
+</details>
+<details class="seo-lang">
+<summary><h3>Increment Second List Element in Java — 1 solution</h3></summary>
+<h4>Array + manual formatting</h4>
+<pre><code class="language-java">import java.util.Scanner;
+public class Main {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        String[] tokens = sc.nextLine().trim().split(&quot; &quot;);
+        int[] arr = new int[tokens.length];
+        for (int i = 0; i &lt; tokens.length; i++) arr[i] = Integer.parseInt(tokens[i]);
+        arr[1] += 1;
+        StringBuilder sb = new StringBuilder(&quot;[&quot;);
+        for (int i = 0; i &lt; arr.length; i++) {
+            if (i &gt; 0) sb.append(&quot;, &quot;);
+            sb.append(arr[i]);
+        }
+        sb.append(&quot;]&quot;);
+        System.out.println(sb.toString());
+    }
+}</code></pre>
+<ol class="seo-explain"><li>Reads the line and splits it into tokens.</li><li>Converts every token into an int array.</li><li>Increments the second element (index 1) by 1.</li><li>Builds and prints the result in [1, 2, 3] bracket format.</li></ol>
+</details>
+<details class="seo-lang">
+<summary><h3>Increment Second List Element in C++ — 1 solution</h3></summary>
+<h4>stringstream + vector</h4>
+<pre><code class="language-cpp">#include &lt;iostream&gt;
+#include &lt;sstream&gt;
+#include &lt;vector&gt;
+using namespace std;
+int main() {
+    string line;
+    getline(cin, line);
+    stringstream ss(line);
+    vector&lt;int&gt; arr;
+    int x;
+    while (ss &gt;&gt; x) arr.push_back(x);
+    arr[1] += 1;
+    cout &lt;&lt; &quot;[&quot;;
+    for (size_t i = 0; i &lt; arr.size(); i++) {
+        if (i &gt; 0) cout &lt;&lt; &quot;, &quot;;
+        cout &lt;&lt; arr[i];
+    }
+    cout &lt;&lt; &quot;]&quot; &lt;&lt; endl;
+    return 0;
+}</code></pre>
+<ol class="seo-explain"><li>Reads the whole line, then streams the numbers out of it into a vector.</li><li>Increments the second element (index 1) by 1.</li><li>Prints the result in [1, 2, 3] bracket format.</li></ol>
+</details>
+<details class="seo-lang">
+<summary><h3>Increment Second List Element in C — 1 solution</h3></summary>
+<h4>scanf loop + manual formatting</h4>
+<pre><code class="language-c">#include &lt;stdio.h&gt;
+int main() {
+    int arr[25];
+    int count = 0;
+    while (scanf(&quot;%d&quot;, &amp;arr[count]) == 1) count++;
+    arr[1] += 1;
+    printf(&quot;[&quot;);
+    for (int i = 0; i &lt; count; i++) {
+        if (i &gt; 0) printf(&quot;, &quot;);
+        printf(&quot;%d&quot;, arr[i]);
+    }
+    printf(&quot;]\n&quot;);
+    return 0;
+}</code></pre>
+<ol class="seo-explain"><li>Reads integers one at a time until input runs out, storing them in an array.</li><li>Increments the second element (index 1) by 1.</li><li>Prints the result in [1, 2, 3] bracket format.</li></ol>
+</details>
+<details class="seo-lang">
+<summary><h3>Increment Second List Element in TypeScript — 1 solution</h3></summary>
+<h4>map(Number) + join</h4>
+<pre><code class="language-typescript">const parts: number[] = require(&quot;fs&quot;).readFileSync(0, &quot;utf8&quot;).trim().split(&quot; &quot;).map(Number);
+parts[1] = parts[1] + 1;
+console.log(&quot;[&quot; + parts.join(&quot;, &quot;) + &quot;]&quot;);</code></pre>
+<ol class="seo-explain"><li>Reads the line, splits it on spaces, and converts every piece to a number.</li><li>Increments the second element (index 1) by 1.</li><li>Builds and prints the result in [1, 2, 3] bracket format.</li></ol>
+</details>
+<details class="seo-lang">
+<summary><h3>Increment Second List Element in Go — 1 solution</h3></summary>
+<h4>strconv.Atoi loop + Join</h4>
+<pre><code class="language-go">package main
+import (
+    &quot;bufio&quot;
+    &quot;fmt&quot;
+    &quot;os&quot;
+    &quot;strconv&quot;
+    &quot;strings&quot;
+)
+func main() {
+    reader := bufio.NewReader(os.Stdin)
+    line, _ := reader.ReadString(&#x27;\n&#x27;)
+    tokens := strings.Fields(line)
+    arr := make([]int, len(tokens))
+    for i, t := range tokens {
+        arr[i], _ = strconv.Atoi(t)
+    }
+    arr[1]++
+    parts := make([]string, len(arr))
+    for i, v := range arr {
+        parts[i] = strconv.Itoa(v)
+    }
+    fmt.Println(&quot;[&quot; + strings.Join(parts, &quot;, &quot;) + &quot;]&quot;)
+}</code></pre>
+<ol class="seo-explain"><li>Reads the line and splits it into whitespace-separated tokens.</li><li>Converts every token into an int slice.</li><li>Increments the second element (index 1) by 1.</li><li>Builds and prints the result in [1, 2, 3] bracket format.</li></ol>
+</details>
+<details class="seo-lang">
+<summary><h3>Increment Second List Element in Rust — 1 solution</h3></summary>
+<h4>split_whitespace + join</h4>
+<pre><code class="language-rust">use std::io::{self, Read};
+fn main() {
+    let mut text = String::new();
+    io::stdin().read_to_string(&amp;mut text).unwrap();
+    let mut arr: Vec&lt;i32&gt; = text.trim().split_whitespace().map(|x| x.parse().unwrap()).collect();
+    arr[1] += 1;
+    let parts: Vec&lt;String&gt; = arr.iter().map(|x| x.to_string()).collect();
+    println!(&quot;[{}]&quot;, parts.join(&quot;, &quot;));
+}</code></pre>
+<ol class="seo-explain"><li>Reads all of standard input and parses it into a vector of integers.</li><li>Increments the second element (index 1) by 1.</li><li>Builds and prints the result in [1, 2, 3] bracket format.</li></ol>
+</details>
+<details class="seo-lang">
+<summary><h3>Increment Second List Element in Kotlin — 1 solution</h3></summary>
+<h4>map{toInt()} + joinToString</h4>
+<pre><code class="language-kotlin">fun main() {
+    val arr = readLine()!!.trim().split(&quot; &quot;).map { it.toInt() }.toMutableList()
+    arr[1] = arr[1] + 1
+    println(&quot;[&quot; + arr.joinToString(&quot;, &quot;) + &quot;]&quot;)
+}</code></pre>
+<ol class="seo-explain"><li>Reads the line, splits it on spaces, and converts every piece to an Int in a mutable list.</li><li>Increments the second element (index 1) by 1.</li><li>Builds and prints the result in [1, 2, 3] bracket format.</li></ol>
+</details>
+<details class="seo-lang">
+<summary><h3>Increment Second List Element in Swift — 1 solution</h3></summary>
+<h4>map{Int($0)!} + joined</h4>
+<pre><code class="language-swift">var arr = readLine()!.split(separator: &quot; &quot;).map { Int($0)! }
+arr[1] += 1
+let parts = arr.map { String($0) }
+print(&quot;[\(parts.joined(separator: \&quot;, \&quot;))]&quot;)</code></pre>
+<ol class="seo-explain"><li>Reads the line, splits it on spaces, and converts every piece to an Int.</li><li>Increments the second element (index 1) by 1.</li><li>Builds and prints the result in [1, 2, 3] bracket format.</li></ol>
+</details>
+<details class="seo-lang">
+<summary><h3>Increment Second List Element in PHP — 1 solution</h3></summary>
+<h4>array_map(&#x27;intval&#x27;) + implode</h4>
+<pre><code class="language-php">&lt;?php
+$line = trim(fgets(STDIN));
+$arr = array_map(&#x27;intval&#x27;, explode(&quot; &quot;, $line));
+$arr[1] += 1;
+echo &quot;[&quot;, implode(&quot;, &quot;, $arr), &quot;]\n&quot;;</code></pre>
+<ol class="seo-explain"><li>Reads the line, splits it on spaces, and converts every piece to an integer.</li><li>Increments the second element (index 1) by 1.</li><li>Builds and prints the result in [1, 2, 3] bracket format.</li></ol>
+</details>
+<details class="seo-lang">
+<summary><h3>Increment Second List Element in C# — 1 solution</h3></summary>
+<h4>Select(int.Parse) + string.Join</h4>
+<pre><code class="language-csharp">using System;
+using System.Linq;
+class Program {
+    static void Main() {
+        var arr = Console.ReadLine().Trim().Split(&#x27; &#x27;).Select(int.Parse).ToArray();
+        arr[1] += 1;
+        Console.WriteLine(&quot;[&quot; + string.Join(&quot;, &quot;, arr) + &quot;]&quot;);
+    }
+}</code></pre>
+<ol class="seo-explain"><li>Reads the line, splits it on spaces, and parses every piece into an int array.</li><li>Increments the second element (index 1) by 1.</li><li>Builds and prints the result in [1, 2, 3] bracket format.</li></ol>
+</details>
+<details class="seo-lang">
+<summary><h3>Increment Second List Element in Ruby — 1 solution</h3></summary>
+<h4>map(&amp;:to_i) + join</h4>
+<pre><code class="language-ruby">arr = gets.chomp.split(&quot; &quot;).map(&amp;:to_i)
+arr[1] += 1
+puts &quot;[#{arr.join(&quot;, &quot;)}]&quot;</code></pre>
+<ol class="seo-explain"><li>Reads the line, splits it on spaces, and converts every piece to an integer.</li><li>Increments the second element (index 1) by 1.</li><li>Builds and prints the result in [1, 2, 3] bracket format.</li></ol>
+</details>
+  <h2>Frequently Asked Questions</h2>
+  <div class="seo-faq">
+    <div class="seo-faq-item"><h4>Why is the second element at index 1, not index 2?</h4><p>Programming languages almost universally use 0-based indexing — the first element is at index 0, so the second element is at index 1.</p></div>
+    <div class="seo-faq-item"><h4>How do I read a line of space-separated numbers into a list in Python?</h4><p>Split the line on spaces to get a list of strings, then convert each one with int(): [int(p) for p in input().split(&quot; &quot;)] does both in one line.</p></div>
+    <div class="seo-faq-item"><h4>How do I print a list in Python&#x27;s [1, 2, 3] format in other languages?</h4><p>Build the comma-and-space-separated values yourself and wrap them in square brackets — e.g. &quot;[&quot; + &quot;, &quot;.join(str(x) for x in arr) + &quot;]&quot; — since most other languages don&#x27;t print arrays that way by default.</p></div>
+  </div>
+</main>
+
+<!-- ══ RESULT OVERLAY ══ -->
+<div id="result-overlay">
+  <div class="result-card">
+    <button class="result-close" onclick="closeResult()">✕</button>
+
+    <div class="result-status-banner" id="res-banner">
+      <div id="res-banner-title">—</div>
+      <div class="status-sub" id="res-banner-sub">—</div>
+    </div>
+
+    <!-- Two-column layout: submission + typing stats on the left, graphs on the right -->
+    <div class="result-body-grid">
+
+      <!-- LEFT COLUMN: status stats + typing analytics numbers -->
+      <div class="result-col result-col-left">
+        <div class="result-grid" id="res-grid"><!-- JS filled --></div>
+
+        <div class="result-section-title">Typing Analytics</div>
+        <div class="paste-warn" id="paste-warn">⚠️ Paste detected. Typing analytics may not be accurate.</div>
+        <div class="typing-analytics-grid">
+          <div class="analytics-box"><h5>WPM</h5><div class="analytics-val" id="ra-wpm">—</div><div class="analytics-sub">Words per minute</div></div>
+          <div class="analytics-box"><h5>Accuracy</h5><div class="analytics-val" id="ra-acc">—</div><div class="analytics-sub">Correct keystrokes</div></div>
+          <div class="analytics-box"><h5>Consistency</h5><div class="analytics-val" id="ra-con">—</div><div class="analytics-sub">Speed variation score</div></div>
+          <div class="analytics-box"><h5>Active Time</h5><div class="analytics-val" id="ra-time">—</div><div class="analytics-sub">Time actively typing</div></div>
+          <div class="analytics-box"><h5>Keystrokes</h5><div class="analytics-val" id="ra-ks">—</div><div class="analytics-sub">Total key presses</div></div>
+          <div class="analytics-box"><h5>Backspaces</h5><div class="analytics-val" id="ra-bs">—</div><div class="analytics-sub">Corrections made</div></div>
+        </div>
+      </div>
+
+      <!-- RIGHT COLUMN: graphs -->
+      <div class="result-col result-col-right">
+        <div class="chart-wrap">
+          <h5>Typing Speed Over Time (WPM)</h5>
+          <div class="chart-canvas-box"><canvas id="wpm-chart"></canvas></div>
+        </div>
+        <div class="chart-wrap">
+          <h5>Keystroke Timeline</h5>
+          <div class="chart-canvas-box"><canvas id="ks-chart"></canvas></div>
+        </div>
+      </div>
+
+    </div><!-- /result-body-grid -->
+
+    <div class="result-actions">
+      <button class="btn-retry" onclick="closeResult()">Try Again</button>
+      <button class="btn-next"  onclick="nextProblem()">Next Problem →</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast container -->
+<div class="toast-container" id="toast-container"></div>
+
+<!-- This problem's data: question + reference solutions per language (read by problem-app.js / practice-engine.js) -->
+<script>
+window.ROCKET_PROBLEM = {"file": "increment-second-element-of-a-list.html", "h1": "Increment Second List Element", "question": {"id": 20, "title": "Increment Second List Element", "difficulty": "Easy", "topic": "Lists", "timeLimit": "1 sec", "memoryLimit": "256 MB", "description": "You are given a list of integers on one line, separated by spaces. Increment the **second element** of the list (index 1) by 1, then print the modified list.", "inputFormat": "A single line of space-separated integers, with at least 2 numbers.", "outputFormat": "Print the modified list in standard list format, e.g. `[1, 3, 3]`.", "constraints": "• 2 ≤ number of elements ≤ 20", "sampleInput": "1 2 3", "sampleOutput": "[1, 3, 3]", "explanation": "The list is [1, 2, 3]. Its second element (index 1) is 2, so incrementing it by 1 gives [1, 3, 3].", "hint": "Read the line, split it, convert each piece to an integer, then update `arr[1]` before printing.", "allowedSyntax": ["input", "int", "print", "list", "split", "index"], "testCases": [{"input": "1 2 3", "expectedOutput": "[1, 3, 3]"}], "hiddenTestCases": [{"input": "10 20 30 40", "expectedOutput": "[10, 21, 30, 40]"}, {"input": "5 5", "expectedOutput": "[5, 6]"}, {"input": "0 -1 2", "expectedOutput": "[0, 0, 2]"}, {"input": "100 200", "expectedOutput": "[100, 201]"}]}};
+window.__rocketSolutions = {"20": {"python": [{"name": "Loop + int() conversion", "code": "line = input()\nparts = line.split(\" \")\narr = []\nfor p in parts:\n    arr.append(int(p))\narr[1] = arr[1] + 1\nprint(arr)", "explain": ["Reads a line of space-separated numbers from input.", "Splits the line into individual number strings.", "Starts an empty list to hold the converted integers.", "Converts each piece to an integer and adds it to the list.", "Increments the element at index 1 (the second element) by 1.", "Prints the modified list."]}, {"name": "List comprehension", "code": "arr = [int(p) for p in input().split(\" \")]\narr[1] += 1\nprint(arr)", "explain": ["Reads a line, splits it on spaces, and converts every piece to an integer, all in one list.", "Increments the second element (index 1) by 1 using +=.", "Prints the modified list."]}, {"name": "While loop over tokens", "code": "tokens = input().split(\" \")\narr = []\ni = 0\nwhile i < len(tokens):\n    arr.append(int(tokens[i]))\n    i += 1\narr[1] += 1\nprint(arr)", "explain": ["Reads a line and splits it into individual number strings.", "Starts an empty list to hold the converted integers, and a counter at 0.", "While there are still tokens left, converts the current one to an integer and appends it.", "Increments the second element (index 1) by 1.", "Prints the modified list."]}], "javascript": [{"name": "map(Number) + join", "code": "const parts = require(\"fs\").readFileSync(0, \"utf8\").trim().split(\" \").map(Number);\nparts[1] = parts[1] + 1;\nconsole.log(\"[\" + parts.join(\", \") + \"]\");", "explain": ["Reads the line, splits it on spaces, and converts every piece to a number.", "Increments the second element (index 1) by 1.", "Builds and prints the result in Python's [1, 2, 3] bracket format."]}], "java": [{"name": "Array + manual formatting", "code": "import java.util.Scanner;\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        String[] tokens = sc.nextLine().trim().split(\" \");\n        int[] arr = new int[tokens.length];\n        for (int i = 0; i < tokens.length; i++) arr[i] = Integer.parseInt(tokens[i]);\n        arr[1] += 1;\n        StringBuilder sb = new StringBuilder(\"[\");\n        for (int i = 0; i < arr.length; i++) {\n            if (i > 0) sb.append(\", \");\n            sb.append(arr[i]);\n        }\n        sb.append(\"]\");\n        System.out.println(sb.toString());\n    }\n}", "explain": ["Reads the line and splits it into tokens.", "Converts every token into an int array.", "Increments the second element (index 1) by 1.", "Builds and prints the result in [1, 2, 3] bracket format."]}], "cpp": [{"name": "stringstream + vector", "code": "#include <iostream>\n#include <sstream>\n#include <vector>\nusing namespace std;\nint main() {\n    string line;\n    getline(cin, line);\n    stringstream ss(line);\n    vector<int> arr;\n    int x;\n    while (ss >> x) arr.push_back(x);\n    arr[1] += 1;\n    cout << \"[\";\n    for (size_t i = 0; i < arr.size(); i++) {\n        if (i > 0) cout << \", \";\n        cout << arr[i];\n    }\n    cout << \"]\" << endl;\n    return 0;\n}", "explain": ["Reads the whole line, then streams the numbers out of it into a vector.", "Increments the second element (index 1) by 1.", "Prints the result in [1, 2, 3] bracket format."]}], "c": [{"name": "scanf loop + manual formatting", "code": "#include <stdio.h>\nint main() {\n    int arr[25];\n    int count = 0;\n    while (scanf(\"%d\", &arr[count]) == 1) count++;\n    arr[1] += 1;\n    printf(\"[\");\n    for (int i = 0; i < count; i++) {\n        if (i > 0) printf(\", \");\n        printf(\"%d\", arr[i]);\n    }\n    printf(\"]\\n\");\n    return 0;\n}", "explain": ["Reads integers one at a time until input runs out, storing them in an array.", "Increments the second element (index 1) by 1.", "Prints the result in [1, 2, 3] bracket format."]}], "typescript": [{"name": "map(Number) + join", "code": "const parts: number[] = require(\"fs\").readFileSync(0, \"utf8\").trim().split(\" \").map(Number);\nparts[1] = parts[1] + 1;\nconsole.log(\"[\" + parts.join(\", \") + \"]\");", "explain": ["Reads the line, splits it on spaces, and converts every piece to a number.", "Increments the second element (index 1) by 1.", "Builds and prints the result in [1, 2, 3] bracket format."]}], "go": [{"name": "strconv.Atoi loop + Join", "code": "package main\nimport (\n    \"bufio\"\n    \"fmt\"\n    \"os\"\n    \"strconv\"\n    \"strings\"\n)\nfunc main() {\n    reader := bufio.NewReader(os.Stdin)\n    line, _ := reader.ReadString('\\n')\n    tokens := strings.Fields(line)\n    arr := make([]int, len(tokens))\n    for i, t := range tokens {\n        arr[i], _ = strconv.Atoi(t)\n    }\n    arr[1]++\n    parts := make([]string, len(arr))\n    for i, v := range arr {\n        parts[i] = strconv.Itoa(v)\n    }\n    fmt.Println(\"[\" + strings.Join(parts, \", \") + \"]\")\n}", "explain": ["Reads the line and splits it into whitespace-separated tokens.", "Converts every token into an int slice.", "Increments the second element (index 1) by 1.", "Builds and prints the result in [1, 2, 3] bracket format."]}], "rust": [{"name": "split_whitespace + join", "code": "use std::io::{self, Read};\nfn main() {\n    let mut text = String::new();\n    io::stdin().read_to_string(&mut text).unwrap();\n    let mut arr: Vec<i32> = text.trim().split_whitespace().map(|x| x.parse().unwrap()).collect();\n    arr[1] += 1;\n    let parts: Vec<String> = arr.iter().map(|x| x.to_string()).collect();\n    println!(\"[{}]\", parts.join(\", \"));\n}", "explain": ["Reads all of standard input and parses it into a vector of integers.", "Increments the second element (index 1) by 1.", "Builds and prints the result in [1, 2, 3] bracket format."]}], "kotlin": [{"name": "map{toInt()} + joinToString", "code": "fun main() {\n    val arr = readLine()!!.trim().split(\" \").map { it.toInt() }.toMutableList()\n    arr[1] = arr[1] + 1\n    println(\"[\" + arr.joinToString(\", \") + \"]\")\n}", "explain": ["Reads the line, splits it on spaces, and converts every piece to an Int in a mutable list.", "Increments the second element (index 1) by 1.", "Builds and prints the result in [1, 2, 3] bracket format."]}], "swift": [{"name": "map{Int($0)!} + joined", "code": "var arr = readLine()!.split(separator: \" \").map { Int($0)! }\narr[1] += 1\nlet parts = arr.map { String($0) }\nprint(\"[\\(parts.joined(separator: \\\", \\\"))]\")", "explain": ["Reads the line, splits it on spaces, and converts every piece to an Int.", "Increments the second element (index 1) by 1.", "Builds and prints the result in [1, 2, 3] bracket format."]}], "php": [{"name": "array_map('intval') + implode", "code": "<?php\n$line = trim(fgets(STDIN));\n$arr = array_map('intval', explode(\" \", $line));\n$arr[1] += 1;\necho \"[\", implode(\", \", $arr), \"]\\n\";", "explain": ["Reads the line, splits it on spaces, and converts every piece to an integer.", "Increments the second element (index 1) by 1.", "Builds and prints the result in [1, 2, 3] bracket format."]}], "csharp": [{"name": "Select(int.Parse) + string.Join", "code": "using System;\nusing System.Linq;\nclass Program {\n    static void Main() {\n        var arr = Console.ReadLine().Trim().Split(' ').Select(int.Parse).ToArray();\n        arr[1] += 1;\n        Console.WriteLine(\"[\" + string.Join(\", \", arr) + \"]\");\n    }\n}", "explain": ["Reads the line, splits it on spaces, and parses every piece into an int array.", "Increments the second element (index 1) by 1.", "Builds and prints the result in [1, 2, 3] bracket format."]}], "ruby": [{"name": "map(&:to_i) + join", "code": "arr = gets.chomp.split(\" \").map(&:to_i)\narr[1] += 1\nputs \"[#{arr.join(\", \")}]\"", "explain": ["Reads the line, splits it on spaces, and converts every piece to an integer.", "Increments the second element (index 1) by 1.", "Builds and prints the result in [1, 2, 3] bracket format."]}]}};
+</script>
+
+<!-- Monaco loader (deferred; the editor itself is fetched at idle time) -->
+<script>var require = { paths: { vs: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs' } };</script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs/loader.min.js"></script>
+<!-- Shared runtime, cached across all problem pages. Keep this order: coding-core -> problem-app -> practice-engine.
+     The ../compilers/*.js files are loaded lazily by problem-app.js (not listed here on purpose). -->
+<script defer src="coding-core.js"></script>
+<script defer src="problem-app.js"></script>
+<script defer src="practice-engine.js"></script>
+</body>
+</html>
