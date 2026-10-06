@@ -3124,6 +3124,7 @@ function sanitizeStr(s) {
 
     // ── Open / Close ─────────────────────────────────────────────
     function openAuthModal(tab = 'login') {
+        if (window._rtLoadFirebase) window._rtLoadFirebase(); // Firebase now loads on demand for guests
         const mainInput = document.getElementById('input');
         if (mainInput) { mainInput.disabled = true; mainInput.blur(); }
         document.getElementById('authModal').style.display = 'flex';
