@@ -468,13 +468,6 @@
   </url>
 
   <url>
-    <loc>https://www.rockettyping.com/test</loc>
-    <lastmod>2026-06-05</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-  </url>
-
-  <url>
     <loc>https://www.rockettyping.com/blog</loc>
     <lastmod>2026-06-05</lastmod>
     <changefreq>weekly</changefreq>
@@ -547,6 +540,55 @@
     </image:image>
 
 </url>
+  <url>
+    <loc>https://www.rockettyping.com/blog/best-keyboard-to-buy-in-usa</loc>
+    <lastmod>2026-10-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.80</priority>
+
+    <image:image>
+        <image:loc>https://www.rockettyping.com/blog/images/best-keyboard-to-buy-in-usa-image/best-keyboard-usa-logitech-mx-keys-s-wireless.webp</image:loc>
+        <image:title>Logitech MX Keys S Wireless Keyboard</image:title>
+        <image:caption>Logitech MX Keys S, a quiet full-size wireless keyboard and our pick for the best keyboard to buy in the USA overall.</image:caption>
+    </image:image>
+
+    <image:image>
+        <image:loc>https://www.rockettyping.com/blog/images/best-keyboard-to-buy-in-usa-image/best-mechanical-keyboard-usa-keychron-q1-max.webp</image:loc>
+        <image:title>Keychron Q1 Max Mechanical Keyboard</image:title>
+        <image:caption>Keychron Q1 Max, a premium 75% wireless mechanical keyboard with a knob and RGB backlight.</image:caption>
+    </image:image>
+
+    <image:image>
+        <image:loc>https://www.rockettyping.com/blog/images/best-keyboard-to-buy-in-usa-image/best-office-mechanical-keyboard-logitech-mx-mechanical.webp</image:loc>
+        <image:title>Logitech MX Mechanical Keyboard</image:title>
+        <image:caption>Logitech MX Mechanical, a low-profile wireless mechanical keyboard for office use.</image:caption>
+    </image:image>
+
+    <image:image>
+        <image:loc>https://www.rockettyping.com/blog/images/best-keyboard-to-buy-in-usa-image/best-slim-mechanical-keyboard-nuphy-air75-v3.webp</image:loc>
+        <image:title>NuPhy Air75 V3 Slim Mechanical Keyboard</image:title>
+        <image:caption>NuPhy Air75 V3, a low-profile 75% wireless mechanical keyboard.</image:caption>
+    </image:image>
+
+    <image:image>
+        <image:loc>https://www.rockettyping.com/blog/images/best-keyboard-to-buy-in-usa-image/best-budget-mechanical-keyboard-redragon-k552.webp</image:loc>
+        <image:title>Redragon K552 Budget Mechanical Keyboard</image:title>
+        <image:caption>Redragon K552, a budget wired TKL mechanical keyboard with RGB backlight.</image:caption>
+    </image:image>
+
+    <image:image>
+        <image:loc>https://www.rockettyping.com/blog/images/best-keyboard-to-buy-in-usa-image/best-portable-wireless-keyboard-logitech-pebble-keys-2-k380s.webp</image:loc>
+        <image:title>Logitech Pebble Keys 2 K380s Portable Keyboard</image:title>
+        <image:caption>Logitech Pebble Keys 2 K380s, a compact portable wireless keyboard for laptops and tablets.</image:caption>
+    </image:image>
+
+    <image:image>
+        <image:loc>https://www.rockettyping.com/blog/images/best-keyboard-to-buy-in-usa-image/best-ergonomic-keyboard-logitech-ergo-k860.webp</image:loc>
+        <image:title>Logitech ERGO K860 Ergonomic Keyboard</image:title>
+        <image:caption>Logitech ERGO K860, a split ergonomic wireless keyboard with a wrist rest.</image:caption>
+    </image:image>
+  </url>
+
   <url>
     <loc>https://www.rockettyping.com/blog/best-keyboards-for-programmers</loc>
     <changefreq>monthly</changefreq>
@@ -717,999 +759,82 @@
   <url><loc>https://www.rockettyping.com/blog/typing-test-vs-practice</loc><changefreq>monthly</changefreq><priority>0.80</priority></url>
   <url><loc>https://www.rockettyping.com/blog/typing-websites-vs-other-platforms</loc><changefreq>monthly</changefreq><priority>0.80</priority></url>
 
-  <!-- Trending Articles -->
-
-<url>
-    <loc>https://www.rockettyping.com/trending</loc>
-    <lastmod>2026-09-24</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.9</priority>
+  <!-- Typing Test Certificates -->
+  <url>
+    <loc>https://www.rockettyping.com/certificate</loc>
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.90</priority>
   </url>
 
   <url>
-    <loc>https://www.rockettyping.com/trending/lake-ontario-becomes-lake-america-viral-reaction</loc>
-    <lastmod>2026-08-25</lastmod>
-    <changefreq>monthly</changefreq>
+    <loc>https://www.rockettyping.com/certificate/10-seconds-typing-test</loc>
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>0.85</priority>
-
-    <image:image>
-        <image:loc>https://www.rockettyping.com/trending/images/lake-ontario-becomes-lake-america-viral-reaction-image/lake-ontario-becomes-lake-america-viral-reaction-imagelake-ontario-becomes-lake-america-featured.webp</image:loc>
-        <image:title>Lake Ontario Becomes "Lake America"</image:title>
-        <image:caption>Aerial view of Lake Ontario and the Toronto skyline, the Great Lake at the center of Trump's proposed "Lake America" rename.</image:caption>
-    </image:image>
-
-    <image:image>
-        <image:loc>https://www.rockettyping.com/trending/images/lake-ontario-becomes-lake-america-viral-reaction-image/lake-america-internet-reactions-memes.webp</image:loc>
-        <image:title>Lake America Internet Reactions and Memes</image:title>
-        <image:caption>Screenshot-style collage of social media posts and memes reacting to the "Lake America" rename, mixing patriotic jokes and Canadian pride.</image:caption>
-    </image:image>
-
-    <image:image>
-        <image:loc>https://www.rockettyping.com/trending/images/lake-ontario-becomes-lake-america-viral-reaction-image/lake-ontario-lake-america-map-comparison.webp</image:loc>
-        <image:title>Lake Ontario vs Lake America Map Comparison</image:title>
-        <image:caption>Illustrated map comparing "Lake Ontario" and the proposed "Lake America" name, showing the lake's position between Canada and New York State.</image:caption>
-    </image:image>
-
-    <image:image>
-        <image:loc>https://www.rockettyping.com/trending/images/lake-ontario-becomes-lake-america-viral-reaction-image/lake-ontario-sunset-scenic-view.webp</image:loc>
-        <image:title>Lake Ontario Sunset Scenic View</image:title>
-        <image:caption>Sunset over Lake Ontario with the Toronto skyline silhouette, the Great Lake unchanged by the online rename debate.</image:caption>
-    </image:image>
-
-</url>
+  </url>
 
   <url>
-    <loc>https://www.rockettyping.com/trending/25-august-2026-instagram-countdown-scam-explained</loc>
-    <lastmod>2026-08-26</lastmod>
-    <changefreq>monthly</changefreq>
+    <loc>https://www.rockettyping.com/certificate/15-seconds-typing-test</loc>
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>0.85</priority>
-
-    <image:image>
-        <image:loc>https://www.rockettyping.com/trending/images/25-august-2026-instagram-countdown-scam-explained-image/25-august-2026-countdown-scam-featured.webp</image:loc>
-        <image:title>25 August 2026 Countdown Scam Featured Image</image:title>
-        <image:caption>A countdown timer hitting zero beside a calendar marked August 25, 2026 — the date an Instagram page turned into a viral paywall scam.</image:caption>
-    </image:image>
-
-    <image:image>
-        <image:loc>https://www.rockettyping.com/trending/images/25-august-2026-instagram-countdown-scam-explained-image/25-august-2026-countdown-hype-crowd-reaction.webp</image:loc>
-        <image:title>25 August 2026 Countdown Hype Crowd Reaction</image:title>
-        <image:caption>A crowd holding up glowing phones in excitement, split against silhouettes staring at their phones in letdown — the hype before the disappointment.</image:caption>
-    </image:image>
-
-    <image:image>
-        <image:loc>https://www.rockettyping.com/trending/images/25-august-2026-instagram-countdown-scam-explained-image/25-august-2026-instagram-video-paywall-scam.webp</image:loc>
-        <image:title>25 August 2026 Instagram Video Paywall Scam</image:title>
-        <image:caption>A video player locked behind a padlock and a rupee symbol, representing the ₹500 paywall that hid the promised video.</image:caption>
-    </image:image>
-
-    <image:image>
-        <image:loc>https://www.rockettyping.com/trending/images/25-august-2026-instagram-countdown-scam-explained-image/25-august-2026-countdown-scam-viral-trending.webp</image:loc>
-        <image:title>25 August 2026 Countdown Scam Going Viral</image:title>
-        <image:caption>Several phones held up side by side, each showing a colorful upward-trending graph — the story going viral online.</image:caption>
-    </image:image>
-
-</url>
+  </url>
 
   <url>
-    <loc>https://www.rockettyping.com/trending/bassline-vaseline-skincare-hijack</loc>
-    <lastmod>2026-08-27</lastmod>
-    <changefreq>monthly</changefreq>
+    <loc>https://www.rockettyping.com/certificate/30-seconds-typing-test</loc>
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>0.85</priority>
-
-    <image:image>
-        <image:loc>https://www.rockettyping.com/trending/images/bassline-vaseline-skincare-hijack-image/bassline-vaseline-skincare-hijack-featured.webp</image:loc>
-        <image:title>Bassline Vaseline Skincare Hijack Featured Image</image:title>
-        <image:caption>"Bassline" — the pronunciation trend that hijacked Vaseline's skincare collection, sparked by a Korean creator's viral video.</image:caption>
-    </image:image>
-
-    <image:image>
-        <image:loc>https://www.rockettyping.com/trending/images/bassline-vaseline-skincare-hijack-image/bassline-vaseline-viral-memes-remix.webp</image:loc>
-        <image:title>Bassline Vaseline Viral Memes Remix</image:title>
-        <image:caption>Memes and audio remixes of "Bassline Vaseline" spread fast across social platforms.</image:caption>
-    </image:image>
-
-    <image:image>
-        <image:loc>https://www.rockettyping.com/trending/images/bassline-vaseline-skincare-hijack-image/vaseline-baseline-rebrand-reaction.webp</image:loc>
-        <image:title>Vaseline Baseline Rebrand Reaction</image:title>
-        <image:caption>Vaseline's official playful reaction, joking about a "Bassline" rebrand and thanking fans for the trend.</image:caption>
-    </image:image>
-
-    <image:image>
-        <image:loc>https://www.rockettyping.com/trending/images/bassline-vaseline-skincare-hijack-image/vaseline-bassline-hijack-positive-moment.webp</image:loc>
-        <image:title>Vaseline Bassline Hijack Positive Moment</image:title>
-        <image:caption>"You said Bassline, we said Vaseline" — the brand's thank-you message to fans for the viral positive moment.</image:caption>
-    </image:image>
-
-</url>
+  </url>
 
   <url>
-    <loc>https://www.rockettyping.com/trending/ai-vs-human-24-hour-blind-test</loc>
-    <lastmod>2026-08-28</lastmod>
-    <changefreq>monthly</changefreq>
+    <loc>https://www.rockettyping.com/certificate/one-minute-typing-test</loc>
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>0.85</priority>
-
-    <image:image>
-        <image:loc>https://www.rockettyping.com/trending/images/ai-vs-human-24-hour-blind-test-image/ai-vs-human-24-hour-blind-test-featured.webp</image:loc>
-        <image:title>AI vs Human 24 Hour Blind Test Featured Image</image:title>
-        <image:caption>A 24:00 countdown beside a blindfolded silhouette and a glowing AI network, representing the viral 24-Hour Blind Test between AI and humans.</image:caption>
-    </image:image>
-
-    <image:image>
-        <image:loc>https://www.rockettyping.com/trending/images/ai-vs-human-24-hour-blind-test-image/ai-human-blind-test-strengths-comparison.webp</image:loc>
-        <image:title>AI vs Human Strengths Comparison</image:title>
-        <image:caption>Side-by-side comparison of AI strengths (speed, data volume, consistency) and human strengths (common sense, emotion, creativity).</image:caption>
-    </image:image>
-
-    <image:image>
-        <image:loc>https://www.rockettyping.com/trending/images/ai-vs-human-24-hour-blind-test-image/24-hour-blind-test-viral-reactions.webp</image:loc>
-        <image:title>24 Hour Blind Test Viral Reactions</image:title>
-        <image:caption>Social media reactions to the 24-Hour Blind Test, with people debating #AIPower, #HumansUnite and #Teamwork.</image:caption>
-    </image:image>
-
-    <image:image>
-        <image:loc>https://www.rockettyping.com/trending/images/ai-vs-human-24-hour-blind-test-image/ai-human-collaboration-future-blind-test.webp</image:loc>
-        <image:title>AI Human Collaboration Future</image:title>
-        <image:caption>A glowing digital hand and a human hand reaching toward each other, representing AI and human collaboration.</image:caption>
-    </image:image>
-
-</url>
+  </url>
 
   <url>
-    <loc>https://www.rockettyping.com/trending/us-venezuela-oil-deal-65-billion-barrels</loc>
-    <lastmod>2026-08-29</lastmod>
-    <changefreq>monthly</changefreq>
+    <loc>https://www.rockettyping.com/certificate/two-minute-typing-test</loc>
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>0.85</priority>
-
-    <image:image>
-        <image:loc>https://www.rockettyping.com/trending/images/us-venezuela-oil-deal-65-billion-barrels-image/us-venezuela-oil-deal-2026-trump-rodriguez-historic-agreement.webp</image:loc>
-        <image:title>US Venezuela Oil Deal 2026 Featured Image</image:title>
-        <image:caption>U.S. and Venezuelan flags beside a map of Venezuela, representing the newly announced oil reserves agreement between the two countries.</image:caption>
-    </image:image>
-
-    <image:image>
-        <image:loc>https://www.rockettyping.com/trending/images/us-venezuela-oil-deal-65-billion-barrels-image/venezuela-oil-fields-development-17-fields-1-5-million-bpd.webp</image:loc>
-        <image:title>Venezuela Oil Fields Development 17 Fields</image:title>
-        <image:caption>An oil pipeline running through Venezuelan hills toward a coastal refinery, representing the 17 oil fields covered by the new agreement.</image:caption>
-    </image:image>
-
-    <image:image>
-        <image:loc>https://www.rockettyping.com/trending/images/us-venezuela-oil-deal-65-billion-barrels-image/venezuela-oil-production-revival-investment-jobs-2026.webp</image:loc>
-        <image:title>Venezuela Oil Production Revival Investment Jobs</image:title>
-        <image:caption>Workers at a Venezuelan refinery construction site, representing the investment and jobs officials hope the deal will bring.</image:caption>
-    </image:image>
-
-</url>
+  </url>
 
   <url>
-    <loc>https://www.rockettyping.com/trending/nepal-tibet-flash-floods-glacier-collapse</loc>
-    <lastmod>2026-08-30</lastmod>
-    <changefreq>monthly</changefreq>
+    <loc>https://www.rockettyping.com/certificate/three-minute-typing-test</loc>
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>0.85</priority>
-
-    <image:image>
-        <image:loc>https://www.rockettyping.com/trending/images/nepal-tibet-flash-floods-glacier-collapse-image/nepal-tibet-glacier-collapse-flash-floods-featured.webp</image:loc>
-        <image:title>Nepal Tibet Glacier Collapse Flash Floods Featured Image</image:title>
-        <image:caption>A section of glacier breaking away high in the Himalayas, the event that triggered the catastrophic Nepal-Tibet flash floods.</image:caption>
-    </image:image>
-
-    <image:image>
-        <image:loc>https://www.rockettyping.com/trending/images/nepal-tibet-flash-floods-glacier-collapse-image/nepal-tibet-flood-rescue-helicopters-efforts.webp</image:loc>
-        <image:title>Nepal Tibet Flood Rescue Helicopters Efforts</image:title>
-        <image:caption>Search-and-rescue helicopters and ground teams working along the flood-damaged valley near the Nepal-Tibet border.</image:caption>
-    </image:image>
-
-    <image:image>
-        <image:loc>https://www.rockettyping.com/trending/images/nepal-tibet-flash-floods-glacier-collapse-image/nepal-tibet-flood-recovery-aid-support.webp</image:loc>
-        <image:title>Nepal Tibet Flood Recovery Aid Support</image:title>
-        <image:caption>Aid trucks and relief tents set up in the mountains to support communities affected by the flood.</image:caption>
-    </image:image>
-
-    <image:image>
-        <image:loc>https://www.rockettyping.com/trending/images/nepal-tibet-flash-floods-glacier-collapse-image/nepal-tibet-barrier-lake-flood-risk.webp</image:loc>
-        <image:title>Nepal Tibet Barrier Lake Flood Risk</image:title>
-        <image:caption>Diagram of a temporary barrier lake dammed by landslide debris, showing the flood risk to downstream villages if it fails.</image:caption>
-    </image:image>
-
-</url>
+  </url>
 
   <url>
-    <loc>https://www.rockettyping.com/trending/messi-inter-miami-four-goals-new-head-coach</loc>
-    <lastmod>2026-08-31</lastmod>
-    <changefreq>monthly</changefreq>
+    <loc>https://www.rockettyping.com/certificate/four-minute-typing-test</loc>
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>0.85</priority>
-
-    <image:image>
-        <image:loc>https://www.rockettyping.com/trending/images/messi-inter-miami-four-goals-new-head-coach-image/lionel-messi-inter-miami-mls-scoring-leader-2026.webp</image:loc>
-        <image:title>Lionel Messi Inter Miami MLS Scoring Leader 2026</image:title>
-        <image:caption>Lionel Messi on the ball for Inter Miami, now the MLS scoring leader with 18 goals in 2026.</image:caption>
-    </image:image>
-
-    <image:image>
-        <image:loc>https://www.rockettyping.com/trending/images/messi-inter-miami-four-goals-new-head-coach-image/messi-inter-miami-4-goals-montreal-2026-mls.webp</image:loc>
-        <image:title>Messi Inter Miami Four Goals Montreal 2026 MLS</image:title>
-        <image:caption>Lionel Messi celebrates after his four-goal performance in Inter Miami's 7-1 win over CF Montreal.</image:caption>
-    </image:image>
-
-    <image:image>
-        <image:loc>https://www.rockettyping.com/trending/images/messi-inter-miami-four-goals-new-head-coach-image/messi-free-kick-solo-run-inter-miami-vs-montreal.webp</image:loc>
-        <image:title>Messi Free Kick Solo Run Inter Miami vs Montreal</image:title>
-        <image:caption>Lionel Messi striking a free kick during Inter Miami's win over CF Montreal, one of four different goals he scored.</image:caption>
-    </image:image>
-
-    <image:image>
-        <image:loc>https://www.rockettyping.com/trending/images/messi-inter-miami-four-goals-new-head-coach-image/cristian-kily-gonzalez-new-inter-miami-coach-2026.webp</image:loc>
-        <image:title>Cristian Kily Gonzalez New Inter Miami Coach 2026</image:title>
-        <image:caption>Cristian "Kily" Gonzalez, Inter Miami's new head coach, pitchside during a match.</image:caption>
-    </image:image>
-
-</url>
+  </url>
 
   <url>
-    <loc>https://www.rockettyping.com/trending/tim-cook-steps-down-apple-ceo-john-ternus</loc>
-    <lastmod>2026-09-01</lastmod>
-    <changefreq>monthly</changefreq>
+    <loc>https://www.rockettyping.com/certificate/five-minute-typing-test</loc>
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>0.85</priority>
-
-    <image:image>
-        <image:loc>https://www.rockettyping.com/trending/images/tim-cook-steps-down-apple-ceo-john-ternus-image/tim-cook-steps-down-apple-ceo-john-ternus-featured.webp</image:loc>
-        <image:title>Tim Cook Steps Down Apple CEO John Ternus Featured Image</image:title>
-        <image:caption>Two silhouetted figures shaking hands and passing a baton in front of Apple Park, representing the CEO handover from Tim Cook to John Ternus.</image:caption>
-    </image:image>
-
-    <image:image>
-        <image:loc>https://www.rockettyping.com/trending/images/tim-cook-steps-down-apple-ceo-john-ternus-image/john-ternus-new-apple-ceo-hardware-engineering.webp</image:loc>
-        <image:title>John Ternus New Apple CEO Hardware Engineering</image:title>
-        <image:caption>Hardware engineering leadership graphic featuring Apple devices and circuit boards, representing John Ternus's 25-year background in hardware engineering.</image:caption>
-    </image:image>
-
-    <image:image>
-        <image:loc>https://www.rockettyping.com/trending/images/tim-cook-steps-down-apple-ceo-john-ternus-image/tim-cook-apple-ceo-15-years-growth.webp</image:loc>
-        <image:title>Tim Cook Apple CEO 15 Years Growth</image:title>
-        <image:caption>A timeline chart showing Apple's growth across products and services during Tim Cook's 15 years as CEO.</image:caption>
-    </image:image>
-
-    <image:image>
-        <image:loc>https://www.rockettyping.com/trending/images/tim-cook-steps-down-apple-ceo-john-ternus-image/apple-leadership-transition-future-chapter.webp</image:loc>
-        <image:title>Apple Leadership Transition Future Chapter</image:title>
-        <image:caption>A glowing pathway leading toward a modern campus at sunrise, representing Apple's next chapter under new leadership.</image:caption>
-    </image:image>
-
-</url>
+  </url>
 
   <url>
-    <loc>https://www.rockettyping.com/trending/us-iran-conflict-escalation-september-2026</loc>
-    <lastmod>2026-09-02</lastmod>
-    <changefreq>monthly</changefreq>
+    <loc>https://www.rockettyping.com/certificate/ten-minute-typing-test</loc>
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>0.85</priority>
-
-    <image:image>
-        <image:loc>https://www.rockettyping.com/trending/images/us-iran-conflict-escalation-september-2026-image/us-iran-conflict-escalation-september-2026-featured.webp</image:loc>
-        <image:title>US Iran Conflict Escalation September 2026 Featured Image</image:title>
-        <image:caption>A map of the Middle East split between opposing colors with a glowing conflict line running through the Strait of Hormuz region.</image:caption>
-    </image:image>
-
-    <image:image>
-        <image:loc>https://www.rockettyping.com/trending/images/us-iran-conflict-escalation-september-2026-image/strait-of-hormuz-strategic-shipping-route.webp</image:loc>
-        <image:title>Strait of Hormuz Strategic Shipping Route</image:title>
-        <image:caption>Infographic showing the Strait of Hormuz as a vital global energy shipping route between Iran, Oman, and the Arabian Peninsula.</image:caption>
-    </image:image>
-
-    <image:image>
-        <image:loc>https://www.rockettyping.com/trending/images/us-iran-conflict-escalation-september-2026-image/oil-prices-impact-us-iran-tensions.webp</image:loc>
-        <image:title>Oil Prices Impact US Iran Tensions</image:title>
-        <image:caption>Oil barrels beside a rising price chart, representing the impact of U.S.-Iran tensions on global oil prices.</image:caption>
-    </image:image>
-
-    <image:image>
-        <image:loc>https://www.rockettyping.com/trending/images/us-iran-conflict-escalation-september-2026-image/international-diplomacy-concern-middle-east-tensions.webp</image:loc>
-        <image:title>International Diplomacy Concern Middle East Tensions</image:title>
-        <image:caption>Silhouetted figures watching a globe with a scale of justice, representing international diplomatic concern over the conflict.</image:caption>
-    </image:image>
-
-</url>
+  </url>
 
   <url>
-    <loc>https://www.rockettyping.com/trending/cassandra-wilson-dies-at-70-jazz-legend</loc>
-    <lastmod>2026-09-03</lastmod>
-    <changefreq>monthly</changefreq>
+    <loc>https://www.rockettyping.com/certificate/one-hour-typing-test</loc>
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>0.85</priority>
+  </url>
 
-    <image:image>
-        <image:loc>https://www.rockettyping.com/trending/images/cassandra-wilson-dies-at-70-jazz-legend-image/cassandra-wilson-jazz-legend-tribute-featured.webp</image:loc>
-        <image:title>Cassandra Wilson Jazz Legend Tribute Featured Image</image:title>
-        <image:caption>A silhouetted figure singing into a vintage microphone under a warm spotlight, a tribute to jazz legend Cassandra Wilson.</image:caption>
-    </image:image>
-
-    <image:image>
-        <image:loc>https://www.rockettyping.com/trending/images/cassandra-wilson-dies-at-70-jazz-legend-image/cassandra-wilson-mississippi-jazz-legacy.webp</image:loc>
-        <image:title>Cassandra Wilson Mississippi Jazz Legacy</image:title>
-        <image:caption>Cypress trees on a Mississippi bayou at sunset beneath a bright star, evoking Cassandra Wilson's Mississippi roots.</image:caption>
-    </image:image>
-
-    <image:image>
-        <image:loc>https://www.rockettyping.com/trending/images/cassandra-wilson-dies-at-70-jazz-legend-image/cassandra-wilson-jazz-blues-fusion-career.webp</image:loc>
-        <image:title>Cassandra Wilson Jazz Blues Fusion Career</image:title>
-        <image:caption>A guitar, microphone, and piano over a Mississippi riverside scene, representing Wilson's blend of jazz, blues, folk, and country.</image:caption>
-    </image:image>
-
-    <image:image>
-        <image:loc>https://www.rockettyping.com/trending/images/cassandra-wilson-dies-at-70-jazz-legend-image/cassandra-wilson-music-legacy-remembrance.webp</image:loc>
-        <image:title>Cassandra Wilson Music Legacy Remembrance</image:title>
-        <image:caption>An open songbook and vinyl record with musical notes rising into a starry sky, representing Wilson's lasting musical legacy.</image:caption>
-    </image:image>
-
-</url>
-
-  <url>
-    <loc>https://www.rockettyping.com/trending/tornado-warning-michigan-great-lakes-september-2026</loc>
-    <lastmod>2026-09-04</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.85</priority>
-
-    <image:image>
-        <image:loc>https://www.rockettyping.com/trending/images/tornado-warning-michigan-great-lakes-september-2026-image/tornado-warning-vs-watch-explained.webp</image:loc>
-        <image:title>Tornado Warning vs Watch Explained</image:title>
-        <image:caption>Side-by-side comparison of a tornado warning (take action now) and a tornado watch (be ready), explaining the key difference.</image:caption>
-    </image:image>
-
-    <image:image>
-        <image:loc>https://www.rockettyping.com/trending/images/tornado-warning-michigan-great-lakes-september-2026-image/tornado-warning-great-lakes-michigan-ohio-featured.webp</image:loc>
-        <image:title>Tornado Warning Great Lakes Michigan Ohio</image:title>
-        <image:caption>An illustrative National Weather Service-style severe storm risk outlook map for the Great Lakes region.</image:caption>
-    </image:image>
-
-    <image:image>
-        <image:loc>https://www.rockettyping.com/trending/images/tornado-warning-michigan-great-lakes-september-2026-image/tornado-safety-shelter-actions.webp</image:loc>
-        <image:title>Tornado Safety Shelter Actions</image:title>
-        <image:caption>Four tornado safety steps: choose a sturdy home, go to a basement or interior room, stay away from windows, and avoid cars and outdoor areas.</image:caption>
-    </image:image>
-
-    <image:image>
-        <image:loc>https://www.rockettyping.com/trending/images/tornado-warning-michigan-great-lakes-september-2026-image/severe-weather-preparedness-stay-safe.webp</image:loc>
-        <image:title>Severe Weather Preparedness Stay Safe</image:title>
-        <image:caption>A phone displaying a storm advisory weather alert in front of a house, encouraging people to stay prepared and stay safe.</image:caption>
-    </image:image>
-
-</url>
-
-  <url>
-    <loc>https://www.rockettyping.com/trending/fiba-womens-basketball-world-cup-2026-berlin</loc>
-    <lastmod>2026-09-05</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.85</priority>
-
-    <image:image>
-        <image:loc>https://www.rockettyping.com/trending/images/fiba-womens-basketball-world-cup-2026-berlin-image/fiba-womens-basketball-world-cup-2026-berlin-featured.webp</image:loc>
-        <image:title>FIBA Women's Basketball World Cup 2026 Berlin Featured Image</image:title>
-        <image:caption>A basketball soaring toward the hoop against the Berlin skyline at dusk, marking the FIBA Women's Basketball World Cup 2026.</image:caption>
-    </image:image>
-
-    <image:image>
-        <image:loc>https://www.rockettyping.com/trending/images/fiba-womens-basketball-world-cup-2026-berlin-image/fiba-womens-world-cup-2026-groups-bracket.webp</image:loc>
-        <image:title>FIBA Women's World Cup 2026 Groups Bracket</image:title>
-        <image:caption>A 16-team tournament bracket illustrating how group winners advance through the quarterfinals, semifinals, and final.</image:caption>
-    </image:image>
-
-    <image:image>
-        <image:loc>https://www.rockettyping.com/trending/images/fiba-womens-basketball-world-cup-2026-berlin-image/womens-basketball-world-cup-berlin-excitement.webp</image:loc>
-        <image:title>Women's Basketball World Cup Berlin Excitement</image:title>
-        <image:caption>A crowd of fans cheering beneath a glowing basketball and world map, representing global excitement for the tournament.</image:caption>
-    </image:image>
-
-</url>
-<url>
-    <loc>https://www.rockettyping.com/trending/mcdonalds-india-x-account-controversy</loc>
-    <lastmod>2026-09-06</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.85</priority>
-
-    <image:image>
-        <image:loc>https://www.rockettyping.com/trending/images/mcdonalds-india-x-account-controversy-image/mcdonalds-india-x-account-controversy-featured.webp</image:loc>
-        <image:title>McDonald's India X Account Controversy Featured Image</image:title>
-        <image:caption>A phone showing crossed-out message bubbles and a broken heart icon, representing the deleted and disputed McDonald's India X posts.</image:caption>
-    </image:image>
-
-    <image:image>
-        <image:loc>https://www.rockettyping.com/trending/images/mcdonalds-india-x-account-controversy-image/mcdonalds-india-intern-claim-posts-concept.webp</image:loc>
-        <image:title>McDonald's India Intern Claim Posts Concept</image:title>
-        <image:caption>An illustrative mockup of a corporate social media post, representing the unexpected posts that appeared on the verified account.</image:caption>
-    </image:image>
-
-    <image:image>
-        <image:loc>https://www.rockettyping.com/trending/images/mcdonalds-india-x-account-controversy-image/mcdonalds-india-x-posts-public-reaction.webp</image:loc>
-        <image:title>McDonald's India X Posts Public Reaction</image:title>
-        <image:caption>Speech bubbles reading reactions like "Wait... what?" and "No way... seriously?", representing public reaction and skepticism online.</image:caption>
-    </image:image>
-
-    <image:image>
-        <image:loc>https://www.rockettyping.com/trending/images/mcdonalds-india-x-account-controversy-image/mcdonalds-india-account-security-response.webp</image:loc>
-        <image:title>McDonald's India Account Security Response</image:title>
-        <image:caption>A phone with a padlock icon beside an official statement about transparency and trust, representing the company's response.</image:caption>
-    </image:image>
-
-</url>
-<url>
-    <loc>https://www.rockettyping.com/trending/lisa-sawadika-music-video-bangkok</loc>
-    <lastmod>2026-09-07</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.85</priority>
-
-    <image:image>
-        <image:loc>https://www.rockettyping.com/trending/images/lisa-sawadika-music-video-bangkok-image/lisa-sawadika-official-music-video-featured.webp</image:loc>
-        <image:title>LISA SaWaDiKa Official Music Video Featured Image</image:title>
-        <image:caption>A silhouetted figure against swirling red and gold light with the Bangkok skyline, styled after LISA's SaWaDiKa music video.</image:caption>
-    </image:image>
-
-    <image:image>
-        <image:loc>https://www.rockettyping.com/trending/images/lisa-sawadika-music-video-bangkok-image/lisa-sawadika-hip-hop-rap-energy.webp</image:loc>
-        <image:title>LISA SaWaDiKa Hip Hop Rap Energy</image:title>
-        <image:caption>A vintage microphone with bold red and gold sound waves, representing SaWaDiKa's hip-hop and rap energy.</image:caption>
-    </image:image>
-
-    <image:image>
-        <image:loc>https://www.rockettyping.com/trending/images/lisa-sawadika-music-video-bangkok-image/lisa-sawadika-bangkok-thai-culture-mv.webp</image:loc>
-        <image:title>LISA SaWaDiKa Bangkok Thai Culture MV</image:title>
-        <image:caption>A tuk-tuk and Muay Thai-style boxing shorts against a neon Bangkok street scene, referencing the SaWaDiKa music video's Thai imagery.</image:caption>
-    </image:image>
-
-    <image:image>
-        <image:loc>https://www.rockettyping.com/trending/images/lisa-sawadika-music-video-bangkok-image/lisa-sawadika-100-million-views-record.webp</image:loc>
-        <image:title>LISA SaWaDiKa 100 Million Views Record</image:title>
-        <image:caption>A rocket-shaped view-count graphic showing SaWaDiKa's rapid climb past 50 million YouTube views.</image:caption>
-    </image:image>
-
-</url>
-<url>
-    <loc>https://www.rockettyping.com/trending/canada-retaliatory-tariffs-us-goods-2026</loc>
-    <lastmod>2026-09-08</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.85</priority>
-
-    <image:image>
-        <image:loc>https://www.rockettyping.com/trending/images/canada-retaliatory-tariffs-us-goods-2026-image/canada-retaliatory-tariffs-us-goods-september-2026-featured.webp</image:loc>
-        <image:title>Canada Retaliatory Tariffs US Goods September 2026 Featured Image</image:title>
-        <image:caption>A map illustrating the flow of goods between Canada and the United States, representing the new cross-border tariffs.</image:caption>
-    </image:image>
-
-    <image:image>
-        <image:loc>https://www.rockettyping.com/trending/images/canada-retaliatory-tariffs-us-goods-2026-image/canada-us-trade-dispute-counter-tariffs.webp</image:loc>
-        <image:title>Canada US Trade Dispute Counter Tariffs</image:title>
-        <image:caption>A balanced scale labeled "Tariff for Tariff," representing Canada's dollar-for-dollar, rate-for-rate response to U.S. tariffs.</image:caption>
-    </image:image>
-
-    <image:image>
-        <image:loc>https://www.rockettyping.com/trending/images/canada-retaliatory-tariffs-us-goods-2026-image/canada-tariffs-steel-dairy-appliances-products.webp</image:loc>
-        <image:title>Canada Tariffs Steel Dairy Appliances Products</image:title>
-        <image:caption>A chart showing tariff rates of 15%, 25%, and 50% across categories like steel, dairy, appliances, farm equipment, and electronics.</image:caption>
-    </image:image>
-
-    <image:image>
-        <image:loc>https://www.rockettyping.com/trending/images/canada-retaliatory-tariffs-us-goods-2026-image/canada-worker-business-support-tariff-impact.webp</image:loc>
-        <image:title>Canada Worker Business Support Tariff Impact</image:title>
-        <image:caption>A hand holding shields representing agriculture and industry, symbolizing government support for workers and businesses.</image:caption>
-    </image:image>
-</url>
-<url>
-    <loc>https://www.rockettyping.com/trending/nintendo-direct-9-9-2026-metroid-kirby</loc>
-    <lastmod>2026-09-09</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.85</priority>
-
-    <image:image>
-        <image:loc>https://www.rockettyping.com/trending/images/nintendo-direct-9-9-2026-metroid-kirby-image/nintendo-direct-9-9-2026-switch-2-featured.webp</image:loc>
-        <image:title>Nintendo Direct 9.9.2026 Switch 2 Featured Image</image:title>
-        <image:caption>A Nintendo Switch 2 console on stage during a live Nintendo Direct presentation.</image:caption>
-    </image:image>
-
-    <image:image>
-        <image:loc>https://www.rockettyping.com/trending/images/nintendo-direct-9-9-2026-metroid-kirby-image/metroid-ravenous-kirby-world-beyond-reveals.webp</image:loc>
-        <image:title>Metroid Ravenous Kirby World Beyond Reveals</image:title>
-        <image:caption>Split artwork contrasting Metroid Ravenous's "Eat or Be Eaten" tagline with Kirby and the World Beyond's bright, explorable skies.</image:caption>
-    </image:image>
-
-    <image:image>
-        <image:loc>https://www.rockettyping.com/trending/images/nintendo-direct-9-9-2026-metroid-kirby-image/nintendo-switch-2-third-party-games-lineup.webp</image:loc>
-        <image:title>Nintendo Switch 2 Third Party Games Lineup</image:title>
-        <image:caption>A Winter 2027 game lineup graphic covering action, RPG, adventure, and port categories.</image:caption>
-    </image:image>
-
-    <image:image>
-        <image:loc>https://www.rockettyping.com/trending/images/nintendo-direct-9-9-2026-metroid-kirby-image/switch-2-winter-2027-games-excitement.webp</image:loc>
-        <image:title>Switch 2 Winter 2027 Games Excitement</image:title>
-        <image:caption>A Nintendo Switch 2 console flying through a glowing, star-filled fantasy landscape.</image:caption>
-    </image:image>
-
-</url>
-<url>
-    <loc>https://www.rockettyping.com/trending/apple-surprise-and-shine-event-iphone-duo</loc>
-    <lastmod>2026-09-10</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.85</priority>
-
-    <image:image>
-        <image:loc>https://www.rockettyping.com/trending/images/apple-surprise-and-shine-event-iphone-duo-image/apple-surprise-and-shine-event-2026-featured.webp</image:loc>
-        <image:title>Apple Surprise and Shine Event 2026 Featured Image</image:title>
-        <image:caption>A glowing open foldable phone beside a pair of wireless earbuds, representing Apple's September 2026 product event.</image:caption>
-    </image:image>
-
-    <image:image>
-        <image:loc>https://www.rockettyping.com/trending/images/apple-surprise-and-shine-event-iphone-duo-image/iphone-duo-foldable-apple-first-2026.webp</image:loc>
-        <image:title>iPhone Duo Foldable Apple First 2026</image:title>
-        <image:caption>A side-by-side comparison of the iPhone Duo closed, book-size, and open, showing its dual-screen multitasking layout.</image:caption>
-    </image:image>
-
-    <image:image>
-        <image:loc>https://www.rockettyping.com/trending/images/apple-surprise-and-shine-event-iphone-duo-image/iphone-18-pro-apple-watch-series-12-ultra-4.webp</image:loc>
-        <image:title>iPhone 18 Pro Apple Watch Series 12 Ultra 4</image:title>
-        <image:caption>A silver smartphone beside two smartwatches displaying heart-rate and fitness data, representing the iPhone 18 Pro, Apple Watch Series 12, and Apple Watch Ultra 4.</image:caption>
-    </image:image>
-
-    <image:image>
-        <image:loc>https://www.rockettyping.com/trending/images/apple-surprise-and-shine-event-iphone-duo-image/airpods-5-apple-new-products-lineup-2026.webp</image:loc>
-        <image:title>AirPods 5 Apple New Products Lineup 2026</image:title>
-        <image:caption>A pair of wireless earbuds beside a sound waveform, phone outline, and watch outline, representing AirPods 5.</image:caption>
-    </image:image>
-
-</url>
-<url>
-    <loc>https://www.rockettyping.com/trending/september-11-25th-anniversary-remembrance</loc>
-    <lastmod>2026-09-11</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.85</priority>
-
-    <image:image>
-        <image:loc>https://www.rockettyping.com/trending/images/september-11-25th-anniversary-remembrance-image/september-11-25th-anniversary-remembrance-featured.webp</image:loc>
-        <image:title>September 11 25th Anniversary Remembrance Featured Image</image:title>
-        <image:caption>A flag-draped memorial beside the Tribute in Light beams and silhouetted figures standing in remembrance, marking 25 years since September 11, 2001.</image:caption>
-    </image:image>
-
-    <image:image>
-        <image:loc>https://www.rockettyping.com/trending/images/september-11-25th-anniversary-remembrance-image/911-memorial-sites-new-york-pentagon-shanksville.webp</image:loc>
-        <image:title>911 Memorial Sites New York Pentagon Shanksville</image:title>
-        <image:caption>Three memorial markers reading New York, Pentagon, and Pennsylvania, each inscribed "Forever in Our Hearts."</image:caption>
-    </image:image>
-
-    <image:image>
-        <image:loc>https://www.rockettyping.com/trending/images/september-11-25th-anniversary-remembrance-image/tribute-in-light-september-11-25th-anniversary.webp</image:loc>
-        <image:title>Tribute in Light September 11 25th Anniversary</image:title>
-        <image:caption>The Tribute in Light shining two beams into the night sky over New York, marking where the Twin Towers once stood.</image:caption>
-    </image:image>
-
-    <image:image>
-        <image:loc>https://www.rockettyping.com/trending/images/september-11-25th-anniversary-remembrance-image/never-forget-september-11-25th-anniversary-unity.webp</image:loc>
-        <image:title>Never Forget September 11 25th Anniversary Unity</image:title>
-        <image:caption>A lit candle and a remembrance ribbon beside open hands, representing quiet acts of reflection on the anniversary.</image:caption>
-    </image:image>
-
-</url>
-<url>
-    <loc>https://www.rockettyping.com/trending/brics-summit-2026-new-delhi</loc>
-    <lastmod>2026-09-12</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.85</priority>
-
-    <image:image>
-        <image:loc>https://www.rockettyping.com/trending/images/brics-summit-2026-new-delhi-image/brics-summit-2026-new-delhi-featured.webp</image:loc>
-        <image:title>BRICS Summit 2026 New Delhi Featured Image</image:title>
-        <image:caption>Bharat Mandapam in New Delhi at sunrise, the venue for the 18th BRICS Summit.</image:caption>
-    </image:image>
-
-    <image:image>
-        <image:loc>https://www.rockettyping.com/trending/images/brics-summit-2026-new-delhi-image/brics-leaders-gathering-new-delhi-2026.webp</image:loc>
-        <image:title>BRICS Leaders Gathering New Delhi 2026</image:title>
-        <image:caption>Illustrated delegates seated around a round table beneath a globe and handshake motif, representing the gathering of BRICS leaders.</image:caption>
-    </image:image>
-
-    <image:image>
-        <image:loc>https://www.rockettyping.com/trending/images/brics-summit-2026-new-delhi-image/brics-2026-resilience-innovation-cooperation-sustainability.webp</image:loc>
-        <image:title>BRICS 2026 Resilience Innovation Cooperation Sustainability</image:title>
-        <image:caption>Four pillars representing resilience, innovation, cooperation, and sustainability, the theme of India's BRICS chairmanship.</image:caption>
-    </image:image>
-
-    <image:image>
-        <image:loc>https://www.rockettyping.com/trending/images/brics-summit-2026-new-delhi-image/brics-summit-2026-global-south-cooperation.webp</image:loc>
-        <image:title>BRICS Summit 2026 Global South Cooperation</image:title>
-        <image:caption>A world map with glowing connections between continents, representing cooperation across the Global South.</image:caption>
-    </image:image>
-
-</url>
-<url>
-    <loc>https://www.rockettyping.com/trending/zverev-wins-2026-us-open-mens-title</loc>
-    <lastmod>2026-09-13</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.85</priority>
-
-    <image:image>
-        <image:loc>https://www.rockettyping.com/trending/images/zverev-wins-2026-us-open-mens-title-image/alexander-zverev-2026-us-open-champion-featured.webp</image:loc>
-        <image:title>Alexander Zverev 2026 US Open Champion Featured Image</image:title>
-        <image:caption>A silhouetted tennis player raising a trophy under stadium lights in German-flag colors, marking Zverev's 2026 US Open title.</image:caption>
-    </image:image>
-
-    <image:image>
-        <image:loc>https://www.rockettyping.com/trending/images/zverev-wins-2026-us-open-mens-title-image/zverev-two-grand-slams-2026-german-champion.webp</image:loc>
-        <image:title>Zverev Two Grand Slams 2026 German Champion</image:title>
-        <image:caption>A "Double Grand Slam" graphic with two gold trophies and German-flag colors, representing Zverev's two major titles in one season.</image:caption>
-    </image:image>
-
-    <image:image>
-        <image:loc>https://www.rockettyping.com/trending/images/zverev-wins-2026-us-open-mens-title-image/zverev-shelton-us-open-2026-final-match.webp</image:loc>
-        <image:title>Zverev Shelton US Open 2026 Final Match</image:title>
-        <image:caption>Two tennis players facing off across the net in a packed stadium, representing the Zverev-Shelton final.</image:caption>
-    </image:image>
-
-    <image:image>
-        <image:loc>https://www.rockettyping.com/trending/images/zverev-wins-2026-us-open-mens-title-image/us-open-2026-zverev-trophy-celebration.webp</image:loc>
-        <image:title>US Open 2026 Zverev Trophy Celebration</image:title>
-        <image:caption>A player lifting a silver and gold trophy overhead as confetti falls in a packed stadium.</image:caption>
-    </image:image>
-
-</url>
-<url>
-    <loc>https://www.rockettyping.com/trending/ios-27-siri-ai-overhaul-release</loc>
-    <lastmod>2026-09-14</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.85</priority>
-
-    <image:image>
-        <image:loc>https://www.rockettyping.com/trending/images/ios-27-siri-ai-overhaul-release-image/ios-27-siri-ai-overhaul-release-featured.webp</image:loc>
-        <image:title>iOS 27 Siri AI Overhaul Release Featured Image</image:title>
-        <image:caption>A glowing assistant orb rising from a smartphone beside flowing light trails, representing the Siri AI overhaul in iOS 27.</image:caption>
-    </image:image>
-
-    <image:image>
-        <image:loc>https://www.rockettyping.com/trending/images/ios-27-siri-ai-overhaul-release-image/siri-ai-ios-27-personal-context-assistant.webp</image:loc>
-        <image:title>Siri AI iOS 27 Personal Context Assistant</image:title>
-        <image:caption>A diagram showing Siri AI drawing context from Messages, Calendar, and Photos while keeping data private on device.</image:caption>
-    </image:image>
-
-    <image:image>
-        <image:loc>https://www.rockettyping.com/trending/images/ios-27-siri-ai-overhaul-release-image/ios-27-liquid-glass-widgets-new-features.webp</image:loc>
-        <image:title>iOS 27 Liquid Glass Widgets New Features</image:title>
-        <image:caption>An interface panel showing a Liquid Glass opacity slider, refreshed app icons, larger widgets, and new volume controls.</image:caption>
-    </image:image>
-
-    <image:image>
-        <image:loc>https://www.rockettyping.com/trending/images/ios-27-siri-ai-overhaul-release-image/ios-27-available-now-siri-ai-privacy.webp</image:loc>
-        <image:title>iOS 27 Available Now Siri AI Privacy</image:title>
-        <image:caption>A phone mid-update surrounded by other Apple devices, representing the same-day release across iPad, Watch, and Mac.</image:caption>
-    </image:image>
-
-</url>
-<url>
-    <loc>https://www.rockettyping.com/trending/kennedy-center-closes-for-renovations</loc>
-    <lastmod>2026-09-15</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.85</priority>
-
-    <image:image>
-        <image:loc>https://www.rockettyping.com/trending/images/kennedy-center-closes-for-renovations-image/kennedy-center-board-votes-close-renovations-featured.webp</image:loc>
-        <image:title>Kennedy Center Board Votes Close Renovations Featured Image</image:title>
-        <image:caption>A closed performing arts building under overcast skies with scaffolding rising behind it, representing the Kennedy Center's renovation closure.</image:caption>
-    </image:image>
-
-    <image:image>
-        <image:loc>https://www.rockettyping.com/trending/images/kennedy-center-closes-for-renovations-image/kennedy-center-structural-safety-renovation-closure.webp</image:loc>
-        <image:title>Kennedy Center Structural Safety Renovation Closure</image:title>
-        <image:caption>A cracked building facade behind safety barriers with scaffolding and repair equipment, representing structural safety concerns.</image:caption>
-    </image:image>
-
-    <image:image>
-        <image:loc>https://www.rockettyping.com/trending/images/kennedy-center-closes-for-renovations-image/kennedy-center-naming-dispute-legal-ruling.webp</image:loc>
-        <image:title>Kennedy Center Naming Dispute Legal Ruling</image:title>
-        <image:caption>An illustration of a courthouse and scales of justice beside a performing arts building, representing the legal dispute over the building's name.</image:caption>
-    </image:image>
-
-    <image:image>
-        <image:loc>https://www.rockettyping.com/trending/images/kennedy-center-closes-for-renovations-image/kennedy-center-temporary-closure-performing-arts-memorial.webp</image:loc>
-        <image:title>Kennedy Center Temporary Closure Performing Arts Memorial</image:title>
-        <image:caption>An empty theatre with stage lights and a single lit candle, representing the temporary closure of a performing arts memorial.</image:caption>
-    </image:image>
-
-</url>
-<url>
-    <loc>https://www.rockettyping.com/trending/house-votes-end-iran-war-third-time</loc>
-    <lastmod>2026-09-16</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.85</priority>
-
-    <image:image>
-        <image:loc>https://www.rockettyping.com/trending/images/house-votes-end-iran-war-third-time-image/us-house-votes-end-iran-war-powers-resolution-september-2026.webp</image:loc>
-        <image:title>US House Votes End Iran War Powers Resolution September 2026</image:title>
-        <image:caption>The interior of a legislative chamber with rows of desks facing a dais draped in the American flag, split by red and blue tones.</image:caption>
-    </image:image>
-
-    <image:image>
-        <image:loc>https://www.rockettyping.com/trending/images/house-votes-end-iran-war-third-time-image/congress-war-powers-resolution-iran-conflict-2026.webp</image:loc>
-        <image:title>Congress War Powers Resolution Iran Conflict 2026</image:title>
-        <image:caption>The US Capitol dome and an American flag against a clear blue sky.</image:caption>
-    </image:image>
-
-    <image:image>
-        <image:loc>https://www.rockettyping.com/trending/images/house-votes-end-iran-war-third-time-image/seven-republicans-join-democrats-iran-war-powers-vote-2026.webp</image:loc>
-        <image:title>Seven Republicans Join Democrats Iran War Powers Vote 2026</image:title>
-        <image:caption>The US Capitol at dusk with a translucent overlay of a semicircular legislative chamber, representing the House floor vote.</image:caption>
-    </image:image>
-
-</url>
-<url>
-  <loc>https://www.rockettyping.com/trending/federal-reserve-raises-interest-rates-september-2026</loc>
-  <lastmod>2026-09-17</lastmod>
-  <changefreq>weekly</changefreq>
-  <priority>0.8</priority>
-  <image:image>
-    <image:loc>https://www.rockettyping.com/trending/images/federal-reserve-raises-interest-rates-september-2026-image/federal-reserve-raises-interest-rates-september-2026-featured.webp</image:loc>
-    <image:title>Federal Reserve Raises Interest Rates Featured Image</image:title>
-    <image:caption>The Federal Reserve building, representing the September 16, 2026 rate hike.</image:caption>
-  </image:image>
-  <image:image>
-    <image:loc>https://www.rockettyping.com/trending/images/federal-reserve-raises-interest-rates-september-2026-image/fed-rate-hike-inflation-energy-prices-2026.webp</image:loc>
-    <image:title>Fed Rate Hike Inflation Energy Prices</image:title>
-    <image:caption>Rising energy prices linked to the war involving Iran, a key driver of inflation.</image:caption>
-  </image:image>
-  <image:image>
-    <image:loc>https://www.rockettyping.com/trending/images/federal-reserve-raises-interest-rates-september-2026-image/higher-interest-rates-impact-mortgages-loans-credit.webp</image:loc>
-    <image:title>Higher Interest Rates Impact Mortgages Loans Credit</image:title>
-    <image:caption>Higher rates could make mortgages, loans, and credit cards more expensive.</image:caption>
-  </image:image>
-  <image:image>
-    <image:loc>https://www.rockettyping.com/trending/images/federal-reserve-raises-interest-rates-september-2026-image/federal-reserve-future-rate-path-2026.webp</image:loc>
-    <image:title>Federal Reserve Future Rate Path</image:title>
-    <image:caption>Officials expect to watch inflation closely, with another small hike possible before year-end.</image:caption>
-  </image:image>
-</url>
-<url>
-  <loc>https://www.rockettyping.com/trending/strait-of-hormuz-oil-tanker-incident-2026</loc>
-  <lastmod>2026-09-18</lastmod>
-  <changefreq>weekly</changefreq>
-  <priority>0.8</priority>
-  <image:image>
-    <image:loc>https://www.rockettyping.com/trending/images/strait-of-hormuz-oil-tanker-incident-2026-image/strait-of-hormuz-oil-tanker-incident-2026-featured.webp</image:loc>
-    <image:title>Strait of Hormuz Oil Tanker Incident Featured Image</image:title>
-    <image:caption>Iran's IRGC says it struck the tanker Trend in the Strait of Hormuz on September 18, 2026.</image:caption>
-  </image:image>
-  <image:image>
-    <image:loc>https://www.rockettyping.com/trending/images/strait-of-hormuz-oil-tanker-incident-2026-image/strait-of-hormuz-map-location-oil-route.webp</image:loc>
-    <image:title>Strait of Hormuz Map Location Oil Route</image:title>
-    <image:caption>A map showing the Strait of Hormuz, the narrow waterway where the tanker was hit.</image:caption>
-  </image:image>
-  <image:image>
-    <image:loc>https://www.rockettyping.com/trending/images/strait-of-hormuz-oil-tanker-incident-2026-image/global-oil-shipping-strait-of-hormuz-importance.webp</image:loc>
-    <image:title>Global Oil Shipping Strait of Hormuz Importance</image:title>
-    <image:caption>The Strait of Hormuz is one of the world's most important routes for oil shipments.</image:caption>
-  </image:image>
-  <image:image>
-    <image:loc>https://www.rockettyping.com/trending/images/strait-of-hormuz-oil-tanker-incident-2026-image/maritime-security-shipping-safety-hormuz-2026.webp</image:loc>
-    <image:title>Maritime Security Shipping Safety Hormuz</image:title>
-    <image:caption>Authorities are investigating the incident amid heightened maritime security concerns.</image:caption>
-  </image:image>
-</url>
-<url>
-  <loc>https://www.rockettyping.com/trending/trump-infinite-life-greenland-security-deal-2026</loc>
-  <lastmod>2026-09-19</lastmod>
-  <changefreq>weekly</changefreq>
-  <priority>0.8</priority>
-  <image:image>
-    <image:loc>https://www.rockettyping.com/trending/images/trump-infinite-life-greenland-security-deal-2026-image/trump-infinite-life-greenland-security-deal-featured.webp</image:loc>
-    <image:title>Trump Infinite Life Greenland Security Deal Featured Image</image:title>
-    <image:caption>President Trump announced a proposed "Infinite Life" security agreement with Denmark and Greenland on September 18, 2026.</image:caption>
-  </image:image>
-  <image:image>
-    <image:loc>https://www.rockettyping.com/trending/images/trump-infinite-life-greenland-security-deal-2026-image/us-greenland-permanent-security-rights-deal.webp</image:loc>
-    <image:title>US Greenland Permanent Security Rights Deal</image:title>
-    <image:caption>The deal would give the US permanent basing, access, and overflight rights in Greenland.</image:caption>
-  </image:image>
-  <image:image>
-    <image:loc>https://www.rockettyping.com/trending/images/trump-infinite-life-greenland-security-deal-2026-image/us-denmark-greenland-arctic-security-cooperation.webp</image:loc>
-    <image:title>US Denmark Greenland Arctic Security Cooperation</image:title>
-    <image:caption>Denmark and Greenland say the agreement respects Danish sovereignty and Greenland's right to determine its own future.</image:caption>
-  </image:image>
-  <image:image>
-    <image:loc>https://www.rockettyping.com/trending/images/trump-infinite-life-greenland-security-deal-2026-image/greenland-arctic-strategic-location-minerals.webp</image:loc>
-    <image:title>Greenland Arctic Strategic Location Minerals</image:title>
-    <image:caption>Greenland's Arctic location and mineral wealth make it strategically important.</image:caption>
-  </image:image>
-</url>
-<url>
-  <loc>https://www.rockettyping.com/trending/20th-asian-games-nagoya-2026-opening</loc>
-  <lastmod>2026-09-20</lastmod>
-  <changefreq>weekly</changefreq>
-  <priority>0.8</priority>
-  <image:image>
-    <image:loc>https://www.rockettyping.com/trending/images/20th-asian-games-nagoya-2026-opening-image/20th-asian-games-nagoya-2026-opening-featured.webp</image:loc>
-    <image:title>20th Asian Games Nagoya 2026 Opening Featured Image</image:title>
-    <image:caption>The 20th Asian Games officially opened in Nagoya, Japan, on September 19, 2026.</image:caption>
-  </image:image>
-  <image:image>
-    <image:loc>https://www.rockettyping.com/trending/images/20th-asian-games-nagoya-2026-opening-image/asian-games-2026-opening-ceremony-harmonic-heartbeat.webp</image:loc>
-    <image:title>Asian Games 2026 Opening Ceremony Harmonic Heartbeat</image:title>
-    <image:caption>The "Harmonic Heart Beat" ceremony featured dance, music, fireworks, and a heart-shaped stage.</image:caption>
-  </image:image>
-  <image:image>
-    <image:loc>https://www.rockettyping.com/trending/images/20th-asian-games-nagoya-2026-opening-image/asian-games-2026-43-sports-15000-athletes.webp</image:loc>
-    <image:title>Asian Games 2026 43 Sports 15000 Athletes</image:title>
-    <image:caption>More than 15,000 athletes are competing in 43 sports for 469 gold medals.</image:caption>
-  </image:image>
-  <image:image>
-    <image:loc>https://www.rockettyping.com/trending/images/20th-asian-games-nagoya-2026-opening-image/asian-games-nagoya-2026-competition-begins.webp</image:loc>
-    <image:title>Asian Games Nagoya 2026 Competition Begins</image:title>
-    <image:caption>Competition is now underway across Nagoya, Aichi Prefecture, Tokyo, and other host cities.</image:caption>
-  </image:image>
-</url>
-<url>
-  <loc>https://www.rockettyping.com/trending/trump-iran-deciding-mode-2026</loc>
-  <lastmod>2026-09-21</lastmod>
-  <changefreq>weekly</changefreq>
-  <priority>0.8</priority>
-  <image:image>
-    <image:loc>https://www.rockettyping.com/trending/images/trump-iran-deciding-mode-2026-image/trump-iran-deciding-mode-very-big-things-featured.webp</image:loc>
-    <image:title>Trump Iran Deciding Mode Very Big Things Featured Image</image:title>
-    <image:caption>Trump says he is in "deciding mode" on Iran and warns "very big things" could happen soon.</image:caption>
-  </image:image>
-  <image:image>
-    <image:loc>https://www.rockettyping.com/trending/images/trump-iran-deciding-mode-2026-image/us-iran-three-possible-paths-decision-2026.webp</image:loc>
-    <image:title>US Iran Three Possible Paths Decision</image:title>
-    <image:caption>Trump outlined three possible paths: military action, continued economic pressure, or a deal.</image:caption>
-  </image:image>
-  <image:image>
-    <image:loc>https://www.rockettyping.com/trending/images/trump-iran-deciding-mode-2026-image/iran-seven-conditions-for-talks-with-us.webp</image:loc>
-    <image:title>Iran Seven Conditions For Talks With US</image:title>
-    <image:caption>Iran sent seven conditions for talks to the US through Qatari mediators.</image:caption>
-  </image:image>
-  <image:image>
-    <image:loc>https://www.rockettyping.com/trending/images/trump-iran-deciding-mode-2026-image/possible-us-iran-talks-un-general-assembly-2026.webp</image:loc>
-    <image:title>Possible US Iran Talks UN General Assembly</image:title>
-    <image:caption>Trump said he may meet Iranian President Masoud Pezeshkian at the UN General Assembly.</image:caption>
-  </image:image>
-</url>
-<url>
-  <loc>https://www.rockettyping.com/trending/human-brain-two-separate-organs-2026</loc>
-  <lastmod>2026-09-22</lastmod>
-  <changefreq>weekly</changefreq>
-  <priority>0.8</priority>
-  <image:image>
-    <image:loc>https://www.rockettyping.com/trending/images/human-brain-two-separate-organs-2026-image/human-brain-two-separate-organs-stanford-study-featured.webp</image:loc>
-    <image:title>Human Brain Two Separate Organs Stanford Study Featured Image</image:title>
-    <image:caption>A new Stanford study suggests the human brain may actually be two separate organs joined together.</image:caption>
-  </image:image>
-  <image:image>
-    <image:loc>https://www.rockettyping.com/trending/images/human-brain-two-separate-organs-2026-image/brain-dual-progenitor-cells-forebrain-hindbrain.webp</image:loc>
-    <image:title>Brain Dual Progenitor Cells Forebrain Hindbrain</image:title>
-    <image:caption>Two separate groups of embryonic cells form the forebrain/midbrain and the hindbrain/brainstem.</image:caption>
-  </image:image>
-  <image:image>
-    <image:loc>https://www.rockettyping.com/trending/images/human-brain-two-separate-organs-2026-image/brain-stem-research-als-sma-new-pathways.webp</image:loc>
-    <image:title>Brain Stem Research ALS SMA New Pathways</image:title>
-    <image:caption>The discovery could open new research pathways for ALS and spinal muscular atrophy.</image:caption>
-  </image:image>
-  <image:image>
-    <image:loc>https://www.rockettyping.com/trending/images/human-brain-two-separate-organs-2026-image/brain-two-ancient-nervous-systems-evolution.webp</image:loc>
-    <image:title>Brain Two Ancient Nervous Systems Evolution</image:title>
-    <image:caption>The two-part brain pattern appears across many species, suggesting very old evolutionary origins.</image:caption>
-  </image:image>
-</url>
-<url>
-  <loc>https://www.rockettyping.com/trending/first-stellar-stream-beyond-milky-way-2026</loc>
-  <lastmod>2026-09-23</lastmod>
-  <changefreq>weekly</changefreq>
-  <priority>0.8</priority>
-  <image:image>
-    <image:loc>https://www.rockettyping.com/trending/images/first-stellar-stream-beyond-milky-way-2026-image/first-stellar-stream-beyond-milky-way-ugc-9050-dw1-oyashio-2026.webp</image:loc>
-    <image:title>First Stellar Stream Beyond Milky Way UGC 9050 Dw1 Oyashio Featured Image</image:title>
-    <image:caption>Astronomers found the first clear stellar stream from a globular cluster outside the Milky Way, named Oyashio.</image:caption>
-  </image:image>
-  <image:image>
-    <image:loc>https://www.rockettyping.com/trending/images/first-stellar-stream-beyond-milky-way-2026-image/what-is-a-stellar-stream-globular-cluster-disruption-astronomy.webp</image:loc>
-    <image:title>What Is A Stellar Stream Globular Cluster Disruption</image:title>
-    <image:caption>A stellar stream forms as a globular cluster is slowly torn apart by its host galaxy's gravity.</image:caption>
-  </image:image>
-  <image:image>
-    <image:loc>https://www.rockettyping.com/trending/images/first-stellar-stream-beyond-milky-way-2026-image/stellar-stream-dark-matter-halo-ugc-9050-dw1-astronomy-discovery.webp</image:loc>
-    <image:title>Stellar Stream Dark Matter Halo UGC 9050 Dw1</image:title>
-    <image:caption>The stream let researchers estimate the dark matter halo of galaxy UGC 9050-Dw1.</image:caption>
-  </image:image>
-</url>
-<url>
-  <loc>https://www.rockettyping.com/trending/ai-discovers-mysterious-dna-enzyme-system-2026</loc>
-  <lastmod>2026-09-24</lastmod>
-  <changefreq>weekly</changefreq>
-  <priority>0.8</priority>
-  <image:image>
-    <image:loc>https://www.rockettyping.com/trending/images/ai-discovers-mysterious-dna-enzyme-system-2026-image/ai-discovers-mysterious-dna-enzyme-system-art-featured.webp</image:loc>
-    <image:title>AI Discovers Mysterious DNA Enzyme System ART Featured Image</image:title>
-    <image:caption>An AI system called Claude helped scientists discover a new biological system called ART.</image:caption>
-  </image:image>
-  <image:image>
-    <image:loc>https://www.rockettyping.com/trending/images/ai-discovers-mysterious-dna-enzyme-system-2026-image/claude-ai-agents-search-dna-databases-enzyme-discovery.webp</image:loc>
-    <image:title>Claude AI Agents Search DNA Databases Enzyme Discovery</image:title>
-    <image:caption>About 950 Claude AI agents searched over 200,000 enzymes across large DNA databases.</image:caption>
-  </image:image>
-  <image:image>
-    <image:loc>https://www.rockettyping.com/trending/images/ai-discovers-mysterious-dna-enzyme-system-2026-image/array-associated-reverse-transcriptase-art-system.webp</image:loc>
-    <image:title>Array Associated Reverse Transcriptase ART System</image:title>
-    <image:caption>The ART system contains a reverse transcriptase, a partner gene, and repeated DNA sequences.</image:caption>
-  </image:image>
-  <image:image>
-    <image:loc>https://www.rockettyping.com/trending/images/ai-discovers-mysterious-dna-enzyme-system-2026-image/ai-human-collaboration-biology-discovery-future.webp</image:loc>
-    <image:title>AI Human Collaboration Biology Discovery Future</image:title>
-    <image:caption>The discovery shows how AI and human researchers can work together to uncover nature's hidden secrets.</image:caption>
-  </image:image>
-</url>
-<url>
-  <loc>https://www.rockettyping.com/trending/alphafold-database-viral-protein-structures-expansion-2026</loc>
-  <lastmod>2026-09-25</lastmod>
-  <changefreq>weekly</changefreq>
-  <priority>0.8</priority>
-  <image:image>
-    <image:loc>https://www.rockettyping.com/trending/images/alphafold-database-viral-protein-structures-expansion-2026-image/alphafold-database-viral-protein-structures-expansion-featured.webp</image:loc>
-    <image:title>AlphaFold Database Viral Protein Structures Expansion Featured Image</image:title>
-    <image:caption>AlphaFold has added protein structure predictions from more than 2,800 viruses.</image:caption>
-  </image:image>
-  <image:image>
-    <image:loc>https://www.rockettyping.com/trending/images/alphafold-database-viral-protein-structures-expansion-2026-image/alphafold-ai-predicts-3d-protein-structures.webp</image:loc>
-    <image:title>AlphaFold AI Predicts 3D Protein Structures</image:title>
-    <image:caption>AlphaFold is an AI tool that predicts the 3D shapes of proteins.</image:caption>
-  </image:image>
-  <image:image>
-    <image:loc>https://www.rockettyping.com/trending/images/alphafold-database-viral-protein-structures-expansion-2026-image/alphafold-8000-viral-protein-dimers-complexes.webp</image:loc>
-    <image:title>AlphaFold 8000 Viral Protein Dimers Complexes</image:title>
-    <image:caption>The update includes over 8,000 high-quality viral protein pairs, or dimers.</image:caption>
-  </image:image>
-  <image:image>
-    <image:loc>https://www.rockettyping.com/trending/images/alphafold-database-viral-protein-structures-expansion-2026-image/alphafold-viral-data-pandemic-preparedness-open-science.webp</image:loc>
-    <image:title>AlphaFold Viral Data Pandemic Preparedness Open Science</image:title>
-    <image:caption>The data is free and open, with a dedicated pandemic preparedness portal.</image:caption>
-  </image:image>
-</url>
-<url>
-  <loc>https://www.rockettyping.com/trending/full-harvest-moon-september-26-2026</loc>
-  <lastmod>2026-09-26</lastmod>
-  <changefreq>weekly</changefreq>
-  <priority>0.8</priority>
-  <image:image>
-    <image:loc>https://www.rockettyping.com/trending/images/full-harvest-moon-september-26-2026-image/full-harvest-moon-september-26-2026-featured.webp</image:loc>
-    <image:title>Full Harvest Moon September 26 2026 Featured Image</image:title>
-    <image:caption>The Full Harvest Moon reaches its peak on September 26, 2026.</image:caption>
-  </image:image>
-  <image:image>
-    <image:loc>https://www.rockettyping.com/trending/images/full-harvest-moon-september-26-2026-image/harvest-moon-meaning-autumn-equinox-farmers.webp</image:loc>
-    <image:title>Harvest Moon Meaning Autumn Equinox Farmers</image:title>
-    <image:caption>The Harvest Moon's name comes from the extra evening light that once helped farmers gather crops.</image:caption>
-  </image:image>
-  <image:image>
-    <image:loc>https://www.rockettyping.com/trending/images/full-harvest-moon-september-26-2026-image/harvest-moon-rise-golden-orange-horizon-september.webp</image:loc>
-    <image:title>Harvest Moon Rise Golden Orange Horizon September</image:title>
-    <image:caption>The moon often looks large and golden or orange as it rises near the horizon.</image:caption>
-  </image:image>
-  <image:image>
-    <image:loc>https://www.rockettyping.com/trending/images/full-harvest-moon-september-26-2026-image/harvest-moon-with-saturn-evening-sky-2026.webp</image:loc>
-    <image:title>Harvest Moon With Saturn Evening Sky</image:title>
-    <image:caption>Saturn will shine near the Full Harvest Moon in the evening sky.</image:caption>
-  </image:image>
-</url>
-<url>
-  <loc>https://www.rockettyping.com/trending/elias-2-24-b-youngest-planet-ever-confirmed-2026</loc>
-  <lastmod>2026-09-27</lastmod>
-  <changefreq>weekly</changefreq>
-  <priority>0.8</priority>
-  <image:image>
-    <image:loc>https://www.rockettyping.com/trending/images/elias-2-24-b-youngest-planet-ever-confirmed-2026-image/elias-2-24-b-youngest-planet-ever-confirmed-featured.webp</image:loc>
-    <image:title>Elias 2-24 b Youngest Planet Ever Confirmed Featured Image</image:title>
-    <image:caption>Astronomers have confirmed Elias 2-24 b, the youngest planet ever found.</image:caption>
-  </image:image>
-  <image:image>
-    <image:loc>https://www.rockettyping.com/trending/images/elias-2-24-b-youngest-planet-ever-confirmed-2026-image/elias-2-24-b-less-than-one-million-years-old.webp</image:loc>
-    <image:title>Elias 2-24 b Less Than One Million Years Old</image:title>
-    <image:caption>Elias 2-24 b is less than one million years old, about 450 light-years away.</image:caption>
-  </image:image>
-  <image:image>
-    <image:loc>https://www.rockettyping.com/trending/images/elias-2-24-b-youngest-planet-ever-confirmed-2026-image/planet-carving-gap-in-protoplanetary-disk-elias.webp</image:loc>
-    <image:title>Planet Carving Gap In Protoplanetary Disk</image:title>
-    <image:caption>The planet sits in a clear gap it carved in the dusty disk around its star.</image:caption>
-  </image:image>
-  <image:image>
-    <image:loc>https://www.rockettyping.com/trending/images/elias-2-24-b-youngest-planet-ever-confirmed-2026-image/youngest-planet-formation-core-accretion-insight.webp</image:loc>
-    <image:title>Youngest Planet Formation Core Accretion Insight</image:title>
-    <image:caption>The discovery supports core accretion, where a solid core forms first and then gathers gas.</image:caption>
-  </image:image>
-</url>
 </urlset>
