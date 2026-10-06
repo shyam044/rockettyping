@@ -194,8 +194,8 @@
     <link rel="dns-prefetch" href="https://flagcdn.com">
     <!-- Preload critical assets: logo image + main stylesheet -->
     <link rel="preload" as="image" href="/images/rocket-typing-logo.webp" fetchpriority="high">
-    <link rel="preload" href="styles.css?v=20261002" as="style">
-    <link rel="preload" href="responsive.css?v=20261002" as="style">
+    <link rel="preload" href="styles.css?v=20261003" as="style">
+    <link rel="preload" href="responsive.css?v=20261003" as="style">
     <!-- ═══════════════════════════════════════════════════════════════════
          INLINE CRITICAL CSS  — rendered before any external stylesheet.
          RULE: every layout-affecting property that also exists in styles.css
@@ -313,12 +313,14 @@
          appear ~300-500 ms after first paint — invisible to users at normal reading
          speed, and completely invisible when already cached.
          ──────────────────────────────────────────────────────────────────────────── -->
-    <link rel="stylesheet" href="styles.css?v=20261002"     media="print" onload="this.onload=null;this.media='all'">
-    <link rel="stylesheet" href="responsive.css?v=20261002" media="print" onload="this.onload=null;this.media='all'">
-    <noscript>
-        <link rel="stylesheet" href="styles.css?v=20261002">
-        <link rel="stylesheet" href="responsive.css?v=20261002">
-    </noscript>
+    <!-- CLS FIX: these two files are intentionally RENDER-BLOCKING. They used to load with
+         media="print" + onload, so the browser painted the page with the inline "critical"
+         CSS first and then re-laid it out when styles.css arrived. The two did not match
+         (#app margin 20px->0, #words top 253px->177px, header 27px->7px), so the whole page
+         jumped ~75px = ~0.14 CLS on every load. Loading them normally means the first paint
+         already uses the final geometry, so there is no shift. -->
+    <link rel="stylesheet" href="styles.css?v=20261003">
+    <link rel="stylesheet" href="responsive.css?v=20261003">
     <!-- Font Awesome removed: the whole 6.6.0 icon library (100+ KB + an extra
          third-party connection) was being loaded on this page to render exactly
          one icon (the X/Twitter share glyph). Replaced with a 300-byte inline
@@ -2685,19 +2687,38 @@ window.deleteUser = deleteUser;
     _fbLoaded = true;
     } // end _initFirebase
 
-    // Trigger loading: first idle moment (max 2s wait) OR first interaction,
-    // whichever comes first.
-    var _fbEvents = ['pointerdown', 'keydown', 'touchstart'];
-    function _fbTriggerOnce() {
-        _fbEvents.forEach(function(ev) { window.removeEventListener(ev, _fbTriggerOnce); });
-        _initFirebase();
-    }
-    _fbEvents.forEach(function(ev) { window.addEventListener(ev, _fbTriggerOnce, { once: true, passive: true }); });
-
-    if ('requestIdleCallback' in window) {
-        requestIdleCallback(_initFirebase, { timeout: 2000 });
+    // PERFORMANCE FIX - when Firebase loads.
+    // Firebase app + Firestore + Auth + App Check (reCAPTCHA Enterprise) is ~1 MB of JS that
+    // was started on the visitor's FIRST keypress/click/touch, i.e. exactly when they begin
+    // typing, while the ad scripts and analytics were also starting up. That pile-up is the
+    // 20-30 s "stuck" feeling. Now:
+    //   - returning logged-in visitors (rt_registered_name is set): load shortly after the
+    //     page has finished loading, at an idle moment, so their session/avatar is restored;
+    //   - guests: nothing to restore, so the LOGIN button is drawn immediately and Firebase
+    //     only loads on demand (hover/touch/focus of the login button, or when the auth
+    //     modal opens - see openAuthModal in app-core.js).
+    window._rtLoadFirebase = _initFirebase;
+    var _rtReturning = false;
+    try { _rtReturning = !!localStorage.getItem('rt_registered_name'); } catch (e) {}
+    var _rtWantsAuth = /[?&]openAuth=/.test(location.search);
+    if (_rtReturning || _rtWantsAuth) {
+        window.addEventListener('load', function () {
+            setTimeout(function () {
+                if ('requestIdleCallback' in window) requestIdleCallback(_initFirebase, { timeout: 4000 });
+                else _initFirebase();
+            }, _rtWantsAuth ? 0 : 1500);
+        });
     } else {
-        window.addEventListener('load', function() { setTimeout(_initFirebase, 300); });
+        window._currentUser = null;
+        var _rtHb = document.getElementById('header-auth-btn');
+        if (_rtHb) {
+            _rtHb.innerHTML = `<button onclick="openAuthModal('login')" style="background:linear-gradient(135deg,#e2b714,#ff9900);color:#0a0a23;border:none;border-radius:20px;padding:8px 16px;cursor:pointer;font-size:12px;font-weight:900;font-family:'Roboto Mono',monospace;letter-spacing:1px;">LOGIN / SIGNUP</button>`;
+            ['pointerover', 'touchstart', 'focusin'].forEach(function (ev) {
+                _rtHb.addEventListener(ev, function () { _initFirebase(); }, { once: true, passive: true });
+            });
+        }
+        var _rtPr = document.getElementById('lb-register-prompt');
+        if (_rtPr) _rtPr.style.display = 'flex';
     }
 </script>
     <script>
@@ -2814,7 +2835,7 @@ window.deleteUser = deleteUser;
         })();
     </script>
     <script src="vocabulary.js?v=3"></script>
-    <script src="app-core.js?v=4"></script>
+    <script src="app-core.js?v=5"></script>
     <script>
 // Handle ?openAuth=login and ?openAuth=signup from game.html and other pages
 // BUT only open modal if user is NOT logged in + clear the URL so reload doesn't re-trigger
