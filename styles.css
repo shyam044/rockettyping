@@ -76,7 +76,7 @@ body::before {
     left: 0;
     width: 100%;
     height: 100%;
-    background: url('https://rockettyping.vercel.app/images/stars-bg.png') repeat;
+    background: url('https://rockettyping.com/images/stars-bg.webp') repeat;
     opacity: 0.6;
     z-index: -1;
     /* Use transform for composited animation — avoids background-position repaints */
