@@ -2709,6 +2709,7 @@ function sanitizeStr(s) {
             }
         }
         async function loadLeaderboard(duration = currentLeaderboardDuration) {
+            if (!window.db && window._rtFirebaseReady) await window._rtFirebaseReady(); // guests: Firebase now loads on demand
             // ← NEW: hide prompt IMMEDIATELY (sync) so it never shows again after reload
             updateLeaderboardPrompt();
 
@@ -2825,6 +2826,7 @@ function sanitizeStr(s) {
         // ── Words-mode leaderboard ───────────────────────────────────────
         let currentWordLeaderboardCount = 10;
         async function loadWordLeaderboard(wordCount = currentWordLeaderboardCount) {
+            if (!window.db && window._rtFirebaseReady) await window._rtFirebaseReady(); // guests: Firebase now loads on demand
             updateLeaderboardPrompt();
             currentWordLeaderboardCount = wordCount;
 
@@ -2927,6 +2929,7 @@ function sanitizeStr(s) {
 
         // ── Elon-mode leaderboard ─────────────────────────────────────────
         async function loadElonLeaderboard() {
+            if (!window.db && window._rtFirebaseReady) await window._rtFirebaseReady(); // guests: Firebase now loads on demand
             updateLeaderboardPrompt();
 
             const body = document.getElementById("leaderboard-body");
