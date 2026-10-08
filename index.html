@@ -194,8 +194,8 @@
     <link rel="dns-prefetch" href="https://flagcdn.com">
     <!-- Preload critical assets: logo image + main stylesheet -->
     <link rel="preload" as="image" href="/images/rocket-typing-logo.webp" fetchpriority="high">
-    <link rel="preload" href="styles.css?v=20261009" as="style">
-    <link rel="preload" href="responsive.css?v=20261009" as="style">
+    <link rel="preload" href="styles.css?v=20261011" as="style">
+    <link rel="preload" href="responsive.css?v=20261011" as="style">
     <!-- ═══════════════════════════════════════════════════════════════════
          INLINE CRITICAL CSS  — rendered before any external stylesheet.
          RULE: every layout-affecting property that also exists in styles.css
@@ -319,8 +319,8 @@
          (#app margin 20px->0, #words top 253px->177px, header 27px->7px), so the whole page
          jumped ~75px = ~0.14 CLS on every load. Loading them normally means the first paint
          already uses the final geometry, so there is no shift. -->
-    <link rel="stylesheet" href="styles.css?v=20261009">
-    <link rel="stylesheet" href="responsive.css?v=20261009">
+    <link rel="stylesheet" href="styles.css?v=20261011">
+    <link rel="stylesheet" href="responsive.css?v=20261011">
     <!-- Font Awesome removed: the whole 6.6.0 icon library (100+ KB + an extra
          third-party connection) was being loaded on this page to render exactly
          one icon (the X/Twitter share glyph). Replaced with a 300-byte inline
@@ -1835,6 +1835,45 @@ html.rt-custom-bg-pending body::before{display:none !important;}
 
 </div><!-- #km-outer-row -->
 
+<div id="rt-stack">
+<!-- KEYBOARD PICKS: separate box directly above the result box (not inside it). -->
+<aside id="rt-picks" aria-label="Recommended keyboards">
+    <ul class="rt-picks-list">
+            <li>
+                <a class="rt-pick" href="https://link.amazon/B05D1iYd0" target="_blank" rel="sponsored nofollow noopener noreferrer" aria-label="Dell KB216 Wired Keyboard, our low budget pick. Opens in a new tab." onclick="if(window.gtag)gtag('event','keyboard_pick_click',{budget:'low'})">
+                    <span class="rt-pick-img"><img src="/images/picks/dell-kb216-wired-keyboard-200.webp" srcset="/images/picks/dell-kb216-wired-keyboard-200.webp 200w, /images/picks/dell-kb216-wired-keyboard-400.webp 400w" sizes="(max-width: 899px) 112px, 150px" width="200" height="120" alt="Dell KB216 wired multimedia keyboard" loading="lazy" decoding="async" fetchpriority="low"></span>
+                    <span class="rt-pick-body">
+                        <span class="rt-pick-tier"><b>$</b> Low budget</span>
+                        <strong>Dell KB216 Wired Keyboard</strong>
+                        <span class="rt-pick-desc">Slim, dependable and plug-and-play. A great way to start practicing.</span>
+                        <span class="rt-pick-cta">See this keyboard <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+                    </span>
+                </a>
+            </li>
+            <li>
+                <a class="rt-pick" href="https://link.amazon/B0beViQVi" target="_blank" rel="sponsored nofollow noopener noreferrer" aria-label="Dell KM3322W Wireless Keyboard and Mouse, our medium budget pick. Opens in a new tab." onclick="if(window.gtag)gtag('event','keyboard_pick_click',{budget:'medium'})">
+                    <span class="rt-pick-img"><img src="/images/picks/dell-km3322w-wireless-keyboard-mouse-200.webp" srcset="/images/picks/dell-km3322w-wireless-keyboard-mouse-200.webp 200w, /images/picks/dell-km3322w-wireless-keyboard-mouse-400.webp 400w" sizes="(max-width: 899px) 112px, 150px" width="200" height="120" alt="Dell KM3322W wireless keyboard and mouse combo" loading="lazy" decoding="async" fetchpriority="low"></span>
+                    <span class="rt-pick-body">
+                        <span class="rt-pick-tier"><b>$$</b> Medium budget</span>
+                        <strong>Dell KM3322W Wireless Keyboard &amp; Mouse</strong>
+                        <span class="rt-pick-desc">A wireless keyboard and mouse set for a cleaner, cable-free desk.</span>
+                        <span class="rt-pick-cta">See this keyboard <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+                    </span>
+                </a>
+            </li>
+            <li>
+                <a class="rt-pick" href="https://link.amazon/B0bAeXUW4" target="_blank" rel="sponsored nofollow noopener noreferrer" aria-label="AULA F75 Wireless Mechanical Keyboard, our high budget pick. Opens in a new tab." onclick="if(window.gtag)gtag('event','keyboard_pick_click',{budget:'high'})">
+                    <span class="rt-pick-img"><img src="/images/picks/aula-f75-wireless-mechanical-keyboard-200.webp" srcset="/images/picks/aula-f75-wireless-mechanical-keyboard-200.webp 200w, /images/picks/aula-f75-wireless-mechanical-keyboard-400.webp 400w" sizes="(max-width: 899px) 112px, 150px" width="200" height="120" alt="AULA F75 75% wireless mechanical keyboard with RGB lighting" loading="lazy" decoding="async" fetchpriority="low"></span>
+                    <span class="rt-pick-body">
+                        <span class="rt-pick-tier"><b>$$$</b> High budget</span>
+                        <strong>AULA F75 Wireless Mechanical Keyboard</strong>
+                        <span class="rt-pick-desc">Wireless 75% mechanical board with PBT keycaps and RGB lighting.</span>
+                        <span class="rt-pick-cta">See this keyboard <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+                    </span>
+                </a>
+            </li>
+    </ul>
+</aside>
 <div id="result" style="display: none;">
     <!-- MAIN ROW: stats LEFT + chart RIGHT -->
     <div class="result-layout">
@@ -1920,6 +1959,7 @@ html.rt-custom-bg-pending body::before{display:none !important;}
         </div>
     </div>
 </div>
+</div><!-- /#rt-stack -->
 
 
 
@@ -2847,7 +2887,7 @@ window.deleteUser = deleteUser;
         })();
     </script>
     <script src="vocabulary.js?v=3"></script>
-    <script src="app-core.js?v=6"></script>
+    <script src="app-core.js?v=7"></script>
 <script>
 /* PERF: attach the starfield image AFTER the page has finished loading. As a normal CSS
    background it was fetched from a different host (rockettyping.vercel.app) during load,
