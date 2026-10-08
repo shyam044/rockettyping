@@ -1635,3 +1635,55 @@ body,button,input,textarea,select{font-family:var(--rt-font) !important;}
 #footer-copy strong {
     color: #e2b714;
 }
+
+/* ==================== KEYBOARD PICKS (separate box, directly above the result box) ==================== */
+/* While the result popup is open, hide the keymap + Musk/Elon score panel behind it. */
+html.rt-result-open #km-outer-row { display: none !important; }
+
+/* #rt-stack stacks [picks + result box] as one column starting at the TOP of the screen (no empty gap above). #result keeps all its own styling;
+   it is just laid out by flexbox instead of position:fixed, and scrolls inside itself if the
+   screen is too short for both. */
+#rt-stack { position: fixed; inset: 0; z-index: 2000; display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
+    gap: 10px; padding: 8px 0; box-sizing: border-box; pointer-events: none; }
+#rt-stack > * { pointer-events: auto; }
+#rt-stack > #result { position: relative; left: auto; top: auto; transform: scale(0.95); flex: 0 1 auto; min-height: 0; max-height: 100%; }
+#rt-stack > #result.visible { transform: none; }
+
+#rt-picks { display: none; flex: none; width: 90vw; max-width: 90vw; }
+html.rt-result-open #rt-picks { display: block; animation: rtPicksIn 0.3s ease both; }
+@keyframes rtPicksIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+.rt-picks-list { list-style: none; margin: 0 auto; padding: 0; max-width: 1300px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.rt-picks-list li { margin: 0; min-width: 0; }
+.rt-pick { display: flex; align-items: center; gap: 12px; height: 100%; box-sizing: border-box; padding: 10px; color: inherit; text-decoration: none;
+    background: linear-gradient(145deg, #0f1b2e, #1a2a44); border: 1px solid rgba(0, 230, 204, 0.35); border-radius: 12px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35); transition: transform 0.2s ease, border-color 0.2s ease; }
+.rt-pick:hover, .rt-pick:focus-visible { transform: translateY(-2px); border-color: #e2b714; outline: none; }
+.rt-pick:focus-visible { box-shadow: 0 0 0 3px rgba(226, 183, 20, 0.45); }
+.rt-pick-img { flex: 0 0 38%; max-width: 150px; aspect-ratio: 5 / 3; background: #fff; border-radius: 8px; overflow: hidden; display: block; }
+.rt-pick-img img { display: block; width: 100%; height: 100%; object-fit: contain; }
+.rt-pick-body { display: flex; flex-direction: column; gap: 3px; min-width: 0; text-align: left; }
+.rt-pick-tier { font: 700 10px/1.2 'Roboto Mono', monospace; letter-spacing: 1.2px; text-transform: uppercase; color: #e2b714; }
+.rt-pick-tier b { display: inline-block; min-width: 22px; margin-right: 4px; padding: 1px 5px; border-radius: 10px; background: rgba(226, 183, 20, 0.16); text-align: center; }
+.rt-pick strong { font-size: 14px; line-height: 1.25; color: #fff; }
+.rt-pick-desc { font-size: 12px; line-height: 1.4; color: #b9c6d8; }
+.rt-pick-cta { display: inline-flex; align-items: center; gap: 5px; margin-top: 2px; font-size: 12px; font-weight: 700; color: #00e6cc; }
+.rt-pick:hover .rt-pick-cta svg { transform: translateX(3px); }
+.rt-pick-cta svg { transition: transform 0.2s ease; }
+
+/* Phones and tablets: swipeable row, one card + a peek of the next (keeps the stack short) */
+@media (max-width: 899px) {
+    .rt-picks-list { display: flex; gap: 10px; overflow-x: auto; scroll-snap-type: x mandatory; overscroll-behavior-x: contain;
+        -webkit-overflow-scrolling: touch; scrollbar-width: none; padding-bottom: 2px; }
+    .rt-picks-list::-webkit-scrollbar { display: none; }
+    .rt-picks-list li { flex: 0 0 min(290px, 84%); scroll-snap-align: start; }
+    .rt-pick { padding: 8px; gap: 10px; }
+    .rt-pick-img { flex-basis: 96px; }
+    .rt-pick strong, .rt-pick-desc { display: -webkit-box; -webkit-box-orient: vertical; overflow: hidden; }
+    .rt-pick strong { -webkit-line-clamp: 2; line-clamp: 2; }
+    .rt-pick-desc { -webkit-line-clamp: 3; line-clamp: 3; }
+}
+@media (max-width: 600px) { #rt-picks { width: 94vw; max-width: 94vw; } }
+@media (max-width: 380px) { .rt-pick-img { flex-basis: 84px; } .rt-pick strong { font-size: 13px; } }
+/* Very short screens (phones in landscape): keep the whole height for the result itself */
+@media (max-height: 520px) { #rt-picks { display: none !important; } }
+@media (prefers-reduced-motion: reduce) { .rt-pick, .rt-pick-cta svg { transition: none; } html.rt-result-open #rt-picks { animation: none; } }
