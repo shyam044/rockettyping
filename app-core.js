@@ -1901,6 +1901,7 @@ if (!testActive && !testEnded && e.key.length === 1) {
             // Show result
             resultDiv.style.display = 'block';
             resultDiv.classList.add('visible');
+            document.documentElement.classList.add('rt-result-open'); // hides keymap + Musk/Elon panel behind the result
             document.getElementById('main-header').style.display = 'none';
             wordsDiv.style.display = 'none';
             timerDiv.style.display = 'none';
@@ -2443,6 +2444,7 @@ if (!testActive && !testEnded && e.key.length === 1) {
 
             resultDiv.style.display = 'none';
             resultDiv.classList.remove('visible');
+            document.documentElement.classList.remove('rt-result-open');
             wordsDiv.style.display = 'block';
             wordsDiv.scrollTop = 0;
             _vScrollTween.current = 0;
