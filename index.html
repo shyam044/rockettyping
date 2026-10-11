@@ -2888,26 +2888,6 @@ window.deleteUser = deleteUser;
     </script>
     <script src="vocabulary.js?v=3"></script>
     <script src="app-core.js?v=7"></script>
-<script>
-/* PERF: attach the starfield image AFTER the page has finished loading. As a normal CSS
-   background it was fetched from a different host (rockettyping.vercel.app) during load,
-   which holds the browser tab's loading spinner until that request finishes. Same-origin
-   /images/stars-bg.png is tried first; the old URL is only a fallback. A <style> tag is
-   used (not an inline style attribute) so the style-scrubbing MutationObserver ignores it. */
-window.addEventListener('load', function () {
-    setTimeout(function () {
-        function use(u) {
-            var s = document.createElement('style');
-            s.textContent = "body::before{background-image:url('" + u + "')}";
-            document.head.appendChild(s);
-        }
-        var i = new Image();
-        i.onload  = function () { use('/images/stars-bg.png'); };
-        i.onerror = function () { use('https://rockettyping.vercel.app/images/stars-bg.png'); };
-        i.src = '/images/stars-bg.png';
-    }, 300);
-});
-</script>
     <script>
 // Handle ?openAuth=login and ?openAuth=signup from game.html and other pages
 // BUT only open modal if user is NOT logged in + clear the URL so reload doesn't re-trigger
