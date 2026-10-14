@@ -194,8 +194,8 @@
     <link rel="dns-prefetch" href="https://flagcdn.com">
     <!-- Preload critical assets: logo image + main stylesheet -->
     <link rel="preload" as="image" href="/images/rocket-typing-logo.webp" fetchpriority="high">
-    <link rel="preload" href="styles.css?v=20261011" as="style">
-    <link rel="preload" href="responsive.css?v=20261011" as="style">
+    <link rel="preload" href="styles.css?v=20261014" as="style">
+    <link rel="preload" href="responsive.css?v=20261014" as="style">
     <!-- ═══════════════════════════════════════════════════════════════════
          INLINE CRITICAL CSS  — rendered before any external stylesheet.
          RULE: every layout-affecting property that also exists in styles.css
@@ -319,8 +319,8 @@
          (#app margin 20px->0, #words top 253px->177px, header 27px->7px), so the whole page
          jumped ~75px = ~0.14 CLS on every load. Loading them normally means the first paint
          already uses the final geometry, so there is no shift. -->
-    <link rel="stylesheet" href="styles.css?v=20261011">
-    <link rel="stylesheet" href="responsive.css?v=20261011">
+    <link rel="stylesheet" href="styles.css?v=20261014">
+    <link rel="stylesheet" href="responsive.css?v=20261014">
     <!-- Font Awesome removed: the whole 6.6.0 icon library (100+ KB + an extra
          third-party connection) was being loaded on this page to render exactly
          one icon (the X/Twitter share glyph). Replaced with a 300-byte inline
@@ -1245,6 +1245,146 @@ body.test-running #app #page-title {
     #km-wrap { order: 1; }
     #km-scores-panel { order: 2; }
 }
+
+/* ══════════════════════════════════════════════════════════════
+   BUY KEYBOARD — colourful 3-link box at the bottom-right of the keymap
+   • Pure HTML + CSS: no images, no JS, no extra requests (zero effect on
+     LCP / TBT / INP). Only opacity + transform animate (compositor-only).
+   • Hidden while typing via html.test-running (visibility keeps its space,
+     so nothing shifts → CLS stays 0); fades back in when typing ends.
+   • ≥1340px: slim box to the right of the keymap, bottom-aligned.
+     ≤1339px: neat full-width strip under the keymap (3 buttons in a row).
+══════════════════════════════════════════════════════════════ */
+#rt-buy {
+    position: relative;
+    flex: 0 0 176px;
+    align-self: flex-end;
+    box-sizing: border-box;
+    margin: 0 0 6px;
+    padding: 12px 12px 14px;
+    border: 2px solid transparent;
+    border-radius: 16px;
+    background:
+        linear-gradient(#0f1b2e, #14223a) padding-box,
+        linear-gradient(135deg, #00e6cc, #bc8cff 50%, #ff6ec7) border-box;
+    box-shadow: 0 8px 24px rgba(0,0,0,.35);
+    transition: opacity .25s ease, visibility .25s ease;
+    transform: translateY(-80px);
+}
+#rt-buy::after {               /* soft pulsing glow — opacity only */
+    content: "";
+    position: absolute;
+    inset: -2px;
+    border-radius: 18px;
+    pointer-events: none;
+    box-shadow: 0 0 26px 2px rgba(255,110,199,.5), 0 0 18px rgba(0,230,204,.35);
+    opacity: .25;
+    animation: rtBuyGlow 3s ease-in-out infinite;
+}
+@keyframes rtBuyGlow { 0%,100% { opacity: .2; } 50% { opacity: .85; } }
+
+.rt-buy-title {
+    margin: 0 0 10px;
+    text-align: center;
+    font: 800 13px/1.2 'Roboto Mono', monospace;
+    letter-spacing: .8px;
+    text-transform: uppercase;
+    color: #fff;
+}
+.rt-buy-title span {
+    background: linear-gradient(90deg, #ffd700, #ff6ec7 55%, #00e6cc);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+}
+.rt-buy-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.rt-buy-list li { margin: 0; min-width: 0; }
+
+.rt-buy-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-sizing: border-box;
+    min-height: 44px;                 /* comfortable tap target */
+    padding: 8px 10px;
+    border-radius: 12px;
+    text-decoration: none;
+    font: 700 13px/1.15 'Roboto Mono', monospace;
+    -webkit-tap-highlight-color: transparent;
+    transition: transform .18s ease, box-shadow .18s ease, filter .18s ease;
+}
+.rt-buy-low  { background: linear-gradient(135deg, #5df2a6, #00e6cc); color: #04241b; box-shadow: 0 4px 14px rgba(0,230,204,.35); }
+.rt-buy-mid  { background: linear-gradient(135deg, #ffe066, #ff9f1c); color: #2b1700; box-shadow: 0 4px 14px rgba(255,159,28,.35); }
+.rt-buy-high { background: linear-gradient(135deg, #c9a0ff, #ff6ec7); color: #2c0a36; box-shadow: 0 4px 14px rgba(255,110,199,.38); }
+
+.rt-buy-tier {
+    flex: none;
+    min-width: 30px;
+    padding: 3px 6px;
+    border-radius: 10px;
+    background: rgba(0,0,0,.2);
+    text-align: center;
+    font-size: 12px;
+    letter-spacing: .5px;
+}
+.rt-buy-name { flex: 1 1 auto; min-width: 0; }
+.rt-buy-btn svg { flex: none; transition: transform .18s ease; }
+
+@media (hover: hover) {
+    .rt-buy-btn:hover { transform: translateY(-2px) scale(1.03); filter: brightness(1.08) saturate(1.1); }
+    .rt-buy-btn:hover svg { transform: translateX(3px); }
+}
+.rt-buy-btn:active { transform: scale(.97); }
+.rt-buy-btn:focus-visible { outline: 3px solid #fff; outline-offset: 2px; }
+
+/* ── Hidden while typing, back when typing finishes ── */
+html.test-running #rt-buy { opacity: 0; visibility: hidden; pointer-events: none; }
+html.test-running #rt-buy::after { animation: none; }
+#app.rt-notes-active #rt-buy { display: none !important; }
+
+/* ── Extra-large screens: a little roomier ── */
+@media (min-width: 1500px) {
+    #rt-buy { flex-basis: 200px; }
+    .rt-buy-btn { font-size: 14px; min-height: 48px; }
+}
+
+/* ── Laptops / tablets / phones: full-width strip under the keymap ── */
+@media (max-width: 1339px) {
+    #rt-buy {
+        flex: 1 0 100%;
+        align-self: center;
+        width: 100%;
+        max-width: 640px;
+        margin: 4px auto 0;
+        padding: 10px 12px 12px;
+    }
+    .rt-buy-title { margin-bottom: 8px; }
+    .rt-buy-list { flex-direction: row; gap: 8px; }
+    .rt-buy-list li { flex: 1 1 0; }
+    .rt-buy-btn { height: 100%; }
+}
+@media (max-width: 1024px) { #rt-buy { order: 3; } }
+
+/* ── Small phones: tier chip stacked above the label, arrow dropped ── */
+@media (max-width: 520px) {
+    #rt-buy { padding: 9px 8px 10px; border-radius: 14px; }
+    .rt-buy-list { gap: 6px; }
+    .rt-buy-btn { flex-direction: column; justify-content: center; gap: 4px; padding: 7px 4px; font-size: 11px; text-align: center; }
+    .rt-buy-name { flex: 0 1 auto; }
+    .rt-buy-btn svg { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+    #rt-buy::after { animation: none; opacity: .4; }
+    .rt-buy-btn, .rt-buy-btn svg { transition: none; }
+}
 </style>
     <!-- result-ad loads via the safe iframe-based loadNativeBannerAd()
          helper further down the page (see main script), which keeps
@@ -1832,6 +1972,16 @@ html.rt-custom-bg-pending body::before{display:none !important;}
         </div><!-- #km-collapsible -->
     </div><!-- #km-scene -->
 </div><!-- #km-wrap -->
+
+    <!-- ── BUY KEYBOARD: bottom-right of the keymap; hidden while typing (CSS: html.test-running) ── -->
+    <aside id="rt-buy" aria-label="Buy a keyboard">
+        <p class="rt-buy-title"><span aria-hidden="true">🛒 </span><span>Buy keyboard</span></p>
+        <ul class="rt-buy-list">
+            <li><a class="rt-buy-btn rt-buy-low" href="https://link.amazon/B05D1iYd0" target="_blank" rel="sponsored nofollow noopener noreferrer" aria-label="Buy a low budget keyboard on Amazon. Opens in a new tab." onclick="if(window.gtag)gtag('event','keyboard_pick_click',{budget:'low',placement:'keymap'})"><span class="rt-buy-tier">$</span><span class="rt-buy-name">Low budget</span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li>
+            <li><a class="rt-buy-btn rt-buy-mid" href="https://link.amazon/B0beViQVi" target="_blank" rel="sponsored nofollow noopener noreferrer" aria-label="Buy a medium budget keyboard on Amazon. Opens in a new tab." onclick="if(window.gtag)gtag('event','keyboard_pick_click',{budget:'medium',placement:'keymap'})"><span class="rt-buy-tier">$$</span><span class="rt-buy-name">Medium budget</span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li>
+            <li><a class="rt-buy-btn rt-buy-high" href="https://link.amazon/B0bAeXUW4" target="_blank" rel="sponsored nofollow noopener noreferrer" aria-label="Buy a high budget keyboard on Amazon. Opens in a new tab." onclick="if(window.gtag)gtag('event','keyboard_pick_click',{budget:'high',placement:'keymap'})"><span class="rt-buy-tier">$$$</span><span class="rt-buy-name">High budget</span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li>
+        </ul>
+    </aside>
 
 </div><!-- #km-outer-row -->
 
