@@ -75,18 +75,6 @@
     padding: 34px 32px !important;
     margin: 6px auto 40px !important;
 }
-/* ── Ad slots ── */
-.ad-slot {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-}
-.ad-bottom-banner {
-    width: 728px;
-    max-width: 100%;
-    height: 90px;
-}
 .leaderboard-layout {
     display: flex;
     align-items: flex-start;
@@ -95,25 +83,6 @@
     max-width: 1300px;
     margin: 0 auto;
     padding: 0 16px;
-}
-.ad-rail {
-    width: 160px;
-    flex: 0 0 160px;
-    position: sticky;
-    top: 16px;
-}
-.ad-rail-left { height: 600px; }
-.ad-rail-right { height: 300px; }
-/* Side rails need real horizontal room: content (1000px) + 2×160px rails +
-   gaps only fits comfortably from ~1400px up. Below that, hide them rather
-   than squeeze/overlap the leaderboard card. */
-@media (max-width: 1400px) {
-    .ad-rail { display: none; }
-}
-/* 728px banners don't fit small/medium phones — hide instead of letting
-   them force horizontal scroll or clip. */
-@media (max-width: 767px) {
-    .ad-top-native, .ad-bottom-banner { display: none; }
 }
 .leaderboard-header-grid,
 .leaderboard-row { 
@@ -888,12 +857,6 @@ function sanitizeStr(s) {
         el.style.animation = 'rtShake .35s ease';
     }
 
-    function showSuccess(elId, msg) {
-        const el = document.getElementById(elId);
-        if (!el) return;
-        el.textContent = msg;
-        el.style.color = '#4caf50';
-    }
 
     // ── Password Strength ─────────────────────────────────────────
     function updatePwStrength(pw) {
@@ -1151,7 +1114,6 @@ function sanitizeStr(s) {
     }
 
     // Override doSignup to handle OAuth completion mode
-    const _origDoSignup = window.doSignup;
     (function patchOAuthSignup() {
         const originalDoSignup = doSignup;
         window.doSignup = async function() {
@@ -1524,57 +1486,6 @@ function sanitizeStr(s) {
         }
 
         // Save word-mode score to Firestore (typing_word_scores collection)
-        async function saveWordScore(name, wordCount) {
-            const authUser = auth.currentUser;
-            if (!authUser) return;
-            if (![10, 25, 50, 100].includes(wordCount)) return;
-
-            const _now        = Date.now();
-            const _elapsedMs  = startTime ? (_now - startTime) : 0;
-            const _elapsedMin = _elapsedMs / 60000 || 0.001;
-            const _wpm        = Math.max(0, Math.round(correctKeystrokes / 5 / _elapsedMin));
-            const _typedErrors= Math.max(0, totalKeystrokes - correctKeystrokes);
-            const _totalErrors= _typedErrors + (missedChars || 0);
-            const _accuracy   = (correctKeystrokes + _totalErrors > 0)
-                ? Math.round((correctKeystrokes / (correctKeystrokes + _totalErrors)) * 100) : 100;
-
-            if (_wpm <= 0 || _wpm >= 220 || _accuracy < 50 || _elapsedMs < 2000) return;
-
-            try {
-                let verifiedName    = name;
-                let verifiedCountry = window._currentUser?.country || '';
-                try {
-                    const userSnap = await getDoc(doc(db, 'users', authUser.uid));
-                    if (userSnap.exists()) {
-                        verifiedName    = userSnap.data().name    || name;
-                        verifiedCountry = userSnap.data().country || '';
-                    }
-                } catch(_e) {}
-
-                const docId  = `${authUser.uid}_${wordCount}`;
-                const ref    = doc(db, "typing_word_scores", docId);
-                const existing = await getDoc(ref);
-
-                if (!existing.exists() || _wpm > (existing.data()?.wpm || 0)) {
-                    await setDoc(ref, {
-                        name:      verifiedName,
-                        wpm:       _wpm,
-                        accuracy:  _accuracy,
-                        wordCount: wordCount,
-                        country:   verifiedCountry,
-                        uid:       authUser.uid,
-                        time:      _now,
-                        // Required by the hardened Firestore rules — see
-                        // saveScore() above for why.
-                        correctKeystrokes: correctKeystrokes,
-                        keystrokeCount:    totalKeystrokes,
-                        elapsedMs:         _elapsedMs
-                    });
-                }
-            } catch(e) {
-                console.warn("Word leaderboard save failed:", e);
-            }
-        }
 
         // PERF: Helper to render cached leaderboard entries without re-querying Firestore
         function _renderLeaderboardRows(body, entries) {
