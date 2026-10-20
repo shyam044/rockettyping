@@ -963,10 +963,6 @@ let config = {
             }
         }
 
-        // Improved updateCaret with cached rows (Issues 5 + 6)
-        function updateCaret() {
-            scheduleCaretUpdate(); // keep old call-sites working
-        }
 
         function _updateCaretNow() {
             const activeWord = activeWordEl;
@@ -1515,19 +1511,6 @@ if (!testActive && !testEnded && e.key.length === 1) {
             }
         });
 
-        function checkWordComplete() {
-            if (currentLetterIndex === words[currentWordIndex].length) {
-                // Word complete, wait for space
-            }
-            if (config.mode === 'words' && currentWordIndex === config.words - 1 && currentLetterIndex === words[currentWordIndex].length) {
-                timerDiv.textContent = config.words + '/' + config.words;
-                endTest();
-            }
-            if (config.mode === 'quotes' && currentWordIndex === words.length - 1 && currentLetterIndex === words[currentWordIndex].length) {
-                timerDiv.textContent = words.length + '/' + words.length;
-                endTest();
-            }
-        }
         function moveToNextWord() {
             spaces++;
             // Zen: make sure a next (empty) word already exists before the
@@ -2612,7 +2595,6 @@ function sanitizeStr(s) {
             const _elapsedMs   = startTime ? (_now - startTime) : 0;
             const _elapsedMin  = _elapsedMs / 60000 || 0.001;
             const _wpm         = Math.max(0, Math.round(correctKeystrokes / 5 / _elapsedMin));
-            const _rawWpm      = Math.max(0, Math.round(totalKeystrokes   / 5 / _elapsedMin));
             const _typedErrors = Math.max(0, totalKeystrokes - correctKeystrokes);
             const _totalErrors = _typedErrors + (missedChars || 0);
             const _accuracy    = (correctKeystrokes + _totalErrors > 0)
@@ -2825,209 +2807,8 @@ function sanitizeStr(s) {
             // ← REMOVED the old updateLeaderboardPrompt() from here (now at top)
         }
 
-        // ── Words-mode leaderboard ───────────────────────────────────────
-        let currentWordLeaderboardCount = 10;
-        async function loadWordLeaderboard(wordCount = currentWordLeaderboardCount) {
-            if (!window.db && window._rtFirebaseReady) await window._rtFirebaseReady(); // guests: Firebase now loads on demand
-            updateLeaderboardPrompt();
-            currentWordLeaderboardCount = wordCount;
 
-            const body = document.getElementById("leaderboard-body");
-            const skeleton = document.getElementById("lb-skeleton");
-            if (!body || !skeleton) return;
 
-            // 30-second cache keyed by "w"+wordCount
-            if (!window._lbCache) window._lbCache = {};
-            const cacheKey = 'w' + wordCount;
-            const cached = window._lbCache[cacheKey];
-            if (cached && (Date.now() - cached.ts) < 30000) {
-                skeleton.innerHTML = '';
-                body.style.display = 'block';
-                _renderLeaderboardRows(body, cached.entries);
-                return;
-            }
-
-            skeleton.innerHTML = Array(10).fill(`<div class="skeleton-row"></div>`).join('');
-            body.style.display = "none";
-
-            // Use only where() with no orderBy to avoid needing a composite index.
-            // We sort and slice client-side — the collection is small so this is fast.
-            const q = query(
-                collection(db, "typing_word_scores"),
-                where("wordCount", "==", wordCount)
-            );
-
-            let snapshot;
-            try {
-                snapshot = await getDocs(q);
-            } catch(qErr) {
-                console.warn("Word leaderboard query failed:", qErr);
-                skeleton.innerHTML = '';
-                body.innerHTML = '<div style="text-align:center;color:#aaa;padding:20px">Could not load scores. Try again later.</div>';
-                body.style.display = 'block';
-                return;
-            }
-
-            const allEntries = [];
-            snapshot.forEach(docSnap => allEntries.push(docSnap.data()));
-            // Sort by wpm desc, take top 10
-            allEntries.sort((a, b) => (b.wpm || 0) - (a.wpm || 0));
-            const entries = allEntries.slice(0, 10);
-
-            const namesToLookup = [];
-            const registeredName = localStorage.getItem('rt_registered_name');
-
-            entries.forEach(data => {
-                if (!data.country) namesToLookup.push(data.name);
-            });
-
-            const countryMap = {};
-            if (namesToLookup.length > 0) {
-                const lookups = namesToLookup.map(n =>
-                    getDocs(query(collection(db, 'users'), where('name', '==', n), limit(1)))
-                );
-                const results = await Promise.all(lookups);
-                results.forEach(snap => {
-                    snap.forEach(udoc => {
-                        const ud = udoc.data();
-                        if (ud.name && ud.country) countryMap[ud.name] = ud.country;
-                    });
-                });
-            }
-
-            body.innerHTML = "";
-            let rank = 1;
-            entries.forEach(data => {
-                const isYou = window._currentUser && data.uid && data.uid === window._currentUser.uid;
-                const row = document.createElement('div');
-                row.className = `leaderboard-row ${rank === 1 ? 'top1' : rank === 2 ? 'top2' : rank === 3 ? 'top3' : ''} ${isYou ? 'you' : ''}`;
-                const _country = data.country || countryMap[data.name] || (isYou ? (window._currentUser?.country || '') : '');
-                const _flag = getFlag(_country);
-                const _date = fmtDate(data.time);
-                let rankDisplay = rank;
-                if (rank === 1) rankDisplay = "🥇";
-                else if (rank === 2) rankDisplay = "🥈";
-                else if (rank === 3) rankDisplay = "🥉";
-                row.innerHTML = `
-                    <span class="rank">${rankDisplay}</span>
-                    <span class="player"><span class="lb-player-name">${sanitizeStr(data.name)}</span></span>
-                    <span class="lb-flag-cell" title="${sanitizeStr(_country)}">${_flag}</span>
-                    <span style="font-weight:900;color:#ffd700">${sanitizeStr(data.wpm)}</span>
-                    <span>${sanitizeStr(data.accuracy)}%</span>
-                    <span class="lb-date-cell">${sanitizeStr(_date)}</span>
-                `;
-                body.appendChild(row);
-                rank++;
-            });
-
-            skeleton.innerHTML = '';
-            body.style.display = "block";
-            window._lbCache[cacheKey] = { ts: Date.now(), entries };
-
-            if (registeredName && [...body.children].some(r => r.classList.contains('you'))) {
-                fireConfetti({ particleCount: 80, spread: 60, origin: { y: 0.6 } });
-            }
-        }
-
-        // ── Elon-mode leaderboard ─────────────────────────────────────────
-        async function loadElonLeaderboard() {
-            if (!window.db && window._rtFirebaseReady) await window._rtFirebaseReady(); // guests: Firebase now loads on demand
-            updateLeaderboardPrompt();
-
-            const body = document.getElementById("leaderboard-body");
-            const skeleton = document.getElementById("lb-skeleton");
-            if (!body || !skeleton) return;
-
-            // 30-second cache
-            if (!window._lbCache) window._lbCache = {};
-            const cacheKey = 'elon';
-            const cached = window._lbCache[cacheKey];
-            if (cached && (Date.now() - cached.ts) < 30000) {
-                skeleton.innerHTML = '';
-                body.style.display = 'block';
-                _renderElonLeaderboardRows(body, cached.entries);
-                return;
-            }
-
-            skeleton.innerHTML = Array(10).fill(`<div class="skeleton-row"></div>`).join('');
-            body.style.display = "none";
-
-            // Query top 10 by elonScore — single-field index, free tier friendly
-            const q = query(
-                collection(db, "elon_scores"),
-                orderBy("elonScore", "desc"),
-                limit(10)
-            );
-
-            let snapshot;
-            try {
-                snapshot = await getDocs(q);
-            } catch(qErr) {
-                console.warn("Elon leaderboard query failed:", qErr);
-                skeleton.innerHTML = '';
-                body.innerHTML = '<div style="text-align:center;color:#aaa;padding:20px">Could not load Elon scores. Try again later.</div>';
-                body.style.display = 'block';
-                return;
-            }
-
-            const entries = [];
-            snapshot.forEach(docSnap => entries.push(docSnap.data()));
-
-            // Secondary country lookup for entries missing country
-            const namesToLookup = entries.filter(d => !d.country).map(d => d.name);
-            const countryMap = {};
-            if (namesToLookup.length > 0) {
-                try {
-                    const lookups = namesToLookup.map(n =>
-                        getDocs(query(collection(db, 'users'), where('name', '==', n), limit(1)))
-                    );
-                    const results = await Promise.all(lookups);
-                    results.forEach(snap => {
-                        snap.forEach(udoc => {
-                            const ud = udoc.data();
-                            if (ud.name && ud.country) countryMap[ud.name] = ud.country;
-                        });
-                    });
-                } catch(_e) {}
-            }
-
-            // Attach resolved countries
-            entries.forEach(d => { if (!d.country && countryMap[d.name]) d.country = countryMap[d.name]; });
-
-            skeleton.innerHTML = '';
-            body.style.display = 'block';
-            _renderElonLeaderboardRows(body, entries);
-
-            window._lbCache[cacheKey] = { ts: Date.now(), entries };
-        }
-
-        function _renderElonLeaderboardRows(body, entries) {
-            body.innerHTML = '';
-            let rank = 1;
-            entries.forEach(data => {
-                const isYou = window._currentUser && data.uid && data.uid === window._currentUser.uid;
-                const row = document.createElement('div');
-                row.className = `leaderboard-row ${rank === 1 ? 'top1' : rank === 2 ? 'top2' : rank === 3 ? 'top3' : ''} ${isYou ? 'you' : ''}`;
-                const _country = data.country || (isYou ? (window._currentUser?.country || '') : '');
-                const _flag = getFlag(_country);
-                const _date = fmtDate(data.updatedAt || data.time);
-                let rankDisplay = rank;
-                if (rank === 1) rankDisplay = "🥇";
-                else if (rank === 2) rankDisplay = "🥈";
-                else if (rank === 3) rankDisplay = "🥉";
-                const _score = parseFloat(data.elonScore || 0).toFixed(2);
-                row.innerHTML = `
-                    <span class="rank">${rankDisplay}</span>
-                    <span class="player"><span class="lb-player-name">${sanitizeStr(data.name)}</span></span>
-                    <span class="lb-flag-cell" title="${sanitizeStr(_country)}">${_flag}</span>
-                    <span style="font-weight:900;color:#00e6cc">${_score}</span>
-                    <span style="color:#aaa;font-size:11px">⚡score</span>
-                    <span class="lb-date-cell">${_date}</span>
-                `;
-                body.appendChild(row);
-                rank++;
-            });
-        }
 
         // Save word-mode score to Firestore (typing_word_scores collection)
         async function saveWordScore(name, wordCount) {
@@ -3225,12 +3006,6 @@ function sanitizeStr(s) {
         el.style.animation = 'rtShake .35s ease';
     }
 
-    function showSuccess(elId, msg) {
-        const el = document.getElementById(elId);
-        if (!el) return;
-        el.textContent = msg;
-        el.style.color = '#4caf50';
-    }
 
     // ── Password Strength ─────────────────────────────────────────
     function updatePwStrength(pw) {
@@ -3503,7 +3278,6 @@ function sanitizeStr(s) {
     }
 
     // Override doSignup to handle OAuth completion mode
-    const _origDoSignup = window.doSignup;
     (function patchOAuthSignup() {
         const originalDoSignup = doSignup;
         window.doSignup = async function() {
@@ -4081,23 +3855,6 @@ function _getRankBadge(bestWpm) {
 //  MUSK SCORE MODULE
 // ══════════════════════════════════════════════════════════════
 
-/* Show the milestone toast with confetti */
-function _showMuskToast(score, totalSecs) {
-    const toast = document.getElementById('musk-milestone-toast');
-    if (!toast) return;
-    document.getElementById('musk-toast-score').textContent = score;
-    document.getElementById('musk-toast-secs').textContent  = totalSecs + 's';
-    toast.classList.add('show');
-    // confetti burst
-    try {
-        fireConfetti({ particleCount: 120, spread: 80, origin: { y: 0.8 },
-            colors: ['#ffd700','#ff9900','#ff6600','#ffffff'] });
-    } catch(e) {}
-    clearTimeout(window._muskToastTimer);
-    window._muskToastTimer = setTimeout(function() {
-        toast.classList.remove('show');
-    }, 4000);
-}
 
 /* ─────────────────────────────────────────────────────────────
    MUSK SCORE GAIN ANIMATION
@@ -4562,49 +4319,6 @@ function updateLeaderboardPrompt() {
 }
 // Update leaderboard register button to open auth modal
 function openRegisterModal() { openAuthModal('signup'); }
-        // Leaderboard mode toggle (TIME / WORDS / ELON)
-        let currentLbMode = 'time';
-        // Binds click handlers to the tab buttons. Called once, right after
-        // leaderboard.html is injected into the page (see ensureLeaderboardModalLoaded),
-        // since the tabs don't exist in the DOM until then.
-        function initLeaderboardTabs() {
-            document.querySelectorAll('.lb-mode-tab').forEach(tab => {
-                tab.addEventListener('click', () => {
-                    document.querySelectorAll('.lb-mode-tab').forEach(t => t.classList.remove('active'));
-                    tab.classList.add('active');
-                    currentLbMode = tab.dataset.lbmode;
-
-                    // Show/hide duration buttons (hidden for elon mode)
-                    document.querySelectorAll('.time-tab[data-lbfor="time"]').forEach(t => t.style.display = currentLbMode === 'time' ? '' : 'none');
-                    document.querySelectorAll('.time-tab[data-lbfor="words"]').forEach(t => t.style.display = currentLbMode === 'words' ? '' : 'none');
-
-                    if (currentLbMode === 'elon') {
-                        loadElonLeaderboard();
-                        return;
-                    }
-
-                    // Activate first tab of new mode and load
-                    const firstTab = document.querySelector(`.time-tab[data-lbfor="${currentLbMode}"]`);
-                    document.querySelectorAll('.time-tab').forEach(t => t.classList.remove('active'));
-                    if (firstTab) {
-                        firstTab.classList.add('active');
-                        if (currentLbMode === 'time') loadLeaderboard(parseInt(firstTab.dataset.duration));
-                        else loadWordLeaderboard(parseInt(firstTab.dataset.duration));
-                    }
-                });
-            });
-
-            // Leaderboard duration tabs handler
-            document.querySelectorAll('.time-tab').forEach(tab => {
-                tab.addEventListener('click', () => {
-                    document.querySelectorAll('.time-tab').forEach(t => t.classList.remove('active'));
-                    tab.classList.add('active');
-                    const dur = parseInt(tab.dataset.duration);
-                    if (currentLbMode === 'time') loadLeaderboard(dur);
-                    else loadWordLeaderboard(dur);
-                });
-            });
-        }
         function shareScore() {
             const text = `I just hit ${document.querySelector('#wpm .stat-value').textContent} WPM on Rocket Typing! Can you beat me? 🚀 https://www.rockettyping.com/`;
             window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`, '_blank');
