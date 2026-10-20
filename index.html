@@ -194,8 +194,8 @@
     <link rel="dns-prefetch" href="https://flagcdn.com">
     <!-- Preload critical assets: logo image + main stylesheet -->
     <link rel="preload" as="image" href="/images/rocket-typing-logo.webp" fetchpriority="high">
-    <link rel="preload" href="styles.css?v=20261014" as="style">
-    <link rel="preload" href="responsive.css?v=20261014" as="style">
+    <link rel="preload" href="styles.css?v=20261020" as="style">
+    <link rel="preload" href="responsive.css?v=20261020" as="style">
     <!-- ═══════════════════════════════════════════════════════════════════
          INLINE CRITICAL CSS  — rendered before any external stylesheet.
          RULE: every layout-affecting property that also exists in styles.css
@@ -319,8 +319,8 @@
          (#app margin 20px->0, #words top 253px->177px, header 27px->7px), so the whole page
          jumped ~75px = ~0.14 CLS on every load. Loading them normally means the first paint
          already uses the final geometry, so there is no shift. -->
-    <link rel="stylesheet" href="styles.css?v=20261014">
-    <link rel="stylesheet" href="responsive.css?v=20261014">
+    <link rel="stylesheet" href="styles.css?v=20261020">
+    <link rel="stylesheet" href="responsive.css?v=20261020">
     <!-- Font Awesome removed: the whole 6.6.0 icon library (100+ KB + an extra
          third-party connection) was being loaded on this page to render exactly
          one icon (the X/Twitter share glyph). Replaced with a 300-byte inline
@@ -515,61 +515,9 @@
     border: 0;
 }
 
-/* ── Musk milestone toast — global, shown during typing regardless
-     of whether the profile modal has ever been opened ── */
-@keyframes musk-float {
-    0%, 100% { transform: translateY(0px); }
-    50%       { transform: translateY(-5px); }
-}
-#musk-milestone-toast {
-    position: fixed;
-    bottom: 30px; left: 50%;
-    transform: translateX(-50%) translateY(120px);
-    background: linear-gradient(135deg, #0e0e28, #1a1040);
-    border: 2px solid #e2b714;
-    border-radius: 16px;
-    padding: 14px 28px;
-    display: flex; align-items: center; gap: 14px;
-    z-index: 9999;
-    box-shadow: 0 0 40px rgba(226,183,20,0.4), 0 10px 40px rgba(0,0,0,0.6);
-    font-family: 'Roboto Mono', monospace;
-    transition: transform .45s cubic-bezier(0.34,1.56,0.64,1), opacity .35s;
-    opacity: 0;
-    pointer-events: none;
-}
-#musk-milestone-toast.show {
-    transform: translateX(-50%) translateY(0);
-    opacity: 1;
-}
-.musk-toast-rocket { font-size: 28px; animation: musk-float 2s ease-in-out infinite; }
-.musk-toast-text { display: flex; flex-direction: column; gap: 2px; }
-.musk-toast-title {
-    font-size: 13px; font-weight: 900; color: #ffd700;
-    letter-spacing: 1px;
-}
-.musk-toast-sub { font-size: 11px; color: #888; letter-spacing: .5px; }
-.musk-toast-score {
-    font-size: 32px; font-weight: 900;
-    background: linear-gradient(135deg, #ffd700, #ff9900);
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-    background-clip: text;
-    line-height: 1;
-}
 </style>
 
 <!-- Profile modal markup is lazy-loaded from profile.html (see loadFragment()) -->
-
-<!-- ═══════════════════════════════════════════════════════════════
-     MUSK SCORE MILESTONE TOAST
-═══════════════════════════════════════════════════════════════ -->
-<div id="musk-milestone-toast">
-  <span class="musk-toast-rocket">🚀</span>
-  <div class="musk-toast-text">
-    <span class="musk-toast-title">MUSK SCORE UNLOCKED!</span>
-    <span class="musk-toast-sub">You just hit <span id="musk-toast-secs"></span> seconds of typing</span>
-  </div>
-  <span class="musk-toast-score" id="musk-toast-score">1</span>
-</div>
 
 <!-- ═══════════════════════════════════════════════════════════════
      KEYMAP SCENE STYLES — Animated Typing Character
@@ -1269,7 +1217,6 @@ body.test-running #app #page-title {
         linear-gradient(135deg, #00e6cc, #bc8cff 50%, #ff6ec7) border-box;
     box-shadow: 0 8px 24px rgba(0,0,0,.35);
     transition: opacity .25s ease, visibility .25s ease;
-    transform: translateY(-80px);
 }
 #rt-buy::after {               /* soft pulsing glow — opacity only */
     content: "";
@@ -1583,9 +1530,6 @@ html.rt-custom-bg-pending body::before{display:none !important;}
 .rt-normal-btn{width:100%;padding:9px;border-radius:8px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.15);
     color:#ddd;font-family:'Roboto Mono',monospace;font-size:12px;font-weight:700;letter-spacing:.5px;cursor:pointer;margin-bottom:4px;}
 .rt-normal-btn:hover{background:rgba(255,255,255,0.12);}
-#rt-custom-toggle{width:100%;padding:10px;border-radius:8px;background:linear-gradient(135deg,var(--rt-main),var(--rt-main2));
-    border:none;color:var(--rt-bg);font-family:'Roboto Mono',monospace;font-size:12px;font-weight:900;letter-spacing:.5px;cursor:pointer;margin:6px 0 10px;}
-#rt-custom-toggle.on{background:#2ecc71;}
 .rt-hint{font-size:11px;color:#888;line-height:1.5;margin:0;}
 #rt-custom-panel{
     display:none;
@@ -1668,9 +1612,6 @@ html.rt-custom-bg-pending body::before{display:none !important;}
 .rt-wpm-shape-preview-rectangle{width:22px;height:12px;border-radius:3px;}
 .rt-wpm-shape-preview-triangle{width:0;height:0;background:none;border-left:8px solid transparent;
     border-right:8px solid transparent;border-bottom:14px solid var(--rt-main);}
-#rt-save-layout-btn{width:100%;padding:10px;border-radius:8px;background:#2ecc71;border:none;color:#0a0a23;
-    font-family:'Roboto Mono',monospace;font-size:12px;font-weight:900;letter-spacing:.5px;cursor:pointer;margin-bottom:10px;}
-#rt-save-layout-btn:hover{filter:brightness(1.1);}
 #rt-save-toast{position:fixed;left:50%;bottom:90px;transform:translateX(-50%) translateY(20px);
     background:#12122a;border:1px solid var(--rt-main);color:var(--rt-main);padding:10px 20px;border-radius:30px;
     font-family:'Roboto Mono',monospace;font-size:13px;font-weight:700;letter-spacing:.5px;z-index:9995;
@@ -2728,57 +2669,9 @@ window.deleteUser = deleteUser;
         function ensureProfileModalLoaded() {
             return loadFragment('/profile');
         }
-        function ensureLeaderboardModalLoaded() {
-            var isFirstLoad = !window._fragmentsLoaded['leaderboard.html'];
-            return loadFragment('leaderboard.html').then(function() {
-                if (isFirstLoad && typeof initLeaderboardTabs === 'function') {
-                    initLeaderboardTabs();
-                }
-            });
-        }
     </script>
     <script>
         window._originalPageTitle = window._originalPageTitle || document.title;
-        async function openLeaderboardModal() {
-            if (window.location.pathname !== '/leaderboard') {
-                window.history.pushState({ modal: 'leaderboard' }, '', '/leaderboard');
-            }
-            document.title = 'Leaderboard | Rocket Typing';
-            await ensureLeaderboardModalLoaded();
-            document.getElementById('leaderboardModal').classList.add('active');
-
-            // Auto-switch to the tab matching the last test
-            if (config.mode === 'words' && [10, 25, 50, 100].includes(config.words)) {
-                // Switch to WORDS mode
-                document.querySelectorAll('.lb-mode-tab').forEach(t => t.classList.remove('active'));
-                document.querySelector('.lb-mode-tab[data-lbmode="words"]').classList.add('active');
-                currentLbMode = 'words';
-                document.querySelectorAll('.time-tab[data-lbfor="time"]').forEach(t => t.style.display = 'none');
-                document.querySelectorAll('.time-tab[data-lbfor="words"]').forEach(t => t.style.display = '');
-                document.querySelectorAll('.time-tab').forEach(t => t.classList.remove('active'));
-                const wTab = document.querySelector(`.time-tab[data-lbfor="words"][data-duration="${config.words}"]`);
-                if (wTab) wTab.classList.add('active');
-                loadWordLeaderboard(config.words);
-            } else {
-                // Switch to TIME mode
-                document.querySelectorAll('.lb-mode-tab').forEach(t => t.classList.remove('active'));
-                document.querySelector('.lb-mode-tab[data-lbmode="time"]').classList.add('active');
-                currentLbMode = 'time';
-                document.querySelectorAll('.time-tab[data-lbfor="time"]').forEach(t => t.style.display = '');
-                document.querySelectorAll('.time-tab[data-lbfor="words"]').forEach(t => t.style.display = 'none');
-
-                let targetDuration = 15;
-                if ([10, 15, 30, 60].includes(config.time)) targetDuration = config.time;
-
-                document.querySelectorAll('.time-tab').forEach(tab => {
-                    tab.classList.remove('active');
-                    if (tab.dataset.lbfor === 'time' && parseInt(tab.dataset.duration) === targetDuration) {
-                        tab.classList.add('active');
-                    }
-                });
-                loadLeaderboard(targetDuration);
-            }
-        }
         function closeLeaderboardModal() {
             document.getElementById('leaderboardModal').classList.remove('active');
             if (window.location.pathname === '/leaderboard') {
@@ -2821,7 +2714,7 @@ window.deleteUser = deleteUser;
         })();
     </script>
     <script src="vocabulary.js?v=3"></script>
-    <script src="app-core.js?v=7"></script>
+    <script src="app-core.js?v=8"></script>
     <script>
 // Handle ?openAuth=login and ?openAuth=signup from game.html and other pages
 // BUT only open modal if user is NOT logged in + clear the URL so reload doesn't re-trigger
