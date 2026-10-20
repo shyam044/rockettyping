@@ -15,6 +15,7 @@ html, body {
     -webkit-transform: none !important;
     perspective: none !important;
 }
+
 body {
     background: #0d1117;
     color: #c9d1d9;
@@ -60,13 +61,6 @@ body.typing-active::before {
     animation-play-state: paused;
 }
 
-/* Also pause during game race */
-body.race-active {
-    animation-play-state: paused;
-}
-body.race-active::before {
-    animation-play-state: paused;
-}
 
 body::before {
     content: '';
@@ -593,34 +587,6 @@ width: 60%;                       /* full width now */
     cursor: crosshair;
 }
 
-.rocket-legend-vertical {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    padding-top: 12px;
-    min-width: 130px;
-    margin-right:30px;
-}
-
-.rocket-legend-vertical .rcl-item {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 14px;
-    font-weight: 700;
-    padding: 8px 16px;
-    border-radius: 30px;
-    white-space: nowrap;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-}
-
-.rcl-wpm    { color: #ffd700; border: 1px solid rgba(255,215,0,0.4); background: rgba(255,255,255,0.05); }
-.rcl-raw    { color: #00e6cc; border: 1px solid rgba(0,230,204,0.4); background: rgba(255,255,255,0.05); }
-.rcl-burst  { color: #ff9900; border: 1px solid rgba(255,153,0,0.4); background: rgba(255,255,255,0.05); }
-.rcl-errors { color: #ff2244; border: 1px solid rgba(255,34,68,0.4); background: rgba(255,255,255,0.05); }
-
-.rocket-chart-legend { display: none !important; }
-
 /* ── Result bottom row: [test-type] [buttons] [time] ── */
 .result-bottom-row {
     display: flex;
@@ -739,7 +705,6 @@ padding: 11px 24px;
     .result-stats-panel .main-stat { flex: 1 1 40%; }
     .result-stats-panel .stat { flex: 1 1 40%; }
     .chart-with-legend { flex-direction: column; }
-    .rocket-legend-vertical { flex-direction: row; flex-wrap: wrap; justify-content: center; }
     .result-bottom-row { flex-direction: column; align-items: center; margin-top: 12px; padding-left: 0; padding-right: 0; }
     .result-meta-box { flex-direction: row; gap: 12px; min-width: unset; width: 100%; justify-content: flex-start; padding: 8px 14px; }
     .result-meta-box .rmb-value { font-size: 18px; }
@@ -1010,45 +975,10 @@ padding: 11px 24px;
     box-shadow: 0 0 35px rgba(255,153,0,0.8);
 }
 
-/* Modals */
-#registerModal {
-    position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(0,0,0,0.9);
-    display: none;
-    align-items: center;
-    justify-content: center;
-    z-index: 1100;
-}
 
-#registerModal.active { display: flex; }
 
-.modal-content {
-    background-color: #2b2d30;
-    color: #ffffff;
-    padding: 40px;
-    border-radius: 8px;
-    max-width: 600px;
-    width: 90%;
-    max-height: 80vh;
-    overflow-y: auto;
-    position: relative;
-    border: 1px solid #444;
-}
 
-.modal-close {
-    position: absolute;
-    top: 15px;
-    right: 15px;
-    background: none;
-    border: none;
-    color: #e2b714;
-    font-size: 24px;
-    cursor: pointer;
-    transition: color 0.2s;
-}
 
-.modal-close:hover { color: #ffffff; }
 
 /* Footer */
 footer {
@@ -1209,11 +1139,6 @@ footer a:hover { color: #e2b714; }
 
 @media (prefers-reduced-motion: reduce) {
     #play-game .rt-cert-btn, #play-game .rt-cert-btn::after { transition: none; }
-}
-
-@keyframes glowPulseLearn {
-    from { opacity: 0.88; }
-    to   { opacity: 1; }
 }
 
 /* All Animations */
@@ -1452,11 +1377,6 @@ footer a:hover { color: #e2b714; }
 @keyframes livewpm-spin {
     from { transform: rotate(0deg); }
     to   { transform: rotate(360deg); }
-}
-
-@keyframes livewpm-blink-dot {
-    0%, 100% { opacity: 1; }
-    50%       { opacity: 0.6; }
 }
 
 /* Pop-in animation when it appears */
