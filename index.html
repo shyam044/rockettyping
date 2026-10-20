@@ -1586,6 +1586,9 @@ html.rt-custom-bg-pending body::before{display:none !important;}
 .rt-line-btn-icon{display:flex;flex-direction:column;gap:3px;width:26px;flex-shrink:0;}
 .rt-line-btn-icon span{display:block;height:3px;border-radius:2px;background:currentColor;opacity:.85;}
 .rt-hud-editable{outline:2px dashed var(--rt-main) !important;outline-offset:3px;}
+/* Customized elements are anchored to the PAGE (position:absolute), so they scroll with it.
+   They are hidden while the result panel is open so they never overlay the results. */
+html.rt-result-open .rt-hud-moved{visibility:hidden !important;pointer-events:none !important;}
 .rt-hud-handle{position:fixed;width:28px;height:28px;border-radius:7px;background:var(--rt-main);color:var(--rt-bg);
     display:flex;align-items:center;justify-content:center;font-size:14px;cursor:grab;z-index:9992;
     box-shadow:0 2px 10px rgba(0,0,0,0.5);touch-action:none;user-select:none;}
@@ -3847,8 +3850,18 @@ function getTargets(){
     return _targetNodeCache;
 }
 
+/* Layouts are saved per screen-size bucket so a layout made on a laptop never
+   lands off-screen on a phone (and vice-versa). Left is stored as a % of the
+   page width, top as px from the top of the PAGE (not the viewport). */
+function hudBucket(){
+    var w = document.documentElement.clientWidth;
+    return w <= 480 ? 'xs' : w <= 768 ? 'sm' : w <= 1024 ? 'md' : w <= 1600 ? 'lg' : 'xl';
+}
+function hudStorageKey(){ return 'rt_hud_pos_v2_' + hudBucket(); }
+function docWidth(){ return document.documentElement.clientWidth; }
+function docHeight(){ return Math.max(document.documentElement.scrollHeight, window.innerHeight); }
 function loadHudPositions(){
-    try { return JSON.parse(localStorage.getItem('rt_hud_pos') || '{}'); } catch(e){ return {}; }
+    try { return JSON.parse(localStorage.getItem(hudStorageKey()) || '{}') || {}; } catch(e){ return {}; }
 }
 
 /* ── Runtime guard against third-party scripts breaking position:fixed ──
@@ -3939,7 +3952,10 @@ function makeFixed(node){
         }
         document.documentElement.appendChild(node);
     }
-    setImportant(node, 'position', 'fixed');
+    // position:absolute (relative to the page, not the viewport): the element
+    // stays exactly where it was placed and scrolls together with the page.
+    node.classList.add('rt-hud-moved');
+    setImportant(node, 'position', 'absolute');
     setImportant(node, 'margin', '0');
     setImportant(node, 'right', 'auto');
     setImportant(node, 'bottom', 'auto');
@@ -3957,39 +3973,39 @@ function restoreOriginalParent(node){
     delete node._rtPlaceholder;
 }
 
+function restoreNode(n){
+    n.classList.remove('rt-hud-moved');
+    if (n.dataset.rtOrigStyle !== undefined) {
+        restoreOriginalParent(n);
+        if (n.dataset.rtOrigStyle === '') n.removeAttribute('style');
+        else n.setAttribute('style', n.dataset.rtOrigStyle);
+        delete n.dataset.rtOrigStyle;
+    }
+    delete n.dataset.rtScale;
+}
+
 function applySavedHudPositions(){
     var saved = loadHudPositions();
     getTargets().forEach(function(t){
         var pos = saved[t.key];
-        if (!pos) return;
+        if (!pos || typeof pos.leftPct !== 'number' || typeof pos.topPx !== 'number') return;
         makeFixed(t.node);
         // Prefer the pixel offset (see persistTarget below) — a raw px value
         // on a position:fixed element is never recomputed against the
         // viewport, so it can't drift. Percentages are kept only as a
         // fallback for layouts saved before this fix.
-        if (typeof pos.leftPx === 'number' && typeof pos.topPx === 'number') {
-            setImportant(t.node, 'left', pos.leftPx + 'px');
-            setImportant(t.node, 'top',  pos.topPx + 'px');
-        } else {
-            setImportant(t.node, 'left', pos.leftPct + '%');
-            setImportant(t.node, 'top',  pos.topPct + '%');
-        }
+        var w = docWidth();
+        var left = Math.max(0, Math.min(pos.leftPct / 100 * w, w - 24));
+        var top  = Math.max(0, Math.min(pos.topPx, docHeight() - 24));
+        setImportant(t.node, 'left', left + 'px');
+        setImportant(t.node, 'top',  top + 'px');
         setNodeTransform(t.node, pos.scale || 1);
     });
 }
 
 function resetHudPositions(){
-    try { localStorage.removeItem('rt_hud_pos'); } catch(e){}
-    getTargets().forEach(function(t){
-        var n = t.node;
-        if (n.dataset.rtOrigStyle !== undefined) {
-            restoreOriginalParent(n);
-            if (n.dataset.rtOrigStyle === '') n.removeAttribute('style');
-            else n.setAttribute('style', n.dataset.rtOrigStyle);
-            delete n.dataset.rtOrigStyle;
-        }
-        delete n.dataset.rtScale;
-    });
+    try { localStorage.removeItem(hudStorageKey()); localStorage.removeItem('rt_hud_pos'); } catch(e){}
+    getTargets().forEach(function(t){ restoreNode(t.node); });
     if (editMode) positionAllHandles();
     pushHistory();
     showToast('↺ Layout reset to normal');
@@ -4003,7 +4019,7 @@ function resetHudPositions(){
    currently placed and shows the toast as visible proof it worked. */
 function persistTarget(t){
     var n = t.node;
-    if (getComputedStyle(n).position !== 'fixed') return;
+    if (!n.classList.contains('rt-hud-moved')) return;
     var rect = n.getBoundingClientRect();
     var scale = parseFloat(n.dataset.rtScale) || 1;
     var saved = loadHudPositions();
@@ -4015,13 +4031,11 @@ function persistTarget(t){
     // is exactly what made a "fixed" element visibly creep while scrolling.
     // leftPct/topPct are kept only so older saved layouts still load.
     saved[t.key] = {
-        leftPx:  rect.left,
-        topPx:   rect.top,
-        leftPct: (rect.left / window.innerWidth) * 100,
-        topPct:  (rect.top  / window.innerHeight) * 100,
+        leftPct: ((rect.left + window.pageXOffset) / docWidth()) * 100,
+        topPx:   rect.top + window.pageYOffset,
         scale:   scale
     };
-    try { localStorage.setItem('rt_hud_pos', JSON.stringify(saved)); } catch(e){}
+    try { localStorage.setItem(hudStorageKey(), JSON.stringify(saved)); } catch(e){}
 }
 
 function saveLayout(){
@@ -4139,18 +4153,20 @@ function createShapeHandle(t){
 
 function startMove(t, e){
     var rect = t.node.getBoundingClientRect();
+    var oL = rect.left + window.pageXOffset, oT = rect.top + window.pageYOffset;
     makeFixed(t.node);
-    setImportant(t.node, 'left', rect.left + 'px');
-    setImportant(t.node, 'top',  rect.top + 'px');
+    setImportant(t.node, 'left', oL + 'px');
+    setImportant(t.node, 'top',  oT + 'px');
     if (!t.node.dataset.rtScale) setNodeTransform(t.node, 1);
-    dragInfo = { t: t, startX: e.clientX, startY: e.clientY, origLeft: rect.left, origTop: rect.top };
+    dragInfo = { t: t, startX: e.clientX, startY: e.clientY, origLeft: oL, origTop: oT,
+                 startSX: window.pageXOffset, startSY: window.pageYOffset };
 }
 function startResize(t, e){
     // Make sure it's already free-floating before scaling — lets you grab
     // the resize dot first, without needing to move the element first.
     var rect = t.node.getBoundingClientRect();
     makeFixed(t.node);
-    if (!t.node.style.left) { setImportant(t.node, 'left', rect.left + 'px'); setImportant(t.node, 'top', rect.top + 'px'); }
+    if (!t.node.style.left) { setImportant(t.node, 'left', (rect.left + window.pageXOffset) + 'px'); setImportant(t.node, 'top', (rect.top + window.pageYOffset) + 'px'); }
     var startScale = parseFloat(t.node.dataset.rtScale) || 1;
     resizeInfo = { t: t, startX: e.clientX, startY: e.clientY, startScale: startScale };
 }
@@ -4168,10 +4184,10 @@ function positionAllHandles(){ getTargets().forEach(positionHandle); }
 document.addEventListener('pointermove', function(e){
     if (dragInfo) {
         var n = dragInfo.t.node;
-        var dx = e.clientX - dragInfo.startX;
-        var dy = e.clientY - dragInfo.startY;
-        var newLeft = Math.max(-n.offsetWidth*0.3, Math.min(dragInfo.origLeft + dx, window.innerWidth - n.offsetWidth*0.5));
-        var newTop  = Math.max(0, Math.min(dragInfo.origTop + dy, window.innerHeight - 24));
+        var dx = e.clientX - dragInfo.startX + (window.pageXOffset - dragInfo.startSX);
+        var dy = e.clientY - dragInfo.startY + (window.pageYOffset - dragInfo.startSY);
+        var newLeft = Math.max(-n.offsetWidth*0.3, Math.min(dragInfo.origLeft + dx, docWidth() - n.offsetWidth*0.5));
+        var newTop  = Math.max(0, Math.min(dragInfo.origTop + dy, docHeight() - 24));
         setImportant(n, 'left', newLeft + 'px');
         setImportant(n, 'top',  newTop + 'px');
         positionHandle(dragInfo.t);
@@ -4189,7 +4205,24 @@ document.addEventListener('pointerup', function(){
     if (dragInfo)   { persistTarget(dragInfo.t);   dragInfo   = null; pushHistory(); }
     if (resizeInfo) { persistTarget(resizeInfo.t); resizeInfo = null; pushHistory(); }
 });
-window.addEventListener('resize', function(){ if (editMode) positionAllHandles(); });
+var _handleRaf = 0;
+function schedHandles(){
+    if (_handleRaf) return;
+    _handleRaf = requestAnimationFrame(function(){ _handleRaf = 0; if (editMode) positionAllHandles(); });
+}
+window.addEventListener('scroll', function(){ if (editMode) schedHandles(); }, { passive: true });
+var _lastBucket = hudBucket(), _rzTimer = 0;
+window.addEventListener('resize', function(){
+    if (editMode) { schedHandles(); return; }
+    clearTimeout(_rzTimer);
+    _rzTimer = setTimeout(function(){
+        // Rotating a phone or resizing the window: drop the old placement and
+        // re-apply the layout saved for the new screen-size bucket.
+        getTargets().forEach(function(t){ restoreNode(t.node); });
+        _lastBucket = hudBucket();
+        applySavedHudPositions();
+    }, 200);
+});
 
 
 /* While in edit mode, dragging/resizing a live button (GAME, EASY, the
@@ -4210,7 +4243,7 @@ function snapshotAll(){
     var snap = {};
     getTargets().forEach(function(t){
         var n = t.node;
-        if (getComputedStyle(n).position === 'fixed') {
+        if (n.classList.contains('rt-hud-moved')) {
             snap[t.key] = { left: n.style.left, top: n.style.top, scale: parseFloat(n.dataset.rtScale) || 1 };
         }
     });
@@ -4231,11 +4264,7 @@ function applySnapshot(snap){
             setImportant(n, 'top',  s.top);
             setNodeTransform(n, s.scale);
         } else if (n.dataset.rtOrigStyle !== undefined) {
-            restoreOriginalParent(n);
-            if (n.dataset.rtOrigStyle === '') n.removeAttribute('style');
-            else n.setAttribute('style', n.dataset.rtOrigStyle);
-            delete n.dataset.rtOrigStyle;
-            delete n.dataset.rtScale;
+            restoreNode(n);
         }
     });
     if (editMode) positionAllHandles();
@@ -4557,8 +4586,8 @@ function buildPanel(){
             '<div id="rt-custom-panel">' +
                 '<button class="rt-cp-row rt-cp-reset" id="rt-cp-reset-btn">RESET LAYOUT</button>' +
                 '<div class="rt-cp-row-nav">' +
-                    '<button class="rt-cp-nav-btn" id="rt-cp-back-btn" title="Undo">&laquo;</button>' +
-                    '<button class="rt-cp-nav-btn" id="rt-cp-fwd-btn" title="Redo">&raquo;</button>' +
+                    '<button class="rt-cp-nav-btn" id="rt-cp-back-btn" title="Undo" aria-label="Undo last change">&laquo;</button>' +
+                    '<button class="rt-cp-nav-btn" id="rt-cp-fwd-btn" title="Redo" aria-label="Redo change">&raquo;</button>' +
                 '</div>' +
                 '<button class="rt-cp-row rt-cp-save" id="rt-cp-save-btn">SAVE LAYOUT</button>' +
             '</div>'
@@ -4570,8 +4599,19 @@ function buildPanel(){
     }
 }
 
+/* Hide customized elements while the result panel is showing. */
+function watchResultPanel(){
+    var r = document.getElementById('result');
+    if (!r || !window.MutationObserver) return;
+    var root = document.documentElement;
+    function sync(){ root.classList.toggle('rt-result-open', r.classList.contains('visible')); }
+    new MutationObserver(sync).observe(r, { attributes: true, attributeFilter: ['class', 'style'] });
+    sync();
+}
+
 function init(){
     guardFixedPositioning();
+    watchResultPanel();
     applySavedHudPositions();
     applyLiveWpmShape(getSavedLiveWpmShape(), false);
     buildPanel();
