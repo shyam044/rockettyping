@@ -166,6 +166,24 @@
       opacity: 0.9;
     }
 
+    /* ── Mediavine left sidebar (below the site logo) ── */
+    #rt-sidebar { display: none; }
+    /* 300px ad + gutters + 920px game ≈ 1280px */
+    @media (min-width: 1280px) {
+      #app { padding-left: 340px; }     /* game sits right next to the ad */
+      #app #race-track-scale-wrap,
+      #app #typing-zone { margin-left: 2px; margin-right: auto; }  /* hug the sidebar */
+      #rt-sidebar {
+        display: block;
+        position: absolute;
+        top: 140px;     /* just below the logo */
+        left: 20px;
+        width: 300px;
+        min-height: 600px;
+        z-index: 5;
+      }
+    }
+
     /* Wrapper that uniformly scales the fixed 920x420 race-track stage down
        to fit any viewport, so all internal pixel-based rocket/HUD math
        (which is calibrated against the 920x420 design) stays correct. */
@@ -1163,10 +1181,12 @@
       align-items: center;
       width: 100%;
       max-width: 740px;
-      padding: 20px 36px;
+      padding: 20px 36px 140px;   /* bottom room so the sticky footer ad never covers RACE AGAIN */
       gap: 0;
       max-height: 100vh;
+      max-height: 100dvh;
       overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
     }
 
     #result-inner::-webkit-scrollbar {
@@ -2121,7 +2141,7 @@
       /* ── xl / lg: tighten side padding a touch, everything else already fluid ── */
       @media (max-width:1024px) {
         #result-inner {
-          padding: 16px 20px;
+          padding: 16px 20px 140px;
         }
       }
 
@@ -2242,7 +2262,7 @@
         }
 
         #result-inner {
-          padding: 14px 12px;
+          padding: 14px 12px 140px;
         }
 
         #result-header {
@@ -2513,6 +2533,9 @@
 
     <!-- ══ TOPNAV — shows username + logout when logged in ══ -->
     <div id="game-topnav"></div>
+
+    <!-- Mediavine sidebar ad slot (Journey → Sidebar Selector = #rt-sidebar) -->
+    <aside id="rt-sidebar" aria-label="Advertisement"></aside>
 
     <img id="logo" src="images/rocket-typing-logo.webp" alt="Rocket Typing Logo">
     <div id="race-track-scale-wrap">
