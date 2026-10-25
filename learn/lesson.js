@@ -446,30 +446,7 @@ window.RocketLesson = (function () {
 
   /* ── Init ────────────────────────────────────────────────────── */
   function kmInit() {
-    try {
-      var saved = localStorage.getItem('rt_keymap');
-      if (saved === '0') {
-        keymapOn = false;
-        var sc = document.getElementById('km-collapsible');
-        var pl = document.getElementById('km-pill');
-        var ap = document.getElementById('app');
-        if (sc) sc.classList.add('km-hidden');
-        if (pl) { pl.textContent = 'OFF'; pl.className = 'km-pill off'; }
-        if (ap) ap.classList.add('km-compact');
-      }
-    } catch (e) { }
-    try {
-      /* Default is ON (beginners benefit from hearing each keystroke).
-         Only switch OFF if the user explicitly muted it on a previous
-         visit (saved value === '0'). Any other value (missing, or '1')
-         leaves it on, matching the markup's default. */
-      if (localStorage.getItem('rt_keysound') === '0') {
-        soundOn = false;
-        var si = document.getElementById('km-sound-icon'), sp = document.getElementById('km-sound-pill');
-        if (si) si.textContent = '🔇';
-        if (sp) { sp.textContent = 'OFF'; sp.className = 'km-pill off'; }
-      }
-    } catch (e) { }
+    /* Key map and sound are always on (no toggles). */
 
     // Reserve the correct on-screen height immediately (the #km-kb stage
     // has a fixed native layout box as soon as the CSS above applies,
@@ -503,12 +480,6 @@ window.RocketLesson = (function () {
       pressKey(e.code);
     });
 
-    // Mouse down/up
-    document.addEventListener('mousedown', function (e) { handleMouseDown(e.button); });
-    document.addEventListener('mouseup', function () { handleMouseUp(); });
-    // Prevent context menu from stealing mouse-up on right-click
-    document.addEventListener('contextmenu', function () { handleMouseUp(); });
-
     window.addEventListener('resize', scaleStage);
     if (typeof ResizeObserver !== 'undefined') {
       var outer = document.getElementById('km-stage-outer');
@@ -529,7 +500,7 @@ window.RocketLesson = (function () {
     + '<path d="M15.7 15.5l2.8 1.2-1-3.3z"/>'
     + '</svg>';
 
-  var KEYMAP_WIDGET_HTML = '<div id="km-center-row" style="display:flex;justify-content:center;width:100%;">\n<div id="km-wrap">\n    <div id="km-scene">\n        <div id="km-header">\n            <div id="km-toggle-row">\n                <button id="km-toggle-btn" type="button" onclick="kmToggle()" title="Toggle keymap visualization">\n                    <span>⌨️</span>\n                    <span>KEY MAP</span>\n                    <span id="km-pill" class="km-pill on">ON</span>\n                </button>\n            </div>\n            <button id="km-sound-btn" type="button" onclick="kmSoundToggle()" title="Toggle keyboard sound">\n                <span id="km-sound-icon">🔊</span>\n                <span> SOUND </span>\n                <span id="km-sound-pill" class="km-pill on">ON</span>\n            </button>\n        </div>\n        <div id="km-collapsible">\n            <div id="km-kb-col">\n                <div id="km-stage-outer">\n                    <div id="km-stage-scaler">\n                        <div id="km-kb"></div>\n                    </div>\n                </div>\n                <div id="km-mouse-wrap">\n                    <svg id="km-mouse-svg" viewBox="0 0 70 110" xmlns="http://www.w3.org/2000/svg">\n                        <path d="M 8 44 Q 8 12 35 8 Q 62 12 62 44 L 62 86 Q 62 104 35 104 Q 8 104 8 86 Z" fill="#1A2230" stroke="#2e3f52" stroke-width="1.5"/>\n                        <path id="km-mlbtn" d="M 9 42 Q 9 14 34 10 L 34 52 L 9 52 Z" fill="#21293A" stroke="#2e3f52" stroke-width="1.2" class="km-mbtn"/>\n                        <path id="km-mrbtn" d="M 61 42 Q 61 14 36 10 L 36 52 L 61 52 Z" fill="#21293A" stroke="#2e3f52" stroke-width="1.2" class="km-mbtn"/>\n                        <line x1="35" y1="10" x2="35" y2="52" stroke="#2e3f52" stroke-width="1.5"/>\n                        <rect id="km-mwheel" x="30" y="20" width="10" height="20" rx="5" fill="#2e3f52"/>\n                        <rect x="31" y="21" width="4" height="18" rx="2" fill="rgba(255,255,255,0.07)"/>\n                        <ellipse cx="35" cy="86" rx="24" ry="8" fill="#16202f" opacity="0.5"/>\n                        <circle id="km-lclick-dot" cx="22" cy="34" r="4" fill="#e2b714" opacity="0"/>\n                        <circle id="km-rclick-dot" cx="48" cy="34" r="4" fill="#00e6cc" opacity="0"/>\n                        <text x="35" y="97" text-anchor="middle" font-size="7" fill="#3a4a5a" font-family="Roboto Mono,monospace" letter-spacing="0.5">MOUSE</text>\n                    </svg>\n                    <p>Left / Right click</p>\n                </div>\n            </div>\n        </div>\n    </div>\n</div>\n</div>';
+  var KEYMAP_WIDGET_HTML = '<div id="km-center-row" style="display:flex;justify-content:center;width:100%;">\n<div id="km-wrap">\n    <div id="km-scene">\n        <div id="km-collapsible">\n            <div id="km-kb-col">\n                <div id="km-stage-outer">\n                    <div id="km-stage-scaler">\n                        <div id="km-kb"></div>\n                    </div>\n                </div>\n                \n            </div>\n        </div>\n    </div>\n</div>\n</div>';
 
   function buildMarkup(cfg) {
     var rocketSlots = '';
