@@ -956,7 +956,7 @@ window.RocketLesson = (function () {
        this has almost always already resolved, so the "next lesson"
        button is ready before it's needed. manifestUrl defaults to the
        shared lessons.json next to lesson.js/lesson.css. */
-    lessonsManifestPromise = fetch(cfg.manifestUrl || 'lessons.json')
+    lessonsManifestPromise = fetch(cfg.manifestUrl || 'lessons.json', { cache: 'no-cache' })
       .then(function (res) { return res.ok ? res.json() : null; })
       .catch(function () { return null; });
 
