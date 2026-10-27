@@ -167,7 +167,7 @@
     <link rel="icon" type="image/webp" sizes="16x16" href="/images/favicon-16.webp">
     <link rel="apple-touch-icon" href="/images/logo-192.webp">
     <link rel="manifest" href="/site.webmanifest">
-    <meta name="theme-color" content="#323437">
+    <meta name="theme-color" content="#0b1929">
     <!-- Security headers via _headers / .htaccess: X-Frame-Options, HSTS, COOP, Trusted-Types -->
     <meta http-equiv="Content-Security-Policy" content="object-src 'none'; base-uri 'self'; form-action 'self' https://www.rockettyping.com https://*.google.com https://googleads.g.doubleclick.net https://*.googlesyndication.com; frame-ancestors 'self'; upgrade-insecure-requests;">
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
@@ -194,8 +194,8 @@
     <link rel="dns-prefetch" href="https://flagcdn.com">
     <!-- Preload critical assets: logo image + main stylesheet -->
     <link rel="preload" as="image" href="/images/rocket-typing-logo.webp" fetchpriority="high">
-    <link rel="preload" href="styles.css?v=20261020" as="style">
-    <link rel="preload" href="responsive.css?v=20261020" as="style">
+    <link rel="preload" href="styles.css?v=20261027" as="style">
+    <link rel="preload" href="responsive.css?v=20261027" as="style">
     <!-- ═══════════════════════════════════════════════════════════════════
          INLINE CRITICAL CSS  — rendered before any external stylesheet.
          RULE: every layout-affecting property that also exists in styles.css
@@ -319,8 +319,8 @@
          (#app margin 20px->0, #words top 253px->177px, header 27px->7px), so the whole page
          jumped ~75px = ~0.14 CLS on every load. Loading them normally means the first paint
          already uses the final geometry, so there is no shift. -->
-    <link rel="stylesheet" href="styles.css?v=20261020">
-    <link rel="stylesheet" href="responsive.css?v=20261020">
+    <link rel="stylesheet" href="styles.css?v=20261027">
+    <link rel="stylesheet" href="responsive.css?v=20261027">
     <!-- Font Awesome removed: the whole 6.6.0 icon library (100+ KB + an extra
          third-party connection) was being loaded on this page to render exactly
          one icon (the X/Twitter share glyph). Replaced with a 300-byte inline
@@ -898,13 +898,12 @@ body.test-running #app #page-title {
 :root{
     --km-stage-w: 610px;
     --km-stage-h: 270px;
-    --km-mouse-w: 34px;
     --km-gap: 12px;
     /* Full content width = keyboard/hands stage + gap + mouse. #km-wrap is
        capped at this (not just --km-stage-w) so the mouse — and the keys
        on both edges of the keyboard — always have room and never get
        clipped by #km-scene's overflow:hidden. */
-    --km-total-w: calc(var(--km-stage-w) + var(--km-gap) + var(--km-mouse-w));
+    --km-total-w: var(--km-stage-w);
 }
 
 /* ── Scene Container ── */
@@ -956,6 +955,8 @@ body.test-running #app #page-title {
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-wrap: wrap;
+    gap: 8px 12px;
     min-height: 30px;
     margin-bottom: 8px;
     transition: min-height 0.3s ease, margin-bottom 0.3s ease;
@@ -973,10 +974,8 @@ body.test-running #app #page-title {
     margin-bottom: -35px;
 }
 #km-sound-btn {
-    position: absolute;
-    right: 0;
-    top: 50%;
-    transform: translateY(-50%);
+    position: static;
+    flex: 0 0 auto;
     display: inline-flex;
     align-items: center;
     gap: 6px;
@@ -1135,52 +1134,9 @@ body.test-running #app #page-title {
 .km-palm.km-fl { fill: rgba(226,183,20,0.07); stroke: rgba(226,183,20,0.35); }
 .km-palm.km-fr { fill: rgba(0,230,204,0.07); stroke: rgba(0,230,204,0.32); }
 
-/* ── Mouse ── */
-#km-mouse-wrap {
-    /* flex:0 0 <width> — never grows, never shrinks, so it can't get
-       squeezed/clipped when space is tight (the keyboard stage is the
-       one that absorbs width changes, via its own JS scaling). */
-    flex: 0 0 var(--km-mouse-w);
-    width: var(--km-mouse-w);
-    padding-bottom: 2px;
-}
-#km-mouse-svg {
-    width: 100%;
-    height: auto;
-    display: block;
-    filter: drop-shadow(0 4px 10px rgba(0,0,0,0.5));
-}
-.km-mbtn { transition: fill 0.08s ease, filter 0.08s ease; }
-#km-mouse-svg.km-lc #km-mlbtn {
-    fill: rgba(226,183,20,0.5) !important;
-    filter: drop-shadow(0 0 5px #e2b714);
-}
-#km-mouse-svg.km-rc #km-mrbtn {
-    fill: rgba(0,230,204,0.5) !important;
-    filter: drop-shadow(0 0 5px #00e6cc);
-}
-#km-mouse-svg.km-mc #km-mwheel { fill: #9b72cf !important; }
-#km-mouse-wrap p {
-    text-align: center;
-    font-family: 'Roboto Mono', monospace;
-    font-size: 8px;
-    color: #444;
-    margin: 3px 0 0;
-    letter-spacing: 0.6px;
-}
-
-/* ── Responsive ──
-   The scaled stage already shrinks fluidly with its container (JS handles
-   this on load + resize) — only the mouse (not part of the JS-scaled
-   stage) needs explicit breakpoints. --km-mouse-w / --km-gap are updated
-   here too so #km-wrap's --km-total-w cap (stage + gap + mouse) stays
-   accurate at every screen size and nothing gets clipped. */
-@media (max-width: 750px) {
-    :root{ --km-mouse-w: 28px; }
-}
+/* -- Responsive: the keyboard/hands stage scales fluidly with its container (JS, on load + resize); --km-gap adjusts on small phones. -- */
 @media (max-width: 520px) {
-    :root{ --km-mouse-w: 22px; --km-gap: 8px; }
-    #km-mouse-wrap p { display: none; }
+    :root{ --km-gap: 8px; }
 }
 
 /* ── Mobile/tablet stacking order ──
@@ -1348,14 +1304,14 @@ html.test-running #rt-buy::after { animation: none; }
 ═══════════════════════════════════════════════════════════════ -->
 <style id="rt-theme-vars">
 :root{
-    --rt-bg:#0d1117; --rt-bg-rgb:13,17,23;
-    --rt-glow1:rgba(88,166,255,0.15); --rt-glow2:rgba(188,140,255,0.15);
-    --rt-panel-bg:rgba(13,17,23,0.85); --rt-panel-glow:rgba(88,166,255,0.3);
-    --rt-main:#58a6ff; --rt-main-rgb:88,166,255;
-    --rt-main2:#bc8cff; --rt-main2-rgb:188,140,255;
-    --rt-text:#c9d1d9; --rt-sub:#8b949e; --rt-error:#f85149;
-    --rt-caret:#56d364; --rt-caret-rgb:86,211,100;
-    --rt-bodytext:#c9d1d9;
+    --rt-bg:#0b1929; --rt-bg-rgb:11,25,41;
+    --rt-glow1:rgba(100,181,246,0.15); --rt-glow2:rgba(66,165,245,0.15);
+    --rt-panel-bg:rgba(11,25,41,0.85); --rt-panel-glow:rgba(100,181,246,0.3);
+    --rt-main:#64b5f6; --rt-main-rgb:100,181,246;
+    --rt-main2:#42a5f5; --rt-main2-rgb:66,165,245;
+    --rt-text:#e3f2fd; --rt-sub:#546e7a; --rt-error:#ef5350;
+    --rt-caret:#4fc3f7; --rt-caret-rgb:79,195,247;
+    --rt-bodytext:#64b5f6;
     --rt-font:'Roboto Mono', monospace;
 }
 html,body{background:var(--rt-bg) !important;color:var(--rt-bodytext) !important;}
@@ -1884,35 +1840,6 @@ html.rt-result-open .rt-hud-moved{visibility:hidden !important;pointer-events:no
                     </div>
                 </div>
 
-                <!-- Mouse SVG -->
-                <div id="km-mouse-wrap">
-                    <svg id="km-mouse-svg" viewBox="0 0 70 110" xmlns="http://www.w3.org/2000/svg">
-                        <!-- Mouse body -->
-                        <path d="M 8 44 Q 8 12 35 8 Q 62 12 62 44 L 62 86 Q 62 104 35 104 Q 8 104 8 86 Z"
-                              fill="#1A2230" stroke="#2e3f52" stroke-width="1.5"/>
-                        <!-- Left button -->
-                        <path id="km-mlbtn" d="M 9 42 Q 9 14 34 10 L 34 52 L 9 52 Z"
-                              fill="#21293A" stroke="#2e3f52" stroke-width="1.2" class="km-mbtn"/>
-                        <!-- Right button -->
-                        <path id="km-mrbtn" d="M 61 42 Q 61 14 36 10 L 36 52 L 61 52 Z"
-                              fill="#21293A" stroke="#2e3f52" stroke-width="1.2" class="km-mbtn"/>
-                        <!-- Divider line -->
-                        <line x1="35" y1="10" x2="35" y2="52" stroke="#2e3f52" stroke-width="1.5"/>
-                        <!-- Scroll wheel -->
-                        <rect id="km-mwheel" x="30" y="20" width="10" height="20" rx="5" fill="#2e3f52"/>
-                        <!-- Wheel shine -->
-                        <rect x="31" y="21" width="4" height="18" rx="2" fill="rgba(255,255,255,0.07)"/>
-                        <!-- Bottom taper -->
-                        <ellipse cx="35" cy="86" rx="24" ry="8" fill="#16202f" opacity="0.5"/>
-                        <!-- Left click dot indicator -->
-                        <circle id="km-lclick-dot" cx="22" cy="34" r="4" fill="#e2b714" opacity="0"/>
-                        <!-- Right click dot indicator -->
-                        <circle id="km-rclick-dot" cx="48" cy="34" r="4" fill="#00e6cc" opacity="0"/>
-                        <!-- Mouse label -->
-                        <text x="35" y="97" text-anchor="middle" font-size="7" fill="#3a4a5a" font-family="Roboto Mono,monospace" letter-spacing="0.5">MOUSE</text>
-                    </svg>
-                    <p>Left / Right click</p>
-                </div>
             </div><!-- #km-kb-col -->
         </div><!-- #km-collapsible -->
     </div><!-- #km-scene -->
@@ -2421,7 +2348,7 @@ html.rt-result-open .rt-hud-moved{visibility:hidden !important;pointer-events:no
     <button type="button" id="zen-finish-btn" title="Finish and see your results (or press Esc)">✓ Finish</button>
 
     
-    <footer id="footer" class="mv-footer">
+    <footer id="footer">
         <div id="footer-inner">
             <nav id="footer-nav" aria-label="Site">
                 <a href="/about">About</a>
@@ -2718,7 +2645,7 @@ window.deleteUser = deleteUser;
         })();
     </script>
     <script src="vocabulary.js?v=3"></script>
-    <script src="app-core.js?v=8"></script>
+    <script src="app-core.js?v=20261027"></script>
     <script>
 // Handle ?openAuth=login and ?openAuth=signup from game.html and other pages
 // BUT only open modal if user is NOT logged in + clear the URL so reload doesn't re-trigger
@@ -3102,33 +3029,6 @@ function pressKey(code){
     returnHome(fid);
 }
 
-/* ── Mouse click animations ─────────────────────────────────── */
-function handleMouseDown(btn){
-    if(!keymapOn) return;
-    var svg = document.getElementById('km-mouse-svg');
-    if(!svg) return;
-    var lDot = document.getElementById('km-lclick-dot');
-    var rDot = document.getElementById('km-rclick-dot');
-    if(btn===0){
-        svg.classList.add('km-lc');
-        if(lDot){ lDot.style.opacity='1'; lDot.style.transition='opacity 0.05s'; }
-    } else if(btn===2){
-        svg.classList.add('km-rc');
-        if(rDot){ rDot.style.opacity='1'; rDot.style.transition='opacity 0.05s'; }
-    } else {
-        svg.classList.add('km-mc');
-    }
-}
-function handleMouseUp(){
-    var svg = document.getElementById('km-mouse-svg');
-    if(!svg) return;
-    svg.classList.remove('km-lc','km-rc','km-mc');
-    var lDot = document.getElementById('km-lclick-dot');
-    var rDot = document.getElementById('km-rclick-dot');
-    if(lDot){ lDot.style.opacity='0'; }
-    if(rDot){ rDot.style.opacity='0'; }
-}
-
 /* ── Sound Engine ───────────────────────────────────────────── */
 var soundOn = false; /* default OFF */
 var _audioCtx = null;
@@ -3251,11 +3151,6 @@ function kmInit(){
         pressKey(e.code);
     });
 
-    // Mouse down/up
-    document.addEventListener('mousedown', function(e){ handleMouseDown(e.button); });
-    document.addEventListener('mouseup',   function(){   handleMouseUp(); });
-    // Prevent context menu from stealing mouse-up on right-click
-    document.addEventListener('contextmenu', function(){ handleMouseUp(); });
 
     window.addEventListener('resize', scaleStage);
     if(typeof ResizeObserver !== 'undefined'){
@@ -3499,9 +3394,10 @@ function fmtDate(ts) {
 /* ── Theme presets ──────────────────────────────────────────────
    Each theme only needs 6 colors — the CSS variables + override
    rules in <head> do the rest. First entry is the site's DEFAULT
-   palette (GitHub Dark); "NORMAL" always re-applies exactly this one. */
+   palette (Midnight Blue); "NORMAL" always re-applies exactly this one. */
 var THEMES = [
-    { name:'GitHub Dark (Default)', bg:'#0d1117', main:'#58a6ff', main2:'#bc8cff', text:'#c9d1d9', sub:'#8b949e', error:'#f85149', caret:'#56d364', bodytext:'#c9d1d9' },
+    { name:'Midnight Blue (Default)',  bg:'#0b1929', main:'#64b5f6', main2:'#42a5f5', text:'#e3f2fd', sub:'#546e7a', error:'#ef5350', caret:'#4fc3f7', bodytext:'#64b5f6' },
+    { name:'GitHub Dark', bg:'#0d1117', main:'#58a6ff', main2:'#bc8cff', text:'#c9d1d9', sub:'#8b949e', error:'#f85149', caret:'#56d364', bodytext:'#c9d1d9' },
     { name:'Dracula',        bg:'#282a36', main:'#bd93f9', main2:'#ff79c6', text:'#f8f8f2', sub:'#6272a4', error:'#ff5555', caret:'#50fa7b', bodytext:'#f8f8f2' },
     { name:'Nord',           bg:'#2e3440', main:'#88c0d0', main2:'#81a1c1', text:'#eceff4', sub:'#4c566a', error:'#bf616a', caret:'#a3be8c', bodytext:'#d8dee9' },
     { name:'Gruvbox Dark',   bg:'#282828', main:'#fabd2f', main2:'#fe8019', text:'#ebdbb2', sub:'#928374', error:'#fb4934', caret:'#b8bb26', bodytext:'#ebdbb2' },
@@ -3527,7 +3423,6 @@ var THEMES = [
     { name:'Mint',           bg:'#10201c', main:'#52d1a4', main2:'#2ec4b6', text:'#eafff5', sub:'#4a7a68', error:'#ff6b6b', caret:'#a0f0d0', bodytext:'#52d1a4' },
     { name:'Graphite Mono',  bg:'#1a1a1a', main:'#cfcfcf', main2:'#9e9e9e', text:'#f0f0f0', sub:'#6e6e6e', error:'#ff5555', caret:'#ffffff', bodytext:'#cfcfcf' },
     { name:'Paper',          bg:'#f5f5f0', main:'#333333', main2:'#555555', text:'#1a1a1a', sub:'#9e9e9e', error:'#d32f2f', caret:'#1a73e8', bodytext:'#333333' },
-    { name:'Midnight Blue',  bg:'#0b1929', main:'#64b5f6', main2:'#42a5f5', text:'#e3f2fd', sub:'#546e7a', error:'#ef5350', caret:'#4fc3f7', bodytext:'#64b5f6' },
     { name:'Material Dark',  bg:'#212121', main:'#82aaff', main2:'#c792ea', text:'#eeffff', sub:'#616161', error:'#f07178', caret:'#c3e88d', bodytext:'#eeffff' },
     { name:'Material Light', bg:'#fafafa', main:'#6182b8', main2:'#7c4dff', text:'#212121', sub:'#90a4ae', error:'#e53935', caret:'#91b859', bodytext:'#212121' },
     { name:'Rocket Gold',    bg:'#0a0a23', main:'#e2b714', main2:'#ff9900', text:'#ffffff', sub:'#646669', error:'#da3333', caret:'#00e6cc', bodytext:'#ffd700' },
@@ -4427,7 +4322,7 @@ function buildPanel(){
         sw.addEventListener('click', function(){ applyTheme(t); });
         grid.appendChild(sw);
     });
-    document.getElementById('rt-color-normal').addEventListener('click', function(){ applyTheme(THEMES[0]); });
+    document.getElementById('rt-color-normal').addEventListener('click', function(){ applyTheme(THEMES.filter(function(t){ return t.name.indexOf('Midnight Blue') === 0; })[0] || THEMES[0]); });
 
     // ── Background (video/image) grid ──
     // Two-step choice: pick the type (Video or Image) with the toggle,
