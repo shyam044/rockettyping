@@ -446,6 +446,16 @@ let config = {
         }
 
         input.addEventListener('keydown', handleKeydown);
+        // After a test ends the typing input is blurred, so Space would fall through
+        // to the browser and scroll the page down. Block that while the result is shown
+        // (form fields, buttons and links keep their normal Space behaviour).
+        document.addEventListener('keydown', function (e) {
+            if (e.key !== ' ' && e.code !== 'Space') return;
+            if (!testEnded) return;
+            var t = e.target, tag = t && t.tagName;
+            if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || tag === 'BUTTON' || tag === 'A' || (t && t.isContentEditable)) return;
+            e.preventDefault();
+        });
         restartBtn.addEventListener('click', resetTest);
 
         // Tab + Enter (or Enter alone) from result page → go back to test (works even when input is blurred)
@@ -797,8 +807,11 @@ let config = {
         // version uses the JS-driven stop-and-retarget tween instead.
         function _easeOutCubic(t) { return 1 - Math.pow(1 - t, 3); }
         function _easeInOutSine(t) { return -(Math.cos(Math.PI * t) - 1) / 2; }
+        let _frameTs = 0;   // rAF timestamp of the caret frame currently being processed
         function _makeTween() { return { current: 0, from: 0, to: 0, start: 0, duration: 0, raf: null }; }
+        let _caretSnap = false;   // true only while the caret is jumped to the end of the final word
         function _tween(state, to, duration, apply, easeFn) {
+            if (_caretSnap) duration = 0;
             easeFn = easeFn || _easeOutCubic;
             const from = state.current;
             if (Math.abs(to - from) < 0.5) {
@@ -811,11 +824,14 @@ let config = {
             }
             state.from = from;
             state.to = to;
-            state.start = performance.now();
+            // Start on the frame timestamp of the rAF that is already running the
+            // caret update, so the glide begins in THIS frame instead of one frame later.
+            const _now = _frameTs || performance.now();
+            state.start = _now;
             state.duration = duration;
             if (state.raf) return; // loop already running — it reads the updated from/to/start next frame
             function step(t) {
-                const elapsed = t - state.start;
+                const elapsed = Math.max(0, t - state.start);
                 const p = Math.min(1, state.duration > 0 ? elapsed / state.duration : 1);
                 const eased = easeFn(p);
                 state.current = state.from + (state.to - state.from) * eased;
@@ -828,7 +844,8 @@ let config = {
                     state.raf = null;
                 }
             }
-            state.raf = requestAnimationFrame(step);
+            state.raf = true;   // mark running so a re-entrant retarget cannot start a second loop
+            step(_now);         // first step runs immediately (progress 0), then continues per frame
         }
         const _vScrollTween = _makeTween();  // drives #words.scrollTop (modes 2/3)
         const _tapeTween = _makeTween();     // drives #words-track translateX (mode 1)
@@ -944,10 +961,11 @@ let config = {
         let _caretDirty = false;
         let _caretRAFRunning = false;
 
-        function _caretLoop() {
+        function _caretLoop(ts) {
             if (_caretDirty) {
                 _caretDirty = false;
-                _updateCaretNow();
+                _frameTs = ts || 0;
+                try { _updateCaretNow(); } finally { _frameTs = 0; }
             }
             _caretRAFRunning = _caretDirty; // keep loop alive only if more work pending
             if (_caretRAFRunning) requestAnimationFrame(_caretLoop);
@@ -1285,6 +1303,18 @@ if (!testActive && !testEnded && e.key.length === 1) {
                 e.preventDefault();
             }
         }
+        // Last letter of the last word: the caret / tape jumps to the end of the word, the test
+        // ends (stats are taken right now) and the result shows after ~50 ms.
+        function _finishAfterCaret() {
+            // Jump (no animation) the caret / tape to the very end of the last word and
+            // let it paint for ~3 frames (about 50 ms) before the result replaces the text.
+            _caretSnap = true;
+            try { caret.style.transition = 'none'; _updateCaretNow(); void caret.offsetWidth; } catch (_e) {}
+            _caretSnap = false;
+            requestAnimationFrame(function () { try { caret.style.transition = ''; } catch (_e) {} });
+            window._rtResultHoldMs = 50;
+            endTest();
+        }
         function typeLetter(key) {
             const word = words[currentWordIndex];
             let wordObj = typedWords[currentWordIndex];
@@ -1313,12 +1343,12 @@ if (!testActive && !testEnded && e.key.length === 1) {
                 if (config.mode === "words" &&
                     currentWordIndex === config.words - 1 &&
                     currentLetterIndex === words[currentWordIndex].length) {
-                    endTest();
+                    _finishAfterCaret();
                 }
                 if (config.mode === "quotes" &&
                     currentWordIndex === words.length - 1 &&
                     currentLetterIndex === words[currentWordIndex].length) {
-                    endTest();
+                    _finishAfterCaret();
                 }
             } else {
                 wordObj.extra.push(key);
@@ -1881,20 +1911,28 @@ if (!testActive && !testEnded && e.key.length === 1) {
             if (timeEl) timeEl.textContent = elapsedSecs;
             if (wordsEl) wordsEl.textContent = wordsTypedCount;
 
-            // Show result
-            resultDiv.style.display = 'block';
-            resultDiv.classList.add('visible');
-            document.documentElement.classList.add('rt-result-open'); // hides keymap + Musk/Elon panel behind the result
-            document.getElementById('main-header').style.display = 'none';
-            wordsDiv.style.display = 'none';
-            timerDiv.style.display = 'none';
-            // Show keymap toggle button once test is finished
-            var kmToggleRowEnd = document.getElementById('km-toggle-row');
-            if (kmToggleRowEnd) kmToggleRowEnd.classList.remove('km-toggle-hidden');
-            var kmSoundBtnEnd = document.getElementById('km-sound-btn');
-            if (kmSoundBtnEnd) kmSoundBtnEnd.classList.remove('km-sound-hidden');
-            var kmHeaderEnd = document.getElementById('km-header');
-            if (kmHeaderEnd) kmHeaderEnd.classList.remove('km-header-compact');
+            // Show result (deferred briefly only when the last word was just completed,
+            // so the caret/tape can finish its final glide first)
+            const _holdMs = window._rtResultHoldMs || 0;
+            window._rtResultHoldMs = 0;
+            const _showResultNow = function () {
+                if (!testEnded) return;   // a reset happened meanwhile -- do nothing
+                try { window.scrollTo(0, 0); } catch (_s) {}   // always show the result from the top
+                resultDiv.style.display = 'block';
+                resultDiv.classList.add('visible');
+                document.documentElement.classList.add('rt-result-open'); // hides keymap + Musk/Elon panel behind the result
+                document.getElementById('main-header').style.display = 'none';
+                wordsDiv.style.display = 'none';
+                timerDiv.style.display = 'none';
+                // Show keymap toggle button once test is finished
+                var kmToggleRowEnd = document.getElementById('km-toggle-row');
+                if (kmToggleRowEnd) kmToggleRowEnd.classList.remove('km-toggle-hidden');
+                var kmSoundBtnEnd = document.getElementById('km-sound-btn');
+                if (kmSoundBtnEnd) kmSoundBtnEnd.classList.remove('km-sound-hidden');
+                var kmHeaderEnd = document.getElementById('km-header');
+                if (kmHeaderEnd) kmHeaderEnd.classList.remove('km-header-compact');
+            };
+            if (_holdMs > 0) setTimeout(_showResultNow, _holdMs); else _showResultNow();
 
             // Count-up animations (super satisfying)
             setTimeout(() => {
