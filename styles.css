@@ -17,8 +17,8 @@ html, body {
 }
 
 body {
-    background: #0d1117;
-    color: #c9d1d9;
+    background: #0b1929;
+    color: #64b5f6;
     font-family: 'Roboto Mono', monospace;
     margin: 0;
     overflow: hidden;
@@ -399,6 +399,11 @@ body.typing-active #words .letter {
    characters can move to row 2 in the 2/3-line modes) would also wrap a
    long word onto multiple internal lines here, breaking tape mode's
    single-line design. */
+/* Tape mode: the caret never moves (the text glides under it), so it gets no
+   CSS transition, and the active word is not promoted to its own layer --
+   per-word layer churn inside a moving track causes a tiny hitch at every space. */
+#words.line-mode-1 #caret { transition: none !important; }
+#words-track.tape-track .word.active { will-change: auto; }
 #words-track.tape-track .word {
     white-space: nowrap;
     max-width: none;
@@ -1424,14 +1429,14 @@ footer a:hover { color: #e2b714; }
    duplicate — these rules are their only source of truth.
    ═══════════════════════════════════════════════════════════════ */
 :root{
-    --rt-bg:#0d1117; --rt-bg-rgb:13,17,23;
-    --rt-glow1:rgba(88,166,255,0.15); --rt-glow2:rgba(188,140,255,0.15);
-    --rt-panel-bg:rgba(13,17,23,0.85); --rt-panel-glow:rgba(88,166,255,0.3);
-    --rt-main:#58a6ff; --rt-main-rgb:88,166,255;
-    --rt-main2:#bc8cff; --rt-main2-rgb:188,140,255;
-    --rt-text:#c9d1d9; --rt-sub:#8b949e; --rt-error:#f85149;
-    --rt-caret:#56d364; --rt-caret-rgb:86,211,100;
-    --rt-bodytext:#c9d1d9;
+    --rt-bg:#0b1929; --rt-bg-rgb:11,25,41;
+    --rt-glow1:rgba(100,181,246,0.15); --rt-glow2:rgba(66,165,245,0.15);
+    --rt-panel-bg:rgba(11,25,41,0.85); --rt-panel-glow:rgba(100,181,246,0.3);
+    --rt-main:#64b5f6; --rt-main-rgb:100,181,246;
+    --rt-main2:#42a5f5; --rt-main2-rgb:66,165,245;
+    --rt-text:#e3f2fd; --rt-sub:#546e7a; --rt-error:#ef5350;
+    --rt-caret:#4fc3f7; --rt-caret-rgb:79,195,247;
+    --rt-bodytext:#64b5f6;
     --rt-font:'Roboto Mono', monospace;
 }
 html,body{background:var(--rt-bg) !important;color:var(--rt-bodytext) !important;}
