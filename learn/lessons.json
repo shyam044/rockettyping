@@ -20,7 +20,7 @@
     "emoji": "d 🖐️",
     "sub": "Next anchor key — left index finger"
   },
-    {
+  {
     "slug": "home-row-letter-f-typing-lesson",
     "title": "Home Row: The Letter F",
     "keyLabel": "the letter F",
@@ -35,432 +35,1074 @@
     "sub": "Practice the first two home-row keys together"
   },
   {
-  "slug":"home-row-df-typing-lesson",
-  "title":"Home Row: Typing D + F",
-  "keyLabel":"the letters D and F",
-  "emoji":"d f 🖐️",
-  "sub":"Practice the D and F home-row keys together"
-},
-{
-  "slug": "home-row-asdf-typing-lesson",
-  "title": "Home Row: Typing ASDF",
-  "keyLabel": "the letters A, S, D, and F",
-  "emoji": "a s d f 🖐️",
-  "sub": "Practice the four main left-hand home-row keys"
-},
-{
-  "slug": "home-row-letter-j-typing-lesson",
-  "title": "Home Row: The Letter J",
-  "keyLabel": "the letter J",
-  "emoji": "j 🖐️",
-  "sub": "Right index finger — home row anchor key"
-},
-{
-  "slug": "home-row-letter-k-typing-lesson",
-  "title": "Home Row: The Letter K",
-  "keyLabel": "the letter K",
-  "emoji": "k 🖐️",
-  "sub": "Next anchor key — right middle finger"
-},
-{
-  "slug": "home-row-letter-l-typing-lesson",
-  "title": "Home Row: The Letter L",
-  "keyLabel": "the letter L",
-  "emoji": "l 🖐️",
-  "sub": "Next anchor key — right ring finger"
-},
-{
-  "slug": "home-row-semicolon-typing-lesson",
-  "title": "Home Row: The Semicolon",
-  "keyLabel": "the semicolon key",
-  "emoji": "; 🖐️",
-  "sub": "Right pinky — home row key"
-},
-{
-  "slug":"home-row-jk-typing-lesson",
-  "title":"Home Row: Typing J + K",
-  "keyLabel":"the letters J and K",
-  "emoji":"j k 🖐️",
-  "sub":"Practice the J and K home-row keys together"
-},
-{
-  "slug":"home-row-l-semicolon-typing-lesson",
-  "title":"Home Row: Typing L + ;",
-  "keyLabel":"the letters L and ;",
-  "emoji":"l ; 🖐️",
-  "sub":"Practice the L and semicolon home-row keys together"
-},
-{
-  "slug": "home-row-jkl-semicolon-typing-lesson",
-  "title": "Home Row: Typing JKL;",
-  "keyLabel": "the letters J, K, L, and ;",
-  "emoji": "j k l ; 🖐️",
-  "sub": "Practice the four main right-hand home-row keys"
-},
-{
-  "slug": "home-row-letter-g-typing-lesson",
-  "title": "Typing the Letter G",
-  "keyLabel": "the letter G",
-  "emoji": "g 🖐️",
-  "sub": "Left index finger — reach from F"
-},
-{
-  "slug": "home-row-letter-h-typing-lesson",
-  "title": "Typing the Letter H",
-  "keyLabel": "the letter H",
-  "emoji": "h 🖐️",
-  "sub": "Right index finger — reach from J"
-},
-{
-  "slug": "home-row-gh-typing-lesson",
-  "title": "Home Row: Typing G + H",
-  "keyLabel": "the letters G and H",
-  "emoji": "g h 🖐️",
-  "sub": "Practice G and H together with home-row typing exercises"
-},
-{
-"slug":"home-row-asdfghjkl-typing-lesson",
-"title":"Home Row: ASDFGHJKL;",
-"keyLabel":"the home row keys ASDFGHJKL;",
-"emoji":"⌨️ 🖐️",
-"sub":"Master the home row with common words"
-},
-{
-"slug":"top-row-letter-q-typing-lesson",
-"title":"Top Row: The Letter Q",
-"keyLabel":"the letter Q",
-"emoji":"q 🖐️",
-"sub":"Reach up with your left pinky finger"
-},
-{
-"slug":"top-row-letter-w-typing-lesson",
-"title":"Top Row: The Letter W",
-"keyLabel":"the letter W",
-"emoji":"w 🖐️",
-"sub":"Reach up with your left ring finger"
-},
-{
-"slug":"top-row-letter-e-typing-lesson",
-"title":"Top Row: The Letter E",
-"keyLabel":"the letter E",
-"emoji":"e 🖐️",
-"sub":"Reach up with your left middle finger"
-},
-{
-"slug":"top-row-letter-r-typing-lesson",
-"title":"Top Row: The Letter R",
-"keyLabel":"the letter R",
-"emoji":"r 🖐️",
-"sub":"Reach up with your left index finger"
-},
-{
-"slug":"top-row-letter-t-typing-lesson",
-"title":"Top Row: The Letter T",
-"keyLabel":"the letter T",
-"emoji":"t 🖐️",
-"sub":"Reach up with your left index finger"
-},
-{
-"slug":"top-row-letter-y-typing-lesson",
-"title":"Top Row: The Letter Y",
-"keyLabel":"the letter Y",
-"emoji":"y 🖐️",
-"sub":"Reach up with your right index finger"
-},
-{
-  "slug":"top-row-qw-typing-lesson",
-  "title":"Top Row: Typing Q + W",
-  "keyLabel":"the letters Q and W",
-  "emoji":"q w 🖐️",
-  "sub":"Practice the Q and W top-row keys together"
-},
-{
-  "slug":"top-row-er-typing-lesson",
-  "title":"Top Row: Typing E + R",
-  "keyLabel":"the letters E and R",
-  "emoji":"e r 🖐️",
-  "sub":"Practice the E and R top-row keys together"
-},
-{
-  "slug":"top-row-ty-typing-lesson",
-  "title":"Top Row: Typing T + Y",
-  "keyLabel":"the letters T and Y",
-  "emoji":"t y 🖐️",
-  "sub":"Practice the T and Y top-row keys together"
-},
-{
-"slug":"top-row-qwerty-typing-lesson",
-"title":"Top Row: QWERTY",
-"keyLabel":"the QWERTY keys",
-"emoji":"qwerty 🖐️",
-"sub":"Practice the QWERTY top row"
-},
-{
-"slug":"top-row-letter-u-typing-lesson",
-"title":"Top Row: The Letter U",
-"keyLabel":"the letter U",
-"emoji":"u 🖐️",
-"sub":"Reach up with your right index finger"
-},
-{
-"slug":"top-row-letter-i-typing-lesson",
-"title":"Top Row: The Letter I",
-"keyLabel":"the letter I",
-"emoji":"i 🖐️",
-"sub":"Reach up with your right middle finger"
-},
-{
-"slug":"top-row-letter-o-typing-lesson",
-"title":"Top Row: The Letter O",
-"keyLabel":"the letter O",
-"emoji":"o 🖐️",
-"sub":"Reach up with your right ring finger"
-},
-{
-"slug":"top-row-letter-p-typing-lesson",
-"title":"Top Row: The Letter P",
-"keyLabel":"the letter P",
-"emoji":"p 🖐️",
-"sub":"Reach up with your right pinky finger"
-},
-{
-  "slug":"top-row-ui-typing-lesson",
-  "title":"Top Row: Typing U + I",
-  "keyLabel":"the letters U and I",
-  "emoji":"u i 🖐️",
-  "sub":"Practice the U and I top-row keys together"
-},
-{
-  "slug":"top-row-op-typing-lesson",
-  "title":"Top Row: Typing O + P",
-  "keyLabel":"the letters O and P",
-  "emoji":"o p 🖐️",
-  "sub":"Practice the O and P top-row keys together"
-},
-
-{
+    "slug": "home-row-df-typing-lesson",
+    "title": "Home Row: Typing D + F",
+    "keyLabel": "the letters D and F",
+    "emoji": "d f 🖐️",
+    "sub": "Practice the D and F home-row keys together"
+  },
+  {
+    "slug": "home-row-asdf-typing-lesson",
+    "title": "Home Row: Typing ASDF",
+    "keyLabel": "the letters A, S, D, and F",
+    "emoji": "a s d f 🖐️",
+    "sub": "Practice the four main left-hand home-row keys"
+  },
+  {
+    "slug": "home-row-letter-j-typing-lesson",
+    "title": "Home Row: The Letter J",
+    "keyLabel": "the letter J",
+    "emoji": "j 🖐️",
+    "sub": "Right index finger — home row anchor key"
+  },
+  {
+    "slug": "home-row-letter-k-typing-lesson",
+    "title": "Home Row: The Letter K",
+    "keyLabel": "the letter K",
+    "emoji": "k 🖐️",
+    "sub": "Next anchor key — right middle finger"
+  },
+  {
+    "slug": "home-row-letter-l-typing-lesson",
+    "title": "Home Row: The Letter L",
+    "keyLabel": "the letter L",
+    "emoji": "l 🖐️",
+    "sub": "Next anchor key — right ring finger"
+  },
+  {
+    "slug": "home-row-semicolon-typing-lesson",
+    "title": "Home Row: The Semicolon",
+    "keyLabel": "the semicolon key",
+    "emoji": "; 🖐️",
+    "sub": "Right pinky — home row key"
+  },
+  {
+    "slug": "home-row-jk-typing-lesson",
+    "title": "Home Row: Typing J + K",
+    "keyLabel": "the letters J and K",
+    "emoji": "j k 🖐️",
+    "sub": "Practice the J and K home-row keys together"
+  },
+  {
+    "slug": "home-row-l-semicolon-typing-lesson",
+    "title": "Home Row: Typing L + ;",
+    "keyLabel": "the letters L and ;",
+    "emoji": "l ; 🖐️",
+    "sub": "Practice the L and semicolon home-row keys together"
+  },
+  {
+    "slug": "home-row-jkl-semicolon-typing-lesson",
+    "title": "Home Row: Typing JKL;",
+    "keyLabel": "the letters J, K, L, and ;",
+    "emoji": "j k l ; 🖐️",
+    "sub": "Practice the four main right-hand home-row keys"
+  },
+  {
+    "slug": "home-row-letter-g-typing-lesson",
+    "title": "Typing the Letter G",
+    "keyLabel": "the letter G",
+    "emoji": "g 🖐️",
+    "sub": "Left index finger — reach from F"
+  },
+  {
+    "slug": "home-row-letter-h-typing-lesson",
+    "title": "Typing the Letter H",
+    "keyLabel": "the letter H",
+    "emoji": "h 🖐️",
+    "sub": "Right index finger — reach from J"
+  },
+  {
+    "slug": "home-row-gh-typing-lesson",
+    "title": "Home Row: Typing G + H",
+    "keyLabel": "the letters G and H",
+    "emoji": "g h 🖐️",
+    "sub": "Practice G and H together with home-row typing exercises"
+  },
+  {
+    "slug": "home-row-asdfghjkl-typing-lesson",
+    "title": "Home Row: ASDFGHJKL;",
+    "keyLabel": "the home row keys ASDFGHJKL;",
+    "emoji": "⌨️ 🖐️",
+    "sub": "Master the home row with common words"
+  },
+  {
+    "slug": "top-row-letter-q-typing-lesson",
+    "title": "Top Row: The Letter Q",
+    "keyLabel": "the letter Q",
+    "emoji": "q 🖐️",
+    "sub": "Reach up with your left pinky finger"
+  },
+  {
+    "slug": "top-row-letter-w-typing-lesson",
+    "title": "Top Row: The Letter W",
+    "keyLabel": "the letter W",
+    "emoji": "w 🖐️",
+    "sub": "Reach up with your left ring finger"
+  },
+  {
+    "slug": "top-row-letter-e-typing-lesson",
+    "title": "Top Row: The Letter E",
+    "keyLabel": "the letter E",
+    "emoji": "e 🖐️",
+    "sub": "Reach up with your left middle finger"
+  },
+  {
+    "slug": "top-row-letter-r-typing-lesson",
+    "title": "Top Row: The Letter R",
+    "keyLabel": "the letter R",
+    "emoji": "r 🖐️",
+    "sub": "Reach up with your left index finger"
+  },
+  {
+    "slug": "top-row-letter-t-typing-lesson",
+    "title": "Top Row: The Letter T",
+    "keyLabel": "the letter T",
+    "emoji": "t 🖐️",
+    "sub": "Reach up with your left index finger"
+  },
+  {
+    "slug": "top-row-letter-y-typing-lesson",
+    "title": "Top Row: The Letter Y",
+    "keyLabel": "the letter Y",
+    "emoji": "y 🖐️",
+    "sub": "Reach up with your right index finger"
+  },
+  {
+    "slug": "top-row-qw-typing-lesson",
+    "title": "Top Row: Typing Q + W",
+    "keyLabel": "the letters Q and W",
+    "emoji": "q w 🖐️",
+    "sub": "Practice the Q and W top-row keys together"
+  },
+  {
+    "slug": "top-row-er-typing-lesson",
+    "title": "Top Row: Typing E + R",
+    "keyLabel": "the letters E and R",
+    "emoji": "e r 🖐️",
+    "sub": "Practice the E and R top-row keys together"
+  },
+  {
+    "slug": "top-row-ty-typing-lesson",
+    "title": "Top Row: Typing T + Y",
+    "keyLabel": "the letters T and Y",
+    "emoji": "t y 🖐️",
+    "sub": "Practice the T and Y top-row keys together"
+  },
+  {
+    "slug": "top-row-qwerty-typing-lesson",
+    "title": "Top Row: QWERTY",
+    "keyLabel": "the QWERTY keys",
+    "emoji": "qwerty 🖐️",
+    "sub": "Practice the QWERTY top row"
+  },
+  {
+    "slug": "top-row-letter-u-typing-lesson",
+    "title": "Top Row: The Letter U",
+    "keyLabel": "the letter U",
+    "emoji": "u 🖐️",
+    "sub": "Reach up with your right index finger"
+  },
+  {
+    "slug": "top-row-letter-i-typing-lesson",
+    "title": "Top Row: The Letter I",
+    "keyLabel": "the letter I",
+    "emoji": "i 🖐️",
+    "sub": "Reach up with your right middle finger"
+  },
+  {
+    "slug": "top-row-letter-o-typing-lesson",
+    "title": "Top Row: The Letter O",
+    "keyLabel": "the letter O",
+    "emoji": "o 🖐️",
+    "sub": "Reach up with your right ring finger"
+  },
+  {
+    "slug": "top-row-letter-p-typing-lesson",
+    "title": "Top Row: The Letter P",
+    "keyLabel": "the letter P",
+    "emoji": "p 🖐️",
+    "sub": "Reach up with your right pinky finger"
+  },
+  {
+    "slug": "top-row-ui-typing-lesson",
+    "title": "Top Row: Typing U + I",
+    "keyLabel": "the letters U and I",
+    "emoji": "u i 🖐️",
+    "sub": "Practice the U and I top-row keys together"
+  },
+  {
+    "slug": "top-row-op-typing-lesson",
+    "title": "Top Row: Typing O + P",
+    "keyLabel": "the letters O and P",
+    "emoji": "o p 🖐️",
+    "sub": "Practice the O and P top-row keys together"
+  },
+  {
     "slug": "top-row-uiop-typing-lesson",
     "title": "Top Row: U I O P",
     "keyLabel": "the letters U, I, O and P",
     "emoji": "⌨️",
     "sub": "Practice the top row with U, I, O and P"
-},
-{
-"slug":"top-row-qwertyuiop-typing-lesson",
-"title":"Top Row: QWERTYUIOP",
-"keyLabel":"the letters Q, W, E, R, T, Y, U, I, O and P",
-"emoji":"⌨️",
-"sub":"Practice the complete QWERTY top row"
-},
-{
-"slug":"bottom-row-letter-z-typing-lesson",
-"title":"Bottom Row: The Letter Z",
-"keyLabel":"the letter Z",
-"emoji":"z 🖐️",
-"sub":"Reach down with your left pinky finger"
-},
-{
-"slug":"bottom-row-letter-x-typing-lesson",
-"title":"Bottom Row: The Letter X",
-"keyLabel":"the letter X",
-"emoji":"x 🖐️",
-"sub":"Reach down with your left ring finger"
-},
-{
-"slug":"bottom-row-letter-c-typing-lesson",
-"title":"Bottom Row: The Letter C",
-"keyLabel":"the letter C",
-"emoji":"c 🖐️",
-"sub":"Reach down with your left middle finger"
-},
-{
-"slug":"bottom-row-letter-v-typing-lesson",
-"title":"Bottom Row: The Letter V",
-"keyLabel":"the letter V",
-"emoji":"v 🖐️",
-"sub":"Reach down with your left index finger"
-},
-{
-  "slug":"bottom-row-zx-typing-lesson",
-  "title":"Bottom Row: Typing Z + X",
-  "keyLabel":"the letters Z and X",
-  "emoji":"z x 🖐️",
-  "sub":"Practice the Z and X bottom-row keys together"
-},
-{
-  "slug":"bottom-row-cv-typing-lesson",
-  "title":"Bottom Row: Typing C + V",
-  "keyLabel":"the letters C and V",
-  "emoji":"c v 🖐️",
-  "sub":"Practice the C and V bottom-row keys together"
-},
-{
-"slug":"bottom-row-zxcv-typing-lesson",
-"title":"Bottom Row: Z X C V",
-"keyLabel":"the letters Z, X, C and V",
-"emoji":"zxcv 🖐️",
-"sub":"Practice the bottom row with Z, X, C and V"
-},
-{
-"slug":"bottom-row-letter-b-typing-lesson",
-"title":"Bottom Row: The Letter B",
-"keyLabel":"the letter B",
-"emoji":"b 🖐️",
-"sub":"Reach down with your left index finger"
-},
-{
-"slug":"bottom-row-letter-n-typing-lesson",
-"title":"Bottom Row: The Letter N",
-"keyLabel":"the letter N",
-"emoji":"n 🖐️",
-"sub":"Reach down with your right index finger"
-},
-{
-"slug":"bottom-row-letter-m-typing-lesson",
-"title":"Bottom Row: The Letter M",
-"keyLabel":"the letter M",
-"emoji":"m 🖐️",
-"sub":"Reach down with your right index finger"
-},
-{
-"slug":"bottom-row-bnm-typing-lesson",
-"title":"Bottom Row: B N M",
-"keyLabel":"the letters B, N and M",
-"emoji":"bnm 🖐️",
-"sub":"Practice the bottom row with B, N and M"
-},
-{
-  "slug":"qwertyuiop-asdfghjkl-zxcvbnm-typing-lesson",
-  "title":"QWERTY Keyboard Typing Lesson",
-  "keyLabel":"QWERTYUIOP, ASDFGHJKL and ZXCVBNM",
-  "emoji":"⌨️",
-  "sub":"Learn to type across all three rows of the QWERTY keyboard"
-},
-{
-  "slug": "number-1-typing-lesson",
-  "title": "Typing Number 1",
-  "keyLabel": "the number 1",
-  "emoji": "1 🔢",
-  "sub": "Your first number key — left pinky"
-},
-{
-  "slug": "number-2-typing-lesson",
-  "title": "Typing Number 2",
-  "keyLabel": "the number 2",
-  "emoji": "2 🔢",
-  "sub": "Your second number key — left ring finger"
-},
-{
-  "slug": "number-12-typing-lesson",
-  "title": "Typing Numbers 1 and 2",
-  "keyLabel": "numbers 1 and 2",
-  "emoji": "1️⃣2️⃣ 🔢",
-  "sub": "Build number-row accuracy — left pinky and ring finger"
-},
-{
-  "slug": "number-3-typing-lesson",
-  "title": "Typing Number 3",
-  "keyLabel": "the number 3",
-  "emoji": "3 🔢",
-  "sub": "Your third number key — left middle finger"
-},
-{
-  "slug": "number-4-typing-lesson",
-  "title": "Typing Number 4",
-  "keyLabel": "the number 4",
-  "emoji": "4 🔢",
-  "sub": "Your fourth number key — left index finger"
-},
-{
-  "slug": "number-34-typing-lesson",
-  "title": "Typing Numbers 3 and 4",
-  "keyLabel": "numbers 3 and 4",
-  "emoji": "3️⃣4️⃣ 🔢",
-  "sub": "Build number-row accuracy — middle and index finger"
-},
-{
-  "slug": "number-5-typing-lesson",
-  "title": "Typing Number 5",
-  "keyLabel": "the number 5",
-  "emoji": "5 🔢",
-  "sub": "Your fifth number key — left index finger"
-},
-{
-  "slug": "number-6-typing-lesson",
-  "title": "Typing Number 6",
-  "keyLabel": "the number 6",
-  "emoji": "6 🔢",
-  "sub": "Your sixth number key — right index finger"
-},
-{
-  "slug": "number-56-typing-lesson",
-  "title": "Typing Numbers 5 and 6",
-  "keyLabel": "numbers 5 and 6",
-  "emoji": "5️⃣6️⃣ 🔢",
-  "sub": "Build number-row accuracy — left and right index fingers"
-},
-{
-  "slug": "number-12345-typing-lesson",
-  "title": "Typing Numbers 1, 2, 3, 4 and 5",
-  "keyLabel": "numbers 1, 2, 3, 4 and 5",
-  "emoji": "1️⃣2️⃣3️⃣4️⃣5️⃣ 🔢",
-  "sub": "Build number-row accuracy — pinky, ring, middle and index fingers"
-},
-{
-  "slug":"number-7-typing-lesson",
-  "title":"Typing Number 7",
-  "keyLabel":"the number 7",
-  "emoji":"7 🔢",
-  "sub":"Your seventh number key — right index finger"
-},
-{
-  "slug":"number-8-typing-lesson",
-  "title":"Typing Number 8",
-  "keyLabel":"the number 8",
-  "emoji":"8 🔢",
-  "sub":"Your eighth number key — right middle finger"
-},
-{
-  "slug":"number-78-typing-lesson",
-  "title":"Typing Numbers 7 and 8",
-  "keyLabel":"numbers 7 and 8",
-  "emoji":"7️⃣8️⃣ 🔢",
-  "sub":"Build number-row accuracy — right index and middle fingers"
-},
-{
-  "slug":"number-9-typing-lesson",
-  "title":"Typing Number 9",
-  "keyLabel":"the number 9",
-  "emoji":"9️⃣ 🔢",
-  "sub":"Your ninth number key — right ring finger"
-},
-{
-  "slug":"number-0-typing-lesson",
-  "title":"Typing Number 0",
-  "keyLabel":"the number 0",
-  "emoji":"0️⃣ 🔢",
-  "sub":"Your tenth number key — right pinky finger"
-},
-{
-  "slug":"number-90-typing-lesson",
-  "title":"Typing Numbers 9 and 0",
-  "keyLabel":"numbers 9 and 0",
-  "emoji":"9️⃣0️⃣ 🔢",
-  "sub":"Build number-row accuracy — right ring and pinky fingers"
-},
-{
-  "slug":"number-67890-typing-lesson",
-  "title":"Typing Numbers 6, 7, 8, 9 and 0",
-  "keyLabel":"numbers 6, 7, 8, 9 and 0",
-  "emoji":"6️⃣7️⃣8️⃣9️⃣0️⃣ 🔢",
-  "sub":"Build number-row accuracy — index, middle, ring and pinky fingers"
-},
-{
-  "slug":"number-1234567890-typing-lesson",
-  "title":"Typing Numbers 1 to 0",
-  "keyLabel":"numbers 1 to 0",
-  "emoji":"1️⃣2️⃣3️⃣4️⃣5️⃣6️⃣7️⃣8️⃣9️⃣0️⃣ 🔢",
-  "sub":"Master the complete number row — all ten number keys"
-}
-
+  },
+  {
+    "slug": "top-row-qwertyuiop-typing-lesson",
+    "title": "Top Row: QWERTYUIOP",
+    "keyLabel": "the letters Q, W, E, R, T, Y, U, I, O and P",
+    "emoji": "⌨️",
+    "sub": "Practice the complete QWERTY top row"
+  },
+  {
+    "slug": "bottom-row-letter-z-typing-lesson",
+    "title": "Bottom Row: The Letter Z",
+    "keyLabel": "the letter Z",
+    "emoji": "z 🖐️",
+    "sub": "Reach down with your left pinky finger"
+  },
+  {
+    "slug": "bottom-row-letter-x-typing-lesson",
+    "title": "Bottom Row: The Letter X",
+    "keyLabel": "the letter X",
+    "emoji": "x 🖐️",
+    "sub": "Reach down with your left ring finger"
+  },
+  {
+    "slug": "bottom-row-letter-c-typing-lesson",
+    "title": "Bottom Row: The Letter C",
+    "keyLabel": "the letter C",
+    "emoji": "c 🖐️",
+    "sub": "Reach down with your left middle finger"
+  },
+  {
+    "slug": "bottom-row-letter-v-typing-lesson",
+    "title": "Bottom Row: The Letter V",
+    "keyLabel": "the letter V",
+    "emoji": "v 🖐️",
+    "sub": "Reach down with your left index finger"
+  },
+  {
+    "slug": "bottom-row-zx-typing-lesson",
+    "title": "Bottom Row: Typing Z + X",
+    "keyLabel": "the letters Z and X",
+    "emoji": "z x 🖐️",
+    "sub": "Practice the Z and X bottom-row keys together"
+  },
+  {
+    "slug": "bottom-row-cv-typing-lesson",
+    "title": "Bottom Row: Typing C + V",
+    "keyLabel": "the letters C and V",
+    "emoji": "c v 🖐️",
+    "sub": "Practice the C and V bottom-row keys together"
+  },
+  {
+    "slug": "bottom-row-zxcv-typing-lesson",
+    "title": "Bottom Row: Z X C V",
+    "keyLabel": "the letters Z, X, C and V",
+    "emoji": "zxcv 🖐️",
+    "sub": "Practice the bottom row with Z, X, C and V"
+  },
+  {
+    "slug": "bottom-row-letter-b-typing-lesson",
+    "title": "Bottom Row: The Letter B",
+    "keyLabel": "the letter B",
+    "emoji": "b 🖐️",
+    "sub": "Reach down with your left index finger"
+  },
+  {
+    "slug": "bottom-row-letter-n-typing-lesson",
+    "title": "Bottom Row: The Letter N",
+    "keyLabel": "the letter N",
+    "emoji": "n 🖐️",
+    "sub": "Reach down with your right index finger"
+  },
+  {
+    "slug": "bottom-row-letter-m-typing-lesson",
+    "title": "Bottom Row: The Letter M",
+    "keyLabel": "the letter M",
+    "emoji": "m 🖐️",
+    "sub": "Reach down with your right index finger"
+  },
+  {
+    "slug": "bottom-row-bnm-typing-lesson",
+    "title": "Bottom Row: B N M",
+    "keyLabel": "the letters B, N and M",
+    "emoji": "bnm 🖐️",
+    "sub": "Practice the bottom row with B, N and M"
+  },
+  {
+    "slug": "qwertyuiop-asdfghjkl-zxcvbnm-typing-lesson",
+    "title": "QWERTY Keyboard Typing Lesson",
+    "keyLabel": "QWERTYUIOP, ASDFGHJKL and ZXCVBNM",
+    "emoji": "⌨️",
+    "sub": "Learn to type across all three rows of the QWERTY keyboard"
+  },
+  {
+    "slug": "number-1-typing-lesson",
+    "title": "Typing Number 1",
+    "keyLabel": "the number 1",
+    "emoji": "1 🔢",
+    "sub": "Your first number key — left pinky"
+  },
+  {
+    "slug": "number-2-typing-lesson",
+    "title": "Typing Number 2",
+    "keyLabel": "the number 2",
+    "emoji": "2 🔢",
+    "sub": "Your second number key — left ring finger"
+  },
+  {
+    "slug": "number-12-typing-lesson",
+    "title": "Typing Numbers 1 and 2",
+    "keyLabel": "numbers 1 and 2",
+    "emoji": "1️⃣2️⃣ 🔢",
+    "sub": "Build number-row accuracy — left pinky and ring finger"
+  },
+  {
+    "slug": "number-3-typing-lesson",
+    "title": "Typing Number 3",
+    "keyLabel": "the number 3",
+    "emoji": "3 🔢",
+    "sub": "Your third number key — left middle finger"
+  },
+  {
+    "slug": "number-4-typing-lesson",
+    "title": "Typing Number 4",
+    "keyLabel": "the number 4",
+    "emoji": "4 🔢",
+    "sub": "Your fourth number key — left index finger"
+  },
+  {
+    "slug": "number-34-typing-lesson",
+    "title": "Typing Numbers 3 and 4",
+    "keyLabel": "numbers 3 and 4",
+    "emoji": "3️⃣4️⃣ 🔢",
+    "sub": "Build number-row accuracy — middle and index finger"
+  },
+  {
+    "slug": "number-5-typing-lesson",
+    "title": "Typing Number 5",
+    "keyLabel": "the number 5",
+    "emoji": "5 🔢",
+    "sub": "Your fifth number key — left index finger"
+  },
+  {
+    "slug": "number-6-typing-lesson",
+    "title": "Typing Number 6",
+    "keyLabel": "the number 6",
+    "emoji": "6 🔢",
+    "sub": "Your sixth number key — right index finger"
+  },
+  {
+    "slug": "number-56-typing-lesson",
+    "title": "Typing Numbers 5 and 6",
+    "keyLabel": "numbers 5 and 6",
+    "emoji": "5️⃣6️⃣ 🔢",
+    "sub": "Build number-row accuracy — left and right index fingers"
+  },
+  {
+    "slug": "number-12345-typing-lesson",
+    "title": "Typing Numbers 1, 2, 3, 4 and 5",
+    "keyLabel": "numbers 1, 2, 3, 4 and 5",
+    "emoji": "1️⃣2️⃣3️⃣4️⃣5️⃣ 🔢",
+    "sub": "Build number-row accuracy — pinky, ring, middle and index fingers"
+  },
+  {
+    "slug": "number-7-typing-lesson",
+    "title": "Typing Number 7",
+    "keyLabel": "the number 7",
+    "emoji": "7 🔢",
+    "sub": "Your seventh number key — right index finger"
+  },
+  {
+    "slug": "number-8-typing-lesson",
+    "title": "Typing Number 8",
+    "keyLabel": "the number 8",
+    "emoji": "8 🔢",
+    "sub": "Your eighth number key — right middle finger"
+  },
+  {
+    "slug": "number-78-typing-lesson",
+    "title": "Typing Numbers 7 and 8",
+    "keyLabel": "numbers 7 and 8",
+    "emoji": "7️⃣8️⃣ 🔢",
+    "sub": "Build number-row accuracy — right index and middle fingers"
+  },
+  {
+    "slug": "number-9-typing-lesson",
+    "title": "Typing Number 9",
+    "keyLabel": "the number 9",
+    "emoji": "9️⃣ 🔢",
+    "sub": "Your ninth number key — right ring finger"
+  },
+  {
+    "slug": "number-0-typing-lesson",
+    "title": "Typing Number 0",
+    "keyLabel": "the number 0",
+    "emoji": "0️⃣ 🔢",
+    "sub": "Your tenth number key — right pinky finger"
+  },
+  {
+    "slug": "number-90-typing-lesson",
+    "title": "Typing Numbers 9 and 0",
+    "keyLabel": "numbers 9 and 0",
+    "emoji": "9️⃣0️⃣ 🔢",
+    "sub": "Build number-row accuracy — right ring and pinky fingers"
+  },
+  {
+    "slug": "number-67890-typing-lesson",
+    "title": "Typing Numbers 6, 7, 8, 9 and 0",
+    "keyLabel": "numbers 6, 7, 8, 9 and 0",
+    "emoji": "6️⃣7️⃣8️⃣9️⃣0️⃣ 🔢",
+    "sub": "Build number-row accuracy — index, middle, ring and pinky fingers"
+  },
+  {
+    "slug": "number-1234567890-typing-lesson",
+    "title": "Typing Numbers 1 to 0",
+    "keyLabel": "numbers 1 to 0",
+    "emoji": "1️⃣2️⃣3️⃣4️⃣5️⃣6️⃣7️⃣8️⃣9️⃣0️⃣ 🔢",
+    "sub": "Master the complete number row — all ten number keys"
+  },
+  {
+    "slug": "capital-letter-a-typing-lesson",
+    "title": "Capital Letter A",
+    "keyLabel": "the capital letter A",
+    "emoji": "A ⇧",
+    "sub": "Hold right Shift + left pinky — uppercase A"
+  },
+  {
+    "slug": "capital-letter-b-typing-lesson",
+    "title": "Capital Letter B",
+    "keyLabel": "the capital letter B",
+    "emoji": "B ⇧",
+    "sub": "Hold right Shift + left index finger — uppercase B"
+  },
+  {
+    "slug": "capital-letter-c-typing-lesson",
+    "title": "Capital Letter C",
+    "keyLabel": "the capital letter C",
+    "emoji": "C ⇧",
+    "sub": "Hold right Shift + left middle finger — uppercase C"
+  },
+  {
+    "slug": "capital-letter-d-typing-lesson",
+    "title": "Capital Letter D",
+    "keyLabel": "the capital letter D",
+    "emoji": "D ⇧",
+    "sub": "Hold right Shift + left middle finger — uppercase D"
+  },
+  {
+    "slug": "capital-letter-e-typing-lesson",
+    "title": "Capital Letter E",
+    "keyLabel": "the capital letter E",
+    "emoji": "E ⇧",
+    "sub": "Hold right Shift + left middle finger — uppercase E"
+  },
+  {
+    "slug": "capital-letter-f-typing-lesson",
+    "title": "Capital Letter F",
+    "keyLabel": "the capital letter F",
+    "emoji": "F ⇧",
+    "sub": "Hold right Shift + left index finger — uppercase F"
+  },
+  {
+    "slug": "capital-letter-g-typing-lesson",
+    "title": "Capital Letter G",
+    "keyLabel": "the capital letter G",
+    "emoji": "G ⇧",
+    "sub": "Hold right Shift + left index finger — uppercase G"
+  },
+  {
+    "slug": "capital-letter-h-typing-lesson",
+    "title": "Capital Letter H",
+    "keyLabel": "the capital letter H",
+    "emoji": "H ⇧",
+    "sub": "Hold left Shift + right index finger — uppercase H"
+  },
+  {
+    "slug": "capital-letter-i-typing-lesson",
+    "title": "Capital Letter I",
+    "keyLabel": "the capital letter I",
+    "emoji": "I ⇧",
+    "sub": "Hold left Shift + right middle finger — uppercase I"
+  },
+  {
+    "slug": "capital-letter-j-typing-lesson",
+    "title": "Capital Letter J",
+    "keyLabel": "the capital letter J",
+    "emoji": "J ⇧",
+    "sub": "Hold left Shift + right index finger — uppercase J"
+  },
+  {
+    "slug": "capital-letter-k-typing-lesson",
+    "title": "Capital Letter K",
+    "keyLabel": "the capital letter K",
+    "emoji": "K ⇧",
+    "sub": "Hold left Shift + right middle finger — uppercase K"
+  },
+  {
+    "slug": "capital-letter-l-typing-lesson",
+    "title": "Capital Letter L",
+    "keyLabel": "the capital letter L",
+    "emoji": "L ⇧",
+    "sub": "Hold left Shift + right ring finger — uppercase L"
+  },
+  {
+    "slug": "capital-letter-m-typing-lesson",
+    "title": "Capital Letter M",
+    "keyLabel": "the capital letter M",
+    "emoji": "M ⇧",
+    "sub": "Hold left Shift + right index finger — uppercase M"
+  },
+  {
+    "slug": "capital-letter-n-typing-lesson",
+    "title": "Capital Letter N",
+    "keyLabel": "the capital letter N",
+    "emoji": "N ⇧",
+    "sub": "Hold left Shift + right index finger — uppercase N"
+  },
+  {
+    "slug": "capital-letter-o-typing-lesson",
+    "title": "Capital Letter O",
+    "keyLabel": "the capital letter O",
+    "emoji": "O ⇧",
+    "sub": "Hold left Shift + right ring finger — uppercase O"
+  },
+  {
+    "slug": "capital-letter-p-typing-lesson",
+    "title": "Capital Letter P",
+    "keyLabel": "the capital letter P",
+    "emoji": "P ⇧",
+    "sub": "Hold left Shift + right pinky — uppercase P"
+  },
+  {
+    "slug": "capital-letter-q-typing-lesson",
+    "title": "Capital Letter Q",
+    "keyLabel": "the capital letter Q",
+    "emoji": "Q ⇧",
+    "sub": "Hold right Shift + left pinky — uppercase Q"
+  },
+  {
+    "slug": "capital-letter-r-typing-lesson",
+    "title": "Capital Letter R",
+    "keyLabel": "the capital letter R",
+    "emoji": "R ⇧",
+    "sub": "Hold right Shift + left index finger — uppercase R"
+  },
+  {
+    "slug": "capital-letter-s-typing-lesson",
+    "title": "Capital Letter S",
+    "keyLabel": "the capital letter S",
+    "emoji": "S ⇧",
+    "sub": "Hold right Shift + left ring finger — uppercase S"
+  },
+  {
+    "slug": "capital-letter-t-typing-lesson",
+    "title": "Capital Letter T",
+    "keyLabel": "the capital letter T",
+    "emoji": "T ⇧",
+    "sub": "Hold right Shift + left index finger — uppercase T"
+  },
+  {
+    "slug": "capital-letter-u-typing-lesson",
+    "title": "Capital Letter U",
+    "keyLabel": "the capital letter U",
+    "emoji": "U ⇧",
+    "sub": "Hold left Shift + right index finger — uppercase U"
+  },
+  {
+    "slug": "capital-letter-v-typing-lesson",
+    "title": "Capital Letter V",
+    "keyLabel": "the capital letter V",
+    "emoji": "V ⇧",
+    "sub": "Hold right Shift + left index finger — uppercase V"
+  },
+  {
+    "slug": "capital-letter-w-typing-lesson",
+    "title": "Capital Letter W",
+    "keyLabel": "the capital letter W",
+    "emoji": "W ⇧",
+    "sub": "Hold right Shift + left ring finger — uppercase W"
+  },
+  {
+    "slug": "capital-letter-x-typing-lesson",
+    "title": "Capital Letter X",
+    "keyLabel": "the capital letter X",
+    "emoji": "X ⇧",
+    "sub": "Hold right Shift + left ring finger — uppercase X"
+  },
+  {
+    "slug": "capital-letter-y-typing-lesson",
+    "title": "Capital Letter Y",
+    "keyLabel": "the capital letter Y",
+    "emoji": "Y ⇧",
+    "sub": "Hold left Shift + right index finger — uppercase Y"
+  },
+  {
+    "slug": "capital-letter-z-typing-lesson",
+    "title": "Capital Letter Z",
+    "keyLabel": "the capital letter Z",
+    "emoji": "Z ⇧",
+    "sub": "Hold right Shift + left pinky — uppercase Z"
+  },
+  {
+    "slug": "capital-letters-as-typing-lesson",
+    "title": "Capital Letters AS",
+    "keyLabel": "capital AS",
+    "emoji": "AS ⇧",
+    "sub": "Shift practice — capital AS"
+  },
+  {
+    "slug": "capital-letters-df-typing-lesson",
+    "title": "Capital Letters DF",
+    "keyLabel": "capital DF",
+    "emoji": "DF ⇧",
+    "sub": "Shift practice — capital DF"
+  },
+  {
+    "slug": "capital-letters-asdf-typing-lesson",
+    "title": "Capital Letters ASDF",
+    "keyLabel": "capital ASDF",
+    "emoji": "ASDF ⇧",
+    "sub": "Shift practice — capital ASDF"
+  },
+  {
+    "slug": "capital-letters-gh-typing-lesson",
+    "title": "Capital Letters GH",
+    "keyLabel": "capital GH",
+    "emoji": "GH ⇧",
+    "sub": "Shift practice — capital GH"
+  },
+  {
+    "slug": "capital-letters-jk-typing-lesson",
+    "title": "Capital Letters JK",
+    "keyLabel": "capital JK",
+    "emoji": "JK ⇧",
+    "sub": "Shift practice — capital JK"
+  },
+  {
+    "slug": "capital-letters-asdfghjkl-typing-lesson",
+    "title": "Capital Letters ASDFGHJKL",
+    "keyLabel": "capital ASDFGHJKL",
+    "emoji": "A–Z ⇧",
+    "sub": "Shift practice — capital ASDFGHJKL"
+  },
+  {
+    "slug": "capital-letters-qw-typing-lesson",
+    "title": "Capital Letters QW",
+    "keyLabel": "capital QW",
+    "emoji": "QW ⇧",
+    "sub": "Shift practice — capital QW"
+  },
+  {
+    "slug": "capital-letters-er-typing-lesson",
+    "title": "Capital Letters ER",
+    "keyLabel": "capital ER",
+    "emoji": "ER ⇧",
+    "sub": "Shift practice — capital ER"
+  },
+  {
+    "slug": "capital-letters-ty-typing-lesson",
+    "title": "Capital Letters TY",
+    "keyLabel": "capital TY",
+    "emoji": "TY ⇧",
+    "sub": "Shift practice — capital TY"
+  },
+  {
+    "slug": "capital-letters-ui-typing-lesson",
+    "title": "Capital Letters UI",
+    "keyLabel": "capital UI",
+    "emoji": "UI ⇧",
+    "sub": "Shift practice — capital UI"
+  },
+  {
+    "slug": "capital-letters-op-typing-lesson",
+    "title": "Capital Letters OP",
+    "keyLabel": "capital OP",
+    "emoji": "OP ⇧",
+    "sub": "Shift practice — capital OP"
+  },
+  {
+    "slug": "capital-letters-qwerty-typing-lesson",
+    "title": "Capital Letters QWERTY",
+    "keyLabel": "capital QWERTY",
+    "emoji": "QWERTY ⇧",
+    "sub": "Shift practice — capital QWERTY"
+  },
+  {
+    "slug": "capital-letters-uiop-typing-lesson",
+    "title": "Capital Letters UIOP",
+    "keyLabel": "capital UIOP",
+    "emoji": "UIOP ⇧",
+    "sub": "Shift practice — capital UIOP"
+  },
+  {
+    "slug": "capital-letters-qwertyuiop-typing-lesson",
+    "title": "Capital Letters QWERTYUIOP",
+    "keyLabel": "capital QWERTYUIOP",
+    "emoji": "A–Z ⇧",
+    "sub": "Shift practice — capital QWERTYUIOP"
+  },
+  {
+    "slug": "capital-letters-zx-typing-lesson",
+    "title": "Capital Letters ZX",
+    "keyLabel": "capital ZX",
+    "emoji": "ZX ⇧",
+    "sub": "Shift practice — capital ZX"
+  },
+  {
+    "slug": "capital-letters-cv-typing-lesson",
+    "title": "Capital Letters CV",
+    "keyLabel": "capital CV",
+    "emoji": "CV ⇧",
+    "sub": "Shift practice — capital CV"
+  },
+  {
+    "slug": "capital-letters-zxcv-typing-lesson",
+    "title": "Capital Letters ZXCV",
+    "keyLabel": "capital ZXCV",
+    "emoji": "ZXCV ⇧",
+    "sub": "Shift practice — capital ZXCV"
+  },
+  {
+    "slug": "capital-letters-bnm-typing-lesson",
+    "title": "Capital Letters BNM",
+    "keyLabel": "capital BNM",
+    "emoji": "BNM ⇧",
+    "sub": "Shift practice — capital BNM"
+  },
+  {
+    "slug": "capital-letters-a-to-z-typing-lesson",
+    "title": "Capital Letters A to Z",
+    "keyLabel": "capital A to Z",
+    "emoji": "A to Z ⇧",
+    "sub": "Shift + all 26 letters"
+  },
+  {
+    "slug": "backtick-grave-accent-symbol-typing-lesson",
+    "title": "Symbol: Backtick (`)",
+    "keyLabel": "the backtick (`)",
+    "emoji": "` ⌨️",
+    "sub": "` — left pinky"
+  },
+  {
+    "slug": "tilde-symbol-typing-lesson",
+    "title": "Symbol: Tilde (~)",
+    "keyLabel": "the tilde (~)",
+    "emoji": "~ ⌨️",
+    "sub": "Shift + ` — left pinky"
+  },
+  {
+    "slug": "exclamation-mark-typing-lesson",
+    "title": "Symbol: Exclamation Mark (!)",
+    "keyLabel": "the exclamation mark (!)",
+    "emoji": "! ⌨️",
+    "sub": "Shift + 1 — left pinky"
+  },
+  {
+    "slug": "at-sign-symbol-typing-lesson",
+    "title": "Symbol: At Sign (@)",
+    "keyLabel": "the at sign (@)",
+    "emoji": "@ ⌨️",
+    "sub": "Shift + 2 — left ring finger"
+  },
+  {
+    "slug": "hash-symbol-pound-sign-hashtag-typing-lesson",
+    "title": "Symbol: Hash (#)",
+    "keyLabel": "the hash (#)",
+    "emoji": "# ⌨️",
+    "sub": "Shift + 3 — left middle finger"
+  },
+  {
+    "slug": "dollar-sign-symbol-typing-lesson",
+    "title": "Symbol: Dollar Sign ($)",
+    "keyLabel": "the dollar sign ($)",
+    "emoji": "$ ⌨️",
+    "sub": "Shift + 4 — left index finger"
+  },
+  {
+    "slug": "percent-sign-symbol-typing-lesson",
+    "title": "Symbol: Percent Sign (%)",
+    "keyLabel": "the percent sign (%)",
+    "emoji": "% ⌨️",
+    "sub": "Shift + 5 — left index finger"
+  },
+  {
+    "slug": "caret-symbol-typing-lesson",
+    "title": "Symbol: Caret (^)",
+    "keyLabel": "the caret (^)",
+    "emoji": "^ ⌨️",
+    "sub": "Shift + 6 — right index finger"
+  },
+  {
+    "slug": "ampersand-symbol-typing-lesson",
+    "title": "Symbol: Ampersand (&)",
+    "keyLabel": "the ampersand (&)",
+    "emoji": "& ⌨️",
+    "sub": "Shift + 7 — right index finger"
+  },
+  {
+    "slug": "asterisk-symbol-star-typing-lesson",
+    "title": "Symbol: Asterisk (*)",
+    "keyLabel": "the asterisk (*)",
+    "emoji": "* ⌨️",
+    "sub": "Shift + 8 — right middle finger"
+  },
+  {
+    "slug": "open-parenthesis-left-bracket-typing-lesson",
+    "title": "Symbol: Open Parenthesis (()",
+    "keyLabel": "the open parenthesis (()",
+    "emoji": "( ⌨️",
+    "sub": "Shift + 9 — right ring finger"
+  },
+  {
+    "slug": "close-parenthesis-right-bracket-typing-lesson",
+    "title": "Symbol: Close Parenthesis ())",
+    "keyLabel": "the close parenthesis ())",
+    "emoji": ") ⌨️",
+    "sub": "Shift + 0 — right pinky"
+  },
+  {
+    "slug": "hyphen-dash-minus-symbol-typing-lesson",
+    "title": "Symbol: Hyphen (-)",
+    "keyLabel": "the hyphen (-)",
+    "emoji": "- ⌨️",
+    "sub": "- — right pinky"
+  },
+  {
+    "slug": "underscore-symbol-typing-lesson",
+    "title": "Symbol: Underscore (_)",
+    "keyLabel": "the underscore (_)",
+    "emoji": "_ ⌨️",
+    "sub": "Shift + - — right pinky"
+  },
+  {
+    "slug": "equals-sign-symbol-typing-lesson",
+    "title": "Symbol: Equals Sign (=)",
+    "keyLabel": "the equals sign (=)",
+    "emoji": "= ⌨️",
+    "sub": "= — right pinky"
+  },
+  {
+    "slug": "plus-sign-symbol-typing-lesson",
+    "title": "Symbol: Plus Sign (+)",
+    "keyLabel": "the plus sign (+)",
+    "emoji": "+ ⌨️",
+    "sub": "Shift + = — right pinky"
+  },
+  {
+    "slug": "open-square-bracket-left-bracket-typing-lesson",
+    "title": "Symbol: Open Square Bracket ([)",
+    "keyLabel": "the open square bracket ([)",
+    "emoji": "[ ⌨️",
+    "sub": "[ — right pinky"
+  },
+  {
+    "slug": "open-curly-brace-left-brace-typing-lesson",
+    "title": "Symbol: Open Curly Brace ({)",
+    "keyLabel": "the open curly brace ({)",
+    "emoji": "{ ⌨️",
+    "sub": "Shift + [ — right pinky"
+  },
+  {
+    "slug": "close-square-bracket-right-bracket-typing-lesson",
+    "title": "Symbol: Close Square Bracket (])",
+    "keyLabel": "the close square bracket (])",
+    "emoji": "] ⌨️",
+    "sub": "[ — right pinky"
+  },
+  {
+    "slug": "close-curly-brace-right-brace-typing-lesson",
+    "title": "Symbol: Close Curly Brace (})",
+    "keyLabel": "the close curly brace (})",
+    "emoji": "} ⌨️",
+    "sub": "Shift + [ — right pinky"
+  },
+  {
+    "slug": "backslash-symbol-typing-lesson",
+    "title": "Symbol: Backslash (\\)",
+    "keyLabel": "the backslash (\\)",
+    "emoji": "\\ ⌨️",
+    "sub": "\\ — right pinky"
+  },
+  {
+    "slug": "pipe-vertical-bar-symbol-typing-lesson",
+    "title": "Symbol: Pipe (|)",
+    "keyLabel": "the pipe (|)",
+    "emoji": "| ⌨️",
+    "sub": "Shift + \\ — right pinky"
+  },
+  {
+    "slug": "colon-symbol-typing-lesson",
+    "title": "Symbol: Colon (:)",
+    "keyLabel": "the colon (:)",
+    "emoji": ": ⌨️",
+    "sub": "Shift + ; — right pinky"
+  },
+  {
+    "slug": "apostrophe-single-quote-typing-lesson",
+    "title": "Symbol: Apostrophe (')",
+    "keyLabel": "the apostrophe (')",
+    "emoji": "' ⌨️",
+    "sub": "' — right pinky"
+  },
+  {
+    "slug": "double-quotation-marks-typing-lesson",
+    "title": "Symbol: Double Quotation Mark (\")",
+    "keyLabel": "the double quotation mark (\")",
+    "emoji": "\" ⌨️",
+    "sub": "Shift + ' — right pinky"
+  },
+  {
+    "slug": "comma-symbol-typing-lesson",
+    "title": "Symbol: Comma (,)",
+    "keyLabel": "the comma (,)",
+    "emoji": ", ⌨️",
+    "sub": ", — right middle finger"
+  },
+  {
+    "slug": "less-than-sign-symbol-typing-lesson",
+    "title": "Symbol: Less-Than Sign (<)",
+    "keyLabel": "the less-than sign (<)",
+    "emoji": "< ⌨️",
+    "sub": "Shift + , — right middle finger"
+  },
+  {
+    "slug": "period-full-stop-typing-lesson",
+    "title": "Symbol: Period (.)",
+    "keyLabel": "the period (.)",
+    "emoji": ". ⌨️",
+    "sub": ". — right ring finger"
+  },
+  {
+    "slug": "greater-than-sign-symbol-typing-lesson",
+    "title": "Symbol: Greater-Than Sign (>)",
+    "keyLabel": "the greater-than sign (>)",
+    "emoji": "> ⌨️",
+    "sub": "Shift + . — right ring finger"
+  },
+  {
+    "slug": "forward-slash-symbol-typing-lesson",
+    "title": "Symbol: Forward Slash (/)",
+    "keyLabel": "the forward slash (/)",
+    "emoji": "/ ⌨️",
+    "sub": "/ — right pinky"
+  },
+  {
+    "slug": "question-mark-typing-lesson",
+    "title": "Symbol: Question Mark (?)",
+    "keyLabel": "the question mark (?)",
+    "emoji": "? ⌨️",
+    "sub": "Shift + / — right pinky"
+  },
+  {
+    "slug": "exclamation-at-hash-dollar-percent-symbols-typing-lesson",
+    "title": "Symbols: !@#$%",
+    "keyLabel": "the symbols !@#$%",
+    "emoji": "!@#$% ⌨️",
+    "sub": "Symbol combination practice"
+  },
+  {
+    "slug": "caret-ampersand-asterisk-parentheses-symbols-typing-lesson",
+    "title": "Symbols: ^&*()",
+    "keyLabel": "the symbols ^&*()",
+    "emoji": "^&*() ⌨️",
+    "sub": "Symbol combination practice"
+  },
+  {
+    "slug": "number-row-symbols-shift-typing-lesson",
+    "title": "Symbols: !@#$%^&*()",
+    "keyLabel": "the symbols !@#$%^&*()",
+    "emoji": "!? ⌨️",
+    "sub": "Symbol combination practice"
+  },
+  {
+    "slug": "parentheses-round-brackets-typing-lesson",
+    "title": "Symbols: ()",
+    "keyLabel": "the symbols ()",
+    "emoji": "() ⌨️",
+    "sub": "Symbol combination practice"
+  },
+  {
+    "slug": "square-brackets-typing-lesson",
+    "title": "Symbols: []",
+    "keyLabel": "the symbols []",
+    "emoji": "[] ⌨️",
+    "sub": "Symbol combination practice"
+  },
+  {
+    "slug": "curly-braces-brackets-typing-lesson",
+    "title": "Symbols: {}",
+    "keyLabel": "the symbols {}",
+    "emoji": "{} ⌨️",
+    "sub": "Symbol combination practice"
+  },
+  {
+    "slug": "angle-brackets-less-than-greater-than-typing-lesson",
+    "title": "Symbols: <>",
+    "keyLabel": "the symbols <>",
+    "emoji": "<> ⌨️",
+    "sub": "Symbol combination practice"
+  },
+  {
+    "slug": "single-double-quotation-marks-typing-lesson",
+    "title": "Symbols: '\"",
+    "keyLabel": "the symbols '\"",
+    "emoji": "'\" ⌨️",
+    "sub": "Symbol combination practice"
+  },
+  {
+    "slug": "hyphen-underscore-typing-lesson",
+    "title": "Symbols: -_",
+    "keyLabel": "the symbols -_",
+    "emoji": "-_ ⌨️",
+    "sub": "Symbol combination practice"
+  },
+  {
+    "slug": "plus-equals-sign-typing-lesson",
+    "title": "Symbols: =+",
+    "keyLabel": "the symbols =+",
+    "emoji": "=+ ⌨️",
+    "sub": "Symbol combination practice"
+  },
+  {
+    "slug": "backslash-pipe-typing-lesson",
+    "title": "Symbols: \\|",
+    "keyLabel": "the symbols \\|",
+    "emoji": "\\| ⌨️",
+    "sub": "Symbol combination practice"
+  },
+  {
+    "slug": "comma-period-typing-lesson",
+    "title": "Symbols: ,.",
+    "keyLabel": "the symbols ,.",
+    "emoji": ",. ⌨️",
+    "sub": "Symbol combination practice"
+  },
+  {
+    "slug": "forward-slash-question-mark-typing-lesson",
+    "title": "Symbols: /?",
+    "keyLabel": "the symbols /?",
+    "emoji": "/? ⌨️",
+    "sub": "Symbol combination practice"
+  },
+  {
+    "slug": "backtick-tilde-typing-lesson",
+    "title": "Symbols: `~",
+    "keyLabel": "the symbols `~",
+    "emoji": "`~ ⌨️",
+    "sub": "Symbol combination practice"
+  },
+  {
+    "slug": "all-brackets-parentheses-square-curly-typing-lesson",
+    "title": "Symbols: ()[]{}",
+    "keyLabel": "the symbols ()[]{}",
+    "emoji": "()[]{} ⌨️",
+    "sub": "Symbol combination practice"
+  },
+  {
+    "slug": "punctuation-marks-typing-lesson",
+    "title": "Symbols: Punctuation Marks",
+    "keyLabel": "the symbols Punctuation Marks",
+    "emoji": "!? ⌨️",
+    "sub": "Symbol combination practice"
+  }
 ]

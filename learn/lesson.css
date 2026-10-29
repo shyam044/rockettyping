@@ -219,6 +219,8 @@ body { overflow-y: auto !important; background:#0a0a23; }
 .lesson-seo { border-top:1px solid rgba(226,183,20,0.12); padding-top:26px; }
 .lesson-seo h2 { color:#ffd700; font-size:17px; margin:0 0 10px; }
 .lesson-seo p { font-size:13px; color:rgba(255,255,255,0.55); line-height:1.7; margin:0 0 16px; }
+.lesson-seo a { color:#00e6cc; text-decoration:none; }
+.lesson-seo a:hover { text-decoration:underline; }
 .lesson-seo .lesson-faq-q { color:#ccc; font-weight:700; font-size:13px; margin-bottom:4px; }
 
 /* ── Device-width tiers: xs phone → sm phone → md tablet → lg/xl desktop ── */

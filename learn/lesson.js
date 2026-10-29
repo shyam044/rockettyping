@@ -304,7 +304,7 @@ window.RocketLesson = (function () {
     if (!fg) return;
     clearTimeout(fg._homeTimer);
     fg._homeTimer = setTimeout(function () {
-      if (_guidedFinger === fid) return;
+      if (_guidedFinger === fid || _guidedShift === fid) return;
       animateFinger(fid, fg.homeX, fg.homeY, false);
     }, 170);
   }
@@ -325,6 +325,7 @@ window.RocketLesson = (function () {
     var fid = fingerOfCode[code];
     if (!posi || !fid) return;
     if (_guidedFinger === fid) _guidedFinger = null;
+    if (_guidedShift === fid) _guidedShift = null;
     animateFinger(fid, posi.x, posi.y - (code === 'Space' ? 4 * HAND_SCALE : 0), true);
     returnHome(fid);
   }
@@ -572,13 +573,36 @@ window.RocketLesson = (function () {
     var map = {
       ',': 'Comma', '.': 'Period', '/': 'Slash', ';': 'Semicolon', "'": 'Quote',
       '-': 'Minus', '=': 'Equal', '[': 'BracketLeft', ']': 'BracketRight',
-      '\\': 'Backslash', '`': 'Backquote'
+      '\\': 'Backslash', '`': 'Backquote',
+      /* Shifted symbols → the physical key they share (US layout) */
+      '~': 'Backquote', '!': 'Digit1', '@': 'Digit2', '#': 'Digit3', '$': 'Digit4', '%': 'Digit5',
+      '^': 'Digit6', '&': 'Digit7', '*': 'Digit8', '(': 'Digit9', ')': 'Digit0', '_': 'Minus',
+      '+': 'Equal', '{': 'BracketLeft', '}': 'BracketRight', '|': 'Backslash', ':': 'Semicolon',
+      '"': 'Quote', '<': 'Comma', '>': 'Period', '?': 'Slash'
     };
     return map[ch] || null;
   }
 
+  /* Does this character need Shift held? (capital letters + shifted symbols).
+     The cue then also lights the Shift key on the OPPOSITE hand — the
+     standard touch-typing rule — and guides that pinky. */
+  var SHIFTED_SYMBOLS = '~!@#$%^&*()_+{}|:"<>?';
+  function needsShift(ch) {
+    return (ch >= 'A' && ch <= 'Z') || SHIFTED_SYMBOLS.indexOf(ch) > -1;
+  }
+  function shiftCodeFor(code) {
+    var el = document.querySelector('.km-key[data-code="' + code + '"]');
+    return el && el.dataset.hand === 'l' ? 'ShiftRight' : 'ShiftLeft';
+  }
+
   var _nextKeyRetries = 0;
   var _guidedFinger = null;
+  var _guidedShift = null;
+
+  function releaseGuides() {
+    if (_guidedFinger) { returnHome(_guidedFinger); _guidedFinger = null; }
+    if (_guidedShift) { var f = _guidedShift; _guidedShift = null; returnHome(f); }
+  }
 
   function highlightNextKey() {
     var prevEls = document.querySelectorAll('.km-key.km-next');
@@ -588,19 +612,13 @@ window.RocketLesson = (function () {
 
     var ex = EXERCISES[exIdx].text;
     if (pos >= ex.length) {
-      if (_guidedFinger) {
-        returnHome(_guidedFinger);
-        _guidedFinger = null;
-      }
+      releaseGuides();
       return;
     }
 
     var code = codeForChar(ex[pos]);
     if (!code) {
-      if (_guidedFinger) {
-        returnHome(_guidedFinger);
-        _guidedFinger = null;
-      }
+      releaseGuides();
       return;
     }
 
@@ -608,6 +626,10 @@ window.RocketLesson = (function () {
 
     if (keyEl) {
       keyEl.classList.add('km-next');
+      if (needsShift(ex[pos])) {
+        var shEl = document.querySelector('.km-key[data-code="' + shiftCodeFor(code) + '"]');
+        if (shEl) shEl.classList.add('km-next');
+      }
       _nextKeyRetries = 0;
       guideNextFinger();
     } else if (_nextKeyRetries < 40) {
@@ -619,14 +641,9 @@ window.RocketLesson = (function () {
   function guideNextFinger() {
     if (!keymapOn || !EXERCISES[exIdx]) return;
     var ex = EXERCISES[exIdx].text;
-    if (pos >= ex.length) {
-      if (_guidedFinger) {
-        returnHome(_guidedFinger);
-        _guidedFinger = null;
-      }
-      return;
-    }
-    var code = codeForChar(ex[pos]);
+    if (pos >= ex.length) { releaseGuides(); return; }
+    var ch = ex[pos];
+    var code = codeForChar(ch);
     var fid = fingerOfCode[code];
     if (!code || !fid || !keyPos[code] || !fingers[fid]) return;
     if (_guidedFinger && _guidedFinger !== fid) returnHome(_guidedFinger);
@@ -635,6 +652,20 @@ window.RocketLesson = (function () {
     clearTimeout(fg._homeTimer);
     var target = keyPos[code];
     animateFinger(fid, target.x, target.y - (code === 'Space' ? 4 * HAND_SCALE : 0), false);
+
+    /* Shift pinky (opposite hand) — only when this character needs Shift. */
+    var sFid = null;
+    if (needsShift(ch)) {
+      var sCode = shiftCodeFor(code);
+      sFid = fingerOfCode[sCode];
+      if (sFid && keyPos[sCode] && fingers[sFid]) {
+        if (_guidedShift && _guidedShift !== sFid) returnHome(_guidedShift);
+        _guidedShift = sFid;
+        clearTimeout(fingers[sFid]._homeTimer);
+        animateFinger(sFid, keyPos[sCode].x, keyPos[sCode].y, false);
+      } else sFid = null;
+    }
+    if (!sFid && _guidedShift) { var old = _guidedShift; _guidedShift = null; returnHome(old); }
   }
 
 
