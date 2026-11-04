@@ -194,8 +194,8 @@
     <link rel="dns-prefetch" href="https://flagcdn.com">
     <!-- Preload critical assets: logo image + main stylesheet -->
     <link rel="preload" as="image" href="/images/rocket-typing-logo.webp" fetchpriority="high">
-    <link rel="preload" href="styles.css?v=20261027" as="style">
-    <link rel="preload" href="responsive.css?v=20261027" as="style">
+    <link rel="preload" href="styles.css?v=20261104" as="style">
+    <link rel="preload" href="responsive.css?v=20261104" as="style">
     <!-- ═══════════════════════════════════════════════════════════════════
          INLINE CRITICAL CSS  — rendered before any external stylesheet.
          RULE: every layout-affecting property that also exists in styles.css
@@ -291,14 +291,9 @@
         /* Mirrors the flexbox layout further down (also #km-outer-row). Without   */
         /* this matching, the row would briefly render as a grid then flip to flex */
         /* at the same specificity/element, once the later <style> block parses.   */
-        #km-outer-row{display:flex;align-items:flex-end;justify-content:flex-start;flex-wrap:wrap;gap:16px;width:100%}
+        #km-outer-row{display:flex;align-items:flex-end;justify-content:center;flex-wrap:wrap;gap:16px;width:100%}
 
-        /* ── 9. Elon badge — no offset needed anymore ────────────────────────────── */
-        /* Musk/Elon spacing is now a real flex `gap` (see #km-scores-panel further */
-        /* down), not a translateX() nudge, so there's nothing to mirror here for   */
-        /* first-paint stability. #km-elon-badge{transform:none!important} below    */
-        /* cancels styles.css's old translateX(50px) rule so it can't reappear.     */
-    </style>
+</style>
 
     <!-- ── Main stylesheets: NON-BLOCKING ─────────────────────────────────────────
          LCP ROOT CAUSE: styles.css (34 KB) + responsive.css (14 KB) were loaded as
@@ -319,8 +314,8 @@
          (#app margin 20px->0, #words top 253px->177px, header 27px->7px), so the whole page
          jumped ~75px = ~0.14 CLS on every load. Loading them normally means the first paint
          already uses the final geometry, so there is no shift. -->
-    <link rel="stylesheet" href="styles.css?v=20261027">
-    <link rel="stylesheet" href="responsive.css?v=20261027">
+    <link rel="stylesheet" href="styles.css?v=20261104">
+    <link rel="stylesheet" href="responsive.css?v=20261104">
     <!-- Font Awesome removed: the whole 6.6.0 icon library (100+ KB + an extra
          third-party connection) was being loaded on this page to render exactly
          one icon (the X/Twitter share glyph). Replaced with a 300-byte inline
@@ -523,278 +518,25 @@
      KEYMAP SCENE STYLES — Animated Typing Character
 ═══════════════════════════════════════════════════════════════ -->
 <style>
-/* ══════════════════════════════════════════════
-   OUTER ROW — Score Badges + Keymap side by side
-══════════════════════════════════════════════ */
+
 #km-outer-row {
     display: flex;
-    /* Deliberately simple and decoupled: both children are flex:0 0 auto
-       below — neither one grows or shrinks based on the other, so
-       resizing/repositioning one can never shove the other around. A
-       fixed gap keeps them apart; nothing here reacts to content size.
-       align-items:flex-start top-aligns them (matching the reference
-       photo, where the score badges and the keymap box start at the same
-       y-position) — flex-end was bottom-aligning them instead, which
-       pulled the shorter score panel down below the keymap's top edge. */
+    flex-wrap: wrap;
     align-items: flex-start;
-    justify-content: flex-start;
+    justify-content: center;
     gap: 28px;
     width: 100%;
 }
 
-/* ══════════════════════════════════════════════
-   KEYMAP SCORE BADGES — Musk & Elon Score
-══════════════════════════════════════════════ */
-#km-scores-panel {
-    display: flex;
-    flex-direction: row;
-    align-items: flex-end;
-    justify-content: flex-start;
-    /* Real gap instead of a translateX() nudge on the Elon badge — a
-       transform shifts pixels without the box actually reserving that
-       space, which is what let it visually bleed into the keymap next
-       to it. A gap is honest layout space; it can never overlap anything. */
-    gap: 10px;
-    padding-bottom: 8px;
-    padding-left: 20px;
-    flex: 0 0 auto;
-    transition: opacity 0.35s ease, transform 0.35s ease;
-    /* Was `transform: translate(80px, 50px)`. Same fix as #km-wrap below:
-       a transform here made this the containing block for the Musk/Elon
-       score badges once the layout-customizer set them to position:fixed
-       to drag them, which trapped them near their original spot instead
-       of letting them move freely. margin gives the identical visual
-       offset without creating that containing block. */
-    margin: 50px 0 0 60px;
-}
-
-#km-scores-panel.km-scores-hidden {
-    opacity: 0;
-    pointer-events: none;
-    transform: translateX(-12px);
-}
-
-/* Keymap (including its own ON/OFF toggle button) + Musk/Elon scores are
-   irrelevant while choosing between the 3 Notes cards — nothing has been
-   picked yet. !important so this reliably wins over the normal typing
-   engine's own independent visibility logic. Removed again the instant any
-   card is picked (see setNotesUiActive(false) at each card's click handler)
-   — unlike the picker screen, once Own/Paste/Upload is actually chosen the
-   keymap and scores are relevant again, same as any other test. */
-#app.rt-notes-active #km-wrap,
-#app.rt-notes-active #km-scores-panel {
+#app.rt-notes-active #km-wrap {
     display: none !important;
 }
 
-.km-score-badge {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
-}
-
-/* Rotating ring wrapper — bigger size */
-.km-score-ring {
-    position: relative;
-    width: 148px;
-    height: 148px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-}
-
 /* Spinning gradient border via pseudo element */
-.km-score-ring::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: 50%;
-    padding: 4px;
-    -webkit-mask:
-        linear-gradient(#fff 0 0) content-box,
-        linear-gradient(#fff 0 0);
-    mask:
-        linear-gradient(#fff 0 0) content-box,
-        linear-gradient(#fff 0 0);
-    -webkit-mask-composite: destination-out;
-    mask-composite: exclude;
-    animation: km-ring-spin 2.4s linear infinite;
-}
-
-/* Musk ring: gold/orange conic gradient */
-.km-musk-ring::before {
-    background: conic-gradient(
-        #e2b714 0deg,
-        #ff9900 90deg,
-        #ff6600 150deg,
-        rgba(226,183,20,0.15) 200deg,
-        #e2b714 360deg
-    );
-}
-
-/* Elon ring: cyan/purple conic gradient — different speed + direction */
-.km-elon-ring::before {
-    background: conic-gradient(
-        #00e6cc 0deg,
-        #9b72cf 100deg,
-        #ff4fd8 180deg,
-        rgba(0,230,204,0.12) 230deg,
-        #00e6cc 360deg
-    );
-    animation-duration: 1.8s;
-    animation-direction: reverse;
-}
 
 @keyframes km-ring-spin {
     from { transform: rotate(0deg); }
     to   { transform: rotate(360deg); }
-}
-
-/* Inner circle */
-.km-score-inner {
-    position: relative;
-    z-index: 1;
-    width: 138px;
-    height: 138px;
-    border-radius: 50%;
-    background: #0c0c22;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 2px;
-}
-
-.km-score-emoji {
-    font-size: 26px;
-    line-height: 1;
-}
-
-.km-score-num {
-    font-size: 44px;
-    font-weight: 900;
-    line-height: 1;
-    font-family: 'Roboto Mono', monospace;
-    letter-spacing: -1px;
-    transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1);
-}
-
-.km-musk-ring .km-score-num { color: #e2b714; }
-.km-elon-ring .km-score-num { color: #00e6cc; }
-
-.km-score-lbl {
-    font-size: 13px;
-    font-weight: 700;
-    letter-spacing: 2px;
-    font-family: 'Roboto Mono', monospace;
-    opacity: 0.55;
-    text-transform: uppercase;
-}
-
-.km-musk-ring .km-score-lbl { color: #e2b714; }
-.km-elon-ring .km-score-lbl { color: #00e6cc; }
-
-/* Badge subtitle label below the ring */
-.km-score-tag {
-    font-size: 10px;
-    font-family: 'Roboto Mono', monospace;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    opacity: 0.35;
-    color: #fff;
-}
-
-/* pop animation on score update */
-@keyframes km-score-pop {
-    0%   { transform: scale(1); }
-    40%  { transform: scale(1.35); }
-    70%  { transform: scale(0.92); }
-    100% { transform: scale(1); }
-}
-.km-score-num.km-pop {
-    animation: km-score-pop 0.5s cubic-bezier(0.34,1.56,0.64,1);
-}
-
-/* ── Exact-value tooltip — shown on hover (desktop) / tap (touch) ──
-   Once Musk/Elon scores go 1000+, the ring shows a compact "10.5K"
-   form so the number never overflows the circle. This tooltip reveals
-   the precise underlying value above the ring, professionally, without
-   ever touching the ring's own layout. */
-.km-score-exact-tip {
-    position: absolute;
-    bottom: 100%;
-    left: 50%;
-    margin-bottom: 12px;
-    transform: translateX(-50%) translateY(6px) scale(0.9);
-    background: #12122a;
-    border: 1.5px solid currentColor;
-    padding: 7px 14px;
-    border-radius: 8px;
-    font-family: 'Roboto Mono', monospace;
-    font-size: 14px;
-    font-weight: 900;
-    letter-spacing: 0.5px;
-    white-space: nowrap;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.18s ease, transform 0.18s ease;
-    z-index: 45;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.55);
-}
-.km-score-exact-tip::after {
-    content: '';
-    position: absolute;
-    top: 100%;
-    left: 50%;
-    width: 10px;
-    height: 10px;
-    background: #12122a;
-    border-right: 1.5px solid currentColor;
-    border-bottom: 1.5px solid currentColor;
-    transform: translate(-50%, -50%) rotate(45deg);
-}
-.km-musk-ring .km-score-exact-tip { color: #e2b714; }
-.km-elon-ring .km-score-exact-tip { color: #00e6cc; }
-
-.km-score-ring:hover .km-score-exact-tip,
-.km-score-ring.km-tip-show .km-score-exact-tip {
-    opacity: 1;
-    transform: translateX(-50%) translateY(0) scale(1);
-}
-
-/* ── Musk Score Gain Chip (+N animation) ─────────────────────── */
-.musk-gain-chip {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 20;
-    /* pill style */
-    background: linear-gradient(135deg, #e2b714 0%, #ff9900 100%);
-    color: #0c0c22;
-    font-family: 'Roboto Mono', monospace;
-    font-size: 28px;
-    font-weight: 900;
-    letter-spacing: -0.5px;
-    padding: 6px 18px;
-    border-radius: 999px;
-    box-shadow: 0 0 24px rgba(226,183,20,0.65), 0 4px 16px rgba(0,0,0,0.45);
-    white-space: nowrap;
-    pointer-events: none;
-    opacity: 1;
-    transition: none;
-}
-/* fly-up keyframe */
-@keyframes musk-gain-fly {
-    0%   { opacity: 0;   transform: translate(-50%, 20px)  scale(0.6); }
-    18%  { opacity: 1;   transform: translate(-50%, -10px) scale(1.15); }
-    55%  { opacity: 1;   transform: translate(-50%, -48px) scale(1); }
-    100% { opacity: 0;   transform: translate(-50%, -80px) scale(0.8); }
-}
-.musk-gain-chip--fly {
-    animation: musk-gain-fly 1.32s cubic-bezier(0.22,1,0.36,1) forwards;
 }
 
 /* ── Toggle Row (now lives inside #km-header, centered — see below) ── */
@@ -869,14 +611,6 @@ body.test-running #app #page-title {
     opacity: 0 !important;
 }
 
-/* Musk/Elon spacing is a real flex `gap` now (see #km-scores-panel), not a
-   transform — this cancels styles.css's old #km-elon-badge{transform:
-   translateX(50px)} so it can't reintroduce the paint-only nudge that was
-   bleeding into the keymap next to it. */
-#km-elon-badge {
-    transform: none !important;
-}
-
 /* ══════════════════════════════════════════════════════════════
    SIZE TUNING — change ONLY these 5 numbers to resize the whole
    keymap + virtual hands (keyboard, fingers, palms all scale
@@ -909,16 +643,7 @@ body.test-running #app #page-title {
 /* ── Scene Container ── */
 #km-wrap {
     width: min(var(--km-total-w), 100%);
-    /* Decoupled from #km-scores-panel — flex:0 0 auto means its SIZE
-       neither grows nor shrinks based on the score panel (or vice versa);
-       it always stays at its own natural width from --km-total-w. The
-       margin-left is a desktop-only POSITION nudge: it shifts the keymap
-       right of where flex-start would otherwise put it, to visually
-       balance it against the score panel + gap on wide screens. In the
-       ≤1024px stacked layout (responsive.css) this is reset to 0 so
-       align-items:center on the parent can center the keymap correctly —
-       leaving the desktop offset in place there was pushing it off-center
-       and crowding it against the right edge on phones/tablets. */
+    /* flex:0 0 auto -- keeps its own natural width from --km-total-w. */
     flex: 0 0 auto;
     box-sizing: border-box;
     overflow: visible;
@@ -1139,15 +864,10 @@ body.test-running #app #page-title {
     :root{ --km-gap: 8px; }
 }
 
-/* ── Mobile/tablet stacking order ──
-   #km-outer-row switches to a stacked flex column at this same ≤1024px
-   breakpoint (see responsive.css). In the DOM, #km-scores-panel comes
-   before #km-wrap (needed for the desktop grid), but the requested stacked
-   reading order is: typing text (already above #km-outer-row) → keymap →
-   score panel. `order` reorders them visually without touching the DOM. */
+/* Mobile/tablet stacking order: keymap first (see responsive.css for the stacked layout). */
 @media (max-width: 1024px) {
     #km-wrap { order: 1; }
-    #km-scores-panel { order: 2; }
+    
 }
 
 /* ══════════════════════════════════════════════════════════════
@@ -1290,6 +1010,45 @@ html.test-running #rt-buy::after { animation: none; }
     .rt-buy-btn, .rt-buy-btn svg { transition: none; }
 }
 </style>
+<style id="rt-lesson-seo-css">
+/* In-content ad area directly under the keymap. Always in normal flow (never display:none)
+   so the ad script can place an ad in it; below the fold, so it cannot cause layout shift. */
+#km-outer-row { --rt-buy-w: 176px; }
+#km-outer-row > .lesson-seo {
+    order: 1;
+    box-sizing: border-box;
+    flex: 0 0 auto;
+    width: min(var(--km-total-w), 100%);
+    margin: 4px 0 0;
+    padding: 14px 6px 4px;
+    text-align: left;
+    color: var(--rt-sub, #8b949e);
+    font-size: 14px;
+    line-height: 1.65;
+    border-top: 1px solid rgba(var(--rt-main-rgb, 100,181,246), .18);
+}
+.lesson-seo h2 { margin: 0 0 8px; font-size: 15px; letter-spacing: .4px; color: var(--rt-main, #64b5f6); }
+.lesson-seo p  { margin: 0 0 10px; }
+/* Wide screens: keymap + Buy box sit side by side; this row is centred under the KEYMAP only
+   (right margin = width of the Buy box + the row gap, so both rows share the same centre). */
+/* CENTERING FIX: the Buy box sits to the right of the keymap, which used to push the keymap left of the
+   page centre. An invisible spacer of the same width on the LEFT balances it, so the keymap (and the
+   text row under it) are truly centred on the screen. No margin offset needed any more. */
+@media (min-width: 1340px) {
+    #km-outer-row::before { content: ""; display: block; flex: 0 0 var(--rt-buy-w); order: 0; }
+    #km-outer-row > .lesson-seo { margin-right: 0; }
+}
+@media (min-width: 1500px) { #km-outer-row { --rt-buy-w: 200px; } }
+/* Laptops / tablets / phones: keymap -> ad area -> Buy strip */
+@media (max-width: 1339px) {
+    #km-outer-row::before { display: none; }
+    #km-outer-row > .lesson-seo { order: 2; margin-right: 0; }
+    #rt-buy { order: 3; }
+}
+@media (max-width: 520px) {
+    #km-outer-row > .lesson-seo { font-size: 13px; padding-left: 10px; padding-right: 10px; }
+}
+</style>
     <!-- result-ad loads via the safe iframe-based loadNativeBannerAd()
          helper further down the page (see main script), which keeps
          the ad network's document.write() calls contained inside their
@@ -1347,8 +1106,6 @@ body{background-image:
 footer a:hover{color:var(--rt-main) !important;}
 .play-game-btn,.learn-type-btn,#header-auth-btn button{background:linear-gradient(135deg,var(--rt-main),var(--rt-main2)) !important;color:var(--rt-bg) !important;}
 #btn-login,#btn-signup,#btn-forgot{background:linear-gradient(135deg,var(--rt-main),var(--rt-main2)) !important;color:var(--rt-bg) !important;}
-.km-musk-ring .km-score-num,.km-musk-ring .km-score-lbl,.km-score-tag{color:var(--rt-main) !important;}
-.km-musk-ring::before{background:conic-gradient(var(--rt-main) 0deg,var(--rt-main2) 90deg,var(--rt-main2) 150deg,rgba(var(--rt-main-rgb),0.15) 200deg,var(--rt-main) 360deg) !important;}
 
 /* ── Settings gear + panel (Color / Custom) ── */
 #rt-settings-btn{position:fixed;right:20px;bottom:40px;width:50px;height:50px;border-radius:50%;
@@ -1780,38 +1537,10 @@ html.rt-result-open .rt-hud-moved{visibility:hidden !important;pointer-events:no
      Shows real-time key highlighting with arm animations
 ═══════════════════════════════════════════════════════════════ -->
 
-<!-- Outer row: [Score Badges] [Keymap Box] -->
+<!-- Outer row: [Keymap Box] [Buy keyboard] + the in-content ad area under the keymap -->
 <div id="km-outer-row">
 
-    <!-- ── LEFT: Musk Score + Elon Score Badges (OUTSIDE keymap box) ── -->
-    <div id="km-scores-panel">
-        <!-- Musk Score Badge -->
-        <div class="km-score-badge" id="km-musk-badge" title="Musk Score: every 60s typed = 1 point">
-            <div class="km-score-ring km-musk-ring">
-                <div class="km-score-exact-tip" id="km-musk-exact">0</div>
-                <div class="km-score-inner">
-                    <span class="km-score-emoji">🚀</span>
-                    <span class="km-score-num" id="km-musk-num">0</span>
-                    <span class="km-score-lbl">MUSK</span>
-                </div>
-            </div>
-            <span class="km-score-tag">score</span>
-        </div>
-        <!-- Elon Score Badge -->
-        <div class="km-score-badge" id="km-elon-badge" title="Elon Score: session-based — (avg WPM + avg Accuracy) ÷ 100 per 60-min session">
-            <div class="km-score-ring km-elon-ring">
-                <div class="km-score-exact-tip" id="km-elon-exact">0</div>
-                <div class="km-score-inner">
-                    <span class="km-score-emoji">⚡</span>
-                    <span class="km-score-num" id="km-elon-num">0</span>
-                    <span class="km-score-lbl">ELON</span>
-                </div>
-            </div>
-            <span class="km-score-tag">score</span>
-        </div>
-    </div>
-
-    <!-- ── RIGHT: Keymap + Virtual Typing Hands box ── -->
+    <!-- Keymap + Virtual Typing Hands box -->
     <div id="km-wrap">
     <!-- Scene: header (KEY MAP toggle centered + SOUND toggle) is always
          visible so the keymap can be switched back on; only the keyboard/
@@ -1855,6 +1584,15 @@ html.rt-result-open .rt-hud-moved{visibility:hidden !important;pointer-events:no
         </ul>
     </aside>
 
+    <!-- -- IN-CONTENT AD AREA (Journey Content Selector = .lesson-seo). Sits directly
+         under the keymap; real text blocks so the ad is placed between them. -- -->
+    <section class="lesson-seo" aria-label="About this typing test">
+        <h2>Free typing speed test</h2>
+        <p>Rocket Typing measures your words per minute (WPM) and accuracy in real time. Pick a time or word count, start typing, and your result appears the moment the test ends.</p>
+        <p>WPM counts every five characters as one word, so mistakes lower your net speed. Accuracy is the share of keystrokes that were correct.</p>
+        <p>Use the key map to see which finger should press each key. Correct finger placement is the fastest way to build speed that lasts.</p>
+        <p>Short daily practice beats long, rare sessions. Retake the test often and watch your personal bests climb on your profile.</p>
+    </section>
 </div><!-- #km-outer-row -->
 
 <div id="rt-stack">
@@ -2471,29 +2209,6 @@ window.deleteUser = deleteUser;
                 localStorage.setItem('rt_registered_name', username); // keep for leaderboard compat
                 updateAuthUI(true, username);
 
-                // ── Restore Musk & Elon scores from Firestore (cross-device sync) ──
-                try {
-                    const scoresDoc = await getDoc(doc(db, 'user_scores', user.uid));
-                    if (scoresDoc.exists()) {
-                        const sd = scoresDoc.data();
-                        const MUSK_LS = 'rt_musk_' + user.uid;
-                        const ELON_LS = 'rt_elon_'  + user.uid;
-                        const localMusk = parseFloat(localStorage.getItem(MUSK_LS) || '0');
-                        // Only overwrite if Firestore has MORE seconds (device with more progress wins)
-                        if ((sd.muskSecs || 0) > localMusk) {
-                            localStorage.setItem(MUSK_LS, sd.muskSecs.toString());
-                        }
-                        // Restore elon state if Firestore elonScore is higher than local
-                        if (sd.elonState) {
-                            let localElonState = {};
-                            try { localElonState = JSON.parse(localStorage.getItem(ELON_LS) || '{}'); } catch(_e) {}
-                            const localElonScore = localElonState.elonScore || 0;
-                            if ((sd.elonState.elonScore || 0) > localElonScore) {
-                                localStorage.setItem(ELON_LS, JSON.stringify(sd.elonState));
-                            }
-                        }
-                    }
-                } catch (_syncErr) { console.warn('Score restore from Firestore failed:', _syncErr); }
             }
         } else {
             window._currentUser = null;
@@ -2645,7 +2360,7 @@ window.deleteUser = deleteUser;
         })();
     </script>
     <script src="vocabulary.js?v=3"></script>
-    <script src="app-core.js?v=20261027"></script>
+    <script src="app-core.js?v=20261104"></script>
     <script>
 // Handle ?openAuth=login and ?openAuth=signup from game.html and other pages
 // BUT only open modal if user is NOT logged in + clear the URL so reload doesn't re-trigger
@@ -3720,8 +3435,6 @@ var HUD_TARGETS = [
     { key:'qlenShort',    sel:'.qlen-btn[data-qlen="short"]',           label:'Short button' },
     { key:'qlenMedium',   sel:'.qlen-btn[data-qlen="medium"]',          label:'Medium (quote) button' },
     { key:'qlenLong',     sel:'.qlen-btn[data-qlen="long"]',            label:'Long button' },
-    { key:'muskBadge',    sel:'#km-musk-badge',                        label:'Musk Score badge' },
-    { key:'elonBadge',    sel:'#km-elon-badge',                        label:'Elon Score badge' },
     { key:'kmToggle',     sel:'#km-toggle-btn',                        label:'Keymap toggle button' },
     { key:'kmScene',      sel:'#km-scene',                             label:'Keymap' },
     { key:'liveWpm',      sel:'#live-wpm-display',                     label:'Live WPM' }
