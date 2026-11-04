@@ -250,7 +250,6 @@
         <div class="leaderboard-mode-tabs">
             <button class="lb-mode-tab active" data-lbmode="time">TIME</button>
             <button class="lb-mode-tab" data-lbmode="words">WORDS</button>
-            <button class="lb-mode-tab" data-lbmode="elon">⚡ ELON</button>
         </div>
         <div class="leaderboard-time-tabs" id="lb-duration-tabs">
             <button class="time-tab active" data-duration="10" data-lbfor="time">10s</button>
@@ -676,29 +675,6 @@ window.deleteUser = deleteUser;
                 localStorage.setItem('rt_registered_name', username); // keep for leaderboard compat
                 updateAuthUI(true, username);
 
-                // ── Restore Musk & Elon scores from Firestore (cross-device sync) ──
-                try {
-                    const scoresDoc = await getDoc(doc(db, 'user_scores', user.uid));
-                    if (scoresDoc.exists()) {
-                        const sd = scoresDoc.data();
-                        const MUSK_LS = 'rt_musk_' + user.uid;
-                        const ELON_LS = 'rt_elon_'  + user.uid;
-                        const localMusk = parseFloat(localStorage.getItem(MUSK_LS) || '0');
-                        // Only overwrite if Firestore has MORE seconds (device with more progress wins)
-                        if ((sd.muskSecs || 0) > localMusk) {
-                            localStorage.setItem(MUSK_LS, sd.muskSecs.toString());
-                        }
-                        // Restore elon state if Firestore elonScore is higher than local
-                        if (sd.elonState) {
-                            let localElonState = {};
-                            try { localElonState = JSON.parse(localStorage.getItem(ELON_LS) || '{}'); } catch(_e) {}
-                            const localElonScore = localElonState.elonScore || 0;
-                            if ((sd.elonState.elonScore || 0) > localElonScore) {
-                                localStorage.setItem(ELON_LS, JSON.stringify(sd.elonState));
-                            }
-                        }
-                    }
-                } catch (_syncErr) { console.warn('Score restore from Firestore failed:', _syncErr); }
             }
         } else {
             window._currentUser = null;
@@ -1386,105 +1362,6 @@ function sanitizeStr(s) {
             }
         }
 
-        // ── Elon-mode leaderboard ─────────────────────────────────────────
-        async function loadElonLeaderboard() {
-            updateLeaderboardPrompt();
-
-            const body = document.getElementById("leaderboard-body");
-            const skeleton = document.getElementById("lb-skeleton");
-            if (!body || !skeleton) return;
-
-            // 30-second cache
-            if (!window._lbCache) window._lbCache = {};
-            const cacheKey = 'elon';
-            const cached = window._lbCache[cacheKey];
-            if (cached && (Date.now() - cached.ts) < 30000) {
-                skeleton.innerHTML = '';
-                body.style.display = 'block';
-                _renderElonLeaderboardRows(body, cached.entries);
-                return;
-            }
-
-            skeleton.innerHTML = Array(10).fill(`<div class="skeleton-row"></div>`).join('');
-            body.style.display = "none";
-
-            // Query top 10 by elonScore — single-field index, free tier friendly
-            const q = query(
-                collection(db, "elon_scores"),
-                orderBy("elonScore", "desc"),
-                limit(10)
-            );
-
-            let snapshot;
-            try {
-                snapshot = await getDocs(q);
-            } catch(qErr) {
-                console.warn("Elon leaderboard query failed:", qErr);
-                skeleton.innerHTML = '';
-                body.innerHTML = '<div style="text-align:center;color:#aaa;padding:20px">Could not load Elon scores. Try again later.</div>';
-                body.style.display = 'block';
-                return;
-            }
-
-            const entries = [];
-            snapshot.forEach(docSnap => entries.push(docSnap.data()));
-
-            // Secondary country lookup for entries missing country
-            const namesToLookup = entries.filter(d => !d.country).map(d => d.name);
-            const countryMap = {};
-            if (namesToLookup.length > 0) {
-                try {
-                    const lookups = namesToLookup.map(n =>
-                        getDocs(query(collection(db, 'users'), where('name', '==', n), limit(1)))
-                    );
-                    const results = await Promise.all(lookups);
-                    results.forEach(snap => {
-                        snap.forEach(udoc => {
-                            const ud = udoc.data();
-                            if (ud.name && ud.country) countryMap[ud.name] = ud.country;
-                        });
-                    });
-                } catch(_e) {}
-            }
-
-            // Attach resolved countries
-            entries.forEach(d => { if (!d.country && countryMap[d.name]) d.country = countryMap[d.name]; });
-
-            skeleton.innerHTML = '';
-            body.style.display = 'block';
-            _renderElonLeaderboardRows(body, entries);
-
-            window._lbCache[cacheKey] = { ts: Date.now(), entries };
-        }
-
-        function _renderElonLeaderboardRows(body, entries) {
-            body.innerHTML = '';
-            let rank = 1;
-            entries.forEach(data => {
-                const isYou = window._currentUser && data.uid && data.uid === window._currentUser.uid;
-                const row = document.createElement('div');
-                row.className = `leaderboard-row ${rank === 1 ? 'top1' : rank === 2 ? 'top2' : rank === 3 ? 'top3' : ''} ${isYou ? 'you' : ''}`;
-                const _country = data.country || (isYou ? (window._currentUser?.country || '') : '');
-                const _flag = getFlag(_country);
-                const _date = fmtDate(data.updatedAt || data.time);
-                let rankDisplay = rank;
-                if (rank === 1) rankDisplay = "🥇";
-                else if (rank === 2) rankDisplay = "🥈";
-                else if (rank === 3) rankDisplay = "🥉";
-                const _score = parseFloat(data.elonScore || 0).toFixed(2);
-                row.innerHTML = `
-                    <span class="rank">${rankDisplay}</span>
-                    <span class="player"><span class="lb-player-name">${sanitizeStr(data.name)}</span></span>
-                    <span class="lb-flag-cell" title="${sanitizeStr(_country)}">${_flag}</span>
-                    <span style="font-weight:900;color:#00e6cc">${_score}</span>
-                    <span style="color:#aaa;font-size:11px">⚡score</span>
-                    <span class="lb-date-cell">${_date}</span>
-                `;
-                body.appendChild(row);
-                rank++;
-            });
-        }
-
         // Save word-mode score to Firestore (typing_word_scores collection)
 
         // PERF: Helper to render cached leaderboard entries without re-querying Firestore
@@ -1535,14 +1412,9 @@ function openRegisterModal() { openAuthModal('signup'); }
                     tab.classList.add('active');
                     currentLbMode = tab.dataset.lbmode;
 
-                    // Show/hide duration buttons (hidden for elon mode)
+                    // Show/hide duration buttons (only the matching mode's buttons are shown)
                     document.querySelectorAll('.time-tab[data-lbfor="time"]').forEach(t => t.style.display = currentLbMode === 'time' ? '' : 'none');
                     document.querySelectorAll('.time-tab[data-lbfor="words"]').forEach(t => t.style.display = currentLbMode === 'words' ? '' : 'none');
-
-                    if (currentLbMode === 'elon') {
-                        loadElonLeaderboard();
-                        return;
-                    }
 
                     // Activate first tab of new mode and load
                     const firstTab = document.querySelector(`.time-tab[data-lbfor="${currentLbMode}"]`);
