@@ -179,7 +179,7 @@ let config = {
         });
 
         /* ── Notes submenu (Own / Upload / Paste) ──────────────────────── */
-        /* Keymap + Musk/Elon scores are irrelevant for the whole Notes flow
+        /* Keymap is irrelevant for the whole Notes flow
            (option cards, Own, Paste, Upload) — hidden for all of it via one
            flag, with !important in the CSS so it reliably overrides the
            normal typing engine's own independent keymap/score visibility
@@ -1232,10 +1232,6 @@ if (!testActive && !testEnded && e.key.length === 1) {
         var kmHeader = document.getElementById('km-header');
         if (kmHeader) kmHeader.classList.add('km-header-compact');
 
-        // Hide Musk & Elon score badges during typing
-        var kmScoresPanel = document.getElementById('km-scores-panel');
-        if (kmScoresPanel) kmScoresPanel.classList.add('km-scores-hidden');
-
         // Keep timer visible
         document.getElementById("test-config").style.display = "none";
         document.getElementById("difficulty-container").style.display = "none";
@@ -1452,8 +1448,6 @@ if (!testActive && !testEnded && e.key.length === 1) {
                     if (kmSoundBtn) kmSoundBtn.classList.add('km-sound-hidden');
                     var kmHeader = document.getElementById('km-header');
                     if (kmHeader) kmHeader.classList.add('km-header-compact');
-                    var kmScoresPanel = document.getElementById('km-scores-panel');
-                    if (kmScoresPanel) kmScoresPanel.classList.add('km-scores-hidden');
                     document.getElementById("test-config").style.display = "none";
                     document.getElementById("difficulty-container").style.display = "none";
                     document.getElementById("leaderboard-btn").style.display = "none";
@@ -1655,7 +1649,7 @@ if (!testActive && !testEnded && e.key.length === 1) {
         }
         function startTimer() {
             startTime = Date.now();
-            window._lastTestStartTime = startTime; // Musk Score: track start
+            window._lastTestStartTime = startTime;
             // ── Live WPM: show circle ──
             var liveWpmEl   = document.getElementById('live-wpm-display');
             if (liveWpmEl)  { liveWpmEl.style.display = 'block'; liveWpmEl.classList.add('show'); }
@@ -1692,8 +1686,6 @@ if (!testActive && !testEnded && e.key.length === 1) {
             const remaining = config.time - elapsed;
             timerDiv.textContent = formatTime(remaining);
 
-            // Musk Score milestone toast is shown ONLY after the test ends (not during typing)
-
             if (remaining <= 0) {
                 endTest();
             }
@@ -1708,57 +1700,8 @@ if (!testActive && !testEnded && e.key.length === 1) {
             var zenBtnEnd = document.getElementById('zen-finish-btn');
             if (zenBtnEnd) zenBtnEnd.classList.remove('show');
 
-            // Show Musk & Elon score badges again when test ends
-            var kmScoresPanelEnd = document.getElementById('km-scores-panel');
-            if (kmScoresPanelEnd) kmScoresPanelEnd.classList.remove('km-scores-hidden');
             const elapsedMinutes = (Date.now() - startTime) / 60000 || 0.001;
 
-            // === Musk Score: track for ALL modes (time, words, quotes) ===
-            // 60 seconds of typing = 1 Musk Score point, regardless of mode
-            try {
-                var _muskUid = (window._currentUser && window._currentUser.uid) ? window._currentUser.uid : 'guest';
-                var _muskKey = 'rt_musk_' + _muskUid;
-                var _elapsedMsMusk = Math.round(elapsedMinutes * 60000);
-                var _addSecsMusk   = Math.max(1, Math.round(_elapsedMsMusk / 1000));
-                var _prevSecsMusk  = parseFloat(localStorage.getItem(_muskKey) || '0');
-                var _newTotalMusk  = _prevSecsMusk + _addSecsMusk;
-                localStorage.setItem(_muskKey, _newTotalMusk.toString());
-                var _prevMuskScore = Math.floor(_prevSecsMusk / 60);
-                var _newMuskScore  = Math.floor(_newTotalMusk / 60);
-                window._muskScorePrev  = _prevMuskScore;
-                window._muskScoreNew   = _newMuskScore;
-                window._muskScoreDelta = _newMuskScore - _prevMuskScore;
-                if (typeof updateKmScoreBadges === 'function') updateKmScoreBadges();
-
-                // ── Firestore sync: only when Musk score hits a new multiple of 60 ──
-                // e.g. muskScore = 60, 120, 180 … triggers a save; 59→61 saves at 60.
-                // Stores muskSecs floored to the completed multiple of 60 × 60 seconds.
-                if (_muskUid !== 'guest' && window._currentUser && window._currentUser.uid) {
-                    var _storedMultiple = window._lastMuskSyncMultiple || 0;
-                    var _currentMultipleOf60 = Math.floor(_newMuskScore / 60); // how many 60-Musk milestones passed
-                    if (_currentMultipleOf60 > _storedMultiple) {
-                        window._lastMuskSyncMultiple = _currentMultipleOf60;
-                        // Store musk seconds floored to the last completed 60-point boundary
-                        var _syncMuskSecs = _currentMultipleOf60 * 60 * 60; // each 60 musk = 3600 secs
-                        // Grab latest elon state at time of save
-                        var _syncElonState = {};
-                        try { _syncElonState = JSON.parse(localStorage.getItem('rt_elon_' + _muskUid) || '{}'); } catch(_ee) {}
-                        var _syncElonScore  = _syncElonState.elonScore || 0;
-                        if (window.db && window.doc && window.setDoc) {
-                            window.setDoc(
-                                window.doc(window.db, 'user_scores', _muskUid),
-                                {
-                                    muskSecs  : _syncMuskSecs,
-                                    elonScore : _syncElonScore,
-                                    elonState : _syncElonState,
-                                    updatedAt : Date.now()
-                                },
-                                { merge: true }
-                            ).catch(function(_fsErr) { console.warn('Musk/Elon Firestore save failed:', _fsErr); });
-                        }
-                    }
-                }
-            } catch(_me) {}
 
             // WPM & Raw - use the counters you already maintain (much cleaner + accurate)
             const wpm = Math.round(correctKeystrokes / 5 / elapsedMinutes);
@@ -1920,7 +1863,7 @@ if (!testActive && !testEnded && e.key.length === 1) {
                 try { window.scrollTo(0, 0); } catch (_s) {}   // always show the result from the top
                 resultDiv.style.display = 'block';
                 resultDiv.classList.add('visible');
-                document.documentElement.classList.add('rt-result-open'); // hides keymap + Musk/Elon panel behind the result
+                document.documentElement.classList.add('rt-result-open'); // hides keymap behind the result
                 document.getElementById('main-header').style.display = 'none';
                 wordsDiv.style.display = 'none';
                 timerDiv.style.display = 'none';
@@ -1945,17 +1888,6 @@ if (!testActive && !testEnded && e.key.length === 1) {
             // Rocket chart animation — starts after a short delay so result is laid out
             setTimeout(() => drawRocketChart(), 400);
 
-            // === Elon Score: update session data with this test's wpm & accuracy ===
-            try {
-                var _elonUid = (window._currentUser && window._currentUser.uid) ? window._currentUser.uid : 'guest';
-                if (typeof updateElonScoreAfterTest === 'function' && wpm > 0) {
-                    // Read the CURRENT total Musk seconds AFTER the Musk update above
-                    var _elonMuskKey  = 'rt_musk_' + _elonUid;
-                    var _elonMuskSecs = parseFloat(localStorage.getItem(_elonMuskKey) || '0');
-                    updateElonScoreAfterTest(_elonUid, wpm, accuracy, _elonMuskSecs);
-                    if (typeof updateKmScoreBadges === 'function') updateKmScoreBadges();
-                }
-            } catch(_elonErr) {}
 
             // Save score to leaderboard (only registered users, time mode)
             const registeredName = window._currentUser?.name;
@@ -2433,21 +2365,10 @@ if (!testActive && !testEnded && e.key.length === 1) {
             var kmHeader = document.getElementById('km-header');
             if (kmHeader) kmHeader.classList.remove('km-header-compact');
 
-            // Show Musk & Elon score badges again after test — with gain animation
-            var kmScoresPanel = document.getElementById('km-scores-panel');
-            if (kmScoresPanel) {
-                kmScoresPanel.classList.remove('km-scores-hidden');
-                // Animate the musk score gain if there was a delta this session
-                if (typeof window._muskScoreDelta === 'number' && window._muskScoreDelta > 0) {
-                    _animateMuskGain(window._muskScorePrev, window._muskScoreDelta, window._muskScoreNew);
-                    window._muskScoreDelta = 0;
-                }
-            }
             clearInterval(timerInterval);
             testActive = false;
             testEnded  = false;   // ← allow new test to start on next keypress
             caret.classList.add('blink');
-            window._muskLastToastScore = null; // reset per-test milestone tracker
             currentWordIndex = 0;
             currentLetterIndex = 0;
             typedHistory = [];
@@ -3784,9 +3705,6 @@ window.openProfileModal = async function() {
         document.getElementById('pm-rank-badge').innerHTML =
             `<span class="pm-rank-badge" style="background:${rank.bg};color:${rank.color};border:1px solid ${rank.color}40;">${rank.icon} ${rank.label}</span>`;
 
-        // ── Musk Score ──
-        _renderMuskScore(user.uid);
-
         // Stats
         document.getElementById('pm-avg-wpm').textContent  = avgWpm  || '—';
         document.getElementById('pm-best-wpm').textContent = bestWpm || '—';
@@ -3889,448 +3807,6 @@ function _getRankBadge(bestWpm) {
     return                       { label:'BEGINNER',  icon:'🐣', bg:'rgba(255,255,255,0.05)',color:'#888' };
 }
 
-// ══════════════════════════════════════════════════════════════
-//  MUSK SCORE MODULE
-// ══════════════════════════════════════════════════════════════
-
-
-/* ─────────────────────────────────────────────────────────────
-   MUSK SCORE GAIN ANIMATION
-   Called when the user returns to the test page after a session.
-   Shows the old score → floating "+N" → new score with pop.
-───────────────────────────────────────────────────────────── */
-function _animateMuskGain(prevScore, delta, newScore) {
-    var numEl  = document.getElementById('km-musk-num');
-    var badge  = document.getElementById('km-musk-badge');
-    if (!numEl || !badge) return;
-
-    // Step 1: briefly show OLD score (compact, e.g. 1011 -> "1.0K";
-    // the exact number only appears in the hover/tap tooltip)
-    var tipEl = document.getElementById('km-musk-exact');
-    numEl.textContent = formatMuskCompact(prevScore);
-
-    // Step 2: after a short pause, create the floating "+N" chip
-    setTimeout(function() {
-        // Build the +N overlay
-        var chip = document.createElement('div');
-        chip.className = 'musk-gain-chip';
-        chip.textContent = '+' + delta;
-        badge.style.position = 'relative';
-        badge.appendChild(chip);
-
-        // Trigger the float-up animation on next frame
-        requestAnimationFrame(function() {
-            requestAnimationFrame(function() {
-                chip.classList.add('musk-gain-chip--fly');
-            });
-        });
-
-        // Step 3: after chip is midway, update the number with a pop
-        setTimeout(function() {
-            numEl.textContent = formatMuskCompact(newScore);
-            numEl.setAttribute('data-raw', newScore);
-            if (tipEl) tipEl.textContent = _rtCommaFormat(Math.floor(newScore));
-            numEl.classList.remove('km-pop');
-            void numEl.offsetWidth;
-            numEl.classList.add('km-pop');
-            setTimeout(function() { numEl.classList.remove('km-pop'); }, 600);
-
-            // Step 4: remove chip after it finishes floating
-            setTimeout(function() {
-                if (chip.parentNode) chip.parentNode.removeChild(chip);
-            }, 900);
-        }, 420);
-
-    }, 350);
-}
-
-/* ══════════════════════════════════════════════
-   ELON SCORE v4 — Musk-based session formula
-   ──────────────────────────────────────────────
-   Session boundary = every 60 Musk (3600 seconds of typing time).
-   Musk is stored in localStorage as total seconds typed (rt_musk_<uid>).
-
-   Elon Score is ONLY recalculated when the user's total Musk crosses
-   a new multiple of 3600s (i.e. Musk = 60, 120, 180, …).
-   It stays frozen between those boundaries.
-
-   Formula (per completed 60-Musk session):
-     Current Session Score = (avgWPM + avgAcc) / 100
-     Previous Session Score = (prevSession avgWPM + prevSession avgAcc) / 100
-     Improvement           = max(0, CurrentSessionScore − PreviousSessionScore)
-     Final Elon Score      = PreviousElonScore + CurrentSessionScore + Improvement
-
-   NOTE: Improvement compares the two session scores, NOT the session score
-   vs the cumulative Elon Score.
-
-   State stored per user in localStorage (rt_elon_<uid>):
-     {
-       elonScore       : number,  // locked Elon Score after last completed session
-       prevSessScore   : number,  // (avgWPM + avgAcc)/100 of the PREVIOUS session
-       session : {
-         muskAtStart : number,    // total Musk seconds when this session began
-         wpmSum      : number,
-         accSum      : number,
-         count       : number
-       }
-     }
-══════════════════════════════════════════════ */
-var ELON_SESSION_SECS = 3600; // 60 Musk = 3600 seconds of typing time
-
-function _getElonState(uid) {
-    try { return JSON.parse(localStorage.getItem('rt_elon_' + uid) || '{}'); }
-    catch(e) { return {}; }
-}
-
-function _saveElonState(uid, state) {
-    try { localStorage.setItem('rt_elon_' + uid, JSON.stringify(state)); } catch(e) {}
-    // Persist to Firestore elon_scores for leaderboard (only when score increased)
-    var newScore = state.elonScore || 0;
-    if (newScore > 0 && window.db && window.doc && window.setDoc) {
-        try {
-            var _uname   = (window._currentUser && window._currentUser.displayName) || localStorage.getItem('rt_registered_name') || '';
-            var _country = (window._currentUser && window._currentUser.country) || localStorage.getItem('rt_user_country') || '';
-            window.setDoc(
-                window.doc(window.db, 'elon_scores', uid),
-                {
-                    uid:        uid,
-                    name:       _uname,
-                    country:    _country,
-                    elonScore:  parseFloat(newScore.toFixed(4)),
-                    updatedAt:  Date.now()
-                },
-                { merge: true }
-            ).catch(function(_fe) { console.warn('Elon leaderboard save failed:', _fe); });
-        } catch(_se) {}
-    }
-}
-
-/**
- * Returns the current locked Elon Score.
- * Score is frozen mid-session; only updates at 60-Musk boundaries.
- */
-function _computeElonScore(state) {
-    return state.elonScore || 0;
-}
-
-/**
- * Called after every completed typing test.
- *
- * totalMuskSecs — the user's CURRENT total Musk seconds (from rt_musk_<uid>)
- *                 AFTER the just-completed test has already been added.
- *
- * Session boundary logic:
- *   - Each session spans exactly 3600 Musk-seconds.
- *   - session.muskAtStart marks where the current session began.
- *   - If (totalMuskSecs - muskAtStart) >= 3600, the session is complete:
- *       1. Finalise Elon Score using this session's data.
- *       2. Save prevSessScore for the next session's improvement calc.
- *       3. Open a new session starting at the exact 3600-second boundary.
- *          Any seconds beyond the boundary belong to the NEW session.
- *   - Otherwise just accumulate WPM/accuracy; score stays frozen.
- *
- * Returns the current locked Elon Score.
- */
-function updateElonScoreAfterTest(uid, wpm, accuracy, totalMuskSecs) {
-    var state   = _getElonState(uid);
-    var session = state.session;
-
-    // Initialise session on very first call
-    if (!session) {
-        state.session = {
-            muskAtStart : 0,
-            wpmSum      : wpm,
-            accSum      : accuracy,
-            count       : 1
-        };
-        _saveElonState(uid, state);
-        return state.elonScore || 0;
-    }
-
-    var elapsed = totalMuskSecs - session.muskAtStart;
-
-    if (elapsed >= ELON_SESSION_SECS) {
-        // ── Session complete: finalise Elon Score ──────────────────────
-
-        // Include this test's data in the completing session
-        session.wpmSum += wpm;
-        session.accSum += accuracy;
-        session.count  += 1;
-
-        var avgWpm             = session.wpmSum / session.count;
-        var avgAcc             = session.accSum / session.count;
-        var currentSessScore   = (avgWpm + avgAcc) / 100;
-        var prevSessScore      = state.prevSessScore || 0;        // previous session's score
-        var improvement        = (prevSessScore === 0) ? 0 : Math.max(0, currentSessScore - prevSessScore);
-        var prevElonScore      = state.elonScore || 0;
-
-        state.elonScore      = prevElonScore + currentSessScore + improvement;
-        state.prevSessScore  = currentSessScore;  // becomes "previous" for next session
-
-        // New session starts at the exact boundary, not at the current moment.
-        // Seconds beyond the boundary carry over into the new session.
-        var newSessionStart   = session.muskAtStart + ELON_SESSION_SECS;
-        state.session = {
-            muskAtStart : newSessionStart,
-            wpmSum      : 0,
-            accSum      : 0,
-            count       : 0
-        };
-
-    } else {
-        // ── Mid-session: accumulate only, score stays frozen ──────────
-        session.wpmSum += wpm;
-        session.accSum += accuracy;
-        session.count  += 1;
-        state.session   = session;
-    }
-
-    _saveElonState(uid, state);
-    return state.elonScore || 0;
-}
-
-/* Render Musk Score card inside profile modal */
-function _renderMuskScore(uid) {
-    const card = document.getElementById('pm-musk-card');
-    if (!card) return;
-
-    const MUSK_KEY  = 'rt_musk_' + uid;
-    const totalSecs = parseFloat(localStorage.getItem(MUSK_KEY) || '0');
-    const muskScore = Math.floor(totalSecs / 60);
-    const remainder = totalSecs % 60;
-    const muskPct   = Math.round((remainder / 60) * 100);
-
-    // ── Musk Score card ──────────────────────────────────────────
-    card.style.display = 'block';
-
-    const numEl   = document.getElementById('pm-musk-number');
-    const subEl   = document.getElementById('pm-musk-sub');
-    const barEl   = document.getElementById('pm-musk-bar');
-    const leftEl  = document.getElementById('pm-musk-prog-left');
-    const rightEl = document.getElementById('pm-musk-prog-right');
-
-    if (numEl) {
-        numEl.textContent = muskScore;
-        setTimeout(function() { numEl.classList.add('pop'); }, 100);
-        setTimeout(function() { numEl.classList.remove('pop'); }, 700);
-    }
-    if (subEl)   subEl.textContent   = Math.round(totalSecs) + ' total seconds typed';
-    if (leftEl)  leftEl.textContent  = Math.round(remainder) + 's this round';
-    if (rightEl) rightEl.textContent = 'next point at ' + (60 - Math.round(remainder)) + 's';
-    if (barEl) {
-        setTimeout(function() {
-            barEl.style.width = Math.max(2, Math.min(100, muskPct)) + '%';
-        }, 200);
-    }
-
-    const tt = document.getElementById('pm-musk-tooltip');
-    if (tt) {
-        tt.innerHTML = `
-            <strong>🚀 How Musk Score works</strong><br>
-            Every second you type adds up across all sessions.<br>
-            <strong>60 seconds typed = 1 Musk Score point.</strong><br><br>
-            <span class="tt-ex">Your total: ${Math.round(totalSecs)}s typed<br>
-            ${muskScore} × 60s = ${muskScore} point${muskScore !== 1 ? 's' : ''}<br>
-            ${Math.round(remainder)}s toward your next point</span>
-        `;
-    }
-
-    // ── Elon Score card (v4 — Musk-based session formula) ────────
-    const elonCard = document.getElementById('pm-elon-card');
-    if (elonCard) {
-        const elonState    = _getElonState(uid);
-        const elonScore    = elonState.elonScore || 0;   // locked, frozen mid-session
-        const prevSessScoreStored = elonState.prevSessScore || 0;
-        const session      = elonState.session;
-        const sessCount    = session ? session.count : 0;
-        const sessAvgWpm   = sessCount > 0 ? session.wpmSum / sessCount : 0;
-        const sessAvgAcc   = sessCount > 0 ? session.accSum / sessCount : 0;
-
-        // Progress within the current session, measured in Musk-seconds
-        const muskAtStart  = session ? (session.muskAtStart || 0) : 0;
-        const sessElapsed  = Math.max(0, totalSecs - muskAtStart);  // seconds into this session
-        const sessSecsLeft = Math.max(0, ELON_SESSION_SECS - sessElapsed);
-        const minsLeft     = Math.ceil(sessSecsLeft / 60);
-        const sessionPct   = Math.min(100, Math.round((sessElapsed / ELON_SESSION_SECS) * 100));
-
-        elonCard.style.display = 'block';
-
-        const elonNumEl   = document.getElementById('pm-elon-number');
-        const elonSubEl   = document.getElementById('pm-elon-sub');
-        const elonBarEl   = document.getElementById('pm-elon-bar');
-        const elonLeftEl  = document.getElementById('pm-elon-prog-left');
-        const elonRightEl = document.getElementById('pm-elon-prog-right');
-
-        if (elonNumEl) {
-            elonNumEl.textContent = elonScore.toFixed(2);
-            setTimeout(function() { elonNumEl.classList.add('pop'); }, 200);
-            setTimeout(function() { elonNumEl.classList.remove('pop'); }, 800);
-        }
-        if (elonSubEl) {
-            elonSubEl.textContent = sessCount > 0
-                ? 'session avg: ' + Math.round(sessAvgWpm) + ' WPM / ' + Math.round(sessAvgAcc) + '% acc'
-                : 'no tests in current session yet';
-        }
-        if (elonLeftEl)  elonLeftEl.textContent  = sessCount + ' test' + (sessCount !== 1 ? 's' : '') + ' this session';
-        if (elonRightEl) elonRightEl.textContent = 'score updates in ~' + minsLeft + ' Musk min';
-        if (elonBarEl) {
-            setTimeout(function() {
-                elonBarEl.style.width = Math.max(2, Math.min(100, sessionPct)) + '%';
-            }, 300);
-        }
-
-        const elonTT = document.getElementById('pm-elon-tooltip');
-        if (elonTT) {
-            // Preview: what the score WILL be if the session ended right now (tooltip only)
-            const previewSessScore = sessCount > 0 ? (sessAvgWpm + sessAvgAcc) / 100 : 0;
-            const previewImprov    = (sessCount > 0 && prevSessScoreStored > 0) ? Math.max(0, previewSessScore - prevSessScoreStored) : 0;
-            const previewFinal     = sessCount > 0 ? elonScore + previewSessScore + previewImprov : elonScore;
-            elonTT.innerHTML = `
-                <strong>⚡ How Elon Score works</strong><br>
-                Updates once per 60 Musk (60 min of typing time).<br>
-                <strong>Score = Prev + (avg WPM + avg Acc) ÷ 100 + Improvement</strong><br>
-                Improvement = max(0, This session score − Last session score)<br><br>
-                <span class="tt-ex">
-                  Locked score: <strong>${elonScore.toFixed(2)}</strong><br>
-                  Session tests: ${sessCount} | avg ${Math.round(sessAvgWpm)} WPM / ${Math.round(sessAvgAcc)}% acc<br>
-                  Last session score: ${prevSessScoreStored.toFixed(2)}<br>
-                  Preview (if session ended now): ${previewFinal.toFixed(2)}<br>
-                  Musk into session: ${Math.round(sessElapsed / 60)} / 60 min
-                </span>
-            `;
-        }
-    }
-}
-
-/* ══════════════════════════════════════════════
-   COMPACT NUMBER FORMATTING (Musk/Elon score rings)
-   Once a score crosses 1000, the ring shows a compact form
-   (10.5K, 3.2M, 1.1B, 7.4T, …) instead of the raw digits so it
-   always fits the circle. Supports every short-scale tier up to
-   Vigintillion; anything beyond that (never realistically reached)
-   falls back to scientific notation so it's still never disallowed.
-══════════════════════════════════════════════ */
-var RT_COMPACT_SUFFIXES = [
-    '', 'K', 'M', 'B', 'T',
-    'Qa', 'Qi', 'Sx', 'Sp', 'Oc', 'No',           // Quadrillion … Nonillion
-    'Dc', 'Ud', 'Dd', 'Td', 'Qad', 'Qid', 'Sxd', 'Spd', 'Ocd', 'Nod', // Decillion … Novemdecillion
-    'Vg'                                          // Vigintillion
-];
-
-function _rtFormatCompact(n) {
-    n = Number(n) || 0;
-    var abs = Math.abs(n);
-    if (abs < 1000) return null; // caller keeps its own (non-compact) formatting
-    var tier = Math.floor(Math.log10(abs) / 3);
-    if (tier < RT_COMPACT_SUFFIXES.length) {
-        var scaled = n / Math.pow(1000, tier);
-        return scaled.toFixed(1) + RT_COMPACT_SUFFIXES[tier];
-    }
-    return n.toExponential(2); // astronomically large — infinite-safe fallback
-}
-
-function formatMuskCompact(n) {
-    n = Math.floor(Number(n) || 0);
-    var c = _rtFormatCompact(n);
-    return c !== null ? c : String(n);
-}
-
-function formatElonCompact(n) {
-    n = Number(n) || 0;
-    var c = _rtFormatCompact(n);
-    return c !== null ? c : n.toFixed(2);
-}
-
-/* Comma-formats the exact underlying number for the hover/tap tooltip,
-   e.g. 10545 -> "10,545", 5222.34 -> "5,222.34" */
-function _rtCommaFormat(numOrStr) {
-    var parts = String(numOrStr).split('.');
-    parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-    return parts.join('.');
-}
-
-/* Tap-to-reveal support for touch devices (hover doesn't exist there).
-   Tapping a score ring shows its exact-value tooltip for a few seconds,
-   or until the user taps elsewhere / taps it again. */
-(function _rtInitScoreTipTouch() {
-    function init() {
-        var rings = document.querySelectorAll('.km-score-ring');
-        if (!rings.length) return;
-        rings.forEach(function (ring) {
-            ring.addEventListener('click', function (e) {
-                if (!window.matchMedia || !window.matchMedia('(hover: none)').matches) return;
-                e.stopPropagation();
-                var wasShown = ring.classList.contains('km-tip-show');
-                rings.forEach(function (r) { r.classList.remove('km-tip-show'); });
-                if (!wasShown) {
-                    ring.classList.add('km-tip-show');
-                    setTimeout(function () { ring.classList.remove('km-tip-show'); }, 3000);
-                }
-            });
-        });
-        document.addEventListener('click', function (e) {
-            rings.forEach(function (r) {
-                if (!r.contains(e.target)) r.classList.remove('km-tip-show');
-            });
-        });
-    }
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', init);
-    } else {
-        init();
-    }
-})();
-
-/* ══════════════════════════════════════════════
-   UPDATE KEYMAP SCORE BADGES (Musk + Elon)
-══════════════════════════════════════════════ */
-function updateKmScoreBadges() {
-    var uid = (window._currentUser && window._currentUser.uid) ? window._currentUser.uid : 'guest';
-    var MUSK_KEY = 'rt_musk_' + uid;
-    var totalSecs = parseFloat(localStorage.getItem(MUSK_KEY) || '0');
-    var muskScore = Math.floor(totalSecs / 60);
-
-    // Elon Score v3: locked score — only updates at 60-min session boundary
-    var elonRaw   = _computeElonScore(_getElonState(uid)); // returns locked decimal score
-    var elonScore = parseFloat(elonRaw.toFixed(2));
-
-    var muskEl    = document.getElementById('km-musk-num');
-    var elonEl    = document.getElementById('km-elon-num');
-    var muskTipEl = document.getElementById('km-musk-exact');
-    var elonTipEl = document.getElementById('km-elon-exact');
-
-    function setAndPop(el, tipEl, val, isElon) {
-        if (!el) return;
-        var prevRaw = parseFloat(el.getAttribute('data-raw')) || 0;
-        el.setAttribute('data-raw', val);
-        el.textContent = isElon ? formatElonCompact(val) : formatMuskCompact(val);
-        if (tipEl) {
-            tipEl.textContent = isElon
-                ? _rtCommaFormat(val.toFixed(2))
-                : _rtCommaFormat(Math.floor(val));
-        }
-        if (val !== prevRaw) {
-            el.classList.remove('km-pop');
-            void el.offsetWidth; // reflow to restart animation
-            el.classList.add('km-pop');
-            setTimeout(function() { el.classList.remove('km-pop'); }, 550);
-        }
-    }
-
-    setAndPop(muskEl, muskTipEl, muskScore, false);
-    setAndPop(elonEl, elonTipEl, elonScore, true);
-}
-
-// Update badges when Firebase auth is ready
-window.addEventListener('firebase-ready', function() {
-    updateKmScoreBadges();
-}, { once: true });
-
-// Also update immediately in case already loaded
-setTimeout(updateKmScoreBadges, 800);
-
-// Expose so it can be called after each test completes
-window.updateKmScoreBadges = updateKmScoreBadges;
 
 window.closeProfileModal = function() {
     const modal = document.getElementById('profileModal');
