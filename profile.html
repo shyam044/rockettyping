@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Profile | Rocket Typing</title>
-    <meta name="description" content="View your Rocket Typing profile — best WPM, accuracy, Musk Score, Elon Score, and recent test history.">
+    <meta name="description" content="View your Rocket Typing profile — best WPM and accuracy for every time and word mode, and recent test history.">
     <meta name="robots" content="noindex, follow">
     <link rel="canonical" href="https://www.rockettyping.com/profile">
     <meta property="og:type" content="website">
@@ -87,6 +87,43 @@
 })();
 </script>
     <script type="text/javascript" async="async" data-noptimize="1" data-cfasync="false" src="//scripts.scriptwrapper.com/tags/31b6b722-d3b7-49a8-acd3-2264f19c9dc5.js"></script>
+<style id="pm-bests-css">
+/* Personal bests (8 modes). Pure CSS, no images; only transform/opacity animate. */
+.pm-bests{margin:4px 0 6px;text-align:left}
+.pm-bests-head{display:flex;align-items:center;gap:12px;margin:0 0 16px;font-size:12px;font-weight:900;letter-spacing:3px;color:#e2b714;justify-content:center}
+.pm-bests-head::before,.pm-bests-head::after{content:"";height:1px;flex:1;background:linear-gradient(90deg,transparent,rgba(226,183,20,.45))}
+.pm-bests-head::after{transform:scaleX(-1)}
+.pm-bests-group{margin:0 0 16px}
+.pm-bests-group[data-g="time"]{--bc:#e2b714;--bc2:#ff9900;--bcrgb:226,183,20}
+.pm-bests-group[data-g="words"]{--bc:#00e6cc;--bc2:#3b82f6;--bcrgb:0,230,204}
+.pm-bests-group-label{display:flex;align-items:center;gap:8px;margin:0 0 10px;font-size:11px;font-weight:700;letter-spacing:2px;color:var(--bc)}
+.pm-bests-group-label::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--bc);box-shadow:0 0 10px var(--bc)}
+.pm-bests-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.pm-best{display:flex;flex-direction:column;gap:7px;min-width:0;animation:pmBestIn .5s cubic-bezier(.22,1,.36,1) both;animation-delay:calc(var(--i,0)*45ms)}
+.pm-best-mode{font-size:11px;font-weight:700;letter-spacing:1px;color:#9aa0a6;text-align:center;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pm-best-box{position:relative;overflow:hidden;border-radius:14px;padding:16px 8px 12px;text-align:center;background:linear-gradient(160deg,rgba(var(--bcrgb),.13),rgba(255,255,255,.03) 58%);border:1px solid rgba(var(--bcrgb),.28);transition:transform .2s ease,border-color .2s ease,box-shadow .2s ease}
+.pm-best-box::before{content:"";position:absolute;left:0;right:0;top:0;height:3px;background:linear-gradient(90deg,var(--bc),var(--bc2))}
+.pm-best:hover .pm-best-box{transform:translateY(-3px);border-color:rgba(var(--bcrgb),.6);box-shadow:0 10px 26px rgba(var(--bcrgb),.18)}
+.pm-best-wpm{display:flex;align-items:baseline;justify-content:center;gap:4px;line-height:1}
+.pm-best-wpm b{font-size:clamp(24px,6vw,32px);font-weight:900;color:#fff;text-shadow:0 0 18px rgba(var(--bcrgb),.45)}
+.pm-best-wpm small{font-size:10px;font-weight:700;letter-spacing:1px;color:#8b949e}
+.pm-best-acc{display:flex;align-items:center;justify-content:space-between;gap:6px;margin-top:12px;font-size:10px;font-weight:700;letter-spacing:1px;color:#8b949e}
+.pm-best-acc b{font-size:13px;font-weight:900;color:#e6edf3;letter-spacing:0}
+.pm-best-bar{height:4px;margin-top:6px;border-radius:4px;background:rgba(255,255,255,.08);overflow:hidden}
+.pm-best-bar i{display:block;height:100%;width:100%;border-radius:4px;transform-origin:left center;transform:scaleX(0);background:linear-gradient(90deg,var(--bc),var(--bc2));transition:transform .8s cubic-bezier(.22,1,.36,1)}
+.pm-best.is-empty .pm-best-box{opacity:.6}
+.pm-best.is-empty .pm-best-wpm b{color:#555;text-shadow:none}
+.pm-best.is-top .pm-best-box{box-shadow:0 0 0 1px rgba(var(--bcrgb),.55),0 8px 30px rgba(var(--bcrgb),.25)}
+.pm-best.is-top .pm-best-mode::after{content:" \2605";color:var(--bc)}
+.pm-bests.is-loading .pm-best-wpm b,.pm-bests.is-loading .pm-best-acc b{color:transparent;text-shadow:none;background:rgba(255,255,255,.1);border-radius:6px;animation:pmBestPulse 1.2s ease-in-out infinite}
+.pm-bests-note{margin:2px 0 0;text-align:center;font-size:11px;color:#8b949e}
+@keyframes pmBestIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@keyframes pmBestPulse{50%{opacity:.4}}
+@media (max-width:640px){.pm-bests-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}}
+@media (max-width:340px){.pm-best-box{padding:14px 6px 10px}.pm-best-mode{font-size:10px;letter-spacing:.5px}}
+@media (min-width:1500px){.pm-bests-grid{gap:14px}}
+@media (prefers-reduced-motion:reduce){.pm-best{animation:none}.pm-best-bar i{transition:none}.pm-bests.is-loading .pm-best-wpm b,.pm-bests.is-loading .pm-best-acc b{animation:none}.pm-best-box{transition:none}}
+</style>
 </head>
 
 <body>
@@ -460,256 +497,15 @@
 }
 </style>
 
-<!-- ═══════════════════════════════════════════════════════════════
-     MUSK SCORE STYLES
-═══════════════════════════════════════════════════════════════ -->
 <style>
-/* ── Musk Score Hero Card ── */
-.pm-musk-card {
-    position: relative;
-    background: linear-gradient(135deg, rgba(10,10,35,0.95) 0%, rgba(30,10,60,0.95) 50%, rgba(10,10,35,0.95) 100%);
-    border: 2px solid transparent;
-    border-radius: 18px;
-    padding: 20px 18px 16px;
-    margin: 18px 0 4px;
-    text-align: center;
-    overflow: hidden;
-    cursor: default;
-    transition: transform .2s, box-shadow .2s;
-}
-.pm-musk-card::before {
-    content: '';
-    position: absolute; inset: 0;
-    border-radius: 18px;
-    padding: 2px;
-    background: conic-gradient(from 0deg, #e2b714, #ff6600, #9b72cf, #e2b714);
-    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    -webkit-mask-composite: xor; mask-composite: exclude;
-    animation: musk-border-spin 4s linear infinite;
-    transform-origin: center;
-}
-@keyframes musk-border-spin {
-    from { transform: rotate(0deg); }
-    to   { transform: rotate(360deg); }
-}
-.pm-musk-card:hover { transform: translateY(-2px); box-shadow: 0 12px 40px rgba(226,183,20,0.3); }
 
 /* Rocket icon floating top */
-.pm-musk-rocket {
-    font-size: 28px;
-    display: block;
-    margin-bottom: 4px;
-    animation: musk-float 3s ease-in-out infinite;
-}
-@keyframes musk-float {
-    0%, 100% { transform: translateY(0px); }
-    50%       { transform: translateY(-5px); }
-}
-
-/* "MUSK SCORE" label */
-.pm-musk-label {
-    font-size: 10px; font-weight: 900;
-    letter-spacing: 3px; color: #e2b714;
-    text-transform: uppercase;
-    margin-bottom: 6px; display: block;
-    text-shadow: 0 0 12px rgba(226,183,20,0.6);
-}
-
-/* The big number.
-   NOTE: this used to be a gradient-text effect via background-clip:text +
-   -webkit-text-fill-color:transparent. That combination is fragile — if a
-   deployment's CDN/minifier strips or ignores background-clip:text while
-   -webkit-text-fill-color:transparent still applies (this does happen in
-   real production environments), the text itself becomes invisible while
-   the element's background renders as a plain opaque rectangle behind it —
-   exactly the "solid yellow block instead of a number" bug. The Elon Score
-   number right below uses a plain solid `color` and has never had this
-   problem, so this now matches that same reliable approach. */
-.pm-musk-numb {
-    font-size: 56px; font-weight: 900;
-    color: #ffd700;
-    line-height: 1; letter-spacing: -2px;
-    display: block;
-    text-shadow: 0 0 30px rgba(255,165,0,0.5);
-    filter: drop-shadow(0 0 14px rgba(255,165,0,0.5));
-    transition: transform .35s cubic-bezier(0.34,1.56,0.64,1);
-}
-.pm-musk-numb.pop {
-    animation: musk-pop .5s cubic-bezier(0.34,1.56,0.64,1);
-}
-@keyframes musk-pop {
-    0%   { transform: scale(1); }
-    40%  { transform: scale(1.35); }
-    100% { transform: scale(1); }
-}
 
 /* sub-label: "points earned" */
-.pm-musk-sub {
-    font-size: 10px; color: #555; letter-spacing: 1px;
-    margin-top: 4px; display: block;
-}
 
 /* Progress ring to next score */
-.pm-musk-progress-wrap {
-    margin-top: 12px;
-    display: flex; flex-direction: column; align-items: center; gap: 5px;
-}
-.pm-musk-progress-label {
-    display: flex; justify-content: space-between; width: 100%;
-    font-size: 9px; color: #555; letter-spacing: .5px;
-}
-.pm-musk-progress-track {
-    width: 100%; height: 6px;
-    background: rgba(255,255,255,0.05);
-    border-radius: 6px; overflow: hidden;
-}
-.pm-musk-progress-fill {
-    height: 100%; border-radius: 6px;
-    background: linear-gradient(90deg, #e2b714, #ff9900, #ff6600);
-    transition: width 1.2s cubic-bezier(0.34,1.56,0.64,1);
-    box-shadow: 0 0 8px rgba(226,183,20,0.5);
-}
 
 /* Tooltip on hover */
-.pm-musk-tooltip {
-    position: absolute; bottom: calc(100% + 8px); left: 50%;
-    transform: translateX(-50%);
-    background: #0e0e28;
-    border: 1px solid rgba(226,183,20,0.35);
-    border-radius: 10px; padding: 12px 16px;
-    font-size: 11px; color: #d1d0c5;
-    line-height: 1.7; white-space: nowrap;
-    box-shadow: 0 8px 30px rgba(0,0,0,0.6);
-    pointer-events: none;
-    opacity: 0; transition: opacity .2s;
-    z-index: 50;
-    text-align: left;
-}
-.pm-musk-tooltip::after {
-    content: '';
-    position: absolute; top: 100%; left: 50%;
-    transform: translateX(-50%);
-    border: 6px solid transparent;
-    border-top-color: rgba(226,183,20,0.35);
-}
-.pm-musk-card:hover .pm-musk-tooltip { opacity: 1; }
-.pm-musk-tooltip strong { color: #e2b714; }
-.pm-musk-tooltip .tt-ex { color: #666; font-size: 10px; }
-
-/* ── Milestone Toast ── */
-
-/* ══════════════════════════════════════════════
-   ELON SCORE CARD (profile modal)
-══════════════════════════════════════════════ */
-.pm-elon-card {
-    position: relative;
-    border-radius: 16px;
-    padding: 18px 20px 14px;
-    text-align: center;
-    background: linear-gradient(135deg, rgba(0,180,255,0.07), rgba(0,90,180,0.05));
-    border: 1px solid rgba(0,180,255,0.25);
-    margin: 8px 0 4px;
-    overflow: hidden;
-    cursor: default;
-    transition: transform .2s, box-shadow .2s;
-}
-.pm-elon-card::before {
-    content: '';
-    position: absolute;
-    inset: -2px;
-    border-radius: 18px;
-    background: conic-gradient(
-        rgba(0,180,255,0) 0deg,
-        rgba(0,180,255,0.5) 90deg,
-        rgba(0,220,255,0) 180deg,
-        rgba(0,180,255,0.5) 270deg,
-        rgba(0,180,255,0) 360deg
-    );
-    animation: elon-border-spin 5s linear infinite;
-    z-index: 0;
-    pointer-events: none;
-}
-@keyframes elon-border-spin {
-    0%   { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-.pm-elon-card:hover { transform: translateY(-2px); box-shadow: 0 12px 40px rgba(0,180,255,0.2); }
-.pm-elon-rocket {
-    font-size: 28px;
-    display: block;
-    margin-bottom: 2px;
-    animation: elon-pulse 2.5s ease-in-out infinite;
-}
-@keyframes elon-pulse {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50%       { opacity: 0.7; transform: scale(1.1); }
-}
-.pm-elon-label {
-    display: block;
-    font-size: 10px;
-    letter-spacing: 2.5px;
-    color: #00b4ff;
-    font-weight: 900;
-    text-transform: uppercase;
-    margin-bottom: 2px;
-}
-.pm-elon-number {
-    display: block;
-    font-size: 52px;
-    font-weight: 900;
-    color: #00d4ff;
-    line-height: 1;
-    letter-spacing: -1px;
-    text-shadow: 0 0 30px rgba(0,212,255,0.5);
-    margin: 4px 0;
-}
-.pm-elon-number.pop {
-    animation: musk-pop .5s cubic-bezier(0.34,1.56,0.64,1);
-}
-.pm-elon-sub {
-    display: block;
-    font-size: 11px;
-    color: #555;
-    letter-spacing: 0.5px;
-    margin-bottom: 10px;
-}
-.pm-elon-fill {
-    background: linear-gradient(90deg, #007bbf, #00d4ff) !important;
-    box-shadow: 0 0 10px rgba(0,212,255,0.4) !important;
-}
-.pm-elon-tooltip {
-    position: absolute;
-    bottom: calc(100% + 8px);
-    left: 50%;
-    transform: translateX(-50%);
-    background: #111;
-    border: 1px solid rgba(0,180,255,0.3);
-    border-radius: 10px;
-    padding: 10px 14px;
-    font-size: 11px;
-    color: #aaa;
-    line-height: 1.6;
-    width: 230px;
-    text-align: left;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity .2s;
-    z-index: 10;
-    white-space: normal;
-}
-.pm-elon-tooltip::after {
-    content: '';
-    position: absolute;
-    top: 100%;
-    left: 50%;
-    transform: translateX(-50%);
-    border: 6px solid transparent;
-    border-top-color: rgba(0,180,255,0.3);
-}
-.pm-elon-card:hover .pm-elon-tooltip { opacity: 1; }
-.pm-elon-tooltip strong { color: #00d4ff; }
-.pm-elon-tooltip .tt-ex { color: #666; font-size: 10px; }
 
 </style>
 
@@ -745,55 +541,85 @@
         <!-- Rank badge -->
         <div id="pm-rank-badge"></div>
 
-        <!-- ✦ MUSK SCORE — headline feature ✦ -->
-        <div class="pm-musk-card" id="pm-musk-card" style="display:none;">
-          <div class="pm-musk-tooltip" id="pm-musk-tooltip">
-            <strong>🚀 How Musk Score works</strong><br>
-            Every second you spend typing adds up.<br>
-            <strong>60 seconds = 1 Musk Score point.</strong><br><br>
-            <span class="tt-ex">Example: 1s + 9s + 50s = 60s → score +1<br>
-            120s total = Musk Score 2, and so on.</span>
-          </div>
-          <span class="pm-musk-rocket">🚀</span>
-          <span class="pm-musk-label">Musk Score</span>
-          <span class="pm-musk-numb" id="pm-musk-number">0</span>
-          <span class="pm-musk-sub" id="pm-musk-sub">total seconds typed</span>
-          <div class="pm-musk-progress-wrap">
-            <div class="pm-musk-progress-label">
-              <span id="pm-musk-prog-left">0s this round</span>
-              <span id="pm-musk-prog-right">next point at 60s</span>
-            </div>
-            <div class="pm-musk-progress-track">
-              <div class="pm-musk-progress-fill" id="pm-musk-bar" style="width:0%"></div>
-            </div>
-          </div>
-        </div>
-
-
-        <!-- ✦ ELON SCORE ✦ -->
-        <div class="pm-elon-card" id="pm-elon-card" style="display:none;">
-          <div class="pm-elon-tooltip" id="pm-elon-tooltip">
-            <strong>⚡ How Elon Score works</strong><br>
-            Calculated once per completed 60-minute session.<br>
-            <strong>Score = Prev + (avg WPM + avg Acc) ÷ 100 + Improvement</strong><br>
-            Improvement = max(0, SessionScore − PrevScore)<br><br>
-            <span class="tt-ex">Score is frozen during a session and only<br>
-            updates when the full 60 minutes completes.</span>
-          </div>
-          <span class="pm-elon-rocket">⚡</span>
-          <span class="pm-elon-label">Elon Score</span>
-          <span class="pm-elon-number" id="pm-elon-number">0</span>
-          <span class="pm-elon-sub" id="pm-elon-sub">session avg: — WPM / —% acc</span>
-          <div class="pm-musk-progress-wrap">
-            <div class="pm-musk-progress-label">
-              <span id="pm-elon-prog-left">0 tests this session</span>
-              <span id="pm-elon-prog-right">score updates in 60 min</span>
-            </div>
-            <div class="pm-musk-progress-track">
-              <div class="pm-musk-progress-fill pm-elon-fill" id="pm-elon-bar" style="width:0%"></div>
+        <!-- PERSONAL BESTS: best WPM + accuracy for every time / words mode (read from Firestore) -->
+        <section class="pm-bests is-loading" id="pm-bests" aria-label="Personal bests by mode">
+          <h3 class="pm-bests-head">PERSONAL BESTS</h3>
+          <div class="pm-bests-group" data-g="time">
+            <div class="pm-bests-group-label">TIME MODE</div>
+            <div class="pm-bests-grid">
+              <div class="pm-best is-empty" id="pm-best-t10" style="--i:0">
+                <span class="pm-best-mode">10 seconds</span>
+                <div class="pm-best-box">
+                  <div class="pm-best-wpm"><b>--</b><small>WPM</small></div>
+                  <div class="pm-best-acc"><span>ACC</span><b>--</b></div>
+                  <div class="pm-best-bar"><i></i></div>
+                </div>
+              </div>
+              <div class="pm-best is-empty" id="pm-best-t15" style="--i:1">
+                <span class="pm-best-mode">15 seconds</span>
+                <div class="pm-best-box">
+                  <div class="pm-best-wpm"><b>--</b><small>WPM</small></div>
+                  <div class="pm-best-acc"><span>ACC</span><b>--</b></div>
+                  <div class="pm-best-bar"><i></i></div>
+                </div>
+              </div>
+              <div class="pm-best is-empty" id="pm-best-t30" style="--i:2">
+                <span class="pm-best-mode">30 seconds</span>
+                <div class="pm-best-box">
+                  <div class="pm-best-wpm"><b>--</b><small>WPM</small></div>
+                  <div class="pm-best-acc"><span>ACC</span><b>--</b></div>
+                  <div class="pm-best-bar"><i></i></div>
+                </div>
+              </div>
+              <div class="pm-best is-empty" id="pm-best-t60" style="--i:3">
+                <span class="pm-best-mode">60 seconds</span>
+                <div class="pm-best-box">
+                  <div class="pm-best-wpm"><b>--</b><small>WPM</small></div>
+                  <div class="pm-best-acc"><span>ACC</span><b>--</b></div>
+                  <div class="pm-best-bar"><i></i></div>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
+          <div class="pm-bests-group" data-g="words">
+            <div class="pm-bests-group-label">WORDS MODE</div>
+            <div class="pm-bests-grid">
+              <div class="pm-best is-empty" id="pm-best-w10" style="--i:4">
+                <span class="pm-best-mode">10 words</span>
+                <div class="pm-best-box">
+                  <div class="pm-best-wpm"><b>--</b><small>WPM</small></div>
+                  <div class="pm-best-acc"><span>ACC</span><b>--</b></div>
+                  <div class="pm-best-bar"><i></i></div>
+                </div>
+              </div>
+              <div class="pm-best is-empty" id="pm-best-w25" style="--i:5">
+                <span class="pm-best-mode">25 words</span>
+                <div class="pm-best-box">
+                  <div class="pm-best-wpm"><b>--</b><small>WPM</small></div>
+                  <div class="pm-best-acc"><span>ACC</span><b>--</b></div>
+                  <div class="pm-best-bar"><i></i></div>
+                </div>
+              </div>
+              <div class="pm-best is-empty" id="pm-best-w50" style="--i:6">
+                <span class="pm-best-mode">50 words</span>
+                <div class="pm-best-box">
+                  <div class="pm-best-wpm"><b>--</b><small>WPM</small></div>
+                  <div class="pm-best-acc"><span>ACC</span><b>--</b></div>
+                  <div class="pm-best-bar"><i></i></div>
+                </div>
+              </div>
+              <div class="pm-best is-empty" id="pm-best-w100" style="--i:7">
+                <span class="pm-best-mode">100 words</span>
+                <div class="pm-best-box">
+                  <div class="pm-best-wpm"><b>--</b><small>WPM</small></div>
+                  <div class="pm-best-acc"><span>ACC</span><b>--</b></div>
+                  <div class="pm-best-bar"><i></i></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <p class="pm-bests-note" id="pm-bests-note" hidden></p>
+        </section>
 
         <!-- Speed visual bar -->
         <div class="pm-speed-bar-wrap" id="pm-speed-bar-wrap" style="display:none;">
@@ -1338,29 +1164,6 @@ window.deleteUser = deleteUser;
                 localStorage.setItem('rt_registered_name', username); // keep for leaderboard compat
                 updateAuthUI(true, username);
 
-                // ── Restore Musk & Elon scores from Firestore (cross-device sync) ──
-                try {
-                    const scoresDoc = await getDoc(doc(db, 'user_scores', user.uid));
-                    if (scoresDoc.exists()) {
-                        const sd = scoresDoc.data();
-                        const MUSK_LS = 'rt_musk_' + user.uid;
-                        const ELON_LS = 'rt_elon_'  + user.uid;
-                        const localMusk = parseFloat(localStorage.getItem(MUSK_LS) || '0');
-                        // Only overwrite if Firestore has MORE seconds (device with more progress wins)
-                        if ((sd.muskSecs || 0) > localMusk) {
-                            localStorage.setItem(MUSK_LS, sd.muskSecs.toString());
-                        }
-                        // Restore elon state if Firestore elonScore is higher than local
-                        if (sd.elonState) {
-                            let localElonState = {};
-                            try { localElonState = JSON.parse(localStorage.getItem(ELON_LS) || '{}'); } catch(_e) {}
-                            const localElonScore = localElonState.elonScore || 0;
-                            if ((sd.elonState.elonScore || 0) > localElonScore) {
-                                localStorage.setItem(ELON_LS, JSON.stringify(sd.elonState));
-                            }
-                        }
-                    }
-                } catch (_syncErr) { console.warn('Score restore from Firestore failed:', _syncErr); }
             }
         } else {
             window._currentUser = null;
@@ -2210,8 +2013,8 @@ window.openProfileModal = async function() {
         document.getElementById('pm-rank-badge').innerHTML =
             `<span class="pm-rank-badge" style="background:${rank.bg};color:${rank.color};border:1px solid ${rank.color}40;">${rank.icon} ${rank.label}</span>`;
 
-        // ── Musk Score ──
-        _renderMuskScore(user.uid);
+        // -- Personal bests (best WPM + accuracy per mode; Firestore) --
+        _loadModeBests(user.uid);
 
         // Stats
         document.getElementById('pm-avg-wpm').textContent  = avgWpm  || '—';
@@ -2317,123 +2120,64 @@ function _getRankBadge(bestWpm) {
     return                       { label:'BEGINNER',  icon:'🐣', bg:'rgba(255,255,255,0.05)',color:'#888' };
 }
 
-var ELON_SESSION_SECS = 3600; // 60 Musk = 3600 seconds of typing time
-
-function _getElonState(uid) {
-    try { return JSON.parse(localStorage.getItem('rt_elon_' + uid) || '{}'); }
-    catch(e) { return {}; }
-}
-
-function _renderMuskScore(uid) {
-    const card = document.getElementById('pm-musk-card');
-    if (!card) return;
-
-    const MUSK_KEY  = 'rt_musk_' + uid;
-    const totalSecs = parseFloat(localStorage.getItem(MUSK_KEY) || '0');
-    const muskScore = Math.floor(totalSecs / 60);
-    const remainder = totalSecs % 60;
-    const muskPct   = Math.round((remainder / 60) * 100);
-
-    // ── Musk Score card ──────────────────────────────────────────
-    card.style.display = 'block';
-
-    const numEl   = document.getElementById('pm-musk-number');
-    const subEl   = document.getElementById('pm-musk-sub');
-    const barEl   = document.getElementById('pm-musk-bar');
-    const leftEl  = document.getElementById('pm-musk-prog-left');
-    const rightEl = document.getElementById('pm-musk-prog-right');
-
-    if (numEl) {
-        numEl.textContent = muskScore;
-        setTimeout(function() { numEl.classList.add('pop'); }, 100);
-        setTimeout(function() { numEl.classList.remove('pop'); }, 700);
+/* ------------------------------------------------------------------
+   PERSONAL BESTS -- best WPM + accuracy for 10/15/30/60 s and 10/25/50/100 words.
+   Read-only: the values are the user's own leaderboard documents
+   (typing_test_scores / typing_word_scores, doc id = uid_mode). Those documents
+   can only be written by the signed-in owner and are cross-checked against the
+   keystroke data by the Firestore rules, so nothing shown here can be forged.
+   Cost: 2 queries, at most 8 document reads per profile view.
+------------------------------------------------------------------ */
+var PM_BEST_MODES = {
+    t10:{col:'typing_test_scores', field:'testDuration', n:10},  t15:{col:'typing_test_scores', field:'testDuration', n:15},
+    t30:{col:'typing_test_scores', field:'testDuration', n:30},  t60:{col:'typing_test_scores', field:'testDuration', n:60},
+    w10:{col:'typing_word_scores', field:'wordCount', n:10},     w25:{col:'typing_word_scores', field:'wordCount', n:25},
+    w50:{col:'typing_word_scores', field:'wordCount', n:50},     w100:{col:'typing_word_scores', field:'wordCount', n:100}
+};
+async function _loadModeBests(uid) {
+    var root = document.getElementById('pm-bests');
+    if (!root) return;
+    var note = document.getElementById('pm-bests-note');
+    root.classList.add('is-loading');
+    var best = {};
+    try {
+        if (!window.db || !window.getDocs || !window.query || !window.where || !window.collection) throw new Error('firebase not ready');
+        var snaps = await Promise.all([
+            window.getDocs(window.query(window.collection(window.db, 'typing_test_scores'), window.where('uid', '==', uid))),
+            window.getDocs(window.query(window.collection(window.db, 'typing_word_scores'), window.where('uid', '==', uid)))
+        ]);
+        snaps.forEach(function (snap) {
+            snap.forEach(function (d) {
+                var x = d.data() || {};
+                Object.keys(PM_BEST_MODES).forEach(function (k) {
+                    var m = PM_BEST_MODES[k];
+                    if (d.ref.parent.id !== m.col) return;
+                    if (d.id !== uid + '_' + m.n || x.uid !== uid || x[m.field] !== m.n) return;   // only this user's own exact doc
+                    var wpm = Number(x.wpm), acc = Number(x.accuracy);
+                    if (!isFinite(wpm) || wpm <= 0 || wpm >= 260 || !isFinite(acc) || acc < 0 || acc > 100) return;
+                    if (!best[k] || wpm > best[k].wpm) best[k] = { wpm: Math.round(wpm), acc: Math.round(acc) };
+                });
+            });
+        });
+        if (note) note.hidden = true;
+    } catch (e) {
+        console.warn('Personal bests load failed:', e);
+        if (note) { note.textContent = "Couldn't load personal bests. Please refresh to try again."; note.hidden = false; }
     }
-    if (subEl)   subEl.textContent   = Math.round(totalSecs) + ' total seconds typed';
-    if (leftEl)  leftEl.textContent  = Math.round(remainder) + 's this round';
-    if (rightEl) rightEl.textContent = 'next point at ' + (60 - Math.round(remainder)) + 's';
-    if (barEl) {
-        setTimeout(function() {
-            barEl.style.width = Math.max(2, Math.min(100, muskPct)) + '%';
-        }, 200);
-    }
-
-    const tt = document.getElementById('pm-musk-tooltip');
-    if (tt) {
-        tt.innerHTML = `
-            <strong>🚀 How Musk Score works</strong><br>
-            Every second you type adds up across all sessions.<br>
-            <strong>60 seconds typed = 1 Musk Score point.</strong><br><br>
-            <span class="tt-ex">Your total: ${Math.round(totalSecs)}s typed<br>
-            ${muskScore} × 60s = ${muskScore} point${muskScore !== 1 ? 's' : ''}<br>
-            ${Math.round(remainder)}s toward your next point</span>
-        `;
-    }
-
-    // ── Elon Score card (v4 — Musk-based session formula) ────────
-    const elonCard = document.getElementById('pm-elon-card');
-    if (elonCard) {
-        const elonState    = _getElonState(uid);
-        const elonScore    = elonState.elonScore || 0;   // locked, frozen mid-session
-        const prevSessScoreStored = elonState.prevSessScore || 0;
-        const session      = elonState.session;
-        const sessCount    = session ? session.count : 0;
-        const sessAvgWpm   = sessCount > 0 ? session.wpmSum / sessCount : 0;
-        const sessAvgAcc   = sessCount > 0 ? session.accSum / sessCount : 0;
-
-        // Progress within the current session, measured in Musk-seconds
-        const muskAtStart  = session ? (session.muskAtStart || 0) : 0;
-        const sessElapsed  = Math.max(0, totalSecs - muskAtStart);  // seconds into this session
-        const sessSecsLeft = Math.max(0, ELON_SESSION_SECS - sessElapsed);
-        const minsLeft     = Math.ceil(sessSecsLeft / 60);
-        const sessionPct   = Math.min(100, Math.round((sessElapsed / ELON_SESSION_SECS) * 100));
-
-        elonCard.style.display = 'block';
-
-        const elonNumEl   = document.getElementById('pm-elon-number');
-        const elonSubEl   = document.getElementById('pm-elon-sub');
-        const elonBarEl   = document.getElementById('pm-elon-bar');
-        const elonLeftEl  = document.getElementById('pm-elon-prog-left');
-        const elonRightEl = document.getElementById('pm-elon-prog-right');
-
-        if (elonNumEl) {
-            elonNumEl.textContent = elonScore.toFixed(2);
-            setTimeout(function() { elonNumEl.classList.add('pop'); }, 200);
-            setTimeout(function() { elonNumEl.classList.remove('pop'); }, 800);
-        }
-        if (elonSubEl) {
-            elonSubEl.textContent = sessCount > 0
-                ? 'session avg: ' + Math.round(sessAvgWpm) + ' WPM / ' + Math.round(sessAvgAcc) + '% acc'
-                : 'no tests in current session yet';
-        }
-        if (elonLeftEl)  elonLeftEl.textContent  = sessCount + ' test' + (sessCount !== 1 ? 's' : '') + ' this session';
-        if (elonRightEl) elonRightEl.textContent = 'score updates in ~' + minsLeft + ' Musk min';
-        if (elonBarEl) {
-            setTimeout(function() {
-                elonBarEl.style.width = Math.max(2, Math.min(100, sessionPct)) + '%';
-            }, 300);
-        }
-
-        const elonTT = document.getElementById('pm-elon-tooltip');
-        if (elonTT) {
-            // Preview: what the score WILL be if the session ended right now (tooltip only)
-            const previewSessScore = sessCount > 0 ? (sessAvgWpm + sessAvgAcc) / 100 : 0;
-            const previewImprov    = (sessCount > 0 && prevSessScoreStored > 0) ? Math.max(0, previewSessScore - prevSessScoreStored) : 0;
-            const previewFinal     = sessCount > 0 ? elonScore + previewSessScore + previewImprov : elonScore;
-            elonTT.innerHTML = `
-                <strong>⚡ How Elon Score works</strong><br>
-                Updates once per 60 Musk (60 min of typing time).<br>
-                <strong>Score = Prev + (avg WPM + avg Acc) ÷ 100 + Improvement</strong><br>
-                Improvement = max(0, This session score − Last session score)<br><br>
-                <span class="tt-ex">
-                  Locked score: <strong>${elonScore.toFixed(2)}</strong><br>
-                  Session tests: ${sessCount} | avg ${Math.round(sessAvgWpm)} WPM / ${Math.round(sessAvgAcc)}% acc<br>
-                  Last session score: ${prevSessScoreStored.toFixed(2)}<br>
-                  Preview (if session ended now): ${previewFinal.toFixed(2)}<br>
-                  Musk into session: ${Math.round(sessElapsed / 60)} / 60 min
-                </span>
-            `;
-        }
-    }
+    var topKey = null;
+    Object.keys(best).forEach(function (k) { if (!topKey || best[k].wpm > best[topKey].wpm) topKey = k; });
+    Object.keys(PM_BEST_MODES).forEach(function (k) {
+        var card = document.getElementById('pm-best-' + k);
+        if (!card) return;
+        var b = best[k];
+        card.classList.toggle('is-empty', !b);
+        card.classList.toggle('is-top', k === topKey && Object.keys(best).length > 1);
+        card.querySelector('.pm-best-wpm b').textContent = b ? String(b.wpm) : '--';
+        card.querySelector('.pm-best-acc b').textContent = b ? b.acc + '%' : '--';
+        var bar = card.querySelector('.pm-best-bar i');
+        if (bar) bar.style.transform = 'scaleX(' + (b ? Math.max(0.02, b.acc / 100) : 0) + ')';
+    });
+    root.classList.remove('is-loading');
 }
 
 function closeProfileModal() {
