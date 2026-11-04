@@ -1392,9 +1392,7 @@ footer a:hover { color: #e2b714; }
 #live-wpm-display.show {
     animation: livewpm-popin 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
 }
-#km-elon-badge {
-    transform: translateX(50px);
-}
+
 /* ══════════════════════════════════════════════════════
    CLS PREVENTION — stable dimensions for dynamic elements
    Prevents layout shift when Firebase auth loads or ads appear
@@ -1465,10 +1463,10 @@ body,button,input,textarea,select{font-family:var(--rt-font) !important;}
 .pm-add-photo-label{color:var(--rt-main) !important;}
 .pm-divider{background:linear-gradient(90deg,transparent,rgba(var(--rt-main-rgb),0.18),transparent) !important;}
 .pm-speed-bar-fill{background:linear-gradient(90deg,var(--rt-caret),var(--rt-main),var(--rt-main2)) !important;}
-.pm-musk-number{background:linear-gradient(135deg,var(--rt-bodytext) 30%,var(--rt-main2) 70%,var(--rt-main2)) !important;}
-.pm-musk-progress-fill{background:linear-gradient(90deg,var(--rt-main),var(--rt-main2),var(--rt-main2)) !important;}
-.pm-elon-fill{background:linear-gradient(90deg,var(--rt-caret),var(--rt-caret)) !important;}
-.pm-musk-tooltip strong,.pm-elon-tooltip strong{color:var(--rt-main) !important;}
+
+
+
+
 .pm-close-top{border-color:rgba(var(--rt-main-rgb),0.3) !important;color:var(--rt-main) !important;}
 .pm-recent-row span:nth-child(2){color:var(--rt-bodytext) !important;}
 .pm-recent-row span:nth-child(3){color:var(--rt-caret) !important;}
@@ -1561,7 +1559,7 @@ body,button,input,textarea,select{font-family:var(--rt-font) !important;}
 }
 
 /* ==================== KEYBOARD PICKS (separate box, directly above the result box) ==================== */
-/* While the result popup is open, hide the keymap + Musk/Elon score panel behind it. */
+
 html.rt-result-open #km-outer-row { display: none !important; }
 
 /* #rt-stack stacks [picks + result box] as one column starting at the TOP of the screen (no empty gap above). #result keeps all its own styling;
