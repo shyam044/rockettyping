@@ -1964,12 +1964,6 @@ if (!testActive && !testEnded && e.key.length === 1) {
                 } catch(_lsErr) { console.warn('localStorage words/quotes save failed:', _lsErr); }
             }
 
-            fireConfetti({
-                particleCount: 80,
-                spread: 65,
-                origin: { y: 0.6 },
-                colors: ['#ffd700', '#ff9900', '#ffffff']
-            });
             // Adsterra Native Banner: no longer injected here. The ad script loads
             // once in <head> and renders into the #result-ad container in the
             // background while the user is still typing, so it's already sitting
@@ -2758,10 +2752,6 @@ function sanitizeStr(s) {
             // PERF: store in cache after successful render
             if (!window._lbCache) window._lbCache = {};
             window._lbCache[duration] = { ts: Date.now(), entries };
-
-            if (registeredName && [...body.children].some(r => r.classList.contains('you'))) {
-                fireConfetti({ particleCount: 80, spread: 60, origin: { y: 0.6 } });
-            }
 
             // ← REMOVED the old updateLeaderboardPrompt() from here (now at top)
         }
