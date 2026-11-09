@@ -194,8 +194,8 @@
     <link rel="dns-prefetch" href="https://flagcdn.com">
     <!-- Preload critical assets: logo image + main stylesheet -->
     <link rel="preload" as="image" href="/images/rocket-typing-logo.webp" fetchpriority="high">
-    <link rel="preload" href="styles.css?v=20261104" as="style">
-    <link rel="preload" href="responsive.css?v=20261104" as="style">
+    <link rel="preload" href="styles.css?v=20261110" as="style">
+    <link rel="preload" href="responsive.css?v=20261110" as="style">
     <!-- ═══════════════════════════════════════════════════════════════════
          INLINE CRITICAL CSS  — rendered before any external stylesheet.
          RULE: every layout-affecting property that also exists in styles.css
@@ -314,8 +314,8 @@
          (#app margin 20px->0, #words top 253px->177px, header 27px->7px), so the whole page
          jumped ~75px = ~0.14 CLS on every load. Loading them normally means the first paint
          already uses the final geometry, so there is no shift. -->
-    <link rel="stylesheet" href="styles.css?v=20261104">
-    <link rel="stylesheet" href="responsive.css?v=20261104">
+    <link rel="stylesheet" href="styles.css?v=20261110">
+    <link rel="stylesheet" href="responsive.css?v=20261110">
     <!-- Font Awesome removed: the whole 6.6.0 icon library (100+ KB + an extra
          third-party connection) was being loaded on this page to render exactly
          one icon (the X/Twitter share glyph). Replaced with a 300-byte inline
@@ -337,27 +337,6 @@
         function gtag() { dataLayer.push(arguments); }
         gtag('js', new Date());
         gtag('config', 'G-136SVFZRDF');
-    </script>
-    <!-- Confetti: lazy-loaded on first actual use (see fireConfetti() below)
-         instead of on every page load — most visits never trigger it. -->
-    <script>
-        var _confettiLoadPromise = null;
-        function _loadConfetti() {
-            if (!_confettiLoadPromise) {
-                _confettiLoadPromise = new Promise(function(resolve) {
-                    var s = document.createElement('script');
-                    s.src = 'https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js';
-                    s.onload = resolve;
-                    document.head.appendChild(s);
-                });
-            }
-            return _confettiLoadPromise;
-        }
-        // Drop-in replacement for calling confetti(...) directly — same
-        // arguments, just fetches the library first if it isn't loaded yet.
-        function fireConfetti(opts) {
-            _loadConfetti().then(function() { window.confetti(opts); });
-        }
     </script>
     <!-- Quotes database — loaded before main script so QUOTES_ALL is available -->
     <!-- quotes.js moved to just before the main script, right after all
@@ -1029,6 +1008,7 @@ html.test-running #rt-buy::after { animation: none; }
 }
 .lesson-seo h2 { margin: 0 0 8px; font-size: 15px; letter-spacing: .4px; color: var(--rt-main, #64b5f6); }
 .lesson-seo p  { margin: 0 0 10px; }
+.lesson-seo h3 { margin: 14px 0 6px; font-size: 14px; letter-spacing: .3px; color: var(--rt-main, #64b5f6); }
 /* Wide screens: keymap + Buy box sit side by side; this row is centred under the KEYMAP only
    (right margin = width of the Buy box + the row gap, so both rows share the same centre). */
 /* CENTERING FIX: the Buy box sits to the right of the keymap, which used to push the keymap left of the
@@ -1589,9 +1569,22 @@ html.rt-result-open .rt-hud-moved{visibility:hidden !important;pointer-events:no
     <section class="lesson-seo" aria-label="About this typing test">
         <h2>Free typing speed test</h2>
         <p>Rocket Typing measures your words per minute (WPM) and accuracy in real time. Pick a time or word count, start typing, and your result appears the moment the test ends.</p>
-        <p>WPM counts every five characters as one word, so mistakes lower your net speed. Accuracy is the share of keystrokes that were correct.</p>
-        <p>Use the key map to see which finger should press each key. Correct finger placement is the fastest way to build speed that lasts.</p>
-        <p>Short daily practice beats long, rare sessions. Retake the test often and watch your personal bests climb on your profile.</p>
+        <p>There is nothing to install and no sign-up is needed. It works on laptops, tablets and phones, although a physical keyboard gives the most accurate score.</p>
+        <h3>How your score is calculated</h3>
+        <p>WPM counts every five characters as one word, so a long word is worth more than a short one. Mistakes lower your net speed, which is why a fast but sloppy run can score below a slower, clean one.</p>
+        <p>Accuracy is the share of keystrokes that were correct. Consistency shows how steady your pace was from start to finish, and raw WPM shows your speed before errors are taken off.</p>
+        <h3>Choose the right test mode</h3>
+        <p>Time mode gives you a fixed number of seconds and counts how much you can type. It is the quickest way to get a reliable WPM number.</p>
+        <p>Words mode ends after a set number of words, and Quotes mode uses real sentences with natural punctuation. Notes mode lets you paste your own text, or scan a photo of it, and type that instead.</p>
+        <p>Easy, Medium and Hard control the vocabulary and punctuation. Start on Easy if you are learning, and move up once your accuracy stays high.</p>
+        <h3>Tips to type faster</h3>
+        <p>Rest your fingers on the home row: A S D F for the left hand and J K L ; for the right. Every other key is reached from there, which keeps your hands in a steady position.</p>
+        <p>Use the key map to see which finger should press each key, and try not to look down at the keyboard. Looking away from the screen is the most common thing that slows people down.</p>
+        <p>Focus on accuracy first. Correcting errors costs more time than typing a little slower, and speed rises on its own once your hands know the keys.</p>
+        <p>Short daily practice beats long, rare sessions. Ten to fifteen minutes a day is enough to see a clear change within a few weeks.</p>
+        <h3>What is a good typing speed?</h3>
+        <p>Most people type somewhere around 40 WPM. Reaching 60 to 70 WPM is considered fast, and 100 WPM or more is expert level. Many office and data entry jobs ask for 40 to 60 WPM with high accuracy.</p>
+        <p>Retake the test often and watch your personal bests climb on your profile. You can also join the global leaderboard once you create a free account.</p>
     </section>
 </div><!-- #km-outer-row -->
 
@@ -2360,7 +2353,7 @@ window.deleteUser = deleteUser;
         })();
     </script>
     <script src="vocabulary.js?v=3"></script>
-    <script src="app-core.js?v=20261104"></script>
+    <script src="app-core.js?v=20261110"></script>
     <script>
 // Handle ?openAuth=login and ?openAuth=signup from game.html and other pages
 // BUT only open modal if user is NOT logged in + clear the URL so reload doesn't re-trigger
